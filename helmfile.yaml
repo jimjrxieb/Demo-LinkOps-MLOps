@@ -1,6 +1,6 @@
 repositories:
-  - name: stable
-    url: https://charts.helm.sh/stable
+  - name: local
+    url: http://127.0.0.1:8879/charts
 
 releases:
   # Core AI/ML Services
@@ -220,4 +220,46 @@ releases:
           port: 8016
       - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092" 
+          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+
+  - name: auditguard-logic
+    namespace: linkops
+    chart: ./helm/auditguard_logic
+    values:
+      - replicaCount: 1
+      - image:
+          repository: ghcr.io/shadow-link-industries/auditguard_logic
+          tag: latest
+      - service:
+          port: 8017
+      - env:
+          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+
+  - name: frontend
+    namespace: linkops
+    chart: ./helm/frontend
+    values:
+      - replicaCount: 1
+      - image:
+          repository: ghcr.io/shadow-link-industries/frontend
+          tag: latest
+      - service:
+          port: 8018
+      - env:
+          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+
+  - name: backend
+    namespace: linkops
+    chart: ./helm/backend
+    values:
+      - replicaCount: 1
+      - image:
+          repository: ghcr.io/shadow-link-industries/backend
+          tag: latest
+      - service:
+          port: 8019
+      - env:
+          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"

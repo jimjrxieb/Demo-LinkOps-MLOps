@@ -1,0 +1,19 @@
+{
+  "name": "Kubernetes Deployment Rune",
+  "description": "Deploy a sample application to Kubernetes cluster",
+  "commands": [
+    "kubectl get nodes",
+    "kubectl create namespace test-deployment",
+    "kubectl apply -f - <<EOF\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: nginx-deployment\n  namespace: test-deployment\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: nginx\n  template:\n    metadata:\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:latest\n        ports:\n        - containerPort: 80\nEOF",
+    "kubectl rollout status deployment/nginx-deployment -n test-deployment",
+    "kubectl get pods -n test-deployment",
+    "kubectl expose deployment nginx-deployment --port=80 --type=NodePort -n test-deployment",
+    "kubectl get svc -n test-deployment"
+  ],
+  "validation": {
+    "allowed_commands": ["kubectl"],
+    "denied_commands": ["rm", "shutdown", "dd"],
+    "timeout_seconds": 300,
+    "stop_on_failure": true
+  }
+} 

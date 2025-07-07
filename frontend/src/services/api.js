@@ -9,66 +9,33 @@ const api = axios.create({
 })
 
 // Environment-based API URLs
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
-const WHIS_URL = import.meta.env.VITE_WHIS_URL || 'http://localhost:8001'
-const JAMES_URL = import.meta.env.VITE_JAMES_URL || 'http://localhost:8002'
-const SANITIZER_URL = import.meta.env.VITE_SANITIZER_URL || 'http://localhost:8003'
-const DATA_COLLECTOR_URL = import.meta.env.VITE_DATA_COLLECTOR_URL || 'http://localhost:8004'
-const IGRIS_URL = import.meta.env.VITE_IGRIS_URL || 'http://localhost:8005'
-const KATIE_URL = import.meta.env.VITE_KATIE_URL || 'http://localhost:8006'
-const FICKNURY_URL = import.meta.env.VITE_FICKNURY_URL || 'http://localhost:8007'
-const AUDITGUARD_URL = import.meta.env.VITE_AUDITGUARD_URL || 'http://localhost:8008'
-const WEBSCRAPER_URL = import.meta.env.VITE_WEBSCRAPER_URL || 'http://localhost:8009'
+const MLOPS_PLATFORM_URL = import.meta.env.VITE_MLOPS_PLATFORM_URL || 'http://localhost:8000'
+const AUDIT_ASSESS_URL = import.meta.env.VITE_AUDIT_ASSESS_URL || 'http://localhost:8003'
+const WHIS_DATA_INPUT_URL = import.meta.env.VITE_WHIS_DATA_INPUT_URL || 'http://localhost:8004'
+const WHIS_ENHANCE_URL = import.meta.env.VITE_WHIS_ENHANCE_URL || 'http://localhost:8006'
 
-// API Services
-export const backendAPI = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-})
-
-export const whisAPI = axios.create({
-  baseURL: WHIS_URL,
+// MLOps Platform API
+export const mlopsPlatformAPI = axios.create({
+  baseURL: MLOPS_PLATFORM_URL,
   timeout: 15000,
 })
 
-export const jamesAPI = axios.create({
-  baseURL: JAMES_URL,
-  timeout: 30000,
+// Audit Assess API
+export const auditAssessAPI = axios.create({
+  baseURL: AUDIT_ASSESS_URL,
+  timeout: 30000, // Longer timeout for repository scanning
 })
 
-export const sanitizerAPI = axios.create({
-  baseURL: SANITIZER_URL,
-  timeout: 10000,
-})
-
-export const dataCollectorAPI = axios.create({
-  baseURL: DATA_COLLECTOR_URL,
-  timeout: 10000,
-})
-
-export const igrisAPI = axios.create({
-  baseURL: IGRIS_URL,
-  timeout: 20000,
-})
-
-export const katieAPI = axios.create({
-  baseURL: KATIE_URL,
+// Whis Data Input API
+export const whisDataInputAPI = axios.create({
+  baseURL: WHIS_DATA_INPUT_URL,
   timeout: 15000,
 })
 
-export const ficknuryAPI = axios.create({
-  baseURL: FICKNURY_URL,
+// Whis Enhance API
+export const whisEnhanceAPI = axios.create({
+  baseURL: WHIS_ENHANCE_URL,
   timeout: 15000,
-})
-
-export const auditguardAPI = axios.create({
-  baseURL: AUDITGUARD_URL,
-  timeout: 10000,
-})
-
-export const webscraperAPI = axios.create({
-  baseURL: WEBSCRAPER_URL,
-  timeout: 20000,
 })
 
 // Request interceptor for logging
@@ -106,173 +73,273 @@ api.interceptors.response.use(
 
 // Health check functions
 export const healthChecks = {
-  backend: () => backendAPI.get('/health'),
-  whis: () => whisAPI.get('/health'),
-  james: () => jamesAPI.get('/health'),
-  sanitizer: () => sanitizerAPI.get('/health'),
-  dataCollector: () => dataCollectorAPI.get('/health'),
-  igris: () => igrisAPI.get('/health'),
-  katie: () => katieAPI.get('/health'),
-  ficknury: () => ficknuryAPI.get('/health'),
-  auditguard: () => auditguardAPI.get('/health'),
-  webscraper: () => webscraperAPI.get('/health'),
+  mlopsPlatform: () => mlopsPlatformAPI.get('/'),
+  auditAssess: () => auditAssessAPI.get('/health'),
+  whisDataInput: () => whisDataInputAPI.get('/health'),
+  whisEnhance: () => whisEnhanceAPI.get('/health'),
 }
 
-// James API functions
+// MLOps Platform API functions
+export const mlopsPlatformService = {
+  // Tasks
+  getTasks: () => mlopsPlatformAPI.get('/tasks/'),
+  createTask: (taskData) => mlopsPlatformAPI.post('/tasks/', taskData),
+  updateTask: (taskId, taskData) => mlopsPlatformAPI.put(`/tasks/${taskId}`, taskData),
+  deleteTask: (taskId) => mlopsPlatformAPI.delete(`/tasks/${taskId}`),
+  getTaskStats: () => mlopsPlatformAPI.get('/tasks/stats/summary'),
+
+  // Scripts
+  getScripts: () => mlopsPlatformAPI.get('/scripts/'),
+  createScript: (scriptData) => mlopsPlatformAPI.post('/scripts/', scriptData),
+  updateScript: (scriptId, scriptData) => mlopsPlatformAPI.put(`/scripts/${scriptId}`, scriptData),
+  deleteScript: (scriptId) => mlopsPlatformAPI.delete(`/scripts/${scriptId}`),
+  executeScript: (scriptId) => mlopsPlatformAPI.post(`/scripts/${scriptId}/execute`),
+  getScriptTemplates: (category) => mlopsPlatformAPI.get(`/scripts/templates/${category}`),
+  getPopularScripts: () => mlopsPlatformAPI.get('/scripts/stats/popular'),
+
+  // Workflows
+  getWorkflows: () => mlopsPlatformAPI.get('/workflows/'),
+  createWorkflow: (workflowData) => mlopsPlatformAPI.post('/workflows/', workflowData),
+  updateWorkflow: (workflowId, workflowData) => mlopsPlatformAPI.put(`/workflows/${workflowId}`, workflowData),
+  deleteWorkflow: (workflowId) => mlopsPlatformAPI.delete(`/workflows/${workflowId}`),
+  executeWorkflow: (workflowId) => mlopsPlatformAPI.post(`/workflows/${workflowId}/execute`),
+  getWorkflowTemplates: (category) => mlopsPlatformAPI.get(`/workflows/templates/${category}`),
+  getWorkflowStats: () => mlopsPlatformAPI.get('/workflows/stats/execution'),
+
+  // Orbs
+  getOrbs: () => mlopsPlatformAPI.get('/orbs/'),
+  createOrb: (orbData) => mlopsPlatformAPI.post('/orbs/', orbData),
+  updateOrb: (orbId, orbData) => mlopsPlatformAPI.put(`/orbs/${orbId}`, orbData),
+  deleteOrb: (orbId) => mlopsPlatformAPI.delete(`/orbs/${orbId}`),
+  useOrb: (orbId) => mlopsPlatformAPI.post(`/orbs/${orbId}/use`),
+  rateOrb: (orbId, rating) => mlopsPlatformAPI.post(`/orbs/${orbId}/rate`, { rating }),
+  getOrbTemplates: (category) => mlopsPlatformAPI.get(`/orbs/templates/${category}`),
+  getPopularOrbs: () => mlopsPlatformAPI.get('/orbs/stats/popular'),
+  getHighestRatedOrbs: () => mlopsPlatformAPI.get('/orbs/stats/highest_rated'),
+
+  // Runes
+  getRunes: () => mlopsPlatformAPI.get('/runes/'),
+  createRune: (runeData) => mlopsPlatformAPI.post('/runes/', runeData),
+  updateRune: (runeId, runeData) => mlopsPlatformAPI.put(`/runes/${runeId}`, runeData),
+  deleteRune: (runeId) => mlopsPlatformAPI.delete(`/runes/${runeId}`),
+  executeRune: (runeId) => mlopsPlatformAPI.post(`/runes/${runeId}/execute`),
+  provideRuneFeedback: (runeId, success, feedback) => mlopsPlatformAPI.post(`/runes/${runeId}/feedback`, { success, feedback }),
+  getRuneTemplates: (category) => mlopsPlatformAPI.get(`/runes/templates/${category}`),
+  getMostSuccessfulRunes: () => mlopsPlatformAPI.get('/runes/stats/most_successful'),
+  getMostUsedRunes: () => mlopsPlatformAPI.get('/runes/stats/most_used'),
+
+  // Digest
+  getDigestEntries: (params) => mlopsPlatformAPI.get('/digest/', { params }),
+  createDigestEntry: (entryData) => mlopsPlatformAPI.post('/digest/', entryData),
+  updateDigestEntry: (entryId, entryData) => mlopsPlatformAPI.put(`/digest/${entryId}`, entryData),
+  deleteDigestEntry: (entryId) => mlopsPlatformAPI.delete(`/digest/${entryId}`),
+  getTodaySummary: () => mlopsPlatformAPI.get('/digest/today/summary'),
+  getWeeklyStats: () => mlopsPlatformAPI.get('/digest/stats/weekly'),
+  getMonthlyStats: () => mlopsPlatformAPI.get('/digest/stats/monthly'),
+  exportDigest: (startDate, endDate) => mlopsPlatformAPI.post('/digest/export', { start_date: startDate, end_date: endDate }),
+  getProductivityInsights: () => mlopsPlatformAPI.get('/digest/insights/productivity'),
+}
+
+// Legacy service mappings for backward compatibility
 export const jamesService = {
-  activateShadowArmy: () => jamesAPI.post('/api/james/activate'),
-  submitTask: (taskData) => jamesAPI.post('/api/james/task', taskData),
-  askQuestion: (question) => jamesAPI.post('/api/james/qa', { question }),
-  submitInfoDump: (data) => jamesAPI.post('/api/james/info-dump', data),
-  extractFromImage: (imageData) => jamesAPI.post('/api/james/image-extract', imageData),
-  generateSolution: (problemData) => jamesAPI.post('/api/james/solution', problemData),
-  voiceInteraction: (audioData) => jamesAPI.post('/api/james/voice', audioData),
-  describeImage: (imageData) => jamesAPI.post('/api/james/describe-image', imageData),
+  activateShadowArmy: () => mlopsPlatformService.createTask({
+    title: "Activate Shadow Army",
+    description: "Activate all shadow agents for coordinated operations",
+    category: "mlops",
+    priority: "high"
+  }),
+  submitTask: (taskData) => mlopsPlatformService.createTask(taskData),
+  askQuestion: (question) => mlopsPlatformService.createTask({
+    title: "Question",
+    description: question,
+    category: "mlops",
+    priority: "medium"
+  }),
+  submitInfoDump: (data) => mlopsPlatformService.createTask({
+    title: "Info Dump",
+    description: JSON.stringify(data),
+    category: "mlops",
+    priority: "medium"
+  }),
+  extractFromImage: (imageData) => mlopsPlatformService.createTask({
+    title: "Image Extraction",
+    description: "Extract information from image",
+    category: "mlops",
+    priority: "medium"
+  }),
+  generateSolution: (problemData) => mlopsPlatformService.createTask({
+    title: "Generate Solution",
+    description: JSON.stringify(problemData),
+    category: "mlops",
+    priority: "high"
+  }),
+  voiceInteraction: (audioData) => mlopsPlatformService.createTask({
+    title: "Voice Interaction",
+    description: "Process voice input",
+    category: "mlops",
+    priority: "medium"
+  }),
+  describeImage: (imageData) => mlopsPlatformService.createTask({
+    title: "Describe Image",
+    description: "Generate image description",
+    category: "mlops",
+    priority: "medium"
+  }),
 }
 
-// Whis API functions
 export const whisService = {
-  getTrainingQueue: () => whisAPI.get('/api/whis/training-queue'),
-  getDigest: (date) => whisAPI.get(`/api/whis/digest?date=${date}`),
-  getApprovalQueue: () => whisAPI.get('/api/whis/approval-queue'),
-  approveItem: (type, id) => whisAPI.post(`/api/whis/approve/${type}/${id}`),
-  rejectItem: (type, id) => whisAPI.post(`/api/whis/reject/${type}/${id}`),
-  getAnalytics: () => whisAPI.get('/api/whis/analytics'),
-  generateOrbs: (data) => whisAPI.post('/api/whis/generate-orbs', data),
-  generateRunes: (data) => whisAPI.post('/api/whis/generate-runes', data),
-  getSmithingLog: () => whisAPI.get('/api/whis/smithing-log'),
+  getTrainingQueue: () => mlopsPlatformService.getTasks(),
+  getDigest: (date) => mlopsPlatformService.getDigestEntries({ date }),
+  getApprovalQueue: () => mlopsPlatformService.getTasks(),
+  approveItem: (type, id) => mlopsPlatformService.updateTask(id, { status: "completed" }),
+  rejectItem: (type, id) => mlopsPlatformService.updateTask(id, { status: "blocked" }),
+  getAnalytics: () => mlopsPlatformService.getTaskStats(),
+  generateOrbs: (data) => mlopsPlatformService.createOrb(data),
+  generateRunes: (data) => mlopsPlatformAPI.post('/runes/', data),
+  getSmithingLog: () => mlopsPlatformService.getRunes(),
 }
 
-// Igris API functions
 export const igrisService = {
-  getInfrastructureStatus: () => igrisAPI.get('/api/igris/infrastructure'),
-  analyzeCosts: () => igrisAPI.get('/api/igris/cost-analysis'),
-  getSecurityAudit: () => igrisAPI.get('/api/igris/security-audit'),
-  deployInfrastructure: (config) => igrisAPI.post('/api/igris/deploy', config),
-  getCapabilities: () => igrisAPI.get('/api/igris/capabilities'),
-  getEnhancedRunes: () => igrisAPI.get('/api/igris/enhanced-runes'),
-  runSimulation: (params) => igrisAPI.post('/api/igris/simulation', params),
-  getAgentStats: () => igrisAPI.get('/api/igris/agent-stats'),
+  getInfrastructureStatus: () => mlopsPlatformService.getWorkflows(),
+  analyzeCosts: () => mlopsPlatformService.getTaskStats(),
+  getSecurityAudit: () => mlopsPlatformService.getTasks(),
+  deployInfrastructure: (config) => mlopsPlatformService.createWorkflow(config),
+  getCapabilities: () => mlopsPlatformService.getScripts(),
+  getEnhancedRunes: () => mlopsPlatformService.getRunes(),
+  runSimulation: (params) => mlopsPlatformService.createWorkflow(params),
+  getAgentStats: () => mlopsPlatformService.getTaskStats(),
 }
 
-// Katie API functions
 export const katieService = {
-  getKubernetesStatus: () => katieAPI.get('/api/katie/kubernetes'),
-  getTasksHandled: () => katieAPI.get('/api/katie/tasks'),
-  getYAMLVisualizer: () => katieAPI.get('/api/katie/yaml-visualizer'),
-  getAgentLogicTree: () => katieAPI.get('/api/katie/agent-logic'),
-  getHelmCharts: () => katieAPI.get('/api/katie/helm-charts'),
-  getTroubleshootingLog: () => katieAPI.get('/api/katie/troubleshooting'),
-  scaleDeployment: (params) => katieAPI.post('/api/katie/scale', params),
-  describeResource: (params) => katieAPI.post('/api/katie/describe', params),
-  getLogs: (params) => katieAPI.get('/api/katie/logs', { params }),
-  patchResource: (params) => katieAPI.post('/api/katie/patch', params),
+  getKubernetesStatus: () => mlopsPlatformService.getWorkflows(),
+  getTasksHandled: () => mlopsPlatformService.getTasks(),
+  getYAMLVisualizer: () => mlopsPlatformService.getOrbs(),
+  getAgentLogicTree: () => mlopsPlatformService.getRunes(),
+  getHelmCharts: () => mlopsPlatformService.getOrbs(),
+  getTroubleshootingLog: () => mlopsPlatformService.getDigestEntries(),
+  scaleDeployment: (params) => mlopsPlatformService.createScript({
+    name: "Scale Deployment",
+    description: "Scale Kubernetes deployment",
+    category: "kubernetes",
+    content: `kubectl scale deployment ${params.deployment} --replicas=${params.replicas}`,
+    language: "bash"
+  }),
+  describeResource: (params) => mlopsPlatformService.createScript({
+    name: "Describe Resource",
+    description: "Describe Kubernetes resource",
+    category: "kubernetes",
+    content: `kubectl describe ${params.resource} ${params.name}`,
+    language: "bash"
+  }),
+  getLogs: (params) => mlopsPlatformService.createScript({
+    name: "Get Logs",
+    description: "Get Kubernetes logs",
+    category: "kubernetes",
+    content: `kubectl logs ${params.pod} --tail=${params.lines || 100}`,
+    language: "bash"
+  }),
+  patchResource: (params) => mlopsPlatformService.createScript({
+    name: "Patch Resource",
+    description: "Patch Kubernetes resource",
+    category: "kubernetes",
+    content: `kubectl patch ${params.resource} ${params.name} -p '${JSON.stringify(params.patch)}'`,
+    language: "bash"
+  }),
 }
 
-// Ficknury API functions
 export const ficknuryService = {
-  getIncomingTasks: () => ficknuryAPI.get('/api/ficknury/incoming-tasks'),
-  getFeasibilityRanking: () => ficknuryAPI.get('/api/ficknury/feasibility'),
-  getAgentAssignmentStats: () => ficknuryAPI.get('/api/ficknury/agent-stats'),
-  getDecisionMatrix: () => ficknuryAPI.get('/api/ficknury/decision-matrix'),
-  getProcessingQueue: () => ficknuryAPI.get('/api/ficknury/processing-queue'),
-  getFallbackAnalysis: () => ficknuryAPI.get('/api/ficknury/fallback-analysis'),
-  evaluateTask: (taskData) => ficknuryAPI.post('/api/ficknury/evaluate', taskData),
-  routeTask: (taskData) => ficknuryAPI.post('/api/ficknury/route', taskData),
+  getIncomingTasks: () => mlopsPlatformService.getTasks(),
+  getFeasibilityRanking: () => mlopsPlatformService.getTaskStats(),
+  getAgentAssignmentStats: () => mlopsPlatformService.getTaskStats(),
+  getDecisionMatrix: () => mlopsPlatformService.getWorkflows(),
+  getProcessingQueue: () => mlopsPlatformService.getTasks(),
+  getFallbackAnalysis: () => mlopsPlatformService.getDigestEntries(),
+  evaluateTask: (taskData) => mlopsPlatformService.createTask(taskData),
+  routeTask: (taskData) => mlopsPlatformService.createTask(taskData),
 }
 
-// Data Collector API functions
 export const dataCollectorService = {
-  collectData: (data) => dataCollectorAPI.post('/api/collect', data),
-  getCollectionStats: () => dataCollectorAPI.get('/api/stats'),
-  submitYouTubeData: (url) => dataCollectorAPI.post('/api/youtube', { url }),
-  submitManualTask: (taskData) => dataCollectorAPI.post('/api/manual-task', taskData),
-  downloadYouTubeTranscript: (data) => dataCollectorAPI.post('/input/youtube-transcript', data),
+  collectData: (data) => mlopsPlatformService.createTask({
+    title: "Data Collection",
+    description: JSON.stringify(data),
+    category: "mlops",
+    priority: "medium"
+  }),
+  getCollectionStats: () => mlopsPlatformService.getTaskStats(),
+  submitYouTubeData: (url) => mlopsPlatformService.createTask({
+    title: "YouTube Data",
+    description: `Process YouTube URL: ${url}`,
+    category: "mlops",
+    priority: "medium"
+  }),
+  submitManualTask: (taskData) => mlopsPlatformService.createTask(taskData),
+  downloadYouTubeTranscript: (data) => mlopsPlatformService.createTask({
+    title: "YouTube Transcript",
+    description: JSON.stringify(data),
+    category: "mlops",
+    priority: "medium"
+  }),
 }
 
-// Sanitizer API functions
 export const sanitizerService = {
-  sanitizeData: (data) => sanitizerAPI.post('/api/sanitize', data),
-  getSanitizationStats: () => sanitizerAPI.get('/api/stats'),
-  getDataLake: () => sanitizerAPI.get('/api/data-lake'),
-  getSanitizedInputs: () => sanitizerAPI.get('/api/sanitized-inputs'),
+  sanitizeData: (data) => mlopsPlatformService.createTask({
+    title: "Data Sanitization",
+    description: JSON.stringify(data),
+    category: "mlops",
+    priority: "medium"
+  }),
+  getSanitizationStats: () => mlopsPlatformService.getTaskStats(),
+  getDataLake: () => mlopsPlatformService.getDigestEntries(),
+  getSanitizedInputs: () => mlopsPlatformService.getTasks(),
 }
 
-// AuditGuard API functions
-export const auditguardService = {
-  getAuditLogs: () => auditguardAPI.get('/api/audit/logs'),
-  getComplianceStatus: () => auditguardAPI.get('/api/audit/compliance'),
-  getSecurityAlerts: () => auditguardAPI.get('/api/audit/security'),
-  runSecurityScan: (data) => auditguardAPI.post('/api/audit/security-scan', data),
-  scanRepository: (repositoryUrl) => auditguardAPI.post('/api/audit/repository-scan', { repository_url: repositoryUrl }),
-  getGitOpsRecommendations: (scanResults) => auditguardAPI.post('/api/audit/gitops-recommendations', scanResults),
-  getComplianceReport: (repositoryUrl) => auditguardAPI.post('/api/audit/compliance-report', { repository_url: repositoryUrl }),
-  validateGitOpsSetup: (config) => auditguardAPI.post('/api/audit/validate-gitops', config),
-}
-
-// WebScraper API functions
-export const webscraperService = {
-  scrapeWebsite: (url) => webscraperAPI.post('/api/scrape', { url }),
-  getScrapingAgents: () => webscraperAPI.get('/api/agents'),
-  getOrbsRunes: () => webscraperAPI.get('/api/orbs-runes'),
-  getScrapingLogs: () => webscraperAPI.get('/api/logs'),
-  reloopScraping: (params) => webscraperAPI.post('/api/reloop', params),
-}
-
-// Backend API functions
-export const backendService = {
-  getSystemStatus: () => backendAPI.get('/api/status'),
-  getDashboardData: () => backendAPI.get('/api/dashboard'),
-  getLogs: (params) => backendAPI.get('/api/logs', { params }),
-  getAgentStatus: () => backendAPI.get('/api/agents/status'),
-  getSystemMetrics: () => backendAPI.get('/api/metrics'),
-  getLearningEvents: () => backendAPI.get('/api/learning-events'),
-  getDataFlowMap: () => backendAPI.get('/api/data-flow'),
-}
-
-// Utility functions
-export const apiUtils = {
-  // Check if all services are healthy
-  checkAllServices: async () => {
-    const checks = await Promise.allSettled([
-      healthChecks.backend(),
-      healthChecks.whis(),
-      healthChecks.james(),
-      healthChecks.sanitizer(),
-      healthChecks.dataCollector(),
-      healthChecks.igris(),
-      healthChecks.katie(),
-      healthChecks.ficknury(),
-      healthChecks.auditguard(),
-      healthChecks.webscraper(),
-    ])
-    
-    return {
-      backend: checks[0].status === 'fulfilled',
-      whis: checks[1].status === 'fulfilled',
-      james: checks[2].status === 'fulfilled',
-      sanitizer: checks[3].status === 'fulfilled',
-      dataCollector: checks[4].status === 'fulfilled',
-      igris: checks[5].status === 'fulfilled',
-      katie: checks[6].status === 'fulfilled',
-      ficknury: checks[7].status === 'fulfilled',
-      auditguard: checks[8].status === 'fulfilled',
-      webscraper: checks[9].status === 'fulfilled',
-    }
-  },
+// Audit Assess API functions
+export const auditAssessService = {
+  // Repository scanning
+  scanRepository: (repoData) => auditAssessAPI.post('/scan/repo/', repoData),
+  auditRepository: (repoData) => auditAssessAPI.post('/scan/audit', repoData),
+  getSuggestions: () => auditAssessAPI.get('/scan/suggestions/'),
+  getScaffoldPlan: () => auditAssessAPI.get('/scan/scaffold-plan/'),
   
-  // Retry function for failed requests
-  retry: async (fn, retries = 3, delay = 1000) => {
-    try {
-      return await fn()
-    } catch (error) {
-      if (retries > 0) {
-        await new Promise(resolve => setTimeout(resolve, delay))
-        return apiUtils.retry(fn, retries - 1, delay * 2)
-      }
-      throw error
-    }
-  },
+  // Health and status
+  getHealth: () => auditAssessAPI.get('/health'),
+}
+
+// Whis Data Input API functions
+export const whisDataInputService = {
+  // YouTube data collection
+  submitYouTubeData: (url) => whisDataInputAPI.post('/youtube', { url }),
+  downloadTranscript: (data) => whisDataInputAPI.post('/youtube/transcript', data),
+  
+  // Q&A data
+  submitQAData: (data) => whisDataInputAPI.post('/qna', data),
+  
+  // CSV data
+  submitCSVData: (data) => whisDataInputAPI.post('/csv', data),
+  
+  // Manual task submission
+  submitManualTask: (taskData) => whisDataInputAPI.post('/manual', taskData),
+  
+  // Health and status
+  getHealth: () => whisDataInputAPI.get('/health'),
+}
+
+// Whis Enhance API functions
+export const whisEnhanceService = {
+  // Content enhancement
+  enhanceContent: (contentData) => whisEnhanceAPI.post('/enhance', contentData),
+  enhanceBatch: (batchData) => whisEnhanceAPI.post('/enhance/batch', batchData),
+  
+  // Quality assessment
+  getQualityScore: (contentData) => whisEnhanceAPI.get('/enhance/quality/score', { params: contentData }),
+  analyzeMetadata: (contentData) => whisEnhanceAPI.get('/enhance/metadata/analyze', { params: contentData }),
+  
+  // Loopback refinement
+  triggerLoopback: (threshold = 2) => whisEnhanceAPI.post('/loopback', { threshold }),
+  getLoopbackStats: () => whisEnhanceAPI.get('/loopback/stats'),
+  
+  // Health and status
+  getHealth: () => whisEnhanceAPI.get('/health'),
 }
 
 export default api 

@@ -122,12 +122,12 @@ services:
 
   ### 📥 WHIS DATA INPUT SERVICE (formerly data_collector)
   whis_data_input:
-    build: ./shadows/whis_data_input
+    build: ./mlops/whis_data_input
     container_name: linkops-whis-data-input
     ports:
     - "8004:8000"
     volumes:
-    - ./shadows/whis_data_input:/app
+    - ./mlops/whis_data_input:/app
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
     - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
@@ -140,12 +140,12 @@ services:
 
   ### 🧹 WHIS SANITIZE SERVICE (formerly sanitizer)
   whis_sanitize:
-    build: ./shadows/whis_sanitize
+    build: ./mlops/whis_sanitize
     container_name: linkops-whis-sanitize
     ports:
     - "8003:8000"
     volumes:
-    - ./shadows/whis_sanitize:/app
+    - ./mlops/whis_sanitize:/app
     - ./data_lake:/app/data_lake
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
@@ -159,12 +159,12 @@ services:
 
   ### 🔨 WHIS SMITHING SERVICE (new - rune/orb logic)
   whis_smithing:
-    build: ./shadows/whis_smithing
+    build: ./mlops/whis_smithing
     container_name: linkops-whis-smithing
     ports:
     - "8005:8000"
     volumes:
-    - ./shadows/whis_smithing:/app
+    - ./mlops/whis_smithing:/app
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
     - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
@@ -177,12 +177,12 @@ services:
 
   ### 🚀 WHIS ENHANCE SERVICE (new - agent enhancement)
   whis_enhance:
-    build: ./shadows/whis_enhance
+    build: ./mlops/whis_enhance
     container_name: linkops-whis-enhance
     ports:
     - "8006:8000"
     volumes:
-    - ./shadows/whis_enhance:/app
+    - ./mlops/whis_enhance:/app
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
     - KAFKA_BOOTSTRAP_SERVERS=kafka:29092
@@ -195,12 +195,12 @@ services:
 
   ### 🧠 WHIS LOGIC SOURCE (ML Training Logic)
   whis_logic:
-    build: ./shadows/whis_logic
+    build: ./mlops/whis_logic
     container_name: linkops-whis-logic
     ports:
     - "8001:8000"
     volumes:
-    - ./shadows/whis_logic:/app
+    - ./mlops/whis_logic:/app
     - ./data_lake:/app/data_lake
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
@@ -214,12 +214,12 @@ services:
 
   ### 🤖 FICKNURY AGENT COMMANDER SERVICE
   ficknury:
-    build: ./shadows/ficknury_deploy
+    build: ./shadows/ficknury_evaluator
     container_name: linkops-ficknury
     ports:
     - "8007:8000"
     volumes:
-    - ./shadows/ficknury_deploy:/app
+    - ./shadows/ficknury_evaluator:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
@@ -232,12 +232,12 @@ services:
 
   ### 🕷️ WHIS WEBSCRAPER INTELLIGENCE HARVESTER
   whis_webscraper:
-    build: ./shadows/whis_webscraper
+    build: ./mlops/whis_webscraper
     container_name: linkops-whis-webscraper
     ports:
     - "8009:8000"
     volumes:
-    - ./shadows/whis_webscraper:/app
+    - ./mlops/whis_webscraper:/app
     - ./logs:/app/logs
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
@@ -387,12 +387,12 @@ services:
 
   ### 🔄 WHIS KUBEFLOW SERVICE (Kubeflow Pipeline Orchestration)
   whis_kubeflow:
-    build: ./shadows/whis_kubeflow
+    build: ./mlops/whis_kubeflow
     container_name: linkops-whis-kubeflow
     ports:
     - "8013:8005"
     volumes:
-    - ./shadows/whis_kubeflow:/app
+    - ./mlops/whis_kubeflow:/app
     environment:
     - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops
     - KAFKA_BOOTSTRAP_SERVERS=kafka:29092

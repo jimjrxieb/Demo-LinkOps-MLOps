@@ -1,0 +1,435 @@
+# LinkOps MLOps Platform - Unified Helm Chart Values
+# This chart deploys the complete LinkOps platform with all microservices
+
+global:
+  imagePullPolicy: IfNotPresent
+  imageTag: latest
+  imageRegistry: ghcr.io
+  imageRepository: jimjrxieb
+
+  # Global labels and annotations
+  labels: {}
+  annotations: {}
+
+  # Global resource limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  # Global security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    fsGroup: 1000
+
+  # Global environment variables
+  env: {}
+
+  # Global secrets
+  secrets: {}
+
+# Service configurations
+services:
+  # Core MLOps Platform
+  mlops_platform:
+    enabled: true
+    image: mlops_platform
+    port: 8000
+    replicas: 2
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    env:
+      - name: DATABASE_URL
+        value: "postgresql://mlops:password@postgres:5432/mlops"
+      - name: REDIS_URL
+        value: "redis://redis:6379"
+    healthCheck:
+      path: /health
+      port: 8000
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    ingress:
+      enabled: true
+      host: mlops.linkops.com
+      tls: true
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/rate-limit: "100"
+
+  # Whis Data Input Service
+  whis_data_input:
+    enabled: true
+    image: whis_data_input
+    port: 8004
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    env:
+      - name: API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: whis-secrets
+            key: api-key
+    healthCheck:
+      path: /health
+      port: 8004
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+  # Whis Sanitize Service
+  whis_sanitize:
+    enabled: true
+    image: whis_sanitize
+    port: 8005
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    healthCheck:
+      path: /health
+      port: 8005
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+  # Whis Smithing Service
+  whis_smithing:
+    enabled: true
+    image: whis_smithing
+    port: 8006
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    healthCheck:
+      path: /health
+      port: 8006
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+  # Whis Enhance Service
+  whis_enhance:
+    enabled: true
+    image: whis_enhance
+    port: 8007
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    env:
+      - name: OPENAI_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: whis-secrets
+            key: openai-api-key
+    healthCheck:
+      path: /health
+      port: 8007
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+  # Whis Webscraper Service
+  whis_webscraper:
+    enabled: true
+    image: whis_webscraper
+    port: 8008
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    healthCheck:
+      path: /health
+      port: 8008
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+  # Audit Assess Service
+  audit_assess:
+    enabled: true
+    image: audit_assess
+    port: 8003
+    replicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    env:
+      - name: GITGUARDIAN_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: audit-secrets
+            key: gitguardian-api-key
+      - name: SNYK_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: audit-secrets
+            key: snyk-token
+    healthCheck:
+      path: /health
+      port: 8003
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    ingress:
+      enabled: true
+      host: audit.linkops.com
+      tls: true
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+
+  # Audit Migrate Service
+  audit_migrate:
+    enabled: true
+    image: audit_migrate
+    port: 8005
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    healthCheck:
+      path: /health
+      port: 8005
+      initialDelaySeconds: 15
+      periodSeconds: 10
+
+  # Frontend Service
+  frontend:
+    enabled: true
+    image: frontend
+    port: 80
+    replicas: 2
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    env:
+      - name: VITE_MLOPS_PLATFORM_URL
+        value: "http://mlops-platform:8000"
+      - name: VITE_AUDIT_ASSESS_URL
+        value: "http://audit-assess:8003"
+      - name: VITE_WHIS_DATA_INPUT_URL
+        value: "http://whis-data-input:8004"
+      - name: VITE_WHIS_ENHANCE_URL
+        value: "http://whis-enhance:8007"
+    healthCheck:
+      path: /
+      port: 80
+      initialDelaySeconds: 15
+      periodSeconds: 10
+    ingress:
+      enabled: true
+      host: linkops.com
+      tls: true
+      annotations:
+        nginx.ingress.kubernetes.io/ssl-redirect: "true"
+        nginx.ingress.kubernetes.io/rate-limit: "200"
+
+# Infrastructure services
+infrastructure:
+  # PostgreSQL Database
+  postgres:
+    enabled: true
+    image: postgres:15
+    port: 5432
+    replicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    env:
+      - name: POSTGRES_DB
+        value: "mlops"
+      - name: POSTGRES_USER
+        value: "mlops"
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: postgres-secrets
+            key: password
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: fast-ssd
+
+  # Redis Cache
+  redis:
+    enabled: true
+    image: redis:7-alpine
+    port: 6379
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    persistence:
+      enabled: true
+      size: 5Gi
+      storageClass: fast-ssd
+
+  # Platform Agent (Go CLI)
+  platform_agent:
+    enabled: true
+    image: platform_agent
+    port: 8080
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 64Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+    healthCheck:
+      path: /health
+      port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+
+# Monitoring and observability
+monitoring:
+  # Prometheus
+  prometheus:
+    enabled: true
+    image: prom/prometheus:v2.45.0
+    port: 9090
+    replicas: 1
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: fast-ssd
+
+  # Grafana
+  grafana:
+    enabled: true
+    image: grafana/grafana:10.0.0
+    port: 3000
+    replicas: 1
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    env:
+      - name: GF_SECURITY_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: grafana-secrets
+            key: admin-password
+    persistence:
+      enabled: true
+      size: 5Gi
+      storageClass: fast-ssd
+    ingress:
+      enabled: true
+      host: grafana.linkops.com
+      tls: true
+
+# Security and networking
+security:
+  # Network policies
+  networkPolicies:
+    enabled: true
+
+  # Pod security policies
+  podSecurityPolicies:
+    enabled: true
+
+  # RBAC
+  rbac:
+    enabled: true
+    createServiceAccounts: true
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+
+  # TLS configuration
+  tls:
+    enabled: true
+    secretName: linkops-tls
+
+# Persistence configuration
+persistence:
+  enabled: true
+  storageClass: fast-ssd
+  size: 10Gi
+
+# HPA (Horizontal Pod Autoscaler) configuration
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Affinity and anti-affinity
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+    - weight: 100
+      podAffinityTerm:
+        labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - linkops
+        topologyKey: kubernetes.io/hostname

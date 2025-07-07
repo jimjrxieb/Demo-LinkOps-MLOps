@@ -1,0 +1,322 @@
+{{- if .Values.infrastructure.postgres.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.infrastructure.postgres.replicas }}
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+        {{- include "linkops.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .Values.infrastructure.postgres.image }}
+        ports:
+        - name: postgresql
+          containerPort: {{ .Values.infrastructure.postgres.port }}
+          protocol: TCP
+        {{- with .Values.infrastructure.postgres.env }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.infrastructure.postgres.resources | nindent 10 }}
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        - name: postgres-config
+          mountPath: /etc/postgresql/postgresql.conf
+          subPath: postgresql.conf
+      volumes:
+      - name: postgres-data
+        {{- if .Values.infrastructure.postgres.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: postgres-config
+        configMap:
+          name: postgres-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: postgresql
+    port: {{ .Values.infrastructure.postgres.port }}
+    targetPort: {{ .Values.infrastructure.postgres.port }}
+    protocol: TCP
+  selector:
+    app: postgres
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+    {{- include "linkops.labels" . | nindent 4 }}
+data:
+  postgresql.conf: |
+    # PostgreSQL configuration
+    max_connections = 100
+    shared_buffers = 256MB
+    effective_cache_size = 1GB
+    maintenance_work_mem = 64MB
+    checkpoint_completion_target = 0.9
+    wal_buffers = 16MB
+    default_statistics_target = 100
+    random_page_cost = 1.1
+    effective_io_concurrency = 200
+    work_mem = 4MB
+    min_wal_size = 1GB
+    max_wal_size = 4GB
+
+{{- if .Values.infrastructure.postgres.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: postgres
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.infrastructure.postgres.persistence.size }}
+  {{- if .Values.infrastructure.postgres.persistence.storageClass }}
+  storageClassName: {{ .Values.infrastructure.postgres.persistence.storageClass }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.infrastructure.redis.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: redis
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.infrastructure.redis.replicas }}
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+        {{- include "linkops.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: redis
+        image: {{ .Values.infrastructure.redis.image }}
+        ports:
+        - name: redis
+          containerPort: {{ .Values.infrastructure.redis.port }}
+          protocol: TCP
+        command:
+        - redis-server
+        - /etc/redis/redis.conf
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+        - name: redis-config
+          mountPath: /etc/redis/redis.conf
+          subPath: redis.conf
+        resources:
+          {{- toYaml .Values.infrastructure.redis.resources | nindent 10 }}
+      volumes:
+      - name: redis-data
+        {{- if .Values.infrastructure.redis.persistence.enabled }}
+        persistentVolumeClaim:
+          claimName: redis-pvc
+        {{- else }}
+        emptyDir: {}
+        {{- end }}
+      - name: redis-config
+        configMap:
+          name: redis-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: redis
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: redis
+    port: {{ .Values.infrastructure.redis.port }}
+    targetPort: {{ .Values.infrastructure.redis.port }}
+    protocol: TCP
+  selector:
+    app: redis
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: redis-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: redis
+    {{- include "linkops.labels" . | nindent 4 }}
+data:
+  redis.conf: |
+    # Redis configuration
+    bind 0.0.0.0
+    port 6379
+    timeout 0
+    tcp-keepalive 300
+    daemonize no
+    supervised no
+    pidfile /var/run/redis_6379.pid
+    loglevel notice
+    logfile ""
+    databases 16
+    save 900 1
+    save 300 10
+    save 60 10000
+    stop-writes-on-bgsave-error yes
+    rdbcompression yes
+    rdbchecksum yes
+    dbfilename dump.rdb
+    dir /data
+    maxmemory 256mb
+    maxmemory-policy allkeys-lru
+
+{{- if .Values.infrastructure.redis.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: redis-pvc
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: redis
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.infrastructure.redis.persistence.size }}
+  {{- if .Values.infrastructure.redis.persistence.storageClass }}
+  storageClassName: {{ .Values.infrastructure.redis.persistence.storageClass }}
+  {{- end }}
+{{- end }}
+{{- end }}
+
+{{- if .Values.infrastructure.platform_agent.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: platform-agent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: platform-agent
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.infrastructure.platform_agent.replicas }}
+  selector:
+    matchLabels:
+      app: platform-agent
+  template:
+    metadata:
+      labels:
+        app: platform-agent
+        {{- include "linkops.labels" . | nindent 8 }}
+    spec:
+      containers:
+      - name: platform-agent
+        image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.infrastructure.platform_agent.image }}:{{ .Values.global.imageTag }}
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.infrastructure.platform_agent.port }}
+          protocol: TCP
+        {{- if .Values.infrastructure.platform_agent.healthCheck }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.infrastructure.platform_agent.healthCheck.path }}
+            port: {{ .Values.infrastructure.platform_agent.healthCheck.port }}
+          initialDelaySeconds: {{ .Values.infrastructure.platform_agent.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.infrastructure.platform_agent.healthCheck.periodSeconds }}
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.infrastructure.platform_agent.healthCheck.path }}
+            port: {{ .Values.infrastructure.platform_agent.healthCheck.port }}
+          initialDelaySeconds: {{ .Values.infrastructure.platform_agent.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.infrastructure.platform_agent.healthCheck.periodSeconds }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.infrastructure.platform_agent.resources | nindent 10 }}
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+            - NET_ADMIN
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+          readOnly: true
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /
+          type: Directory
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: platform-agent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: platform-agent
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: {{ .Values.infrastructure.platform_agent.port }}
+    protocol: TCP
+  selector:
+    app: platform-agent
+{{- end }} 

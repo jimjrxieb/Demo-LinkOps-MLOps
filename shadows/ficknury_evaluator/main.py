@@ -63,3 +63,8 @@ async def evaluate_single_task(task: Task) -> TaskEvaluation:
 @app.get("/health")
 def health() -> Dict[str, str]:
     return {"status": "healthy", "service": "ficknury-evaluator"}
+
+
+@app.get("/")
+def read_root():
+    return {"status": "ok", "service": "ficknury_evaluator"}

@@ -14,10 +14,29 @@ export default defineConfig({
     port: 3000,
     host: '0.0.0.0',
     proxy: {
+      // MLOps Platform API
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      // Audit Assess API
+      '/audit': {
+        target: 'http://localhost:8003',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/audit/, ''),
+      },
+      // Whis Data Input API
+      '/whis-data': {
+        target: 'http://localhost:8004',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/whis-data/, ''),
+      },
+      // Whis Enhance API
+      '/whis-enhance': {
+        target: 'http://localhost:8006',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/whis-enhance/, ''),
       },
     },
   },

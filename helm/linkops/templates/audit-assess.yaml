@@ -1,0 +1,305 @@
+{{- if .Values.services.audit_assess.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: audit-assess
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.services.audit_assess.replicas }}
+  selector:
+    matchLabels:
+      app: audit-assess
+  template:
+    metadata:
+      labels:
+        app: audit-assess
+        {{- include "linkops.labels" . | nindent 8 }}
+      {{- with .Values.global.annotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.security.rbac.createServiceAccounts }}
+      serviceAccountName: audit-assess-sa
+      {{- end }}
+      {{- with .Values.affinity.podAntiAffinity }}
+      affinity:
+        podAntiAffinity:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
+      containers:
+      - name: audit-assess
+        image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.audit_assess.image }}:{{ .Values.global.imageTag }}
+        imagePullPolicy: {{ .Values.global.imagePullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.services.audit_assess.port }}
+          protocol: TCP
+        {{- if .Values.services.audit_assess.healthCheck }}
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.services.audit_assess.healthCheck.path }}
+            port: {{ .Values.services.audit_assess.healthCheck.port }}
+          initialDelaySeconds: {{ .Values.services.audit_assess.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.services.audit_assess.healthCheck.periodSeconds }}
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.services.audit_assess.healthCheck.path }}
+            port: {{ .Values.services.audit_assess.healthCheck.port }}
+          initialDelaySeconds: {{ .Values.services.audit_assess.healthCheck.initialDelaySeconds }}
+          periodSeconds: {{ .Values.services.audit_assess.healthCheck.periodSeconds }}
+          timeoutSeconds: 5
+          failureThreshold: 3
+        {{- end }}
+        {{- with .Values.services.audit_assess.env }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .Values.global.env }}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.services.audit_assess.resources | nindent 10 }}
+        {{- with .Values.global.securityContext }}
+        securityContext:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+          readOnly: true
+        - name: reports
+          mountPath: /app/reports
+      volumes:
+      - name: config
+        configMap:
+          name: audit-assess-config
+      - name: reports
+        emptyDir: {}
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: audit-assess
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - name: http
+    port: 80
+    targetPort: {{ .Values.services.audit_assess.port }}
+    protocol: TCP
+  selector:
+    app: audit-assess
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: audit-assess-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    security:
+      gitguardian:
+        api_key: ${GITGUARDIAN_API_KEY}
+      snyk:
+        token: ${SNYK_TOKEN}
+    scanners:
+      - name: gitguardian
+        enabled: true
+      - name: trivy
+        enabled: true
+      - name: semgrep
+        enabled: true
+    compliance:
+      scoring:
+        enabled: true
+        weights:
+          security: 0.4
+          compliance: 0.3
+          best_practices: 0.2
+          documentation: 0.1
+    reporting:
+      format: json
+      output_dir: /app/reports
+
+{{- if .Values.services.audit_assess.ingress.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: audit-assess
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+  {{- with .Values.services.audit_assess.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.className }}
+  ingressClassName: {{ .Values.ingress.className }}
+  {{- end }}
+  {{- if .Values.ingress.tls.enabled }}
+  tls:
+  - hosts:
+    - {{ .Values.services.audit_assess.ingress.host }}
+    secretName: {{ .Values.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+  - host: {{ .Values.services.audit_assess.ingress.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: audit-assess
+            port:
+              number: 80
+{{- end }}
+
+{{- if .Values.autoscaling.enabled }}
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: audit-assess-hpa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: audit-assess
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+{{- end }}
+
+{{- if .Values.security.rbac.createServiceAccounts }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: audit-assess-sa
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: audit-assess-role
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["pods", "services", "configmaps", "secrets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps"]
+  resources: ["deployments", "replicasets"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["events"]
+  verbs: ["get", "list", "watch", "create"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: audit-assess-rolebinding
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: audit-assess-sa
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: audit-assess-role
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+
+{{- if .Values.security.networkPolicies.enabled }}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: audit-assess-network-policy
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: audit-assess
+    {{- include "linkops.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app: audit-assess
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          app: frontend
+    ports:
+    - protocol: TCP
+      port: {{ .Values.services.audit_assess.port }}
+  - from:
+    - podSelector:
+        matchLabels:
+          app: mlops-platform
+    ports:
+    - protocol: TCP
+      port: {{ .Values.services.audit_assess.port }}
+  egress:
+  - to: []
+    ports:
+    - protocol: TCP
+      port: 443
+    - protocol: TCP
+      port: 80
+{{- end }}
+
+{{- end }} 

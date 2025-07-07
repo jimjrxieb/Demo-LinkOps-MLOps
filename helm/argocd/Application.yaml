@@ -1,0 +1,161 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkops
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: linkops
+    team: mlops
+    environment: production
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkops
+  project: default
+  source:
+    repoURL: https://github.com/jimjrxieb/shadow-link-industries
+    targetRevision: HEAD
+    path: helm/linkops
+    helm:
+      valueFiles:
+        - values.yaml
+      # Optional: Override specific values for this environment
+      parameters:
+        - name: global.imageTag
+          value: "latest"
+        - name: services.mlops_platform.replicas
+          value: "2"
+        - name: services.frontend.replicas
+          value: "2"
+        - name: autoscaling.enabled
+          value: "true"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false
+    syncOptions:
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  revisionHistoryLimit: 10
+  # Ignore differences for autoscaling and replica changes
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+      jsonPointers:
+        - /spec/minReplicas
+        - /spec/maxReplicas
+        - /spec/targetCPUUtilizationPercentage
+        - /spec/targetMemoryUtilizationPercentage
+    - group: ""
+      kind: Service
+      jsonPointers:
+        - /spec/clusterIP
+        - /spec/clusterIPs
+
+---
+# Development Environment Application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkops-dev
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: linkops
+    team: mlops
+    environment: development
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkops-dev
+  project: default
+  source:
+    repoURL: https://github.com/jimjrxieb/shadow-link-industries
+    targetRevision: HEAD
+    path: helm/linkops
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: global.imageTag
+          value: "dev"
+        - name: services.mlops_platform.replicas
+          value: "1"
+        - name: services.frontend.replicas
+          value: "1"
+        - name: autoscaling.enabled
+          value: "false"
+        - name: monitoring.prometheus.enabled
+          value: "false"
+        - name: monitoring.grafana.enabled
+          value: "false"
+        - name: infrastructure.postgres.persistence.enabled
+          value: "false"
+        - name: infrastructure.redis.persistence.enabled
+          value: "false"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  revisionHistoryLimit: 5
+
+---
+# Staging Environment Application
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: linkops-staging
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: linkops
+    team: mlops
+    environment: staging
+spec:
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: linkops-staging
+  project: default
+  source:
+    repoURL: https://github.com/jimjrxieb/shadow-link-industries
+    targetRevision: HEAD
+    path: helm/linkops
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: global.imageTag
+          value: "staging"
+        - name: services.mlops_platform.replicas
+          value: "1"
+        - name: services.frontend.replicas
+          value: "1"
+        - name: autoscaling.enabled
+          value: "true"
+        - name: monitoring.grafana.ingress.enabled
+          value: "false"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  revisionHistoryLimit: 5

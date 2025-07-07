@@ -10,27 +10,8 @@
     <div class="glass-panel p-8 mb-8">
       <h2 class="futuristic-subtitle text-2xl mb-6">Repository Security Audit</h2>
       
-      <!-- Repository Input -->
-      <div class="mb-6">
-        <label class="block text-sm font-medium mb-2">Repository URL</label>
-        <div class="flex space-x-4">
-          <input 
-            v-model="repositoryUrl" 
-            type="text" 
-            placeholder="https://github.com/username/repository"
-            class="flex-1 glass-panel p-3 rounded-lg border border-gray-600 focus:border-indigo-400 focus:outline-none"
-          />
-          <button 
-            @click="runAudit" 
-            :disabled="isAuditing || !repositoryUrl"
-            class="glass-panel px-6 py-3 rounded-lg font-medium transition-all duration-300 disabled:opacity-50"
-            :class="isAuditing ? 'animate-pulse' : 'hover:bg-indigo-600'"
-          >
-            <span v-if="!isAuditing">🔍 Run Audit</span>
-            <span v-else>Auditing...</span>
-          </button>
-        </div>
-      </div>
+      <!-- Use the new AuditForm component -->
+      <AuditForm />
 
       <!-- Audit Results -->
       <div v-if="auditResults" class="space-y-6">
@@ -201,15 +182,15 @@
         </div>
         <div class="text-center">
           <div class="text-3xl font-bold text-blue-400 mb-2">92%</div>
-          <div class="text-sm text-gray-300">GDPR Compliance</div>
+          <div class="text-sm text-gray-300">ISO 27001</div>
         </div>
         <div class="text-center">
           <div class="text-3xl font-bold text-yellow-400 mb-2">78%</div>
-          <div class="text-sm text-gray-300">HIPAA Compliance</div>
+          <div class="text-sm text-gray-300">GDPR Compliance</div>
         </div>
         <div class="text-center">
           <div class="text-3xl font-bold text-purple-400 mb-2">88%</div>
-          <div class="text-sm text-gray-300">ISO 27001</div>
+          <div class="text-sm text-gray-300">HIPAA Compliance</div>
         </div>
       </div>
     </div>
@@ -242,9 +223,13 @@
 <script>
 import { ref, onMounted } from 'vue'
 import { auditguardService } from '@/services/api'
+import AuditForm from '@/components/AuditForm.vue'
 
 export default {
   name: 'AuditGuard',
+  components: {
+    AuditForm
+  },
   setup() {
     const repositoryUrl = ref('')
     const isAuditing = ref(false)
@@ -253,27 +238,27 @@ export default {
     const securityAlerts = ref([
       {
         id: 1,
-        title: 'Suspicious Login Attempt',
-        message: 'Multiple failed login attempts detected from IP 192.168.1.100',
-        level: 'warning',
-        timestamp: '2 minutes ago',
-        source: 'Authentication System'
+        title: 'Critical Security Vulnerability Detected',
+        message: 'High severity CVE-2023-1234 found in production environment',
+        level: 'critical',
+        timestamp: '2 hours ago',
+        source: 'Security Scanner'
       },
       {
         id: 2,
-        title: 'Dependency Vulnerability',
-        message: 'High severity vulnerability found in package lodash@4.17.15',
-        level: 'critical',
-        timestamp: '15 minutes ago',
-        source: 'Dependency Scanner'
+        title: 'Unauthorized Access Attempt',
+        message: 'Multiple failed login attempts detected from suspicious IP',
+        level: 'warning',
+        timestamp: '4 hours ago',
+        source: 'Access Logs'
       },
       {
         id: 3,
-        title: 'Configuration Drift',
-        message: 'Infrastructure configuration has drifted from Git state',
-        level: 'warning',
-        timestamp: '1 hour ago',
-        source: 'Infrastructure Monitor'
+        title: 'Certificate Expiration Warning',
+        message: 'SSL certificate will expire in 30 days',
+        level: 'info',
+        timestamp: '1 day ago',
+        source: 'Certificate Monitor'
       }
     ])
 

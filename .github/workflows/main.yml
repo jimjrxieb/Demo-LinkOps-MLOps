@@ -1,263 +1,384 @@
-name: LinkOps-MLOps CI/CD
+name: LinkOps Platform CI/CD
 
-on: ["push", "pull_request", "workflow_dispatch"]
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
 
 env:
-  DOCKER_IMAGE_PREFIX: linkops
-  REGISTRY: docker.io
-  DOCKER_USER: ${{ secrets.DOCKER_USER }}
-  DOCKER_PASS: ${{ secrets.DOCKER_CRED }}
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '18'
 
 jobs:
+  validate-structure:
+    name: Validate Platform Structure
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate folder structure
+        run: |
+          echo "🔍 Validating LinkOps platform structure..."
+
+          # Check required directories exist
+          required_dirs=(
+            "mlops/whis_data_input"
+            "mlops/whis_sanitize"
+            "mlops/whis_smithing"
+            "mlops/whis_enhance"
+            "mlops/whis_logic"
+            "mlops/whis_webscraper"
+            "mlops/mlops_utils"
+            "shadows/igris_logic"
+            "shadows/katie_logic"
+            "shadows/auditguard_logic"
+            "shadows/ficknury_evaluator"
+            "frontend/src/pages"
+            "frontend/src/components"
+            "backend/core/api"
+            "scripts/audit"
+            "scripts/devops"
+            "scripts/sandbox"
+            "reports/audit"
+            "helm"
+            "infrastructure/k8s"
+            "infrastructure/terraform"
+            ".github/workflows"
+          )
+
+          for dir in "${required_dirs[@]}"; do
+            if [ ! -d "$dir" ]; then
+              echo "❌ Missing required directory: $dir"
+              exit 1
+            else
+              echo "✅ Found: $dir"
+            fi
+          done
+
+          # Check for deleted duplicate folders
+          deleted_dirs=(
+            "shadows/whis_data_input"
+            "shadows/whis_sanitize"
+            "shadows/whis_smithing"
+            "shadows/whis_enhance"
+            "shadows/whis_logic"
+            "shadows/whis_webscraper"
+            "shadows/whis_kubeflow"
+            "backend/routes"
+          )
+
+          for dir in "${deleted_dirs[@]}"; do
+            if [ -d "$dir" ]; then
+              echo "❌ Deleted directory still exists: $dir"
+              exit 1
+            else
+              echo "✅ Correctly deleted: $dir"
+            fi
+          done
+
+          echo "🎉 Platform structure validation passed!"
 
   lint-python:
+    name: Lint Python Services
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service:
-        - james_logic
-        - igris_logic
-        - katie_logic
-        - whis_logic
-        - whis_sanitize
-        - whis_data_input
-        - whis_webscraper
-        - whis_smithing
-        - whis_enhance
-        - whis_kubeflow
-        - audit_assess
-        - audit_logic
-        - audit_migrate
-        - ficknury_deploy
-        - ficknury_evaluator
+        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils]
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install linters
-      run: pip install black flake8
-
-    - name: Run Black
-      run: black --check shadows/${{ matrix.service }}
-      continue-on-error: true
-
-    - name: Run Flake8
-      run: flake8 --extend-ignore=E203,W503,F841,E402 shadows/${{ matrix.service }}
-      continue-on-error: true
-
-  lint-yaml:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
-
-    - name: Install yamllint
-      run: pip install yamllint
-
-    - name: Lint YAML (Helm-safe mode)
-      run: |
-        yamllint -c .yamllint helm/ || true
-        for chart in shadows/*/helm/; do
-          if [ -d "$chart" ]; then
-            echo "Linting $chart"
-            yamllint -c .yamllint "$chart" || true
+      - name: Install dependencies
+        run: |
+          pip install flake8 black isort mypy
+          cd mlops/${{ matrix.service }}
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
           fi
-        done
-      continue-on-error: true
 
-  helm-lint:
+      - name: Lint with flake8
+        run: |
+          cd mlops/${{ matrix.service }}
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+
+      - name: Format check with black
+        run: |
+          cd mlops/${{ matrix.service }}
+          black --check --diff .
+
+      - name: Import sorting with isort
+        run: |
+          cd mlops/${{ matrix.service }}
+          isort --check-only --diff .
+
+  test-mlops-services:
+    name: Test MLOps Services
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils]
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
-    - name: Set up Helm
-      run: |
-        curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-    - name: Lint all Helm charts
-      run: |
-        for chart in helm/*; do
-          if [ -d "$chart" ]; then
-            echo "Running helm lint on $chart"
-            helm lint "$chart" || true
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          cd mlops/${{ matrix.service }}
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
           fi
-        done
-      continue-on-error: true
+          pip install fastapi uvicorn pytest
 
-  build-and-test:
+      - name: Run tests
+        run: |
+          cd mlops/${{ matrix.service }}
+          if [ -d tests ]; then
+            python -m pytest tests/ -v
+          else
+            echo "No tests directory found for ${{ matrix.service }}"
+          fi
+
+  test-shadow-agents:
+    name: Test Shadow Agents
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service:
-        - james_logic
-        - igris_logic
-        - katie_logic
-        - whis_logic
-        - whis_sanitize
-        - whis_data_input
-        - whis_webscraper
-        - whis_smithing
-        - whis_enhance
-        - whis_kubeflow
-        - audit_assess
-        - audit_logic
-        - audit_migrate
-        - ficknury_deploy
-        - ficknury_evaluator
+        service: [igris_logic, katie_logic, auditguard_logic, ficknury_evaluator]
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Install dependencies
-      run: |
-        pip install pytest pytest-cov
-        if [ -f "shadows/${{ matrix.service }}/requirements.txt" ]; then
-          pip install -r shadows/${{ matrix.service }}/requirements.txt
-        fi
-      continue-on-error: true
+      - name: Install dependencies
+        run: |
+          cd shadows/${{ matrix.service }}
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          pip install fastapi uvicorn pytest
 
-    - name: Run tests (log only)
-      run: |
-        if [ -d "shadows/${{ matrix.service }}/tests" ]; then
-          pytest shadows/${{ matrix.service }}/tests \
-            --cov=shadows/${{ matrix.service }} \
-            --cov-report=xml || true
-        else
-          echo "No tests found"
-        fi
-      continue-on-error: true
+      - name: Run tests
+        run: |
+          cd shadows/${{ matrix.service }}
+          if [ -d tests ]; then
+            python -m pytest tests/ -v
+          else
+            echo "No tests directory found for ${{ matrix.service }}"
+          fi
 
-    - name: Upload coverage
-      uses: actions/upload-artifact@v4
-      if: always()
-      with:
-        name: ${{ matrix.service }}-coverage
-        path: coverage.xml
-      continue-on-error: true
-
-  docker-build:
-    runs-on: ubuntu-latest
-    needs: [lint-python, build-and-test]
-    strategy:
-      matrix:
-        service:
-        - james_logic
-        - igris_logic
-        - katie_logic
-        - whis_logic
-        - whis_sanitize
-        - whis_data_input
-        - whis_webscraper
-        - whis_smithing
-        - whis_enhance
-        - whis_kubeflow
-        - audit_assess
-        - audit_logic
-        - audit_migrate
-        - ficknury_deploy
-        - ficknury_evaluator
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Log in to DockerHub
-      run: echo "${{ env.DOCKER_PASS }}" | docker login -u "${{ env.DOCKER_USER }}" --password-stdin
-
-    - name: Build Docker image
-      run: |
-        docker build \
-          -t ${{ env.REGISTRY }}/${{ env.DOCKER_USER }}/${{ env.DOCKER_IMAGE_PREFIX }}-${{ matrix.service }}:latest \
-          ./shadows/${{ matrix.service }}
-
-    - name: Push Docker image
-      run: |
-        docker push \
-          ${{ env.REGISTRY }}/${{ env.DOCKER_USER }}/${{ env.DOCKER_IMAGE_PREFIX }}-${{ matrix.service }}:latest
-
-  gitguardian-secrets-scan:
+  validate-helm:
+    name: Validate Helm Charts
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: GitGuardian Secret Scan
-      run: |
-        docker run --rm -v "$GITHUB_WORKSPACE:/repo" -w /repo gitguardian/ggshield:v1.41.0 \
-          ggshield secret scan repo . || true
-      continue-on-error: true
-      env:
-        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
 
-  trivy-scan:
-    runs-on: ubuntu-latest
-    needs: docker-build
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Install Trivy
-      run: |
-        wget -qO trivy.deb https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.48.5_Linux-64bit.deb
-        sudo dpkg -i trivy.deb
-
-    - name: Scan Docker Images
-      run: |
-        docker images --format "{{.Repository}}:{{.Tag}}" | \
-          grep '^${{ env.REGISTRY }}/${{ env.DOCKER_USER }}/linkops-' | \
-          while read image; do
-            echo "🔍 Scanning $image"
-            trivy image --severity HIGH,CRITICAL $image || true
+      - name: Lint Helm charts
+        run: |
+          cd helm
+          for chart in */; do
+            if [ -f "$chart/Chart.yaml" ]; then
+              echo "Linting $chart..."
+              helm lint "$chart"
+            fi
           done
-      continue-on-error: true
 
-  frontend-security-audit:
+      - name: Validate linkops-full chart
+        run: |
+          cd helm/linkops-full
+          helm dependency update
+          helm lint .
+
+  lint-frontend:
+    name: Lint Frontend
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: frontend/package-lock.json
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-    - name: Install frontend dependencies
-      run: |
-        cd frontend
-        npm ci
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
 
-    - name: Run npm audit
-      run: |
-        cd frontend
-        npm audit --audit-level=moderate || true
-      continue-on-error: true
+      - name: Lint with ESLint
+        run: |
+          cd frontend
+          npm run lint
 
-    - name: Check for outdated packages
-      run: |
-        cd frontend
-        npm outdated
+      - name: Type check
+        run: |
+          cd frontend
+          npm run type-check
 
-  sonarqube-analysis:
+  security-scan:
+    name: Security Scan
     runs-on: ubuntu-latest
-    needs: build-and-test
     steps:
-    - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: SonarQube Scan
-      run: |
-        curl -sSLo sonar-scanner.zip \
-          https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-linux.zip
-        unzip -qq sonar-scanner.zip
-        mv sonar-scanner-* sonar-scanner
-        ./sonar-scanner/bin/sonar-scanner \
-          -Dsonar.organization=${{ secrets.SONAR_ORG }} \
-          -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }} \
-          -Dsonar.sources=. \
-          -Dsonar.python.coverage.reportPaths=coverage.xml \
-          -Dsonar.host.url=https://sonarcloud.io \
-          -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@v0.18.3
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+      - name: Run Bandit security linter
+        run: |
+          pip install bandit
+          bandit -r mlops/ -r shadows/ -f json -o bandit-results.json
+
+  validate-docker:
+    name: Validate Docker Builds
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: |
+          cd mlops/${{ matrix.service }}
+          docker build -t linkops/${{ matrix.service }}:test .
+
+      - name: Test Docker image
+        run: |
+          docker run --rm linkops/${{ matrix.service }}:test python -c "import fastapi; print('FastAPI import successful')"
+
+  validate-compose:
+    name: Validate Docker Compose
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate daytime compose
+        run: |
+          docker-compose -f docker-compose.daytime.yml config
+
+      - name: Validate nighttime compose
+        run: |
+          docker-compose -f docker-compose.nighttime.yml config
+
+  run-integration-tests:
+    name: Run Integration Tests
+    runs-on: ubuntu-latest
+    needs: [validate-structure, lint-python, test-mlops-services, test-shadow-agents]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install pytest requests
+
+      - name: Run integration tests
+        run: |
+          if [ -f "tests/test_complete_pipeline.py" ]; then
+            python tests/test_complete_pipeline.py
+          fi
+          if [ -f "scripts/validate_refactor.py" ]; then
+            python scripts/validate_refactor.py
+          fi
+
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    needs: [validate-structure, lint-python, test-mlops-services, test-shadow-agents, validate-helm, lint-frontend, security-scan, validate-docker, validate-compose, run-integration-tests]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push MLOps services
+        run: |
+          for service in mlops/*/; do
+            service_name=$(basename "$service")
+            docker build -t linkops/$service_name:latest "$service"
+            docker push linkops/$service_name:latest
+          done
+
+      - name: Build and push shadow agents
+        run: |
+          for service in shadows/*/; do
+            service_name=$(basename "$service")
+            docker build -t linkops/$service_name:latest "$service"
+            docker push linkops/$service_name:latest
+          done
+
+  deploy-helm:
+    name: Deploy Helm Charts
+    runs-on: ubuntu-latest
+    needs: [build-and-push]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
+
+      - name: Package linkops-full chart
+        run: |
+          cd helm/linkops-full
+          helm dependency update
+          helm package .
+          mv linkops-full-*.tgz ../../
+
+      - name: Upload Helm package
+        uses: actions/upload-artifact@v4
+        with:
+          name: linkops-full-chart
+          path: linkops-full-*.tgz

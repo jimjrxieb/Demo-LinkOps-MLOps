@@ -1,0 +1,22 @@
+{
+  "name": "System Information Rune",
+  "description": "Gather system information and health status",
+  "commands": [
+    "uname -a",
+    "cat /etc/os-release",
+    "df -h",
+    "free -h",
+    "uptime",
+    "ps aux --sort=-%cpu | head -10",
+    "netstat -tuln | head -10",
+    "docker ps",
+    "kubectl get nodes",
+    "kubectl get pods --all-namespaces | head -10"
+  ],
+  "validation": {
+    "allowed_commands": ["uname", "cat", "df", "free", "uptime", "ps", "netstat", "docker", "kubectl"],
+    "denied_commands": ["rm", "shutdown", "dd", "mkfs", "format"],
+    "timeout_seconds": 60,
+    "stop_on_failure": false
+  }
+} 

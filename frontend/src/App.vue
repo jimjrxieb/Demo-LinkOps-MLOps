@@ -6,45 +6,45 @@
         <!-- Logo -->
         <div class="flex items-center space-x-4">
           <div class="futuristic-title text-2xl text-white">
-            LINKOPS
+            LINKOPS-MLOPS
           </div>
           <div class="text-sm text-gray-300">
-            AI Command Center
+            Unified MLOps Platform
           </div>
         </div>
 
-        <!-- Agent Navigation -->
+        <!-- Platform Navigation -->
         <div class="flex items-center space-x-2">
           <router-link 
-            v-for="agent in agents" 
-            :key="agent.name"
-            :to="agent.route"
-            class="agent-nav-item glass-panel p-3 rounded-lg transition-all duration-300"
+            v-for="section in platformSections" 
+            :key="section.name"
+            :to="section.route"
+            class="platform-nav-item glass-panel p-3 rounded-lg transition-all duration-300"
             :class="[
-              `agent-${agent.name.toLowerCase()}`,
-              { 'neon-border': $route.path === agent.route }
+              `section-${section.name.toLowerCase()}`,
+              { 'neon-border': $route.path === section.route }
             ]"
           >
             <div class="flex items-center space-x-2">
               <div 
                 class="status-indicator"
-                :class="agent.status === 'online' ? 'status-online' : 
-                       agent.status === 'processing' ? 'status-processing' : 'status-offline'"
+                :class="section.status === 'online' ? 'status-online' : 
+                       section.status === 'processing' ? 'status-processing' : 'status-offline'"
               ></div>
-              <span class="futuristic-subtitle text-sm">{{ agent.displayName }}</span>
+              <span class="futuristic-subtitle text-sm">{{ section.displayName }}</span>
             </div>
           </router-link>
           
           <!-- About Link -->
           <router-link 
             to="/about"
-            class="agent-nav-item glass-panel p-3 rounded-lg transition-all duration-300"
+            class="platform-nav-item glass-panel p-3 rounded-lg transition-all duration-300"
             :class="{ 'neon-border': $route.path === '/about' }"
           >
             <div class="flex items-center space-x-2">
               <div class="status-indicator status-online"></div>
               <span class="futuristic-subtitle text-sm">About</span>
-      </div>
+            </div>
           </router-link>
         </div>
 
@@ -52,7 +52,7 @@
         <div class="flex items-center space-x-4">
           <div class="text-sm text-gray-300">
             <span class="status-indicator status-online"></span>
-            System Online
+            Platform Online
           </div>
           <div class="text-xs text-gray-400">
             {{ currentTime }}
@@ -70,22 +70,22 @@
       </router-view>
     </main>
 
-    <!-- Orb Stream Sidebar -->
+    <!-- Platform Activity Stream Sidebar -->
     <div class="fixed right-4 top-24 bottom-4 w-80 glass-panel p-4 overflow-hidden">
-      <h3 class="futuristic-subtitle text-lg mb-4">Orb Stream</h3>
+      <h3 class="futuristic-subtitle text-lg mb-4">Platform Activity</h3>
       <div class="space-y-3 max-h-full overflow-y-auto">
         <div 
-          v-for="orb in orbStream" 
-          :key="orb.id"
-          class="orb-item glass-panel p-3 rounded-lg"
-          :class="`agent-${orb.agent.toLowerCase()}`"
+          v-for="activity in activityStream" 
+          :key="activity.id"
+          class="activity-item glass-panel p-3 rounded-lg"
+          :class="`section-${activity.section.toLowerCase()}`"
         >
           <div class="flex items-center justify-between mb-2">
-            <span class="text-sm font-medium">{{ orb.agent }}</span>
-            <span class="text-xs text-gray-400">{{ orb.timestamp }}</span>
+            <span class="text-sm font-medium">{{ activity.section }}</span>
+            <span class="text-xs text-gray-400">{{ activity.timestamp }}</span>
           </div>
-          <p class="text-xs text-gray-300">{{ orb.description }}</p>
-          <div class="iq-bar mt-2" :style="{ width: orb.iq + '%' }"></div>
+          <p class="text-xs text-gray-300">{{ activity.description }}</p>
+          <div class="activity-bar mt-2" :style="{ width: activity.intensity + '%' }"></div>
         </div>
       </div>
     </div>
@@ -99,46 +99,45 @@ export default {
   name: 'App',
   setup() {
     const currentTime = ref('')
-    const orbStream = ref([
+    const activityStream = ref([
       {
         id: 1,
-        agent: 'Whis',
-        description: 'Enhanced transcript processing logic',
+        section: 'Tasks',
+        description: 'New MLOps task created',
         timestamp: '2m ago',
-        iq: 85
+        intensity: 85
       },
       {
         id: 2,
-        agent: 'Katie',
-        description: 'New Kubernetes deployment pattern',
+        section: 'Scripts',
+        description: 'Kubernetes deployment script executed',
         timestamp: '5m ago',
-        iq: 78
+        intensity: 78
       },
       {
         id: 3,
-        agent: 'Igris',
-        description: 'Terraform module optimization',
+        section: 'Orbs',
+        description: 'New training orb generated',
         timestamp: '8m ago',
-        iq: 92
+        intensity: 92
       },
       {
         id: 4,
-        agent: 'Ficknury',
-        description: 'Task routing algorithm update',
+        section: 'Runes',
+        description: 'Model optimization rune activated',
         timestamp: '12m ago',
-        iq: 88
+        intensity: 88
       }
     ])
 
-    const agents = ref([
+    const platformSections = ref([
       { name: 'dashboard', displayName: 'Dashboard', route: '/dashboard', status: 'online' },
       { name: 'tasks', displayName: 'Tasks', route: '/tasks', status: 'online' },
-      { name: 'whis', displayName: 'Whis', route: '/whis', status: 'processing' },
-      { name: 'igris', displayName: 'Igris', route: '/igris', status: 'online' },
-      { name: 'katie', displayName: 'Katie', route: '/katie', status: 'online' },
-      { name: 'ficknury', displayName: 'Ficknury', route: '/ficknury', status: 'online' },
-      { name: 'auditguard', displayName: 'AuditGuard', route: '/auditguard', status: 'online' },
-      { name: 'agents', displayName: 'Agents', route: '/agents', status: 'online' }
+      { name: 'scripts', displayName: 'Scripts', route: '/scripts', status: 'online' },
+      { name: 'workflows', displayName: 'Workflows', route: '/workflows', status: 'online' },
+      { name: 'orbs', displayName: 'Orbs', route: '/orbs', status: 'processing' },
+      { name: 'runes', displayName: 'Runes', route: '/runes', status: 'online' },
+      { name: 'digest', displayName: 'Digest', route: '/digest', status: 'online' }
     ])
 
     let timeInterval
@@ -166,8 +165,8 @@ export default {
 
     return {
       currentTime,
-      agents,
-      orbStream
+      platformSections,
+      activityStream
     }
   }
 }
@@ -192,34 +191,42 @@ export default {
   transform: translateX(-20px);
 }
 
-/* Agent navigation hover effects */
-.agent-nav-item:hover {
+/* Platform navigation hover effects */
+.platform-nav-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
 }
 
-.agent-nav-item.agent-whis:hover {
+.platform-nav-item.section-dashboard:hover {
   box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
 }
 
-.agent-nav-item.agent-katie:hover {
+.platform-nav-item.section-tasks:hover {
   box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
 
-.agent-nav-item.agent-igris:hover {
-  box-shadow: 0 8px 25px rgba(100, 116, 139, 0.3);
+.platform-nav-item.section-scripts:hover {
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
 }
 
-.agent-nav-item.agent-ficknury:hover {
+.platform-nav-item.section-workflows:hover {
+  box-shadow: 0 8px 25px rgba(168, 85, 247, 0.3);
+}
+
+.platform-nav-item.section-orbs:hover {
+  box-shadow: 0 8px 25px rgba(236, 72, 153, 0.3);
+}
+
+.platform-nav-item.section-runes:hover {
   box-shadow: 0 8px 25px rgba(251, 191, 36, 0.3);
 }
 
-.agent-nav-item.agent-auditguard:hover {
+.platform-nav-item.section-digest:hover {
   box-shadow: 0 8px 25px rgba(239, 68, 68, 0.3);
 }
 
-/* Orb stream animations */
-.orb-item {
+/* Activity stream animations */
+.activity-item {
   animation: slideIn 0.5s ease-out;
 }
 
@@ -232,5 +239,13 @@ export default {
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+/* Activity bar styling */
+.activity-bar {
+  height: 3px;
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+  border-radius: 2px;
+  transition: width 0.3s ease;
 }
 </style> 
