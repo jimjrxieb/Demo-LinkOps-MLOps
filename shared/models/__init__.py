@@ -12,14 +12,14 @@ from .schemas.repo_audit import RepoAuditResult, AuditScore, AuditSeverity
 __all__ = [
     "BaseModel",
     "Orb",
-    "OrbCreate", 
+    "OrbCreate",
     "OrbUpdate",
     "OrbCategory",
     "Rune",
     "RuneCreate",
-    "RuneUpdate", 
+    "RuneUpdate",
     "RuneType",
     "RepoAuditResult",
     "AuditScore",
     "AuditSeverity",
-] 
+]

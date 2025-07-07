@@ -100,7 +100,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils]
+        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils, audit_assess, mlops_platform, audit_migrate]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -138,7 +138,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils]
+        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils, audit_assess, mlops_platform, audit_migrate]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -170,7 +170,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [igris_logic, katie_logic, auditguard_logic, ficknury_evaluator]
+        service: [kubernetes_specialist, ml_data_scientist, devops_engineer, platform_engineer, jimmie_logic, ficknury_evaluator, auditguard_logic, audit_logic]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -219,9 +219,9 @@ jobs:
             fi
           done
 
-      - name: Validate linkops-full chart
+      - name: Validate linkops chart
         run: |
-          cd helm/linkops-full
+          cd helm/linkops
           helm dependency update
           helm lint .
 
@@ -282,7 +282,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils]
+        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils, audit_assess, mlops_platform, audit_migrate]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -388,15 +388,15 @@ jobs:
         with:
           version: v3.12.0
 
-      - name: Package linkops-full chart
+      - name: Package linkops chart
         run: |
-          cd helm/linkops-full
+          cd helm/linkops
           helm dependency update
           helm package .
-          mv linkops-full-*.tgz ../../
+          mv linkops-*.tgz ../../
 
       - name: Upload Helm package
         uses: actions/upload-artifact@v4
         with:
-          name: linkops-full-chart
-          path: linkops-full-*.tgz
+          name: linkops-chart
+          path: linkops-*.tgz
