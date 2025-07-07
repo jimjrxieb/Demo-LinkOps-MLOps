@@ -8,7 +8,7 @@ import json
 import argparse
 import sys
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 def csv_to_json(
