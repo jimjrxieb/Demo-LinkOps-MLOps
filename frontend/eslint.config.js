@@ -24,11 +24,20 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        process: 'readonly'
+      }
     },
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'no-console': 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'vue/multi-word-component-names': 'off',
+      'vue/no-unused-vars': 'warn',
+      'vue/valid-template-root': 'error',
+      'vue/no-parsing-error': 'error'
     },
   },
   {
@@ -36,10 +45,17 @@ export default [
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
+        process: 'readonly'
+      }
     },
     rules: {
-      'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'no-console': 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+      'no-unused-vars': 'warn'
     },
   },
 ]; 

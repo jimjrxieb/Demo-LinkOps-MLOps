@@ -3,11 +3,11 @@
 YAML formatting and validation tool for MLOps utilities.
 """
 
-import yaml
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
+
+import yaml
 
 
 def format_yaml_file(file_path: str, validate_only: bool = False) -> bool:

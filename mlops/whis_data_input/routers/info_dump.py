@@ -184,7 +184,7 @@ def _detect_format(content: str) -> str:
     try:
         json.loads(content)
         return "json"
-    except:
+    except Exception:
         pass
 
     # Check for YAML indicators

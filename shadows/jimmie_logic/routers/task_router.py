@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from typing import List, Dict, Optional
 from datetime import datetime
 import json
+import csv
 from pathlib import Path
 
 router = APIRouter()

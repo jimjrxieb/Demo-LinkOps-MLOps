@@ -1,12 +1,10 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import Dict, List, Optional, Any
-import json
 import logging
 from datetime import datetime
 from logic.scraper import (
     scrape_url,
-    scrape_multiple_urls,
     extract_content,
     validate_url,
 )

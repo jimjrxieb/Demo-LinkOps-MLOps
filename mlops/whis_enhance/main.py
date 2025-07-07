@@ -1,7 +1,6 @@
 from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from typing import Dict, List, Optional, Any
-import json
 import logging
 from datetime import datetime
 from logic.enhancer import enhance_content, enhance_metadata, enhance_quality

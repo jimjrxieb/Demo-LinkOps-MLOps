@@ -115,11 +115,11 @@ async def get_daily_logs(
 
     # Apply filters
     if start_date:
-        logs = [l for l in logs if l.get("date") >= start_date]
+        logs = [log for log in logs if log.get("date") >= start_date]
     if end_date:
-        logs = [l for l in logs if l.get("date") <= end_date]
+        logs = [log for log in logs if log.get("date") <= end_date]
     if mood:
-        logs = [l for l in logs if l.get("mood") == mood]
+        logs = [log for log in logs if log.get("mood") == mood]
 
     # Sort by date (newest first)
     logs.sort(key=lambda x: x.get("date", ""), reverse=True)
@@ -312,9 +312,9 @@ async def export_daily_logs(request: Request):
 
     # Apply date filters
     if start_date:
-        logs = [l for l in logs if l.get("date") >= start_date]
+        logs = [log for log in logs if log.get("date") >= start_date]
     if end_date:
-        logs = [l for l in logs if l.get("date") <= end_date]
+        logs = [log for log in logs if log.get("date") <= end_date]
 
     # Sort by date
     logs.sort(key=lambda x: x.get("date", ""))

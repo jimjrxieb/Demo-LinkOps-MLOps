@@ -3,13 +3,13 @@
 Metadata extraction tool for Git, Dockerfile, and repository insights.
 """
 
-import subprocess
 import argparse
 import json
+import re
+import subprocess
 import sys
 from pathlib import Path
-from typing import Dict, Any, Optional
-import re
+from typing import Any, Dict
 
 
 def get_git_metadata(repo_path: str = ".") -> Dict[str, Any]:

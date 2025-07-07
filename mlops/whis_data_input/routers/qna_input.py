@@ -1,8 +1,7 @@
-from fastapi import APIRouter, Body, HTTPException
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
-import json
 import uuid
 
 router = APIRouter()
@@ -49,6 +48,7 @@ async def submit_qna(qna: QnAInput):
 
         # TODO: Send to whis_sanitize service
         # For now, just return the structured data
+        print("QnA input processed.")
         return {
             "message": "Q&A submitted successfully",
             "qna_id": qna_id,

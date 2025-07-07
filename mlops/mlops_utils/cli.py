@@ -4,7 +4,8 @@ CLI wrapper for MLOps utilities using Google Fire.
 """
 
 import fire
-from tools import format_yaml, convert_csv_to_json, extract_metadata, run_pipeline
+
+from tools import convert_csv_to_json, extract_metadata, format_yaml, run_pipeline
 
 
 def main():

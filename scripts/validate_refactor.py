@@ -4,7 +4,6 @@ Validate Refactor Script
 Checks for any remaining references to deleted folders and ensures the refactor is complete.
 """
 
-import os
 import re
 import sys
 from pathlib import Path

@@ -45,7 +45,7 @@ def load_workflows():
         try:
             with open(workflows_file, "r") as f:
                 return json.load(f)
-        except:
+        except Exception:
             return []
     return []
 

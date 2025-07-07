@@ -9,8 +9,7 @@ import json
 import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime
-from .enhancer import enhance_content, enhance_metadata, enhance_quality
-from .version_control import save_version, get_version_history
+from .enhancer import enhance_content
 
 logger = logging.getLogger(__name__)
 

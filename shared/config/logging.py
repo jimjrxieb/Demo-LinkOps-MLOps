@@ -10,10 +10,9 @@ import logging.handlers
 import sys
 import json
 from datetime import datetime
-from typing import Dict, Any, Optional
 from pathlib import Path
 
-from .settings import get_settings, LoggingSettings
+from .settings import get_settings
 
 
 class StructuredFormatter(logging.Formatter):

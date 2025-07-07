@@ -163,7 +163,7 @@ export const jamesService = {
   }),
   extractFromImage: (imageData) => mlopsPlatformService.createTask({
     title: "Image Extraction",
-    description: "Extract information from image",
+    description: `Extract information from image: ${JSON.stringify(imageData)}`,
     category: "mlops",
     priority: "medium"
   }),
@@ -175,13 +175,13 @@ export const jamesService = {
   }),
   voiceInteraction: (audioData) => mlopsPlatformService.createTask({
     title: "Voice Interaction",
-    description: "Process voice input",
+    description: `Process voice input: ${JSON.stringify(audioData)}`,
     category: "mlops",
     priority: "medium"
   }),
   describeImage: (imageData) => mlopsPlatformService.createTask({
     title: "Describe Image",
-    description: "Generate image description",
+    description: `Generate image description: ${JSON.stringify(imageData)}`,
     category: "mlops",
     priority: "medium"
   }),

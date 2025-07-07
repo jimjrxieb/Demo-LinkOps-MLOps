@@ -3,9 +3,8 @@ Whis Logic - Whis's internal ML model brain for embedding generation and similar
 """
 
 import numpy as np
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any
 from datetime import datetime
-import uuid
 
 
 class WhisLogic:

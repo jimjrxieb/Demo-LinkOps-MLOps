@@ -6,9 +6,8 @@ Integrates GitGuardian, Trivy, and Semgrep for comprehensive security analysis.
 import subprocess
 import json
 import os
-import tempfile
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from pathlib import Path
 import re
 

@@ -3,12 +3,12 @@
 CSV to JSON conversion tool for MLOps utilities.
 """
 
+import argparse
 import csv
 import json
-import argparse
 import sys
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Optional
 
 
 def csv_to_json(

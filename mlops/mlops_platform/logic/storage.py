@@ -3,9 +3,8 @@ Storage Helper - JSON read/write operations for mlops_platform
 """
 
 import json
-import os
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any
 from datetime import datetime
 
 
@@ -31,7 +30,7 @@ class StorageManager:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 return data if isinstance(data, list) else []
-        except (json.JSONDecodeError, IOError) as e:
+        except Exception:
             print(f"Error reading {file_path}: {e}")
             return []
 
@@ -43,7 +42,7 @@ class StorageManager:
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
             return True
-        except (json.JSONEncodeError, IOError) as e:
+        except Exception:
             print(f"Error writing {file_path}: {e}")
             return False
 
@@ -134,7 +133,7 @@ class StorageManager:
                     update_date = datetime.fromisoformat(updated_at)
                     if (datetime.now() - update_date).days <= 7:
                         stats["recent_updates"] += 1
-                except:
+                except Exception:
                     pass
 
         return stats

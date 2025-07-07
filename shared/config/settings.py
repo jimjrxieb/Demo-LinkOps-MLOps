@@ -5,7 +5,6 @@ Centralized configuration management using Pydantic for all LinkOps microservice
 Supports environment variables, .env files, and Kubernetes secrets.
 """
 
-import os
 from typing import Optional, Dict, Any, List
 from functools import lru_cache
 from pydantic import BaseSettings, Field, validator

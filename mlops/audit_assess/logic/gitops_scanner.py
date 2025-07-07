@@ -4,11 +4,8 @@ Evaluates repositories for GitOps readiness and provides comprehensive scoring.
 """
 
 import os
-import json
-import yaml
-from typing import Dict, List, Any, Optional
-from pathlib import Path
 import logging
+from typing import Dict, List, Any
 
 logger = logging.getLogger(__name__)
 

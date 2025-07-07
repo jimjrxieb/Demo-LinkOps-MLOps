@@ -6,7 +6,6 @@ Tests the loopback refinement functionality.
 
 import asyncio
 import json
-from pathlib import Path
 from logic.loopback import (
     load_repeat_tasks,
     load_failed_tasks,
@@ -91,7 +90,6 @@ def test_api_endpoints():
     print("\n🌐 Testing API endpoints...")
 
     import requests
-    import time
 
     base_url = "http://localhost:8006"  # whis_enhance service port
 

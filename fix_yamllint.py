@@ -50,6 +50,7 @@ def main():
     for filepath in find_yaml_files():
         clean_yaml_file(filepath)
         lint_yaml_file(filepath)
+    print("YAML Linting complete.")
 
 
 if __name__ == "__main__":

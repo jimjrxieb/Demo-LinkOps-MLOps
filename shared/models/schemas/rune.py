@@ -6,8 +6,7 @@ by the LinkOps platform. Runes are the execution layer of the system.
 """
 
 from datetime import datetime
-from typing import List, Optional, Dict, Any, Union
-from enum import Enum
+from typing import List, Optional, Dict, Any, Enum
 from pydantic import Field, validator, root_validator
 
 from .base import BaseEntity

@@ -5,10 +5,8 @@ Tests repository scanning, security analysis, and GitOps compliance.
 """
 
 import asyncio
-import json
 import tempfile
 import os
-from pathlib import Path
 from logic.analyzer import RepoAnalyzer
 from logic.security_scanner import SecurityScanner
 from logic.gitops_scanner import GitOpsScanner
@@ -267,7 +265,6 @@ def test_api_endpoints():
     print("\n🌐 Testing API endpoints...")
 
     import requests
-    import time
 
     base_url = "http://localhost:8003"  # audit_assess service port
 

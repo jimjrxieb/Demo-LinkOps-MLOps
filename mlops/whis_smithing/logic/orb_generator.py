@@ -2,10 +2,8 @@
 Whis Orb Generator - Creates best practices knowledge assets from structured data.
 """
 
-import json
-import yaml
 import re
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any
 from datetime import datetime
 import uuid
 
