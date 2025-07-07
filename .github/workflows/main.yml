@@ -24,27 +24,38 @@ jobs:
 
           # Check required directories exist
           required_dirs=(
-            "mlops/whis_data_input"
-            "mlops/whis_sanitize"
-            "mlops/whis_smithing"
+            "mlops/audit_assess"
             "mlops/whis_enhance"
-            "mlops/whis_logic"
+            "mlops/whis_data_input"
             "mlops/whis_webscraper"
+            "mlops/whis_logic"
+            "mlops/whis_smithing"
+            "mlops/whis_sanitize"
             "mlops/mlops_utils"
-            "shadows/igris_logic"
-            "shadows/katie_logic"
-            "shadows/auditguard_logic"
+            "mlops/mlops_platform"
+            "mlops/audit_migrate"
+            "shadows/kubernetes_specialist"
+            "shadows/ml_data_scientist"
+            "shadows/devops_engineer"
+            "shadows/platform_engineer"
+            "shadows/jimmie_logic"
             "shadows/ficknury_evaluator"
+            "shadows/auditguard_logic"
+            "shadows/audit_logic"
+            "shadows/db"
             "frontend/src/pages"
             "frontend/src/components"
-            "backend/core/api"
+            "frontend/src/views"
+            "frontend/src/stores"
+            "frontend/src/router"
+            "frontend/src/services"
+            "frontend/src/assets"
             "scripts/audit"
             "scripts/devops"
             "scripts/sandbox"
-            "reports/audit"
-            "helm"
-            "infrastructure/k8s"
-            "infrastructure/terraform"
+            "scripts/ci"
+            "helm/linkops"
+            "helm/argocd"
             ".github/workflows"
           )
 
@@ -67,6 +78,10 @@ jobs:
             "shadows/whis_webscraper"
             "shadows/whis_kubeflow"
             "backend/routes"
+            "mlops/old_service"
+            "frontend/old_pages"
+            "scripts/old_script"
+            "helm/old_chart"
           )
 
           for dir in "${deleted_dirs[@]}"; do
@@ -245,7 +260,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@v0.18.3
+        uses: aquasecurity/trivy-action@0.32.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
@@ -271,6 +286,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Build Docker image
         run: |
