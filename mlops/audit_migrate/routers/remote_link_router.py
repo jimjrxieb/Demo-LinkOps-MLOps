@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Body, HTTPException
-from pydantic import BaseModel
-from typing import Dict, List, Any, Optional
 import uuid
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, Body, HTTPException
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/link", tags=["Service Linking"])
 
@@ -36,7 +37,7 @@ class RemoteLinkRequest(BaseModel):
 async def link_from_assess(request: AssessPlanRequest = Body(...)):
     """Receive scaffold plan from audit_assess and forward to migrate"""
     try:
-        from routers.migrate_router import execute_migration, ScaffoldPlan
+        from routers.migrate_router import ScaffoldPlan, execute_migration
 
         # Convert to ScaffoldPlan format
         plan = ScaffoldPlan(**request.scaffold_plan)
@@ -94,7 +95,7 @@ async def link_from_repo(request: RepoScanRequest = Body(...)):
 
         # Step 4: Execute migration
         execution_chain.append("audit_migrate.migrate")
-        from routers.migrate_router import execute_migration, ScaffoldPlan
+        from routers.migrate_router import ScaffoldPlan, execute_migration
 
         plan = ScaffoldPlan(**scaffold_plan)
         result = await execute_migration(plan)

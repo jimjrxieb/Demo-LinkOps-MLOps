@@ -1,7 +1,8 @@
+from typing import Any, Dict, List
+
 from fastapi import APIRouter, Body, HTTPException
-from pydantic import BaseModel
-from typing import Dict, List, Any
 from logic.generator import ServiceGenerator
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/migrate", tags=["Service Migration"])
 

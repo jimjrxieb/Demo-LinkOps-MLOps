@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import migrate_router, remote_link_router, cursor_patch_router
+from routers import cursor_patch_router, migrate_router, remote_link_router
 
 app = FastAPI(
     title="Audit Migrate Service",

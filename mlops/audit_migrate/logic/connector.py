@@ -1,5 +1,6 @@
-import httpx
 from typing import Any, Dict
+
+import httpx
 
 
 class ServiceConnector:
