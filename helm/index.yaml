@@ -17,7 +17,7 @@ entries:
     - machine-learning
     maintainers:
     - email: team@linkops.com
-      name: LinkOps Team
+    name: LinkOps Team
     name: linkops
     sources:
     - https://github.com/jimjrxieb/shadow-link-industries

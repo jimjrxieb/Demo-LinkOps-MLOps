@@ -7,7 +7,7 @@ workflows:
     name: "Security Scan"
     description: "Run security scans on code and dependencies"
     steps:
-      - name: "Trivy Vulnerability Scanner"
+    - name: "Trivy Vulnerability Scanner"
         action: "aquasecurity/trivy-action@v0.18.3"
         with:
             scan-type: "fs"
@@ -15,12 +15,12 @@ workflows:
             format: "sarif"
             output: "trivy-results.sarif"
 
-      - name: "Bandit Security Linter"
+    - name: "Bandit Security Linter"
         run: |
           pip install bandit
           bandit -r . -f json -o bandit-results.json
 
-      - name: "Upload Security Results"
+    - name: "Upload Security Results"
         uses: "github/codeql-action/upload-sarif@v3"
         with:
           sarif_file: "trivy-results.sarif"
@@ -29,12 +29,12 @@ workflows:
     name: "Dependency Check"
     description: "Check for vulnerable dependencies"
     steps:
-      - name: "Snyk Security Scan"
+    - name: "Snyk Security Scan"
         uses: "snyk/actions/node@master"
         with:
             args: "--severity-threshold=high"
 
-      - name: "Safety Check"
+    - name: "Safety Check"
         run: |
           pip install safety
           safety check --json --output safety-results.json

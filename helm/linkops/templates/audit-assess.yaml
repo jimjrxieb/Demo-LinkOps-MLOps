@@ -12,10 +12,10 @@ spec:
   replicas: {{ .Values.services.audit_assess.replicas }}
   selector:
     matchLabels:
-      app: audit-assess
+    app: audit-assess
   template:
     metadata:
-      labels:
+    labels:
         app: audit-assess
         {{- include "linkops.labels" . | nindent 8 }}
       {{- with .Values.global.annotations }}
@@ -32,11 +32,11 @@ spec:
           {{- toYaml . | nindent 10 }}
       {{- end }}
       containers:
-      - name: audit-assess
+    - name: audit-assess
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.audit_assess.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.audit_assess.port }}
           protocol: TCP
         {{- if .Values.services.audit_assess.healthCheck }}
@@ -72,16 +72,16 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-        - name: config
+    - name: config
           mountPath: /app/config
           readOnly: true
-        - name: reports
+    - name: reports
           mountPath: /app/reports
       volumes:
-      - name: config
+    - name: config
         configMap:
           name: audit-assess-config
-      - name: reports
+    - name: reports
         emptyDir: {}
       {{- with .Values.global.imagePullSecrets }}
       imagePullSecrets:
@@ -119,19 +119,19 @@ metadata:
 data:
   config.yaml: |
     security:
-      gitguardian:
+    gitguardian:
         api_key: ${GITGUARDIAN_API_KEY}
       snyk:
         token: ${SNYK_TOKEN}
     scanners:
-      - name: gitguardian
+    - name: gitguardian
         enabled: true
-      - name: trivy
+    - name: trivy
         enabled: true
-      - name: semgrep
+    - name: semgrep
         enabled: true
     compliance:
-      scoring:
+    scoring:
         enabled: true
         weights:
           security: 0.4
@@ -139,7 +139,7 @@ data:
           best_practices: 0.2
           documentation: 0.1
     reporting:
-      format: json
+    format: json
       output_dir: /app/reports
 
 {{- if .Values.services.audit_assess.ingress.enabled }}
@@ -169,8 +169,8 @@ spec:
   rules:
   - host: {{ .Values.services.audit_assess.ingress.host }}
     http:
-      paths:
-      - path: /
+    paths:
+    - path: /
         pathType: Prefix
         backend:
           service:
@@ -199,13 +199,13 @@ spec:
   metrics:
   - type: Resource
     resource:
-      name: cpu
+    name: cpu
       target:
         type: Utilization
         averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
   - type: Resource
     resource:
-      name: memory
+    name: memory
       target:
         type: Utilization
         averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
@@ -274,7 +274,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: audit-assess
+    app: audit-assess
   policyTypes:
   - Ingress
   - Egress
@@ -285,21 +285,21 @@ spec:
           app: frontend
     ports:
     - protocol: TCP
-      port: {{ .Values.services.audit_assess.port }}
+    port: {{ .Values.services.audit_assess.port }}
   - from:
     - podSelector:
         matchLabels:
           app: mlops-platform
     ports:
     - protocol: TCP
-      port: {{ .Values.services.audit_assess.port }}
+    port: {{ .Values.services.audit_assess.port }}
   egress:
   - to: []
     ports:
     - protocol: TCP
-      port: 443
+    port: 443
     - protocol: TCP
-      port: 80
+    port: 80
 {{- end }}
 
 {{- end }} 

@@ -12,19 +12,19 @@ spec:
   replicas: {{ .Values.services.whis_data_input.replicas }}
   selector:
     matchLabels:
-      app: whis-data-input
+    app: whis-data-input
   template:
     metadata:
-      labels:
+    labels:
         app: whis-data-input
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: whis-data-input
+    containers:
+    - name: whis-data-input
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.whis_data_input.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.whis_data_input.port }}
           protocol: TCP
         {{- if .Values.services.whis_data_input.healthCheck }}
@@ -82,19 +82,19 @@ spec:
   replicas: {{ .Values.services.whis_sanitize.replicas }}
   selector:
     matchLabels:
-      app: whis-sanitize
+    app: whis-sanitize
   template:
     metadata:
-      labels:
+    labels:
         app: whis-sanitize
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: whis-sanitize
+    containers:
+    - name: whis-sanitize
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.whis_sanitize.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.whis_sanitize.port }}
           protocol: TCP
         {{- if .Values.services.whis_sanitize.healthCheck }}
@@ -148,19 +148,19 @@ spec:
   replicas: {{ .Values.services.whis_smithing.replicas }}
   selector:
     matchLabels:
-      app: whis-smithing
+    app: whis-smithing
   template:
     metadata:
-      labels:
+    labels:
         app: whis-smithing
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: whis-smithing
+    containers:
+    - name: whis-smithing
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.whis_smithing.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.whis_smithing.port }}
           protocol: TCP
         {{- if .Values.services.whis_smithing.healthCheck }}
@@ -214,19 +214,19 @@ spec:
   replicas: {{ .Values.services.whis_enhance.replicas }}
   selector:
     matchLabels:
-      app: whis-enhance
+    app: whis-enhance
   template:
     metadata:
-      labels:
+    labels:
         app: whis-enhance
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: whis-enhance
+    containers:
+    - name: whis-enhance
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.whis_enhance.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.whis_enhance.port }}
           protocol: TCP
         {{- if .Values.services.whis_enhance.healthCheck }}
@@ -284,19 +284,19 @@ spec:
   replicas: {{ .Values.services.whis_webscraper.replicas }}
   selector:
     matchLabels:
-      app: whis-webscraper
+    app: whis-webscraper
   template:
     metadata:
-      labels:
+    labels:
         app: whis-webscraper
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: whis-webscraper
+    containers:
+    - name: whis-webscraper
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.whis_webscraper.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.whis_webscraper.port }}
           protocol: TCP
         {{- if .Values.services.whis_webscraper.healthCheck }}

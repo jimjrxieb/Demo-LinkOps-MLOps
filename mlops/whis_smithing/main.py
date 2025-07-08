@@ -136,7 +136,7 @@ async def create_batch_assets(request: BatchSmithingRequest):
             generated_runes = batch_generate_runes(request.sanitized_data_list)
 
         return {
-            "message": f"Batch asset creation completed",
+            "message": "Batch asset creation completed",
             "batch_id": batch_id,
             "total_inputs": len(request.sanitized_data_list),
             "orbs_created": len(generated_orbs),

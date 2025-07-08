@@ -12,10 +12,10 @@ spec:
   replicas: {{ .Values.services.mlops_platform.replicas }}
   selector:
     matchLabels:
-      app: mlops-platform
+    app: mlops-platform
   template:
     metadata:
-      labels:
+    labels:
         app: mlops-platform
         {{- include "linkops.labels" . | nindent 8 }}
       {{- with .Values.global.annotations }}
@@ -32,11 +32,11 @@ spec:
           {{- toYaml . | nindent 10 }}
       {{- end }}
       containers:
-      - name: mlops-platform
+    - name: mlops-platform
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.mlops_platform.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.mlops_platform.port }}
           protocol: TCP
         {{- if .Values.services.mlops_platform.healthCheck }}
@@ -72,11 +72,11 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-        - name: config
+    - name: config
           mountPath: /app/config
           readOnly: true
       volumes:
-      - name: config
+    - name: config
         configMap:
           name: mlops-platform-config
       {{- with .Values.global.imagePullSecrets }}
@@ -115,11 +115,11 @@ metadata:
 data:
   config.yaml: |
     database:
-      url: "postgresql://mlops:password@postgres:5432/mlops"
+    url: "postgresql://mlops:password@postgres:5432/mlops"
     redis:
-      url: "redis://redis:6379"
+    url: "redis://redis:6379"
     logging:
-      level: INFO
+    level: INFO
       format: json
 
 {{- if .Values.services.mlops_platform.ingress.enabled }}
@@ -149,8 +149,8 @@ spec:
   rules:
   - host: {{ .Values.services.mlops_platform.ingress.host }}
     http:
-      paths:
-      - path: /
+    paths:
+    - path: /
         pathType: Prefix
         backend:
           service:
@@ -179,13 +179,13 @@ spec:
   metrics:
   - type: Resource
     resource:
-      name: cpu
+    name: cpu
       target:
         type: Utilization
         averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
   - type: Resource
     resource:
-      name: memory
+    name: memory
       target:
         type: Utilization
         averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
@@ -254,7 +254,7 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: mlops-platform
+    app: mlops-platform
   policyTypes:
   - Ingress
   - Egress
@@ -265,14 +265,14 @@ spec:
           app: frontend
     ports:
     - protocol: TCP
-      port: {{ .Values.services.mlops_platform.port }}
+    port: {{ .Values.services.mlops_platform.port }}
   - from:
     - podSelector:
         matchLabels:
           app: audit-assess
     ports:
     - protocol: TCP
-      port: {{ .Values.services.mlops_platform.port }}
+    port: {{ .Values.services.mlops_platform.port }}
   egress:
   - to:
     - podSelector:
@@ -280,20 +280,20 @@ spec:
           app: postgres
     ports:
     - protocol: TCP
-      port: 5432
+    port: 5432
   - to:
     - podSelector:
         matchLabels:
           app: redis
     ports:
     - protocol: TCP
-      port: 6379
+    port: 6379
   - to: []
     ports:
     - protocol: TCP
-      port: 443
+    port: 443
     - protocol: TCP
-      port: 80
+    port: 80
 {{- end }}
 
 {{- end }} 

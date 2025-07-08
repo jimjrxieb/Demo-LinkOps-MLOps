@@ -8,13 +8,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_logic
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_logic
           tag: latest
-      - service:
+    - service:
           port: 8001
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -22,13 +22,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_kubeflow
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_kubeflow
           tag: latest
-      - service:
+    - service:
           port: 8005
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -36,13 +36,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_data_input
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_data_input
           tag: latest
-      - service:
+    - service:
           port: 8004
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -50,13 +50,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_sanitize
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_sanitize
           tag: latest
-      - service:
+    - service:
           port: 8003
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -64,13 +64,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_smithing
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_smithing
           tag: latest
-      - service:
+    - service:
           port: 8005
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -78,13 +78,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_enhance
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_enhance
           tag: latest
-      - service:
+    - service:
           port: 8006
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -92,13 +92,13 @@ releases:
     namespace: linkops
     chart: ./helm/whis_webscraper
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/whis_webscraper
           tag: latest
-      - service:
+    - service:
           port: 8009
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -107,13 +107,13 @@ releases:
     namespace: linkops
     chart: ./helm/igris_logic
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/igris_logic
           tag: latest
-      - service:
+    - service:
           port: 8011
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
           AWS_ACCESS_KEY_ID: "dummy"
@@ -124,13 +124,13 @@ releases:
     namespace: linkops
     chart: ./helm/katie_logic
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/katie_logic
           tag: latest
-      - service:
+    - service:
           port: 8012
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -139,13 +139,13 @@ releases:
     namespace: linkops
     chart: ./helm/james_logic
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/james_logic
           tag: latest
-      - service:
+    - service:
           port: 8002
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
           OPENAI_API_KEY: "sk-dummy"
@@ -155,13 +155,13 @@ releases:
     namespace: linkops
     chart: ./helm/ficknury_deploy
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/ficknury_deploy
           tag: latest
-      - service:
+    - service:
           port: 8007
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -169,13 +169,13 @@ releases:
     namespace: linkops
     chart: ./helm/ficknury_evaluator
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/ficknury_evaluator
           tag: latest
-      - service:
+    - service:
           port: 8008
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -184,13 +184,13 @@ releases:
     namespace: linkops
     chart: ./helm/audit_logic
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/audit_logic
           tag: latest
-      - service:
+    - service:
           port: 8014
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -198,13 +198,13 @@ releases:
     namespace: linkops
     chart: ./helm/audit_assess
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/audit_assess
           tag: latest
-      - service:
+    - service:
           port: 8015
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -212,13 +212,13 @@ releases:
     namespace: linkops
     chart: ./helm/audit_migrate
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/audit_migrate
           tag: latest
-      - service:
+    - service:
           port: 8016
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -226,13 +226,13 @@ releases:
     namespace: linkops
     chart: ./helm/auditguard_logic
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/auditguard_logic
           tag: latest
-      - service:
+    - service:
           port: 8017
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -240,13 +240,13 @@ releases:
     namespace: linkops
     chart: ./helm/frontend
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/frontend
           tag: latest
-      - service:
+    - service:
           port: 8018
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
@@ -254,12 +254,12 @@ releases:
     namespace: linkops
     chart: ./helm/backend
     values:
-      - replicaCount: 1
-      - image:
+    - replicaCount: 1
+    - image:
           repository: ghcr.io/shadow-link-industries/backend
           tag: latest
-      - service:
+    - service:
           port: 8019
-      - env:
+    - env:
           DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
           KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"

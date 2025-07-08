@@ -12,18 +12,18 @@ spec:
   replicas: {{ .Values.infrastructure.postgres.replicas }}
   selector:
     matchLabels:
-      app: postgres
+    app: postgres
   template:
     metadata:
-      labels:
+    labels:
         app: postgres
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: postgres
+    containers:
+    - name: postgres
         image: {{ .Values.infrastructure.postgres.image }}
         ports:
-        - name: postgresql
+    - name: postgresql
           containerPort: {{ .Values.infrastructure.postgres.port }}
           protocol: TCP
         {{- with .Values.infrastructure.postgres.env }}
@@ -33,20 +33,20 @@ spec:
         resources:
           {{- toYaml .Values.infrastructure.postgres.resources | nindent 10 }}
         volumeMounts:
-        - name: postgres-data
+    - name: postgres-data
           mountPath: /var/lib/postgresql/data
-        - name: postgres-config
+    - name: postgres-config
           mountPath: /etc/postgresql/postgresql.conf
           subPath: postgresql.conf
       volumes:
-      - name: postgres-data
+    - name: postgres-data
         {{- if .Values.infrastructure.postgres.persistence.enabled }}
         persistentVolumeClaim:
           claimName: postgres-pvc
         {{- else }}
         emptyDir: {}
         {{- end }}
-      - name: postgres-config
+    - name: postgres-config
         configMap:
           name: postgres-config
 
@@ -109,7 +109,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.infrastructure.postgres.persistence.size }}
+    storage: {{ .Values.infrastructure.postgres.persistence.size }}
   {{- if .Values.infrastructure.postgres.persistence.storageClass }}
   storageClassName: {{ .Values.infrastructure.postgres.persistence.storageClass }}
   {{- end }}
@@ -130,40 +130,40 @@ spec:
   replicas: {{ .Values.infrastructure.redis.replicas }}
   selector:
     matchLabels:
-      app: redis
+    app: redis
   template:
     metadata:
-      labels:
+    labels:
         app: redis
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: redis
+    containers:
+    - name: redis
         image: {{ .Values.infrastructure.redis.image }}
         ports:
-        - name: redis
+    - name: redis
           containerPort: {{ .Values.infrastructure.redis.port }}
           protocol: TCP
         command:
-        - redis-server
-        - /etc/redis/redis.conf
+    - redis-server
+    - /etc/redis/redis.conf
         volumeMounts:
-        - name: redis-data
+    - name: redis-data
           mountPath: /data
-        - name: redis-config
+    - name: redis-config
           mountPath: /etc/redis/redis.conf
           subPath: redis.conf
         resources:
           {{- toYaml .Values.infrastructure.redis.resources | nindent 10 }}
       volumes:
-      - name: redis-data
+    - name: redis-data
         {{- if .Values.infrastructure.redis.persistence.enabled }}
         persistentVolumeClaim:
           claimName: redis-pvc
         {{- else }}
         emptyDir: {}
         {{- end }}
-      - name: redis-config
+    - name: redis-config
         configMap:
           name: redis-config
 
@@ -234,7 +234,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.infrastructure.redis.persistence.size }}
+    storage: {{ .Values.infrastructure.redis.persistence.size }}
   {{- if .Values.infrastructure.redis.persistence.storageClass }}
   storageClassName: {{ .Values.infrastructure.redis.persistence.storageClass }}
   {{- end }}
@@ -255,19 +255,19 @@ spec:
   replicas: {{ .Values.infrastructure.platform_agent.replicas }}
   selector:
     matchLabels:
-      app: platform-agent
+    app: platform-agent
   template:
     metadata:
-      labels:
+    labels:
         app: platform-agent
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: platform-agent
+    containers:
+    - name: platform-agent
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.infrastructure.platform_agent.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.infrastructure.platform_agent.port }}
           protocol: TCP
         {{- if .Values.infrastructure.platform_agent.healthCheck }}
@@ -292,11 +292,11 @@ spec:
             - SYS_ADMIN
             - NET_ADMIN
         volumeMounts:
-        - name: host-root
+    - name: host-root
           mountPath: /host
           readOnly: true
       volumes:
-      - name: host-root
+    - name: host-root
         hostPath:
           path: /
           type: Directory

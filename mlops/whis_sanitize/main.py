@@ -95,7 +95,7 @@ async def sanitize_batch(request: BatchSanitizeRequest):
         )
 
         return {
-            "message": f"Batch sanitization completed",
+            "message": "Batch sanitization completed",
             "batch_id": batch_id,
             "total_inputs": len(request.data_list),
             "successful": successful,

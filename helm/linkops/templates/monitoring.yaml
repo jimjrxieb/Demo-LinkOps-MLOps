@@ -12,39 +12,39 @@ spec:
   replicas: {{ .Values.monitoring.prometheus.replicas }}
   selector:
     matchLabels:
-      app: prometheus
+    app: prometheus
   template:
     metadata:
-      labels:
+    labels:
         app: prometheus
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: prometheus
+    containers:
+    - name: prometheus
         image: {{ .Values.monitoring.prometheus.image }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.monitoring.prometheus.port }}
           protocol: TCP
         args:
-        - --config.file=/etc/prometheus/prometheus.yml
-        - --storage.tsdb.path=/prometheus
-        - --web.console.libraries=/etc/prometheus/console_libraries
-        - --web.console.templates=/etc/prometheus/consoles
-        - --storage.tsdb.retention.time=200h
-        - --web.enable-lifecycle
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/prometheus
+    - --web.console.libraries=/etc/prometheus/console_libraries
+    - --web.console.templates=/etc/prometheus/consoles
+    - --storage.tsdb.retention.time=200h
+    - --web.enable-lifecycle
         volumeMounts:
-        - name: prometheus-config
+    - name: prometheus-config
           mountPath: /etc/prometheus
-        - name: prometheus-data
+    - name: prometheus-data
           mountPath: /prometheus
         resources:
           {{- toYaml .Values.monitoring.prometheus.resources | nindent 10 }}
       volumes:
-      - name: prometheus-config
+    - name: prometheus-config
         configMap:
           name: prometheus-config
-      - name: prometheus-data
+    - name: prometheus-data
         {{- if .Values.monitoring.prometheus.persistence.enabled }}
         persistentVolumeClaim:
           claimName: prometheus-pvc
@@ -83,7 +83,7 @@ metadata:
 data:
   prometheus.yml: |
     global:
-      scrape_interval: 15s
+    scrape_interval: 15s
       evaluation_interval: 15s
 
     rule_files:
@@ -91,31 +91,31 @@ data:
       # - "second_rules.yml"
 
     scrape_configs:
-      - job_name: 'prometheus'
+    - job_name: 'prometheus'
         static_configs:
           - targets: ['localhost:9090']
 
-      - job_name: 'mlops-platform'
+    - job_name: 'mlops-platform'
         static_configs:
           - targets: ['mlops-platform:8000']
         metrics_path: /metrics
 
-      - job_name: 'audit-assess'
+    - job_name: 'audit-assess'
         static_configs:
           - targets: ['audit-assess:8003']
         metrics_path: /metrics
 
-      - job_name: 'frontend'
+    - job_name: 'frontend'
         static_configs:
           - targets: ['frontend:80']
         metrics_path: /metrics
 
-      - job_name: 'whis-data-input'
+    - job_name: 'whis-data-input'
         static_configs:
           - targets: ['whis-data-input:8004']
         metrics_path: /metrics
 
-      - job_name: 'whis-enhance'
+    - job_name: 'whis-enhance'
         static_configs:
           - targets: ['whis-enhance:8007']
         metrics_path: /metrics
@@ -135,7 +135,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.monitoring.prometheus.persistence.size }}
+    storage: {{ .Values.monitoring.prometheus.persistence.size }}
   {{- if .Values.monitoring.prometheus.persistence.storageClass }}
   storageClassName: {{ .Values.monitoring.prometheus.persistence.storageClass }}
   {{- end }}
@@ -156,18 +156,18 @@ spec:
   replicas: {{ .Values.monitoring.grafana.replicas }}
   selector:
     matchLabels:
-      app: grafana
+    app: grafana
   template:
     metadata:
-      labels:
+    labels:
         app: grafana
         {{- include "linkops.labels" . | nindent 8 }}
     spec:
-      containers:
-      - name: grafana
+    containers:
+    - name: grafana
         image: {{ .Values.monitoring.grafana.image }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.monitoring.grafana.port }}
           protocol: TCP
         {{- with .Values.monitoring.grafana.env }}
@@ -175,21 +175,21 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-        - name: grafana-data
+    - name: grafana-data
           mountPath: /var/lib/grafana
-        - name: grafana-config
+    - name: grafana-config
           mountPath: /etc/grafana/provisioning
         resources:
           {{- toYaml .Values.monitoring.grafana.resources | nindent 10 }}
       volumes:
-      - name: grafana-data
+    - name: grafana-data
         {{- if .Values.monitoring.grafana.persistence.enabled }}
         persistentVolumeClaim:
           claimName: grafana-pvc
         {{- else }}
         emptyDir: {}
         {{- end }}
-      - name: grafana-config
+    - name: grafana-config
         configMap:
           name: grafana-config
 
@@ -226,7 +226,7 @@ data:
     apiVersion: 1
     datasources:
     - name: Prometheus
-      type: prometheus
+    type: prometheus
       url: http://prometheus:9090
       access: proxy
       isDefault: true
@@ -235,7 +235,7 @@ data:
     apiVersion: 1
     providers:
     - name: 'default'
-      orgId: 1
+    orgId: 1
       folder: ''
       type: file
       disableDeletion: false
@@ -271,8 +271,8 @@ spec:
   rules:
   - host: {{ .Values.monitoring.grafana.ingress.host }}
     http:
-      paths:
-      - path: /
+    paths:
+    - path: /
         pathType: Prefix
         backend:
           service:
@@ -296,7 +296,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: {{ .Values.monitoring.grafana.persistence.size }}
+    storage: {{ .Values.monitoring.grafana.persistence.size }}
   {{- if .Values.monitoring.grafana.persistence.storageClass }}
   storageClassName: {{ .Values.monitoring.grafana.persistence.storageClass }}
   {{- end }}

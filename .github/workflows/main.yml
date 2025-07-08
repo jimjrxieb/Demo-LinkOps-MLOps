@@ -2,9 +2,9 @@ name: LinkOps Security + Helm CD
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 env:
   PYTHON_VERSION: '3.11'
@@ -19,59 +19,59 @@ jobs:
     runs-on: ubuntu-latest
     name: Python Lint + Bandit
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+    - uses: actions/setup-python@v4
+    with:
+        python-version: ${{ env.PYTHON_VERSION }}
 
-      - run: |
-          pip install flake8 black bandit
-          flake8 mlops/ shadows/
-          black --check mlops/ shadows/
-          bandit -r mlops/ shadows/
+    - run: |
+        pip install flake8 black bandit
+        flake8 mlops/ shadows/
+        black --check mlops/ shadows/
+        bandit -r mlops/ shadows/
 
   lint-frontend:
     runs-on: ubuntu-latest
     name: Frontend Lint + Build
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
+    - uses: actions/setup-node@v4
+    with:
+        node-version: ${{ env.NODE_VERSION }}
 
-      - run: |
-          cd frontend
-          npm ci
-          npm run lint
-          npm run build
+    - run: |
+        cd frontend
+        npm ci
+        npm run lint
+        npm run build
 
   lint-yaml:
     runs-on: ubuntu-latest
     name: YAML Lint (Helm/CI)
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - run: |
-          pip install yamllint
-          yamllint helm/ .github/
+    - run: |
+        pip install yamllint
+        yamllint helm/ .github/
 
   helm-validate:
     runs-on: ubuntu-latest
     name: Helm Chart Lint + Update
     needs: [lint-yaml]
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: azure/setup-helm@v3
-        with:
-          version: v3.12.0
+    - uses: azure/setup-helm@v3
+    with:
+        version: v3.12.0
 
-      - run: |
-          cd helm/linkops
-          helm dependency update
-          helm lint .
+    - run: |
+        cd helm/linkops
+        helm dependency update
+        helm lint .
 
   docker-build-push:
     runs-on: ubuntu-latest
@@ -79,54 +79,54 @@ jobs:
     needs: [lint-python, lint-frontend, helm-validate]
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: docker/setup-buildx-action@v3
+    - uses: docker/setup-buildx-action@v3
 
-      - uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_CRED }}
+    - uses: docker/login-action@v3
+    with:
+        username: ${{ secrets.DOCKER_USER }}
+        password: ${{ secrets.DOCKER_CRED }}
 
-      - name: Build + Push all services
-        run: |
-          for dir in mlops/* shadows/*; do
-            if [ -f "$dir/Dockerfile" ]; then
-              name=$(basename $dir)
-              echo "Building $name..."
-              docker build -t linkops/$name:latest $dir
-              docker push linkops/$name:latest
-            fi
-          done
+    - name: Build + Push all services
+    run: |
+        for dir in mlops/* shadows/*; do
+          if [-f "$dir/Dockerfile"]; then
+            name=$(basename $dir)
+            echo "Building $name..."
+            docker build -t linkops/$name:latest $dir
+            docker push linkops/$name:latest
+          fi
+        done
 
   trivy-scan:
     runs-on: ubuntu-latest
     name: Trivy Security Scan
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - uses: aquasecurity/trivy-action@0.32.0
-        with:
-          scan-type: 'fs'
-          scan-ref: '.'
-          format: 'sarif'
-          output: 'trivy-results.sarif'
+    - uses: aquasecurity/trivy-action@0.32.0
+    with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'sarif'
+        output: 'trivy-results.sarif'
 
-      - uses: github/codeql-action/upload-sarif@v3
-        with:
-          sarif_file: 'trivy-results.sarif'
+    - uses: github/codeql-action/upload-sarif@v3
+    with:
+        sarif_file: 'trivy-results.sarif'
 
   gitguardian:
     runs-on: ubuntu-latest
     name: GitGuardian Secret Scan
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Run GitGuardian
-        uses: GitGuardian/ggshield-action@v1.25.0
-        env:
-          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
-        continue-on-error: true
+    - name: Run GitGuardian
+    uses: GitGuardian/ggshield-action@v1.25.0
+      env:
+        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+      continue-on-error: true
 
   update-argocd:
     runs-on: ubuntu-latest
@@ -134,20 +134,19 @@ jobs:
     needs: [docker-build-push]
     if: github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+    - uses: actions/checkout@v4
+    with:
+        token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Update ArgoCD sync trigger
-        run: |
-          if [ -f "helm/argocd/application.yaml" ]; then
-            echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
-            git config user.name "github-actions[bot]"
-            git config user.email "actions@github.com"
-            git add helm/argocd/application.yaml
-            git commit -m "chore: trigger ArgoCD sync - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
-            git push || echo "No push needed"
-          else
-            echo "ArgoCD application.yaml not found, skipping sync trigger"
-          fi
- 
+    - name: Update ArgoCD sync trigger
+    run: |
+        if [-f "helm/argocd/application.yaml"]; then
+          echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add helm/argocd/application.yaml
+          git commit -m "chore: trigger ArgoCD sync - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+          git push || echo "No push needed"
+        else
+          echo "ArgoCD application.yaml not found, skipping sync trigger"
+        fi

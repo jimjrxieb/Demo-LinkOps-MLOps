@@ -12,10 +12,10 @@ spec:
   replicas: {{ .Values.services.frontend.replicas }}
   selector:
     matchLabels:
-      app: frontend
+    app: frontend
   template:
     metadata:
-      labels:
+    labels:
         app: frontend
         {{- include "linkops.labels" . | nindent 8 }}
       {{- with .Values.global.annotations }}
@@ -32,11 +32,11 @@ spec:
           {{- toYaml . | nindent 10 }}
       {{- end }}
       containers:
-      - name: frontend
+    - name: frontend
         image: {{ .Values.global.imageRegistry }}/{{ .Values.global.imageRepository }}/{{ .Values.services.frontend.image }}:{{ .Values.global.imageTag }}
         imagePullPolicy: {{ .Values.global.imagePullPolicy }}
         ports:
-        - name: http
+    - name: http
           containerPort: {{ .Values.services.frontend.port }}
           protocol: TCP
         {{- if .Values.services.frontend.healthCheck }}
@@ -72,11 +72,11 @@ spec:
           {{- toYaml . | nindent 10 }}
         {{- end }}
         volumeMounts:
-        - name: config
+    - name: config
           mountPath: /app/config
           readOnly: true
       volumes:
-      - name: config
+    - name: config
         configMap:
           name: frontend-config
       {{- with .Values.global.imagePullSecrets }}
@@ -148,8 +148,8 @@ spec:
   rules:
   - host: {{ .Values.services.frontend.ingress.host }}
     http:
-      paths:
-      - path: /
+    paths:
+    - path: /
         pathType: Prefix
         backend:
           service:
@@ -178,13 +178,13 @@ spec:
   metrics:
   - type: Resource
     resource:
-      name: cpu
+    name: cpu
       target:
         type: Utilization
         averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
   - type: Resource
     resource:
-      name: memory
+    name: memory
       target:
         type: Utilization
         averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
@@ -215,14 +215,14 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app: frontend
+    app: frontend
   policyTypes:
   - Ingress
   - Egress
   ingress:
   - ports:
     - protocol: TCP
-      port: {{ .Values.services.frontend.port }}
+    port: {{ .Values.services.frontend.port }}
   egress:
   - to:
     - podSelector:
@@ -230,20 +230,20 @@ spec:
           app: mlops-platform
     ports:
     - protocol: TCP
-      port: 80
+    port: 80
   - to:
     - podSelector:
         matchLabels:
           app: audit-assess
     ports:
     - protocol: TCP
-      port: 80
+    port: 80
   - to: []
     ports:
     - protocol: TCP
-      port: 443
+    port: 443
     - protocol: TCP
-      port: 80
+    port: 80
 {{- end }}
 
 {{- end }} 

@@ -166,7 +166,7 @@ class WhisSanitizer:
         try:
             json.loads(content)
             return "json"
-        except:
+        except Exception:
             pass
 
         # Check for YAML
@@ -174,7 +174,7 @@ class WhisSanitizer:
             try:
                 yaml.safe_load(content)
                 return "yaml"
-            except:
+            except Exception:
                 pass
 
         # Check for code
