@@ -279,23 +279,23 @@ export default {
           'Check pod health',
           'Run smoke tests'
         ],
-        script: String.raw`#!/bin/bash
+        script: `#!/bin/bash
 set -e
 
 # Kubernetes Deployment Automation Script
-NAMESPACE=${1:-default}
-DEPLOYMENT_FILE=${2:-deployment.yaml}
+NAMESPACE=\\${1:-default}
+DEPLOYMENT_FILE=\\${2:-deployment.yaml}
 
-echo "🚀 Starting deployment to namespace: $NAMESPACE"
+echo "🚀 Starting deployment to namespace: \\$NAMESPACE"
 
 # Validate configuration
-kubectl apply --dry-run=client -f $DEPLOYMENT_FILE
+kubectl apply --dry-run=client -f \\$DEPLOYMENT_FILE
 
 # Apply deployment
-kubectl apply -f $DEPLOYMENT_FILE -n $NAMESPACE
+kubectl apply -f \\$DEPLOYMENT_FILE -n \\$NAMESPACE
 
 # Wait for rollout
-kubectl rollout status deployment/$DEPLOYMENT_NAME -n $NAMESPACE --timeout=300s
+kubectl rollout status deployment/\\$DEPLOYMENT_NAME -n \\$NAMESPACE --timeout=300s
 
 echo "✅ Deployment completed successfully"`
       },
@@ -320,7 +320,7 @@ echo "✅ Deployment completed successfully"`
           'Generate security report',
           'Export results to JSON'
         ],
-        script: String.raw`#!/usr/bin/env python3
+        script: `#!/usr/bin/env python3
 import subprocess
 import json
 import sys
@@ -367,7 +367,7 @@ if __name__ == "__main__":
           'Monitor resource usage',
           'Send alerts if needed'
         ],
-        script: String.raw`package main
+        script: `package main
 
 import (
     "fmt"
@@ -402,9 +402,9 @@ func main() {
     
     for _, checker := range checkers {
         if err := checker.Check(); err != nil {
-            fmt.Printf("❌ %s: %v\n", checker.Name, err)
+            fmt.Printf("❌ %s: %v\\n", checker.Name, err)
         } else {
-            fmt.Printf("✅ %s: healthy\n", checker.Name)
+            fmt.Printf("✅ %s: healthy\\n", checker.Name)
         }
     }
 }`
