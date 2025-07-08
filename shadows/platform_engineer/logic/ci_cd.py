@@ -461,7 +461,9 @@ async def _monitor_azure_pipeline(
         return {
             "status": "running",
             "build_id": "12345",
-            "definition_name": project_info.get("pipeline_name", "unknown"),
+            "definition_name": project_info.get(
+                "pipeline_name",
+                "unknown"),
             "url": f"{CI_PLATFORMS['azure']['api_base']}/{project_info['org']}/{project_info['project']}/_build/results",
         }
     except Exception as e:

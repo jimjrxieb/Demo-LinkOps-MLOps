@@ -3,24 +3,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
-from logic.data_prep import (
-    clean_data,
-    feature_engineering,
-    prepare_dataset,
-    validate_data,
-)
-from logic.model_eval import (
-    compare_models,
-    create_report,
-    evaluate_model,
-    generate_metrics,
-)
-from logic.notebook_fixes import (
-    fix_notebook,
-    generate_documentation,
-    optimize_code,
-    validate_notebook,
-)
+from logic.data_prep import (clean_data, feature_engineering, prepare_dataset,
+                             validate_data)
+from logic.model_eval import (compare_models, create_report, evaluate_model,
+                              generate_metrics)
+from logic.notebook_fixes import (fix_notebook, generate_documentation,
+                                  optimize_code, validate_notebook)
 from pydantic import BaseModel
 
 # Configure logging
