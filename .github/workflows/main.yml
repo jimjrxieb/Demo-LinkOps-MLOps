@@ -150,3 +150,4 @@ jobs:
           else
             echo "ArgoCD application.yaml not found, skipping sync trigger"
           fi
+ 
