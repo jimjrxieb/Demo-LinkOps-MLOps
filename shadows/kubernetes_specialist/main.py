@@ -3,10 +3,8 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
-from logic.deployment_fix import (diagnose_deployment, fix_deployment,
-                                  scale_deployment)
-from logic.helm import (install_chart, list_releases, uninstall_chart,
-                        upgrade_chart)
+from logic.deployment_fix import diagnose_deployment, fix_deployment, scale_deployment
+from logic.helm import install_chart, list_releases, uninstall_chart, upgrade_chart
 from logic.rbac import check_permissions, create_role, create_role_binding
 from pydantic import BaseModel
 

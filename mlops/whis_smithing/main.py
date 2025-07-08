@@ -5,8 +5,7 @@ from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from logic.orb_generator import OrbGenerator, batch_generate_orbs, generate_orb
-from logic.rune_generator import (RuneGenerator, batch_generate_runes,
-                                  generate_rune)
+from logic.rune_generator import RuneGenerator, batch_generate_runes, generate_rune
 from pydantic import BaseModel
 
 app = FastAPI(

@@ -3,8 +3,12 @@ from typing import Any, Dict, List
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from logic.model import (WhisLogic, find_similar_content, generate_embedding,
-                         generate_recommendations)
+from logic.model import (
+    WhisLogic,
+    find_similar_content,
+    generate_embedding,
+    generate_recommendations,
+)
 from pydantic import BaseModel
 
 app = FastAPI(
