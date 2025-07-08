@@ -3,11 +3,13 @@ Shared Task Queue Model
 Database model for task queue management across LinkOps microservices
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, JSON, Enum
-from sqlalchemy.sql import func
-from datetime import datetime
-from typing import Optional, Dict, Any
 import enum
+from datetime import datetime
+from typing import Any, Dict, Optional
+
+from sqlalchemy import JSON, Column, DateTime, Enum, Integer, String, Text
+from sqlalchemy.sql import func
+
 from shared.config.database import Base
 
 

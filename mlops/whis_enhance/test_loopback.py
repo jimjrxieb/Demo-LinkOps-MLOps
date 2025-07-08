@@ -6,14 +6,15 @@ Tests the loopback refinement functionality.
 
 import asyncio
 import json
+
 from logic.loopback import (
-    load_repeat_tasks,
-    load_failed_tasks,
     find_matching_rune,
-    loopback_refine,
     get_loopback_statistics,
+    load_failed_tasks,
+    load_repeat_tasks,
+    loopback_refine,
 )
-from logic.version_control import save_version, get_version_history
+from logic.version_control import get_version_history, save_version
 
 
 async def test_loopback_functionality():

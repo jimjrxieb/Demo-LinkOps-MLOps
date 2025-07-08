@@ -3,13 +3,13 @@ Security Scanner for Repository Auditing
 Integrates GitGuardian, Trivy, and Semgrep for comprehensive security analysis.
 """
 
-import subprocess
 import json
-import os
 import logging
-from typing import Dict, List, Any
-from pathlib import Path
+import os
 import re
+import subprocess
+from pathlib import Path
+from typing import Any, Dict, List
 
 logger = logging.getLogger(__name__)
 

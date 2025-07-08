@@ -115,9 +115,9 @@ metadata:
 data:
   config.yaml: |
     database:
-      url: {{ .Values.services.mlops_platform.env | pluck "value" | first | default "postgresql://mlops:password@postgres:5432/mlops" }}
+      url: "postgresql://mlops:password@postgres:5432/mlops"
     redis:
-      url: {{ .Values.services.mlops_platform.env | pluck "value" | last | default "redis://redis:6379" }}
+      url: "redis://redis:6379"
     logging:
       level: INFO
       format: json

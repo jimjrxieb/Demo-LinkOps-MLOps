@@ -4,12 +4,13 @@ Handles URL scraping, content extraction, and validation.
 """
 
 import asyncio
-import re
 import json
-from typing import Dict, Any, Tuple, List, Optional
-from datetime import datetime
 import logging
-from urllib.parse import urlparse, urljoin
+import re
+from datetime import datetime
+from typing import Any, Dict, List, Optional, Tuple
+from urllib.parse import urljoin, urlparse
+
 import aiohttp
 from bs4 import BeautifulSoup
 

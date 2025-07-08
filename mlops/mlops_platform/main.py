@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import tasks, scripts, workflows, orbs, runes, digest
+from routers import digest, orbs, runes, scripts, tasks, workflows
 
 app = FastAPI(title="MLOps Platform API", version="0.1.0")
 

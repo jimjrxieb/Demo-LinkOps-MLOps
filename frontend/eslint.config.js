@@ -1,5 +1,7 @@
 import js from '@eslint/js';
 import vue from 'eslint-plugin-vue';
+import * as vueParser from 'vue-eslint-parser';
+import globals from 'globals';
 
 export default [
   {
@@ -18,30 +20,28 @@ export default [
     ],
   },
   js.configs.recommended,
+  ...vue.configs['flat/essential'],
   {
     files: ['**/*.vue'],
-    plugins: {
-      vue: vue
-    },
     languageOptions: {
-      parser: vue.parser,
+      parser: vueParser,
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
-        console: 'readonly',
-        window: 'readonly',
-        document: 'readonly',
-        process: 'readonly'
+        ...globals.browser,
+        ...globals.node,
+        defineProps: 'readonly',
+        defineEmits: 'readonly',
+        defineExpose: 'readonly',
+        withDefaults: 'readonly'
       }
     },
     rules: {
-      ...vue.configs['vue3-essential'].rules,
       'no-console': 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'vue/multi-word-component-names': 'off',
       'vue/no-unused-vars': 'warn',
-      'vue/valid-template-root': 'error',
-      'vue/no-parsing-error': 'error'
+      'no-unused-vars': 'warn'
     },
   },
   {
@@ -50,10 +50,8 @@ export default [
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
-        console: 'readonly',
-        window: 'readonly',
-        document: 'readonly',
-        process: 'readonly'
+        ...globals.browser,
+        ...globals.node
       }
     },
     rules: {

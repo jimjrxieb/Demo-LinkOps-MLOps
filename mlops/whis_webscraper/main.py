@@ -1,13 +1,10 @@
-from fastapi import FastAPI, HTTPException, BackgroundTasks
-from pydantic import BaseModel
-from typing import Dict, List, Optional, Any
 import logging
 from datetime import datetime
-from logic.scraper import (
-    scrape_url,
-    extract_content,
-    validate_url,
-)
+from typing import Any, Dict, List, Optional
+
+from fastapi import BackgroundTasks, FastAPI, HTTPException
+from logic.scraper import extract_content, scrape_url, validate_url
+from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

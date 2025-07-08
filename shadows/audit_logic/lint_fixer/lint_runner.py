@@ -1,10 +1,10 @@
 # shadows/audit_logic/lint_fixer/lint_runner.py
 
-import subprocess
 import os
+import subprocess
 import sys
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import Any, Dict, List, Optional
 
 
 def run_python_lint(path: str, max_line_length: int = 88) -> Dict[str, Any]:

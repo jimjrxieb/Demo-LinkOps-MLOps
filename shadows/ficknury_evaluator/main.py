@@ -1,9 +1,10 @@
+from typing import Dict, List
+
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from typing import List, Dict
 from scorer import score_task
 from selector import select_agent_for_task
-from task_router import evaluate_task, Task, TaskEvaluation
+from task_router import Task, TaskEvaluation, evaluate_task
 
 app = FastAPI(title="FickNury Evaluator")
 

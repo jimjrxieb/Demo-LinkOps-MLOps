@@ -3,9 +3,9 @@ Whis Rune Generator - Creates fixed solution paths (scripts, CI flows) from stru
 """
 
 import re
-from typing import Dict, List, Any
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Any, Dict, List
 
 
 class RuneGenerator:

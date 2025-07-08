@@ -5,13 +5,13 @@ Centralized logging setup for all LinkOps microservices with structured logging,
 file rotation, and Prometheus metrics integration.
 """
 
+import json
 import logging
 import logging.handlers
 import sys
-import json
 from datetime import datetime
-from typing import Dict, Any
 from pathlib import Path
+from typing import Any, Dict
 
 from .settings import get_settings
 

@@ -3,12 +3,13 @@ Shared Database Configuration
 SQLAlchemy engine and session management for LinkOps microservices
 """
 
+import logging
 import os
+
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
-import logging
 
 logger = logging.getLogger(__name__)
 

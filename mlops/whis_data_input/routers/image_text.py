@@ -1,9 +1,10 @@
-from fastapi import APIRouter, UploadFile, File, HTTPException
-from pydantic import BaseModel
-from typing import List, Optional, Dict, Any
-from datetime import datetime
-import uuid
 import base64
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import APIRouter, File, HTTPException, UploadFile
+from pydantic import BaseModel
 
 router = APIRouter()
 

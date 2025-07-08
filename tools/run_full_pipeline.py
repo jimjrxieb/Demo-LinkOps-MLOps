@@ -4,9 +4,10 @@ Simulate a full Whis data flow: Manual or YouTube input → Sanitizer →
 (simulated) Smithing → Log Output
 """
 import argparse
-import requests
 import json
 import time
+
+import requests
 
 MANUAL_ENDPOINT = "http://localhost:8000/api/input/manual"
 YOUTUBE_ENDPOINT = "http://localhost:8000/api/input/youtube-transcript"

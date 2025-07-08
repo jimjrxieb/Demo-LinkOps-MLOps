@@ -1,11 +1,11 @@
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from logic.sanitizer import WhisSanitizer, batch_sanitize, sanitize_input
 from pydantic import BaseModel
-from typing import List, Dict, Any, Optional
-from datetime import datetime
-import uuid
-
-from logic.sanitizer import WhisSanitizer, sanitize_input, batch_sanitize
 
 app = FastAPI(
     title="Whis Sanitizer Service",

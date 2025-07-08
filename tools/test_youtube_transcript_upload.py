@@ -3,6 +3,7 @@
 Test the /youtube-transcript API using a mock JSON payload.
 """
 import json
+
 import requests
 
 with open("tools/mocks/sample_transcript.json") as f:

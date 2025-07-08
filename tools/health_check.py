@@ -3,8 +3,9 @@
 Health check script for LinkOps services
 """
 
-import requests
 from typing import Dict
+
+import requests
 
 # Updated service URLs with new names
 SERVICES = {

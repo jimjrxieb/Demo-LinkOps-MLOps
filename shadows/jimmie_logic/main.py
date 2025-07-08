@@ -4,22 +4,23 @@ Jimmie Logic - Unified Control Brain for LinkOps MLOps Platform
 Centralizes all logic, orbs, runes, and models in one location.
 """
 
+import csv
+import json
+from pathlib import Path
+from typing import Dict
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Dict
-import json
-import csv
-from pathlib import Path
 
 # Import routers
 from routers import (
-    task_router,
-    script_router,
-    orb_router,
-    rune_router,
     daily_router,
     model_router,
+    orb_router,
+    rune_router,
+    script_router,
+    task_router,
 )
 
 app = FastAPI(

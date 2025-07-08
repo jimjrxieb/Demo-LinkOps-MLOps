@@ -1,12 +1,14 @@
+import uuid
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import List, Dict, Any, Optional
-from datetime import datetime
-import uuid
 
-from logic.orb_generator import OrbGenerator, generate_orb, batch_generate_orbs
-from logic.rune_generator import RuneGenerator, generate_rune, batch_generate_runes
+from logic.orb_generator import OrbGenerator, batch_generate_orbs, generate_orb
+from logic.rune_generator import (RuneGenerator, batch_generate_runes,
+                                  generate_rune)
 
 app = FastAPI(
     title="Whis Smithing Service",

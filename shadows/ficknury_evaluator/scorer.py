@@ -3,10 +3,11 @@ FickNury Evaluator - Task Scorer
 Evaluates tasks against logic source capabilities and selects appropriate agents
 """
 
-import requests
 import logging
-from typing import Dict, List, Any, Optional
 from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+import requests
 
 logger = logging.getLogger(__name__)
 

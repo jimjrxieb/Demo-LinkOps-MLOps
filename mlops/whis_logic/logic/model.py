@@ -2,9 +2,10 @@
 Whis Logic - Whis's internal ML model brain for embedding generation and similarity search.
 """
 
-import numpy as np
-from typing import Dict, List, Any
 from datetime import datetime
+from typing import Any, Dict, List
+
+import numpy as np
 
 
 class WhisLogic:

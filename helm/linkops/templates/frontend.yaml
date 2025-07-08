@@ -115,10 +115,10 @@ metadata:
 data:
   config.js: |
     window.LINKOPS_CONFIG = {
-      mlopsPlatformUrl: '{{ .Values.services.frontend.env | pluck "value" | first | default "http://mlops-platform:8000" }}',
-      auditAssessUrl: '{{ .Values.services.frontend.env | pluck "value" | last | default "http://audit-assess:8003" }}',
-      whisDataInputUrl: '{{ .Values.services.frontend.env | pluck "value" | first | default "http://whis-data-input:8004" }}',
-      whisEnhanceUrl: '{{ .Values.services.frontend.env | pluck "value" | last | default "http://whis-enhance:8007" }}'
+      mlopsPlatformUrl: 'http://mlops-platform:8000',
+      auditAssessUrl: 'http://audit-assess:8003',
+      whisDataInputUrl: 'http://whis-data-input:8004',
+      whisEnhanceUrl: 'http://whis-enhance:8007'
     };
 
 {{- if .Values.services.frontend.ingress.enabled }}

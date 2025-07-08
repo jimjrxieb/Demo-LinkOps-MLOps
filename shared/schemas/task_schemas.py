@@ -3,10 +3,11 @@ Shared Task Schemas
 Pydantic schemas for task operations across LinkOps microservices
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional, Dict, Any, List
 from datetime import datetime
 from enum import Enum
+from typing import Any, Dict, List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class TaskStatus(str, Enum):

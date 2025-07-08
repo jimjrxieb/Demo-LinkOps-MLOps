@@ -1,5 +1,6 @@
-import psycopg
 import os
+
+import psycopg
 
 DB_URL = os.getenv(
     "DB_URL", "postgresql://linkops:linkops_password@db:5432/linkops_core"

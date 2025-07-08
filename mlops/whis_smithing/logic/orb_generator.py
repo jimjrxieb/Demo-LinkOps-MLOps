@@ -3,9 +3,9 @@ Whis Orb Generator - Creates best practices knowledge assets from structured dat
 """
 
 import re
-from typing import Dict, List, Any
-from datetime import datetime
 import uuid
+from datetime import datetime
+from typing import Any, Dict, List
 
 
 class OrbGenerator:

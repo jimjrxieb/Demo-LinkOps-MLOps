@@ -1,8 +1,9 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import requests
 import logging
 from typing import Optional
+
+import requests
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

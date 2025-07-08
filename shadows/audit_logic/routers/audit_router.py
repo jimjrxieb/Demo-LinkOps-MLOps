@@ -1,7 +1,8 @@
+from typing import Any, Dict, List
+
 from fastapi import APIRouter, Body
-from pydantic import BaseModel
-from typing import Dict, Any, List
 from logic.scorer import AuditScorer
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/audit", tags=["Audit Logic"])
 

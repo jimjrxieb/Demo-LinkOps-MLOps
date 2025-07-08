@@ -3,11 +3,12 @@ Shared Kafka Configuration
 Kafka producer and consumer management for LinkOps microservices
 """
 
-import os
 import json
 import logging
-from typing import Dict, Any, Optional
-from kafka import KafkaProducer, KafkaConsumer
+import os
+from typing import Any, Dict, Optional
+
+from kafka import KafkaConsumer, KafkaProducer
 from kafka.errors import KafkaError
 
 logger = logging.getLogger(__name__)

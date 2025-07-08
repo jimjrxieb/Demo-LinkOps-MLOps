@@ -3,11 +3,12 @@ Shared Rune Model
 Database model for Runes used across LinkOps microservices
 """
 
-from sqlalchemy import Column, Integer, String, Text, DateTime, Boolean, JSON
+from datetime import datetime
+from typing import Any, Dict, Optional
+
+from sqlalchemy import JSON, Boolean, Column, DateTime, Integer, String, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from datetime import datetime
-from typing import Optional, Dict, Any
 
 from shared.config.database import Base
 

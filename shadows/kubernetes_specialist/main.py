@@ -1,11 +1,12 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Dict, List, Optional, Any
 import logging
 from datetime import datetime
-from logic.helm import install_chart, upgrade_chart, uninstall_chart, list_releases
-from logic.rbac import create_role, create_role_binding, check_permissions
+from typing import Any, Dict, List, Optional
+
+from fastapi import FastAPI, HTTPException
 from logic.deployment_fix import diagnose_deployment, fix_deployment, scale_deployment
+from logic.helm import install_chart, list_releases, uninstall_chart, upgrade_chart
+from logic.rbac import check_permissions, create_role, create_role_binding
+from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

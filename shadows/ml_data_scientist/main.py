@@ -1,26 +1,27 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-from typing import Dict, List, Optional, Any
 import logging
 from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+from fastapi import FastAPI, HTTPException
 from logic.data_prep import (
-    prepare_dataset,
     clean_data,
     feature_engineering,
+    prepare_dataset,
     validate_data,
 )
 from logic.model_eval import (
-    evaluate_model,
     compare_models,
-    generate_metrics,
     create_report,
+    evaluate_model,
+    generate_metrics,
 )
 from logic.notebook_fixes import (
     fix_notebook,
+    generate_documentation,
     optimize_code,
     validate_notebook,
-    generate_documentation,
 )
+from pydantic import BaseModel
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

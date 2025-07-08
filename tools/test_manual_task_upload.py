@@ -3,6 +3,7 @@
 Test the /manual API using a mock JSON payload.
 """
 import json
+
 import requests
 
 with open("tools/mocks/sample_task.json") as f:

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import qna_input, chatgpt_csv, image_text, info_dump, youtube
+from routers import chatgpt_csv, image_text, info_dump, qna_input, youtube
 
 app = FastAPI(
     title="Whis Data Input Service",

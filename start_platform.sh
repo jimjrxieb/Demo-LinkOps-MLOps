@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # LinkOps MLOps Platform Startup Script
-# This script starts all services and provides testing instructions
+# Automatically starts all services in the correct order
 
 set -e
 
@@ -10,179 +10,194 @@ RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-echo -e "${BLUE}🚀 Starting LinkOps MLOps Platform${NC}"
-echo "=================================="
+# Unicode emojis for status
+ROCKET="🚀"
+CHECK="✅"
+CROSS="❌"
+GEAR="⚙️"
+BRAIN="🧠"
+SHIELD="🛡️"
+WRENCH="🔧"
 
-# Function to check if a port is in use
-check_port() {
-    if lsof -Pi :$1 -sTCP:LISTEN -t >/dev/null ; then
-        echo -e "${YELLOW}⚠️  Port $1 is already in use${NC}"
-        return 1
-    else
-        return 0
-    fi
-}
+echo -e "${PURPLE}${ROCKET} LinkOps MLOps Platform Startup${NC}"
+echo -e "${PURPLE}======================================${NC}"
+echo ""
 
-# Function to start a service
-start_service() {
+# Check if .env file exists
+if [ ! -f ".env" ]; then
+    echo -e "${YELLOW}${GEAR} Creating .env file from template...${NC}"
+    cp env.template .env
+    echo -e "${GREEN}${CHECK} Created .env file. Please review and update the values.${NC}"
+    echo ""
+fi
+
+# Function to check service health
+check_service_health() {
     local service_name=$1
     local port=$2
-    local command=$3
+    local max_attempts=30
+    local attempt=1
     
-    echo -e "${BLUE}Starting $service_name on port $port...${NC}"
+    echo -ne "${YELLOW}${GEAR} Waiting for $service_name to be healthy..."
     
-    if check_port $port; then
-        eval "$command" &
-        local pid=$!
-        echo -e "${GREEN}✅ $service_name started (PID: $pid)${NC}"
+    while [ $attempt -le $max_attempts ]; do
+        if curl -s http://localhost:$port/health > /dev/null 2>&1; then
+            echo -e "\r${GREEN}${CHECK} $service_name is healthy!                    ${NC}"
+            return 0
+        fi
+        
+        echo -ne "\r${YELLOW}${GEAR} Waiting for $service_name to be healthy... ($attempt/$max_attempts)${NC}"
         sleep 2
-    else
-        echo -e "${RED}❌ Failed to start $service_name${NC}"
-        return 1
-    fi
+        ((attempt++))
+    done
+    
+    echo -e "\r${RED}${CROSS} $service_name failed to start properly           ${NC}"
+    return 1
 }
 
-# Check if Docker is available
-if command -v docker &> /dev/null; then
-    echo -e "${BLUE}🐳 Docker detected - using Docker Compose${NC}"
-    
-    # Start services with Docker Compose
-    if [ -f "docker-compose.yml" ]; then
-        echo "Starting services with Docker Compose..."
-        docker-compose up -d
-        
-        echo -e "${GREEN}✅ All services started with Docker Compose${NC}"
-        echo ""
-        echo -e "${YELLOW}📋 Service URLs:${NC}"
-        echo "  MLOps Platform: http://localhost:8000"
-        echo "  Audit Assess:   http://localhost:8003"
-        echo "  Whis Data Input: http://localhost:8004"
-        echo "  Whis Enhance:   http://localhost:8006"
-        echo "  Frontend:       http://localhost:3000"
-        
-    else
-        echo -e "${RED}❌ docker-compose.yml not found${NC}"
-        exit 1
-    fi
-    
+# Check prerequisites
+echo -e "${BLUE}${GEAR} Checking prerequisites...${NC}"
+
+if ! command -v docker &> /dev/null; then
+    echo -e "${RED}${CROSS} Docker is not installed${NC}"
+    exit 1
+fi
+
+if ! command -v docker-compose &> /dev/null; then
+    echo -e "${RED}${CROSS} Docker Compose is not installed${NC}"
+    exit 1
+fi
+
+echo -e "${GREEN}${CHECK} Prerequisites satisfied${NC}"
+echo ""
+
+# Stop any existing containers
+echo -e "${YELLOW}${GEAR} Stopping any existing containers...${NC}"
+docker-compose down --remove-orphans > /dev/null 2>&1 || true
+echo -e "${GREEN}${CHECK} Cleaned up existing containers${NC}"
+echo ""
+
+# Start infrastructure services first
+echo -e "${BLUE}${GEAR} Starting infrastructure services...${NC}"
+docker-compose up -d db redis zookeeper kafka
+echo ""
+
+# Wait for infrastructure to be ready
+echo -e "${YELLOW}${GEAR} Waiting for infrastructure services...${NC}"
+sleep 10
+
+# Check infrastructure health
+echo -e "${BLUE}${GEAR} Checking infrastructure health...${NC}"
+
+# Check PostgreSQL
+if docker-compose exec -T db pg_isready -U linkops > /dev/null 2>&1; then
+    echo -e "${GREEN}${CHECK} PostgreSQL is ready${NC}"
 else
-    echo -e "${BLUE}🐍 Using Python services directly${NC}"
-    
-    # Check Python dependencies
-    echo "Checking Python dependencies..."
-    python3 -c "import fastapi, uvicorn" 2>/dev/null || {
-        echo -e "${RED}❌ FastAPI or uvicorn not installed${NC}"
-        echo "Install with: pip install fastapi uvicorn"
-        exit 1
-    }
-    
-    # Start MLOps Platform
-    start_service "MLOps Platform" 8000 "cd mlops_platform && python -m uvicorn main:app --host 0.0.0.0 --port 8000"
-    
-    # Start Audit Assess
-    start_service "Audit Assess" 8003 "cd audit_assess && python -m uvicorn main:app --host 0.0.0.0 --port 8003"
-    
-    # Start Whis Data Input
-    start_service "Whis Data Input" 8004 "cd whis_data_input && python -m uvicorn main:app --host 0.0.0.0 --port 8004"
-    
-    # Start Whis Enhance
-    start_service "Whis Enhance" 8006 "cd whis_enhance && python -m uvicorn main:app --host 0.0.0.0 --port 8006"
-    
-    echo ""
-    echo -e "${YELLOW}📋 Service URLs:${NC}"
-    echo "  MLOps Platform: http://localhost:8000"
-    echo "  Audit Assess:   http://localhost:8003"
-    echo "  Whis Data Input: http://localhost:8004"
-    echo "  Whis Enhance:   http://localhost:8006"
+    echo -e "${RED}${CROSS} PostgreSQL is not ready${NC}"
+    exit 1
+fi
+
+# Check Redis
+if docker-compose exec -T redis redis-cli ping > /dev/null 2>&1; then
+    echo -e "${GREEN}${CHECK} Redis is ready${NC}"
+else
+    echo -e "${RED}${CROSS} Redis is not ready${NC}"
+    exit 1
 fi
 
 echo ""
-echo -e "${BLUE}🧪 Testing Services...${NC}"
 
-# Wait a moment for services to start
-sleep 5
+# Start MLOps Platform (main service)
+echo -e "${PURPLE}${BRAIN} Starting MLOps Platform...${NC}"
+docker-compose up -d mlops_platform
+check_service_health "MLOps Platform" 8000
+echo ""
 
-# Test services
-echo "Testing service health..."
-if curl -s http://localhost:8000/health > /dev/null; then
-    echo -e "${GREEN}✅ MLOps Platform is healthy${NC}"
+# Start MLOps Services
+echo -e "${CYAN}${BRAIN} Starting MLOps Services...${NC}"
+docker-compose up -d whis_data_input whis_sanitize whis_smithing whis_enhance whis_logic whis_webscraper audit_assess audit_migrate mlops_utils
+
+echo -e "${YELLOW}${GEAR} Checking MLOps service health...${NC}"
+check_service_health "Whis Data Input" 8001
+check_service_health "Whis Sanitize" 8002
+check_service_health "Whis Smithing" 8003
+check_service_health "Whis Enhance" 8004
+check_service_health "Whis Logic" 8005
+check_service_health "Whis Webscraper" 8006
+check_service_health "Audit Assess" 8007
+check_service_health "Audit Migrate" 8008
+check_service_health "MLOps Utils" 8009
+echo ""
+
+# Start Shadow Agents
+echo -e "${SHIELD}${BRAIN} Starting Shadow Agents...${NC}"
+docker-compose up -d jimmie_logic ficknury_evaluator audit_logic auditguard_logic kubernetes_specialist ml_data_scientist platform_engineer devops_engineer
+
+echo -e "${YELLOW}${GEAR} Checking Shadow Agent health...${NC}"
+check_service_health "Jimmie Logic" 8010
+check_service_health "Ficknury Evaluator" 8011
+check_service_health "Audit Logic" 8012
+check_service_health "AuditGuard Logic" 8013
+check_service_health "Kubernetes Specialist" 8014
+check_service_health "ML Data Scientist" 8015
+check_service_health "Platform Engineer" 8016
+check_service_health "DevOps Engineer" 8017
+echo ""
+
+# Start Frontend
+echo -e "${BLUE}${WRENCH} Starting Frontend...${NC}"
+docker-compose up -d frontend
+
+echo -e "${YELLOW}${GEAR} Waiting for frontend to build and start...${NC}"
+sleep 30
+
+if curl -s http://localhost:3000 > /dev/null 2>&1; then
+    echo -e "${GREEN}${CHECK} Frontend is ready!${NC}"
 else
-    echo -e "${RED}❌ MLOps Platform is not responding${NC}"
-fi
-
-if curl -s http://localhost:8003/health > /dev/null; then
-    echo -e "${GREEN}✅ Audit Assess is healthy${NC}"
-else
-    echo -e "${RED}❌ Audit Assess is not responding${NC}"
-fi
-
-if curl -s http://localhost:8004/health > /dev/null; then
-    echo -e "${GREEN}✅ Whis Data Input is healthy${NC}"
-else
-    echo -e "${RED}❌ Whis Data Input is not responding${NC}"
-fi
-
-if curl -s http://localhost:8006/health > /dev/null; then
-    echo -e "${GREEN}✅ Whis Enhance is healthy${NC}"
-else
-    echo -e "${RED}❌ Whis Enhance is not responding${NC}"
+    echo -e "${YELLOW}${GEAR} Frontend is still building (this may take a few minutes)${NC}"
 fi
 
 echo ""
-echo -e "${BLUE}🌐 Starting Frontend...${NC}"
-
-# Check if Node.js is available
-if command -v node &> /dev/null && command -v npm &> /dev/null; then
-    echo "Starting Vue.js frontend..."
-    
-    # Check if frontend dependencies are installed
-    if [ ! -d "frontend/node_modules" ]; then
-        echo "Installing frontend dependencies..."
-        cd frontend && npm install && cd ..
-    fi
-    
-    # Start frontend
-    cd frontend
-    echo -e "${GREEN}✅ Frontend starting on http://localhost:3000${NC}"
-    echo -e "${YELLOW}Press Ctrl+C to stop all services${NC}"
-    
-    # Start frontend in background
-    npm run dev &
-    FRONTEND_PID=$!
-    
-    # Wait for frontend to start
-    sleep 10
-    
-    echo ""
-    echo -e "${GREEN}🎉 LinkOps MLOps Platform is ready!${NC}"
-    echo ""
-    echo -e "${BLUE}📱 Access Points:${NC}"
-    echo "  Frontend Dashboard: http://localhost:3000"
-    echo "  Audit Form:         http://localhost:3000/auditguard"
-    echo "  Task Management:    http://localhost:3000/tasks"
-    echo ""
-    echo -e "${BLUE}🔧 API Endpoints:${NC}"
-    echo "  MLOps Platform:     http://localhost:8000/docs"
-    echo "  Audit Assess:       http://localhost:8003/docs"
-    echo "  Whis Data Input:    http://localhost:8004/docs"
-    echo "  Whis Enhance:       http://localhost:8006/docs"
-    echo ""
-    echo -e "${YELLOW}🧪 Run Integration Test:${NC}"
-    echo "  node test_frontend_integration.js"
-    echo ""
-    echo -e "${YELLOW}📖 Documentation:${NC}"
-    echo "  FRONTEND_INTEGRATION.md - Complete integration guide"
-    echo "  README.md - Platform overview and setup"
-    
-    # Keep script running
-    wait $FRONTEND_PID
-    
-else
-    echo -e "${RED}❌ Node.js or npm not found${NC}"
-    echo "Install Node.js to run the frontend"
-    echo ""
-    echo -e "${YELLOW}Backend services are running. Install Node.js and run:${NC}"
-    echo "  cd frontend && npm install && npm run dev"
-fi 
+echo -e "${GREEN}${ROCKET} LinkOps MLOps Platform Started Successfully!${NC}"
+echo -e "${GREEN}====================================={}============${NC}"
+echo ""
+echo -e "${CYAN}📍 Available Services:${NC}"
+echo -e "   ${BLUE}Frontend:${NC}              http://localhost:3000"
+echo -e "   ${BLUE}MLOps Platform:${NC}        http://localhost:8000"
+echo -e "   ${BLUE}Whis Data Input:${NC}       http://localhost:8001"
+echo -e "   ${BLUE}Whis Sanitize:${NC}         http://localhost:8002"
+echo -e "   ${BLUE}Whis Smithing:${NC}         http://localhost:8003"
+echo -e "   ${BLUE}Whis Enhance:${NC}          http://localhost:8004"
+echo -e "   ${BLUE}Whis Logic:${NC}            http://localhost:8005"
+echo -e "   ${BLUE}Whis Webscraper:${NC}       http://localhost:8006"
+echo -e "   ${BLUE}Audit Assess:${NC}          http://localhost:8007"
+echo -e "   ${BLUE}Audit Migrate:${NC}         http://localhost:8008"
+echo -e "   ${BLUE}MLOps Utils:${NC}           http://localhost:8009"
+echo ""
+echo -e "${SHIELD}Shadow Agents:${NC}"
+echo -e "   ${PURPLE}Jimmie Logic:${NC}          http://localhost:8010"
+echo -e "   ${PURPLE}Ficknury Evaluator:${NC}    http://localhost:8011"
+echo -e "   ${PURPLE}Audit Logic:${NC}           http://localhost:8012"
+echo -e "   ${PURPLE}AuditGuard Logic:${NC}      http://localhost:8013"
+echo -e "   ${PURPLE}Kubernetes Specialist:${NC} http://localhost:8014"
+echo -e "   ${PURPLE}ML Data Scientist:${NC}     http://localhost:8015"
+echo -e "   ${PURPLE}Platform Engineer:${NC}     http://localhost:8016"
+echo -e "   ${PURPLE}DevOps Engineer:${NC}       http://localhost:8017"
+echo ""
+echo -e "${YELLOW}Infrastructure:${NC}"
+echo -e "   ${CYAN}PostgreSQL:${NC}            localhost:5432"
+echo -e "   ${CYAN}Redis:${NC}                 localhost:6379"
+echo -e "   ${CYAN}Kafka:${NC}                 localhost:9092"
+echo ""
+echo -e "${GREEN}🎉 All services are now running!${NC}"
+echo ""
+echo -e "${YELLOW}💡 Useful Commands:${NC}"
+echo -e "   ${BLUE}View logs:${NC}             docker-compose logs -f [service_name]"
+echo -e "   ${BLUE}Stop all services:${NC}     docker-compose down"
+echo -e "   ${BLUE}Restart service:${NC}       docker-compose restart [service_name]"
+echo -e "   ${BLUE}Check status:${NC}          docker-compose ps"
+echo "" 

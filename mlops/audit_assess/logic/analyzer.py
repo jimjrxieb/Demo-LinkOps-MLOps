@@ -1,13 +1,15 @@
 import os
-import tempfile
-import shutil
 import re
-from typing import Dict, List, Any
+import shutil
+import tempfile
 from pathlib import Path
-import git
+from typing import Any, Dict, List
 from urllib.parse import urlparse
-from .security_scanner import SecurityScanner
+
+import git
+
 from .gitops_scanner import GitOpsScanner
+from .security_scanner import SecurityScanner
 
 
 class RepoAnalyzer:

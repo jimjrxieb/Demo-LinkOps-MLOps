@@ -1,15 +1,15 @@
+from datetime import datetime
+from typing import Any, Dict, List
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
-from typing import List, Dict, Any
-from datetime import datetime
-
 from logic.model import (
     WhisLogic,
-    generate_embedding,
     find_similar_content,
+    generate_embedding,
     generate_recommendations,
 )
+from pydantic import BaseModel
 
 app = FastAPI(
     title="Whis Logic Service",

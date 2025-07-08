@@ -5,9 +5,11 @@ Base Pydantic model with shared configuration for all LinkOps schemas.
 """
 
 from datetime import datetime
-from typing import Optional, Dict, Any
-from pydantic import BaseModel as PydanticBaseModel, Field, ConfigDict
+from typing import Any, Dict, Optional
 from uuid import UUID, uuid4
+
+from pydantic import BaseModel as PydanticBaseModel
+from pydantic import ConfigDict, Field
 
 
 class BaseModel(PydanticBaseModel):

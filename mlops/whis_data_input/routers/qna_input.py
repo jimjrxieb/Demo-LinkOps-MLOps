@@ -1,8 +1,9 @@
+import uuid
+from datetime import datetime
+from typing import List, Optional
+
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
-from datetime import datetime
-import uuid
 
 router = APIRouter()
 

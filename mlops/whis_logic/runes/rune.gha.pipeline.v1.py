@@ -4,9 +4,10 @@ GitHub Actions Pipeline Rune
 Generates CI/CD workflows for Python microservices
 """
 
-import yaml
 import os
 from typing import Dict
+
+import yaml
 
 
 class GHAPipelineRune:

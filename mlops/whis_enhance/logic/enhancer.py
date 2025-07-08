@@ -3,9 +3,9 @@ Enhancement logic for the Whis pipeline.
 Handles content enhancement, metadata improvement, and quality scoring.
 """
 
-from typing import Dict, Any, Tuple, List
-from datetime import datetime
 import logging
+from datetime import datetime
+from typing import Any, Dict, List, Tuple
 
 logger = logging.getLogger(__name__)
 

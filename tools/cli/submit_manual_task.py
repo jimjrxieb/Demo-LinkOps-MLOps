@@ -3,8 +3,9 @@
 Submit a manual task (from JSON file) to the whis_data_input API.
 """
 import argparse
-import requests
 import json
+
+import requests
 
 
 def main():

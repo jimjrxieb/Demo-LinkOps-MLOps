@@ -2,12 +2,13 @@
 Script Router - Manages CLI workflows and infrastructure scripts
 """
 
+import json
+from datetime import datetime
+from pathlib import Path
+from typing import Dict, List, Optional
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
-from typing import List, Dict, Optional
-from datetime import datetime
-import json
-from pathlib import Path
 
 router = APIRouter()
 

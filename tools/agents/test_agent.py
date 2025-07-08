@@ -4,13 +4,14 @@ Test script for the LinkOps Platform Agent
 Tests both the Go agent directly and the API integration
 """
 
-import subprocess
 import json
-import time
-import requests
 import os
+import subprocess
 import sys
+import time
 from pathlib import Path
+
+import requests
 
 
 # Colors for output

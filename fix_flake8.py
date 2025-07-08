@@ -1,5 +1,5 @@
-import subprocess
 import os
+import subprocess
 
 TARGET_DIR = "shadows"
 
