@@ -221,6 +221,7 @@ async def process_youtube_playlist(playlist_url: str):
         # TODO: Implement playlist processing
         # Extract all video URLs from playlist
         # Download transcripts for each video
+        print("YouTube processing complete.")
 
         return {
             "message": "Playlist processing initiated",

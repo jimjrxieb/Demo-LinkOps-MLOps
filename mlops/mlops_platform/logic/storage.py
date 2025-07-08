@@ -30,7 +30,7 @@ class StorageManager:
             with open(file_path, "r", encoding="utf-8") as f:
                 data = json.load(f)
                 return data if isinstance(data, list) else []
-        except Exception:
+        except Exception as e:
             print(f"Error reading {file_path}: {e}")
             return []
 
@@ -42,7 +42,7 @@ class StorageManager:
             with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2, ensure_ascii=False)
             return True
-        except Exception:
+        except Exception as e:
             print(f"Error writing {file_path}: {e}")
             return False
 

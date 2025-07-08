@@ -51,17 +51,6 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
-Create the name of the service account to use
-*/}}
-{{- define "linkops.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "linkops.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
-
-{{/*
 Create the name of the config map to use
 */}}
 {{- define "linkops.configMapName" -}}

@@ -6,7 +6,7 @@ Generates CI/CD workflows for Python microservices
 
 import yaml
 import os
-from typing import Dict, List
+from typing import Dict
 
 
 class GHAPipelineRune:

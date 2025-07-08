@@ -20,8 +20,11 @@ export default [
   js.configs.recommended,
   {
     files: ['**/*.vue'],
-    ...vue.configs['vue3-essential'],
+    plugins: {
+      vue: vue
+    },
     languageOptions: {
+      parser: vue.parser,
       ecmaVersion: 'latest',
       sourceType: 'module',
       globals: {
@@ -32,6 +35,7 @@ export default [
       }
     },
     rules: {
+      ...vue.configs['vue3-essential'].rules,
       'no-console': 'off',
       'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
       'vue/multi-word-component-names': 'off',

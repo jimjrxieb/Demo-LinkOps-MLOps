@@ -5,7 +5,6 @@ Checks that all required directories exist and reports any missing ones.
 """
 
 import os
-from pathlib import Path
 
 
 def validate_platform_structure():

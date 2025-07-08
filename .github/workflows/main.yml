@@ -279,7 +279,7 @@ jobs:
       - name: Run Bandit security linter
         run: |
           pip install bandit
-          bandit -r mlops/ -r shadows/ -f json -o bandit-results.json
+          bandit -r mlops/,shadows/ -f json -o bandit-results.json
 
   validate-docker:
     name: Validate Docker Builds
