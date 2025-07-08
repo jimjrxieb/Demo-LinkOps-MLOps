@@ -115,7 +115,7 @@ async def submit_info_dump_batch(batch: InfoDumpBatch):
             processed_dumps.append(dump_data)
 
         return {
-            "message": f"Batch submitted successfully",
+            "message": "Batch submitted successfully",
             "batch_id": batch_id,
             "total_dumps": len(batch.dumps),
             "processed_dumps": len(processed_dumps),

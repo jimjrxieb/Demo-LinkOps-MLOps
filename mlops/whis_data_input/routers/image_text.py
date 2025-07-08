@@ -181,7 +181,7 @@ async def extract_text_batch(files: List[UploadFile] = File(...)):
             results.append(result)
 
         return {
-            "message": f"Batch processing completed",
+            "message": "Batch processing completed",
             "batch_id": batch_id,
             "total_images": len(files),
             "processed_images": len(results),
