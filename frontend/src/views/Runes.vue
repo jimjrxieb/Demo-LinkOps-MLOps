@@ -1,23 +1,38 @@
 <template>
-  <div class="runes-container">
+  <div class="p-6 max-w-7xl mx-auto">
     <!-- Header -->
-    <div class="mb-8">
-      <h1 class="futuristic-title text-4xl mb-2">🧪 Runes Library</h1>
-      <p class="text-gray-300">Automation scripts and executable solutions from the Whis AI</p>
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="futuristic-title text-4xl mb-2">🧪 Runes</h1>
+        <p class="text-gray-300">Automation scripts generated from orbs - ready to execute</p>
+      </div>
+      <div class="flex items-center space-x-4">
+        <button class="glass-panel px-4 py-2 rounded-lg futuristic-subtitle hover:neon-border transition-all duration-300">
+          📥 Import Rune
+        </button>
+        <button class="glass-panel px-4 py-2 rounded-lg futuristic-subtitle hover:neon-border transition-all duration-300">
+          ⚡ Create Custom
+        </button>
+      </div>
     </div>
 
     <!-- Search and Filters -->
-    <div class="glass-panel p-6 mb-8">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">Search Runes</label>
+    <div class="glass-panel p-6 rounded-lg mb-6">
+      <div class="flex items-center space-x-4 mb-4">
+        <div class="flex-1">
           <input
             v-model="searchQuery"
             type="text"
+            placeholder="Search runes by name, description, or tags..."
             class="w-full glass-panel p-3 rounded-lg border border-gray-600 bg-transparent text-white placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-            placeholder="Search by title, language, or function..."
           />
         </div>
+        <button class="glass-panel px-4 py-3 rounded-lg text-indigo-400 hover:neon-border transition-all duration-300">
+          🔍 Search
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div>
           <label class="block text-sm font-medium text-gray-300 mb-2">Language</label>
           <select
@@ -237,8 +252,8 @@ export default {
       total: 23,
       executed: 156,
       avgEffectiveness: 87,
-      automationTime: '4.2h',
-      languages: 4
+      automationTime: '47h',
+      languages: 8
     })
 
     const runes = ref([
@@ -247,15 +262,15 @@ export default {
         title: 'Kubernetes Deployment Automation',
         language: 'bash',
         category: 'deployment',
-        description: 'Automated script for deploying applications to Kubernetes with health checks and rollback capabilities.',
-        effectiveness: 94,
+        description: 'Automated Kubernetes deployment script with health checks and rollback capabilities.',
+        effectiveness: 95,
         status: 'approved',
-        timestamp: '3 hours ago',
-        executions: 28,
-        successRate: 96,
+        timestamp: '2 hours ago',
+        executions: 42,
+        successRate: 97,
         avgTime: '2.3m',
-        relatedOrb: 1,
-        tags: ['k8s', 'deployment', 'automation', 'rollback'],
+        relatedOrb: 3,
+        tags: ['kubernetes', 'deployment', 'automation', 'health-check'],
         steps: [
           'Validate YAML configuration',
           'Apply deployment to cluster',
@@ -264,7 +279,7 @@ export default {
           'Check pod health',
           'Run smoke tests'
         ],
-        script: `#!/bin/bash
+        script: String.raw`#!/bin/bash
 set -e
 
 # Kubernetes Deployment Automation Script
@@ -305,14 +320,14 @@ echo "✅ Deployment completed successfully"`
           'Generate security report',
           'Export results to JSON'
         ],
-        script: `#!/usr/bin/env python3
+        script: String.raw`#!/usr/bin/env python3
 import subprocess
 import json
 import sys
 
 def scan_image(image_name):
     """Scan Docker image for vulnerabilities"""
-    print(f"🔍 Scanning image: {image_name}")
+    print("🔍 Scanning image: {}".format(image_name))
     
     # Run Trivy scan
     result = subprocess.run([
@@ -320,11 +335,11 @@ def scan_image(image_name):
     ], capture_output=True, text=True)
     
     if result.returncode != 0:
-        print(f"❌ Scan failed: {result.stderr}")
+        print("❌ Scan failed: {}".format(result.stderr))
         return False
     
     scan_data = json.loads(result.stdout)
-    print(f"✅ Scan completed. Found {len(scan_data)} issues")
+    print("✅ Scan completed. Found {} issues".format(len(scan_data)))
     return scan_data
 
 if __name__ == "__main__":
@@ -352,7 +367,7 @@ if __name__ == "__main__":
           'Monitor resource usage',
           'Send alerts if needed'
         ],
-        script: `package main
+        script: String.raw`package main
 
 import (
     "fmt"
@@ -387,9 +402,9 @@ func main() {
     
     for _, checker := range checkers {
         if err := checker.Check(); err != nil {
-            fmt.Printf("❌ %s: %v\\n", checker.Name, err)
+            fmt.Printf("❌ %s: %v\n", checker.Name, err)
         } else {
-            fmt.Printf("✅ %s: healthy\\n", checker.Name)
+            fmt.Printf("✅ %s: healthy\n", checker.Name)
         }
     }
 }`
@@ -475,36 +490,65 @@ func main() {
 </script>
 
 <style scoped>
-@import '../assets/futuristic.css';
+.effectiveness-excellent {
+  background: linear-gradient(45deg, #10b981, #34d399);
+}
+
+.effectiveness-good {
+  background: linear-gradient(45deg, #3b82f6, #60a5fa);
+}
+
+.effectiveness-fair {
+  background: linear-gradient(45deg, #f59e0b, #fbbf24);
+}
+
+.effectiveness-poor {
+  background: linear-gradient(45deg, #ef4444, #f87171);
+}
+
+.status-badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.status-badge.approved {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+  border: 1px solid #10b981;
+}
+
+.status-badge.pending {
+  background: rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+  border: 1px solid #f59e0b;
+}
+
+.status-badge.rejected {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
 
 .code-preview {
   font-family: 'Courier New', monospace;
 }
 
-.effectiveness-score {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: bold;
+.rune-bash {
+  border-left: 4px solid #10b981;
 }
 
-.effectiveness-excellent { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-.effectiveness-good { background-color: rgba(59, 130, 246, 0.2); color: #3b82f6; }
-.effectiveness-fair { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
-.effectiveness-poor { background-color: rgba(239, 68, 68, 0.2); color: #ef4444; }
-
-.status-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: bold;
+.rune-python {
+  border-left: 4px solid #3776ab;
 }
 
-.status-badge.approved { background-color: rgba(34, 197, 94, 0.2); color: #22c55e; }
-.status-badge.pending { background-color: rgba(245, 158, 11, 0.2); color: #f59e0b; }
+.rune-go {
+  border-left: 4px solid #00add8;
+}
 
-.rune-bash { border-left: 3px solid #4ade80; }
-.rune-python { border-left: 3px solid #3b82f6; }
-.rune-go { border-left: 3px solid #06b6d4; }
-.rune-yaml { border-left: 3px solid #8b5cf6; }
+.rune-yaml {
+  border-left: 4px solid #ff6b6b;
+}
 </style> 

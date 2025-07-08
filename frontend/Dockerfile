@@ -1,14 +1,20 @@
 # ───────────────────────────────────────────────
 # 🛠 Builder Stage: Install and build the app
 # ───────────────────────────────────────────────
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Copy package files
 COPY package*.json ./
-RUN npm install
 
+# Clear npm cache and install dependencies
+RUN npm cache clean --force && npm install
+
+# Copy source code
 COPY . .
+
+# Build the application
 RUN npm run build
 
 # ───────────────────────────────────────────────

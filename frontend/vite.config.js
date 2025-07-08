@@ -59,12 +59,17 @@ export default defineConfig({
       },
     },
     chunkSizeWarningLimit: 1000,
+    target: 'es2015', // Ensure compatibility
   },
   define: {
     __VUE_OPTIONS_API__: true,
     __VUE_PROD_DEVTOOLS__: false,
+    global: 'globalThis', // Fix global reference
   },
   optimizeDeps: {
     include: ['vue', 'vue-router', 'pinia', 'axios'],
+  },
+  esbuild: {
+    target: 'es2015',
   },
 }) 
