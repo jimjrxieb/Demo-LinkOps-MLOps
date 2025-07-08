@@ -48,10 +48,10 @@ services:
         cpu: 1000m
         memory: 1Gi
     env:
-      - name: DATABASE_URL
-        value: "postgresql://mlops:password@postgres:5432/mlops"
-      - name: REDIS_URL
-        value: "redis://redis:6379"
+    - name: DATABASE_URL
+      value: "postgresql://mlops:password@postgres:5432/mlops"
+    - name: REDIS_URL
+      value: "redis://redis:6379"
     healthCheck:
       path: /health
       port: 8000
@@ -79,11 +79,11 @@ services:
         cpu: 500m
         memory: 512Mi
     env:
-      - name: API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: whis-secrets
-            key: api-key
+    - name: API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: whis-secrets
+          key: api-key
     healthCheck:
       path: /health
       port: 8004
@@ -142,11 +142,11 @@ services:
         cpu: 500m
         memory: 512Mi
     env:
-      - name: OPENAI_API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: whis-secrets
-            key: openai-api-key
+    - name: OPENAI_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: whis-secrets
+          key: openai-api-key
     healthCheck:
       path: /health
       port: 8007
@@ -186,16 +186,16 @@ services:
         cpu: 1000m
         memory: 1Gi
     env:
-      - name: GITGUARDIAN_API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: audit-secrets
-            key: gitguardian-api-key
-      - name: SNYK_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: audit-secrets
-            key: snyk-token
+    - name: GITGUARDIAN_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: audit-secrets
+          key: gitguardian-api-key
+    - name: SNYK_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: audit-secrets
+          key: snyk-token
     healthCheck:
       path: /health
       port: 8003
@@ -241,14 +241,14 @@ services:
         cpu: 500m
         memory: 512Mi
     env:
-      - name: VITE_MLOPS_PLATFORM_URL
-        value: "http://mlops-platform:8000"
-      - name: VITE_AUDIT_ASSESS_URL
-        value: "http://audit-assess:8003"
-      - name: VITE_WHIS_DATA_INPUT_URL
-        value: "http://whis-data-input:8004"
-      - name: VITE_WHIS_ENHANCE_URL
-        value: "http://whis-enhance:8007"
+    - name: VITE_MLOPS_PLATFORM_URL
+      value: "http://mlops-platform:8000"
+    - name: VITE_AUDIT_ASSESS_URL
+      value: "http://audit-assess:8003"
+    - name: VITE_WHIS_DATA_INPUT_URL
+      value: "http://whis-data-input:8004"
+    - name: VITE_WHIS_ENHANCE_URL
+      value: "http://whis-enhance:8007"
     healthCheck:
       path: /
       port: 80

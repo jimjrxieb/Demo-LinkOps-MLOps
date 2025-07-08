@@ -10,10 +10,10 @@ workflows:
       - name: "Trivy Vulnerability Scanner"
         action: "aquasecurity/trivy-action@v0.18.3"
         with:
-          scan-type: "fs"
-          scan-ref: "."
-          format: "sarif"
-          output: "trivy-results.sarif"
+            scan-type: "fs"
+            scan-ref: "."
+            format: "sarif"
+            output: "trivy-results.sarif"
 
       - name: "Bandit Security Linter"
         run: |
@@ -32,7 +32,7 @@ workflows:
       - name: "Snyk Security Scan"
         uses: "snyk/actions/node@master"
         with:
-          args: "--severity-threshold=high"
+            args: "--severity-threshold=high"
 
       - name: "Safety Check"
         run: |

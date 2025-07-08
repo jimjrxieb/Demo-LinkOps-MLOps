@@ -5,19 +5,19 @@ type: application
 version: 1.0.0
 appVersion: "1.0.0"
 keywords:
-  - mlops
-  - kubernetes
-  - gitops
-  - automation
-  - ai
-  - machine-learning
+- mlops
+- kubernetes
+- gitops
+- automation
+- ai
+- machine-learning
 home: https://github.com/jimjrxieb/shadow-link-industries
 sources:
-  - https://github.com/jimjrxieb/shadow-link-industries
+- https://github.com/jimjrxieb/shadow-link-industries
 maintainers:
-  - name: LinkOps Team
-    email: team@linkops.com
+- name: LinkOps Team
+  email: team@linkops.com
 icon: https://linkops.com/icon.png
 annotations:
-  category: Infrastructure
-  licenses: MIT
+category: Infrastructure
+licenses: MIT

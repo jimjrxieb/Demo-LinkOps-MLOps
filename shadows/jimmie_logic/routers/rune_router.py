@@ -308,13 +308,12 @@ class APIClient:
                     "data = client.get('/users')",
                     "new_user = client.post('/users', {'name': 'John', 'email': 'john@example.com'})",
                 ],
-            }
-        },
+            }},
         "kubernetes": {
             "deployment": {
                 "name": "Kubernetes Deployment Rune",
-                "description": "Standard Kubernetes deployment template",
-                "content": """apiVersion: apps/v1
+                        "description": "Standard Kubernetes deployment template",
+                        "content": """apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.name }}
@@ -348,13 +347,12 @@ spec:
             memory: {{ .Values.resources.limits.memory | default "128Mi" }}
             cpu: {{ .Values.resources.limits.cpu | default "500m" }}
 """,
-                "language": "yaml",
-                "usage_examples": [
-                    "helm install myapp ./chart -f values.yaml",
-                    "kubectl apply -f deployment.yaml",
-                ],
-            }
-        },
+                        "language": "yaml",
+                        "usage_examples": [
+                            "helm install myapp ./chart -f values.yaml",
+                            "kubectl apply -f deployment.yaml",
+                        ],
+            }},
     }
 
     return templates.get(category, {})
