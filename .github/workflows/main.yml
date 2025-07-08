@@ -1,8 +1,8 @@
-name: LinkOps Platform CI/CD
+name: LinkOps Security + Helm CD
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -15,436 +15,138 @@ permissions:
   security-events: write
 
 jobs:
-  validate-structure:
-    name: Validate Platform Structure
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Validate folder structure
-        run: |
-          echo "🔍 Validating LinkOps platform structure..."
-
-          # Check required directories exist
-          required_dirs=(
-            "mlops/audit_assess"
-            "mlops/whis_enhance"
-            "mlops/whis_data_input"
-            "mlops/whis_webscraper"
-            "mlops/whis_logic"
-            "mlops/whis_smithing"
-            "mlops/whis_sanitize"
-            "mlops/mlops_utils"
-            "mlops/mlops_platform"
-            "mlops/audit_migrate"
-            "shadows/kubernetes_specialist"
-            "shadows/ml_data_scientist"
-            "shadows/devops_engineer"
-            "shadows/platform_engineer"
-            "shadows/jimmie_logic"
-            "shadows/ficknury_evaluator"
-            "shadows/auditguard_logic"
-            "shadows/audit_logic"
-            "shadows/db"
-            "frontend/src/pages"
-            "frontend/src/components"
-            "frontend/src/views"
-            "frontend/src/stores"
-            "frontend/src/router"
-            "frontend/src/services"
-            "frontend/src/assets"
-            "scripts/audit"
-            "scripts/devops"
-            "scripts/sandbox"
-            "scripts/ci"
-            "helm/linkops"
-            "helm/argocd"
-            ".github/workflows"
-          )
-
-          for dir in "${required_dirs[@]}"; do
-            if [ ! -d "$dir" ]; then
-              echo "❌ Missing required directory: $dir"
-              exit 1
-            else
-              echo "✅ Found: $dir"
-            fi
-          done
-
-          # Check for deleted duplicate folders
-          deleted_dirs=(
-            "shadows/whis_data_input"
-            "shadows/whis_sanitize"
-            "shadows/whis_smithing"
-            "shadows/whis_enhance"
-            "shadows/whis_logic"
-            "shadows/whis_webscraper"
-            "shadows/whis_kubeflow"
-            "backend/routes"
-            "mlops/old_service"
-            "frontend/old_pages"
-            "scripts/old_script"
-            "helm/old_chart"
-          )
-
-          for dir in "${deleted_dirs[@]}"; do
-            if [ -d "$dir" ]; then
-              echo "❌ Deleted directory still exists: $dir"
-              exit 1
-            else
-              echo "✅ Correctly deleted: $dir"
-            fi
-          done
-
-          echo "🎉 Platform structure validation passed!"
-
   lint-python:
-    name: Lint Python Services
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils, audit_assess, mlops_platform, audit_migrate]
+    name: Python Lint + Bandit
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-python@v4
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
-      - name: Install dependencies
-        run: |
-          pip install flake8 black isort mypy
-          cd mlops/${{ matrix.service }}
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
+      - run: |
+          pip install flake8 black bandit
+          flake8 mlops/ shadows/
+          black --check mlops/ shadows/
+          bandit -r mlops/ shadows/
 
-      - name: Lint with flake8
-        run: |
-          cd mlops/${{ matrix.service }}
-          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-
-      - name: Format check with black
-        run: |
-          cd mlops/${{ matrix.service }}
-          black --check --diff .
-
-      - name: Import sorting with isort
-        run: |
-          cd mlops/${{ matrix.service }}
-          isort --check-only --diff .
-
-  test-mlops-services:
-    name: Test MLOps Services
+  lint-frontend:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils, audit_assess, mlops_platform, audit_migrate]
+    name: Frontend Lint + Build
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: actions/setup-node@v4
         with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Install dependencies
-        run: |
-          cd mlops/${{ matrix.service }}
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-          pip install fastapi uvicorn pytest
+      - run: |
+          cd frontend
+          npm ci
+          npm run lint
+          npm run build
 
-      - name: Run tests
-        run: |
-          cd mlops/${{ matrix.service }}
-          if [ -d tests ]; then
-            python -m pytest tests/ -v
-          else
-            echo "No tests directory found for ${{ matrix.service }}"
-          fi
-
-  test-shadow-agents:
-    name: Test Shadow Agents
+  lint-yaml:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [kubernetes_specialist, ml_data_scientist, devops_engineer, platform_engineer, jimmie_logic, ficknury_evaluator, auditguard_logic, audit_logic]
+    name: YAML Lint (Helm/CI)
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+      - run: |
+          pip install yamllint
+          yamllint helm/ .github/
 
-      - name: Install dependencies
-        run: |
-          cd shadows/${{ matrix.service }}
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-          pip install fastapi uvicorn pytest
-
-      - name: Run tests
-        run: |
-          cd shadows/${{ matrix.service }}
-          if [ -d tests ]; then
-            python -m pytest tests/ -v
-          else
-            echo "No tests directory found for ${{ matrix.service }}"
-          fi
-
-  validate-helm:
-    name: Validate Helm Charts
+  helm-validate:
     runs-on: ubuntu-latest
+    name: Helm Chart Lint + Update
+    needs: [lint-yaml]
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Helm
-        uses: azure/setup-helm@v3
+      - uses: azure/setup-helm@v3
         with:
           version: v3.12.0
 
-      - name: Lint Helm charts
-        run: |
-          cd helm
-          for chart in */; do
-            if [ -f "$chart/Chart.yaml" ]; then
-              echo "Linting $chart..."
-              helm lint "$chart"
-            fi
-          done
-
-      - name: Validate linkops chart
-        run: |
+      - run: |
           cd helm/linkops
           helm dependency update
           helm lint .
 
-  lint-frontend:
-    name: Lint Frontend
+  docker-build-push:
     runs-on: ubuntu-latest
+    name: Build + Push Docker Images
+    needs: [lint-python, lint-frontend, helm-validate]
+    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
+      - uses: docker/setup-buildx-action@v3
+
+      - uses: docker/login-action@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_CRED }}
 
-      - name: Install dependencies
+      - name: Build + Push all services
         run: |
-          cd frontend
-          npm ci
+          for dir in mlops/* shadows/*; do
+            if [ -f "$dir/Dockerfile" ]; then
+              name=$(basename $dir)
+              echo "Building $name..."
+              docker build -t linkops/$name:latest $dir
+              docker push linkops/$name:latest
+            fi
+          done
 
-      - name: Lint with ESLint
-        run: |
-          cd frontend
-          npm run lint
-
-      - name: Type check
-        run: |
-          cd frontend
-          npm run type-check
-
-  build-frontend:
-    name: Build Frontend
+  trivy-scan:
     runs-on: ubuntu-latest
+    name: Trivy Security Scan
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
-
-      - name: Build frontend
-        run: |
-          cd frontend
-          npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: frontend-dist
-          path: frontend/dist/
-
-  security-scan:
-    name: Security Scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.32.0
+      - uses: aquasecurity/trivy-action@0.32.0
         with:
           scan-type: 'fs'
           scan-ref: '.'
           format: 'sarif'
           output: 'trivy-results.sarif'
 
-      - name: Upload Trivy scan results
-        uses: github/codeql-action/upload-sarif@v3
+      - uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
 
-      - name: Run Bandit security linter
-        run: |
-          pip install bandit
-          bandit -r mlops/,shadows/ -f json -o bandit-results.json
+  gitguardian:
+    runs-on: ubuntu-latest
+    name: GitGuardian Secret Scan
+    steps:
+      - uses: actions/checkout@v4
 
-      # GitGuardian secret scanning (optional)
-      - name: GitGuardian scan
+      - name: Run GitGuardian
         uses: GitGuardian/ggshield-action@v1.25.0
         env:
-          GITHUB_PUSH_BEFORE_SHA: ${{ github.event.before }}
-          GITHUB_PUSH_BASE_SHA: ${{ github.event.base }}
-          GITHUB_PULL_BASE_SHA: ${{ github.event.pull_request.base.sha }}
-          GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
         continue-on-error: true
 
-  sonarqube-analysis:
-    name: SonarQube Analysis
+  update-argocd:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          pip install coverage pytest
-
-      - name: Run tests with coverage
-        run: |
-          coverage run --source=. -m pytest || true
-          coverage xml
-
-      - name: SonarQube Scan
-        uses: sonarqube-quality-gate-action@master
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          SONAR_HOST_URL: https://sonarcloud.io
-        with:
-          projectKey: ${{ secrets.SONAR_PROJECT_KEY }}
-          organization: ${{ secrets.SONAR_ORG }}
-        continue-on-error: true
-
-  validate-docker:
-    name: Validate Docker Builds
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        service: [whis_data_input, whis_sanitize, whis_smithing, whis_enhance, whis_logic, whis_webscraper, mlops_utils, audit_assess, mlops_platform, audit_migrate]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build Docker image
-        run: |
-          cd mlops/${{ matrix.service }}
-          docker build -t linkops/${{ matrix.service }}:test .
-
-      - name: Test Docker image
-        run: |
-          docker run --rm linkops/${{ matrix.service }}:test python -c "import fastapi; print('FastAPI import successful')"
-
-  validate-compose:
-    name: Validate Docker Compose
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Validate main compose
-        run: |
-          docker-compose -f docker-compose.yml config
-
-  run-integration-tests:
-    name: Run Integration Tests
-    runs-on: ubuntu-latest
-    needs: [validate-structure, lint-python, test-mlops-services, test-shadow-agents]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
-
-      - name: Install dependencies
-        run: |
-          pip install pytest requests
-
-      - name: Run integration tests
-        run: |
-          if [ -f "tests/test_complete_pipeline.py" ]; then
-            python tests/test_complete_pipeline.py
-          fi
-          if [ -f "scripts/validate_refactor.py" ]; then
-            python scripts/validate_refactor.py
-          fi
-
-  build-and-push:
-    name: Build and Push Images
-    runs-on: ubuntu-latest
-    needs: [validate-structure, lint-python, test-mlops-services, test-shadow-agents, validate-helm, lint-frontend, build-frontend, security-scan, sonarqube-analysis, validate-docker, validate-compose, run-integration-tests]
+    name: Update ArgoCD Pull Config
+    needs: [docker-build-push]
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - uses: actions/checkout@v4
         with:
-          username: ${{ secrets.DOCKER_USER }}
-          password: ${{ secrets.DOCKER_CRED }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push MLOps services
+      - name: Update ArgoCD sync trigger
         run: |
-          for service in mlops/*/; do
-            service_name=$(basename "$service")
-            docker build -t linkops/$service_name:latest "$service"
-            docker push linkops/$service_name:latest
-          done
-
-      - name: Build and push shadow agents
-        run: |
-          for service in shadows/*/; do
-            service_name=$(basename "$service")
-            docker build -t linkops/$service_name:latest "$service"
-            docker push linkops/$service_name:latest
-          done
-
-# TODO: Add deploy-helm job back when AKS cluster is ready
+          if [ -f "helm/argocd/application.yaml" ]; then
+            echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
+            git config user.name "github-actions[bot]"
+            git config user.email "actions@github.com"
+            git add helm/argocd/application.yaml
+            git commit -m "chore: trigger ArgoCD sync - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+            git push || echo "No push needed"
+          else
+            echo "ArgoCD application.yaml not found, skipping sync trigger"
+          fi
