@@ -1,63 +1,59 @@
-import js from '@eslint/js';
-import vue from 'eslint-plugin-vue';
-import * as vueParser from 'vue-eslint-parser';
-import globals from 'globals';
+import js from '@eslint/js'
+import pluginVue from 'eslint-plugin-vue'
+import globals from 'globals'
 
 export default [
   {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/coverage/**',
-      '**/.git/**',
-      '**/public/**',
-      '**/*.config.js',
-      '**/vite.config.js',
-      '**/tailwind.config.js',
-      '**/postcss.config.js',
-      '**/test-*.js',
-      '**/index.js'
-    ],
+    name: 'app/files-to-lint',
+    files: ['**/*.{js,mjs,jsx,vue}'],
   },
-  js.configs.recommended,
-  ...vue.configs['flat/essential'],
+
   {
+    name: 'app/files-to-ignore',
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
+  },
+
+  js.configs.recommended,
+  ...pluginVue.configs['flat/recommended'],
+
+  {
+    name: 'app/vue-rules',
     files: ['**/*.vue'],
     languageOptions: {
-      parser: vueParser,
-      ecmaVersion: 'latest',
-      sourceType: 'module',
+      globals: {
+        ...globals.browser,
+      },
+    },
+    rules: {
+      // Disable problematic rules for our use case
+      'no-unused-vars': 'warn',
+      'vue/multi-word-component-names': 'off',
+      'vue/no-unused-vars': 'warn',
+      
+      // Allow template literals with embedded code
+      'no-template-curly-in-string': 'off',
+      
+      // Allow console for development
+      'no-console': 'warn',
+      
+      // Vue-specific rules
+      'vue/attribute-hyphenation': 'error',
+      'vue/v-on-event-hyphenation': 'error',
+    },
+  },
+
+  {
+    name: 'app/javascript-rules',
+    files: ['**/*.{js,mjs,jsx}'],
+    languageOptions: {
       globals: {
         ...globals.browser,
         ...globals.node,
-        defineProps: 'readonly',
-        defineEmits: 'readonly',
-        defineExpose: 'readonly',
-        withDefaults: 'readonly'
-      }
+      },
     },
     rules: {
-      'no-console': 'off',
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      'vue/multi-word-component-names': 'off',
-      'vue/no-unused-vars': 'warn',
-      'no-unused-vars': 'warn'
+      'no-unused-vars': 'warn',
+      'no-console': 'warn',
     },
   },
-  {
-    files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
-    languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'module',
-      globals: {
-        ...globals.browser,
-        ...globals.node
-      }
-    },
-    rules: {
-      'no-console': 'off',
-      'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-      'no-unused-vars': 'warn'
-    },
-  },
-]; 
+] 

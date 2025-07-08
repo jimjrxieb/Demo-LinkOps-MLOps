@@ -279,25 +279,27 @@ export default {
           'Check pod health',
           'Run smoke tests'
         ],
-        script: `#!/bin/bash
-set -e
-
-# Kubernetes Deployment Automation Script
-NAMESPACE=\\${1:-default}
-DEPLOYMENT_FILE=\\${2:-deployment.yaml}
-
-echo "🚀 Starting deployment to namespace: \\$NAMESPACE"
-
-# Validate configuration
-kubectl apply --dry-run=client -f \\$DEPLOYMENT_FILE
-
-# Apply deployment
-kubectl apply -f \\$DEPLOYMENT_FILE -n \\$NAMESPACE
-
-# Wait for rollout
-kubectl rollout status deployment/\\$DEPLOYMENT_NAME -n \\$NAMESPACE --timeout=300s
-
-echo "✅ Deployment completed successfully"`
+        script: [
+          '#!/bin/bash',
+          'set -e',
+          '',
+          '# Kubernetes Deployment Automation Script',
+          'NAMESPACE=${1:-default}',
+          'DEPLOYMENT_FILE=${2:-deployment.yaml}',
+          '',
+          'echo "🚀 Starting deployment to namespace: $NAMESPACE"',
+          '',
+          '# Validate configuration',
+          'kubectl apply --dry-run=client -f $DEPLOYMENT_FILE',
+          '',
+          '# Apply deployment',
+          'kubectl apply -f $DEPLOYMENT_FILE -n $NAMESPACE',
+          '',
+          '# Wait for rollout',
+          'kubectl rollout status deployment/$DEPLOYMENT_NAME -n $NAMESPACE --timeout=300s',
+          '',
+          'echo "✅ Deployment completed successfully"'
+        ].join('\n')
       },
       {
         id: 2,
@@ -320,31 +322,33 @@ echo "✅ Deployment completed successfully"`
           'Generate security report',
           'Export results to JSON'
         ],
-        script: `#!/usr/bin/env python3
-import subprocess
-import json
-import sys
-
-def scan_image(image_name):
-    """Scan Docker image for vulnerabilities"""
-    print("🔍 Scanning image: {}".format(image_name))
-    
-    # Run Trivy scan
-    result = subprocess.run([
-        'trivy', 'image', '--format', 'json', image_name
-    ], capture_output=True, text=True)
-    
-    if result.returncode != 0:
-        print("❌ Scan failed: {}".format(result.stderr))
-        return False
-    
-    scan_data = json.loads(result.stdout)
-    print("✅ Scan completed. Found {} issues".format(len(scan_data)))
-    return scan_data
-
-if __name__ == "__main__":
-    image = sys.argv[1] if len(sys.argv) > 1 else "nginx:latest"
-    scan_image(image)`
+        script: [
+          '#!/usr/bin/env python3',
+          'import subprocess',
+          'import json',
+          'import sys',
+          '',
+          'def scan_image(image_name):',
+          '    """Scan Docker image for vulnerabilities"""',
+          '    print("🔍 Scanning image: {}".format(image_name))',
+          '    ',
+          '    # Run Trivy scan',
+          '    result = subprocess.run([',
+          '        \'trivy\', \'image\', \'--format\', \'json\', image_name',
+          '    ], capture_output=True, text=True)',
+          '    ',
+          '    if result.returncode != 0:',
+          '        print("❌ Scan failed: {}".format(result.stderr))',
+          '        return False',
+          '    ',
+          '    scan_data = json.loads(result.stdout)',
+          '    print("✅ Scan completed. Found {} issues".format(len(scan_data)))',
+          '    return scan_data',
+          '',
+          'if __name__ == "__main__":',
+          '    image = sys.argv[1] if len(sys.argv) > 1 else "nginx:latest"',
+          '    scan_image(image)'
+        ].join('\n')
       },
       {
         id: 3,
@@ -367,47 +371,49 @@ if __name__ == "__main__":
           'Monitor resource usage',
           'Send alerts if needed'
         ],
-        script: `package main
-
-import (
-    "fmt"
-    "net/http"
-    "time"
-)
-
-type HealthChecker struct {
-    Name string
-    URL  string
-}
-
-func (hc *HealthChecker) Check() error {
-    client := &http.Client{Timeout: 5 * time.Second}
-    resp, err := client.Get(hc.URL)
-    if err != nil {
-        return fmt.Errorf("health check failed: %v", err)
-    }
-    defer resp.Body.Close()
-    
-    if resp.StatusCode != http.StatusOK {
-        return fmt.Errorf("unexpected status: %d", resp.StatusCode)
-    }
-    return nil
-}
-
-func main() {
-    checkers := []HealthChecker{
-        {"API", "http://localhost:8000/health"},
-        {"Database", "http://localhost:5432/health"},
-    }
-    
-    for _, checker := range checkers {
-        if err := checker.Check(); err != nil {
-            fmt.Printf("❌ %s: %v\\n", checker.Name, err)
-        } else {
-            fmt.Printf("✅ %s: healthy\\n", checker.Name)
-        }
-    }
-}`
+        script: [
+          'package main',
+          '',
+          'import (',
+          '    "fmt"',
+          '    "net/http"',
+          '    "time"',
+          ')',
+          '',
+          'type HealthChecker struct {',
+          '    Name string',
+          '    URL  string',
+          '}',
+          '',
+          'func (hc *HealthChecker) Check() error {',
+          '    client := &http.Client{Timeout: 5 * time.Second}',
+          '    resp, err := client.Get(hc.URL)',
+          '    if err != nil {',
+          '        return fmt.Errorf("health check failed: %v", err)',
+          '    }',
+          '    defer resp.Body.Close()',
+          '    ',
+          '    if resp.StatusCode != http.StatusOK {',
+          '        return fmt.Errorf("unexpected status: %d", resp.StatusCode)',
+          '    }',
+          '    return nil',
+          '}',
+          '',
+          'func main() {',
+          '    checkers := []HealthChecker{',
+          '        {"API", "http://localhost:8000/health"},',
+          '        {"Database", "http://localhost:5432/health"},',
+          '    }',
+          '    ',
+          '    for _, checker := range checkers {',
+          '        if err := checker.Check(); err != nil {',
+          '            fmt.Printf("❌ %s: %v\\n", checker.Name, err)',
+          '        } else {',
+          '            fmt.Printf("✅ %s: healthy\\n", checker.Name)',
+          '        }',
+          '    }',
+          '}'
+        ].join('\n')
       }
     ])
 

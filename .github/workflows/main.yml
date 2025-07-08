@@ -447,36 +447,4 @@ jobs:
             docker push linkops/$service_name:latest
           done
 
-  # TODO: Uncomment when AKS cluster is ready
-  # deploy-helm:
-  #   name: Deploy Helm Charts
-  #   runs-on: ubuntu-latest
-  #   needs: [build-and-push]
-  #   if: github.ref == 'refs/heads/main'
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v4
-
-  #     # Azure Login
-  #     - name: Azure Login
-  #       uses: azure/login@v1
-  #       with:
-  #         creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-  #     - name: Install Helm
-  #       uses: azure/setup-helm@v3
-  #       with:
-  #         version: v3.12.0
-
-  #     - name: Package linkops chart
-  #       run: |
-  #         cd helm/linkops
-  #         helm dependency update
-  #         helm package .
-  #         mv linkops-*.tgz ../../
-
-  #     - name: Upload Helm package
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: linkops-chart
-  #         path: linkops-*.tgz
+# TODO: Add deploy-helm job back when AKS cluster is ready
