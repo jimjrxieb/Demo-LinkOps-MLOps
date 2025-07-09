@@ -1,28 +1,31 @@
+import argparse
 import os
 import re
 import subprocess
-import argparse
 
 YAML_EXTENSIONS = (".yaml", ".yml")
 
 
-def find_yaml_files(exclude_github_actions=False):
+def find_yaml_files(exclude_github_actions=False, exclude_workflows=False):
     """Find all YAML files, optionally excluding GitHub Actions workflows"""
     github_actions_files = []
     regular_files = []
-    
+
     for root, _, files in os.walk("."):
         for file in files:
             if file.endswith(YAML_EXTENSIONS):
                 filepath = os.path.join(root, file)
-                
+
                 # Check if it's a GitHub Actions workflow
-                if "/.github/workflows/" in filepath or "\\.github\\workflows\\" in filepath:
-                    if not exclude_github_actions:
+                if (
+                    "/.github/workflows/" in filepath
+                    or "\\.github\\workflows\\" in filepath
+                ):
+                    if not exclude_github_actions and not exclude_workflows:
                         github_actions_files.append(filepath)
                 else:
                     regular_files.append(filepath)
-    
+
     # Return regular files first, then GitHub Actions files (if not excluded)
     return regular_files + github_actions_files
 
@@ -61,13 +64,19 @@ def fix_github_actions_formatting(lines):
                 if abs(leading_spaces - correct_indent) > 1:
                     fixed_line = " " * correct_indent + content
                     fixed_lines.append(fixed_line)
-                    print(f"  🔧 Fixed 'with:' indentation: {leading_spaces} → {correct_indent} spaces")
+                    print(
+                        f"  🔧 Fixed 'with:' indentation: {leading_spaces} → {correct_indent} spaces"
+                    )
                     i += 1
                     continue
 
         # CONSERVATIVE: Only fix properties under 'with:' if severely wrong
-        elif (":" in content and not content.startswith("#") and i > 0 
-              and lines[i - 1].strip() == "with:"):
+        elif (
+            ":" in content
+            and not content.startswith("#")
+            and i > 0
+            and lines[i - 1].strip() == "with:"
+        ):
             # Properties under 'with:' should be indented 2 more spaces than 'with:'
             with_line_indent = len(lines[i - 1]) - len(lines[i - 1].lstrip())
             correct_indent = with_line_indent + 2
@@ -75,7 +84,9 @@ def fix_github_actions_formatting(lines):
             if abs(leading_spaces - correct_indent) > 1:
                 fixed_line = " " * correct_indent + content
                 fixed_lines.append(fixed_line)
-                print(f"  🔧 Fixed 'with:' property indentation: {leading_spaces} → {correct_indent} spaces")
+                print(
+                    f"  🔧 Fixed 'with:' property indentation: {leading_spaces} → {correct_indent} spaces"
+                )
                 i += 1
                 continue
 
@@ -89,20 +100,20 @@ def fix_github_actions_formatting(lines):
 def fix_bash_syntax(line):
     """Fix common bash syntax issues in YAML run blocks - CONSERVATIVE VERSION"""
     original = line
-    
+
     # ONLY fix obvious double bracket spacing issues
     # Fix: [[-z to [[ -z (missing space after [[)
-    line = re.sub(r'\[\[([^\s])', r'[[ \1', line)
-    
+    line = re.sub(r"\[\[([^\s])", r"[[ \1", line)
+
     # Fix: -z"]] to -z "]] (missing space before ]])
-    line = re.sub(r'([^\s])\]\]', r'\1 ]]', line)
-    
+    line = re.sub(r"([^\s])\]\]", r"\1 ]]", line)
+
     # Fix: [[ -z"var" ]] to [[ -z "$var" ]] (missing space around quotes)
     line = re.sub(r'\[\[\s*([^"]*)"([^"]*)"([^]]*)\]\]', r'[[ \1 "\2" \3]]', line)
-    
+
     if line != original:
         print(f"  🔧 Fixed bash syntax: '{original.strip()}' → '{line.strip()}'")
-    
+
     return line
 
 
@@ -126,11 +137,15 @@ def fix_indentation_errors(lines):
         if content.startswith("- "):  # List items
             # Only fix if indentation is odd number (clearly wrong)
             if leading_spaces % 2 == 1:
-                fixed_indent = leading_spaces + 1 if leading_spaces % 2 == 1 else leading_spaces
+                fixed_indent = (
+                    leading_spaces + 1 if leading_spaces % 2 == 1 else leading_spaces
+                )
                 fixed_line = " " * fixed_indent + content
                 fixed_lines.append(fixed_line)
                 if fixed_line != original_line:
-                    print(f"  🔧 Fixed list indentation: {leading_spaces} → {fixed_indent} spaces")
+                    print(
+                        f"  🔧 Fixed list indentation: {leading_spaces} → {fixed_indent} spaces"
+                    )
                 continue
 
         # Keep original line if no fixes applied
@@ -148,9 +163,13 @@ def fix_github_actions_structure(lines):
         leading_spaces = len(line) - len(line.lstrip())
 
         # CONSERVATIVE: Only fix obvious missing dashes in steps
-        if (content.startswith("uses:") and not content.startswith("- uses:") and 
-            i > 0 and "steps:" in "".join(lines[max(0, i - 5):i])):
-            
+        if (
+            content.startswith("uses:")
+            and not content.startswith("- uses:")
+            and i > 0
+            and "steps:" in "".join(lines[max(0, i - 5) : i])
+        ):
+
             # Check if we're clearly in a steps section and missing dash
             in_steps = False
             for j in range(i - 1, max(0, i - 10), -1):
@@ -159,7 +178,7 @@ def fix_github_actions_structure(lines):
                     break
                 elif lines[j].lstrip().startswith(("jobs:", "name:", "on:")):
                     break
-            
+
             if in_steps:
                 fixed_line = " " * (leading_spaces - 2) + "- " + content
                 fixed_lines.append(fixed_line)
@@ -188,7 +207,7 @@ def clean_yaml_file(filepath, conservative_mode=False):
 
     # Apply general indentation fixes
     if not conservative_mode:
-    lines = fix_indentation_errors(lines)
+        lines = fix_indentation_errors(lines)
 
     # Apply GitHub Actions specific fixes
     if is_github_actions:
@@ -202,7 +221,9 @@ def clean_yaml_file(filepath, conservative_mode=False):
             if "run:" in line and i + 1 < len(lines):
                 # Look for bash syntax issues in subsequent lines
                 j = i + 1
-                while j < len(lines) and (lines[j].startswith(" ") or not lines[j].strip()):
+                while j < len(lines) and (
+                    lines[j].startswith(" ") or not lines[j].strip()
+                ):
                     if lines[j].strip() and "[" in lines[j]:
                         fixed_bash = fix_bash_syntax(lines[j])
                         lines[j] = fixed_bash
@@ -294,53 +315,84 @@ def auto_fix_remaining_issues(filepath):
 
 def main():
     parser = argparse.ArgumentParser(description="Fix YAML linting issues")
-    parser.add_argument("--exclude-github-actions", action="store_true", 
-                       help="Exclude GitHub Actions workflow files")
-    parser.add_argument("--github-actions-last", action="store_true",
-                       help="Process GitHub Actions workflow files last")
+    parser.add_argument(
+        "--exclude-github-actions",
+        action="store_true",
+        help="Exclude GitHub Actions workflow files",
+    )
+    parser.add_argument(
+        "--exclude-workflows",
+        action="store_true",
+        help="Exclude all workflow files (same as --exclude-github-actions)",
+    )
+    parser.add_argument(
+        "--include-workflows",
+        action="store_true",
+        help="Include GitHub Actions workflow files (default: excluded)",
+    )
     args = parser.parse_args()
 
     print(f"📂 Scanning YAML files for indentation and formatting issues...\n")
-    
-    if args.exclude_github_actions:
+
+    # Default behavior: exclude GitHub Actions workflows unless explicitly included
+    exclude_workflows = not args.include_workflows
+
+    if args.exclude_github_actions or args.exclude_workflows:
+        exclude_workflows = True
         print("⚠️  Excluding GitHub Actions workflow files from processing")
-    elif args.github_actions_last:
-        print("🔄 Processing GitHub Actions workflow files last with conservative fixes")
+    elif args.include_workflows:
+        exclude_workflows = False
+        print("🔄 Including GitHub Actions workflow files with conservative fixes")
+    else:
+        print(
+            "🔄 Processing GitHub Actions workflow files last with conservative fixes (default)"
+        )
 
     all_clean = True
     processed_files = []
 
     # Get files in appropriate order
-    if args.github_actions_last:
+    if not exclude_workflows:
         # Process regular files first, then GitHub Actions files
         regular_files = []
         github_actions_files = []
-        
-        for filepath in find_yaml_files(exclude_github_actions=False):
+
+        for filepath in find_yaml_files(
+            exclude_github_actions=False, exclude_workflows=False
+        ):
             if is_github_actions_file(filepath):
                 github_actions_files.append(filepath)
             else:
                 regular_files.append(filepath)
-        
+
         files_to_process = regular_files + github_actions_files
-        
+
         if github_actions_files:
             print(f"📋 Processing order:")
             print(f"  1. Regular YAML files: {len(regular_files)} files")
-            print(f"  2. GitHub Actions workflows: {len(github_actions_files)} files (conservative mode)")
+            print(
+                f"  2. GitHub Actions workflows: {len(github_actions_files)} files (conservative mode)"
+            )
             print()
     else:
-        files_to_process = find_yaml_files(exclude_github_actions=args.exclude_github_actions)
+        files_to_process = find_yaml_files(
+            exclude_github_actions=True, exclude_workflows=True
+        )
+        print(f"📋 Processing only regular YAML files: {len(files_to_process)} files")
 
     for filepath in files_to_process:
         print(f"{'='*60}")
-        
+
         # Mark when we switch to GitHub Actions files
-        if (args.github_actions_last and is_github_actions_file(filepath) and 
-            processed_files and not is_github_actions_file(processed_files[-1][0])):
+        if (
+            not exclude_workflows
+            and is_github_actions_file(filepath)
+            and processed_files
+            and not is_github_actions_file(processed_files[-1][0])
+        ):
             print("🔄 Switching to GitHub Actions workflows (conservative mode)")
             print(f"{'='*60}")
-        
+
         # First pass: clean and fix known issues
         clean_yaml_file(filepath, conservative_mode=is_github_actions_file(filepath))
 
@@ -363,9 +415,11 @@ def main():
 
     clean_count = sum(1 for _, is_clean in processed_files if is_clean)
     total_count = len(processed_files)
-    
+
     # Separate counts for different file types
-    github_actions_count = sum(1 for filepath, _ in processed_files if is_github_actions_file(filepath))
+    github_actions_count = sum(
+        1 for filepath, _ in processed_files if is_github_actions_file(filepath)
+    )
     regular_count = total_count - github_actions_count
 
     for filepath, is_clean in processed_files:
@@ -383,14 +437,18 @@ def main():
     else:
         print("⚠️  Some files still have issues that need manual attention.")
         print("\nRecommended next steps:")
-        print("  1. For GitHub Actions workflows: Review changes carefully before committing")
+        print(
+            "  1. For GitHub Actions workflows: Review changes carefully before committing"
+        )
         print("  2. Test workflow syntax using 'gh workflow view' if available")
-        print("  3. For complex issues, consider using '--exclude-github-actions' flag")
+        print("  3. For complex issues, consider using '--exclude-workflows' flag")
         print("  4. Manual fixes may be needed for complex nested structures")
 
     print(f"\n💡 Usage tips:")
-    print(f"  • To exclude GitHub Actions: python3 fix_yamllint.py --exclude-github-actions")
-    print(f"  • To process GitHub Actions last: python3 fix_yamllint.py --github-actions-last")
+    print(f"  • Default: Excludes GitHub Actions workflows (safe)")
+    print(f"  • To include workflows: python3 fix_yamllint.py --include-workflows")
+    print(f"  • To exclude workflows: python3 fix_yamllint.py --exclude-workflows")
+    print(f"  • To process workflows last: python3 fix_yamllint.py --include-workflows")
 
 
 if __name__ == "__main__":

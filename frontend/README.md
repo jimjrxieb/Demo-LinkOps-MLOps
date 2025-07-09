@@ -1,348 +1,288 @@
-# LinkOps Frontend Microservice
+# LinkOps Frontend - MLOps Command Center
 
-A Vue 3-based frontend microservice for the LinkOps AI Command Center, featuring a holographic sci-fi interface.
+A modern, sci-fi themed Vue.js frontend for the LinkOps MLOps platform, featuring a holographic UI design with real-time monitoring, pipeline management, and security auditing capabilities.
 
 ## 🚀 Features
 
-- **Holographic UI Design** - Sci-fi themed interface with glowing effects
-- **Vue 3 + Composition API** - Modern reactive framework
-- **Tailwind CSS** - Utility-first styling
-- **GSAP Animations** - Smooth, professional animations
-- **Microservice Architecture** - Independent deployment
-- **Kubernetes Ready** - Full K8s deployment support
-- **ArgoCD Compatible** - GitOps deployment workflow
+- **Sci-Fi Holographic UI**: Neon/glow effects with futuristic design
+- **Real-time Dashboard**: Monitor orbs, runes, and system status
+- **Whis Pipeline**: Visual MLOps data processing workflow
+- **Security Audit**: Comprehensive repository analysis
+- **Responsive Design**: Works on desktop and mobile devices
+- **State Management**: Pinia store for global state
+- **Modern Vue 3**: Composition API and latest features
 
 ## 📁 Project Structure
 
 ```
 frontend/
-├── Dockerfile              # Multi-stage production build
-├── nginx.conf              # Nginx configuration for serving
-├── vite.config.js          # Vite build configuration
+├── App.vue                 # Main app component with navigation
+├── main.js                 # Vue app entry point
+├── index.html              # HTML template
 ├── package.json            # Dependencies and scripts
-├── public/                 # Static assets
-├── src/
-│   ├── assets/             # Images, fonts, styles
-│   ├── components/         # Reusable Vue components
-│   ├── views/              # Page components
-│   ├── router/             # Vue Router configuration
-│   ├── stores/             # Pinia state management
-│   ├── shadows/           # API service layer
-│   └── App.vue             # Root component
-└── README.md               # This file
+├── vite.config.js          # Vite configuration
+├── postcss.config.js       # PostCSS configuration
+├── tailwind.config.js      # Tailwind CSS configuration
+├── router/
+│   └── index.js           # Vue Router configuration
+├── views/
+│   ├── Dashboard.vue      # Main dashboard view
+│   ├── Whis.vue          # Whis pipeline view
+│   ├── Audit.vue         # Security audit view
+│   └── NotFound.vue      # 404 error page
+├── components/
+│   ├── OrbCard.vue       # Individual orb display
+│   ├── RuneCard.vue      # Available runes display
+│   ├── FicknurySearch.vue # Search functionality
+│   ├── WhisPipeline.vue  # Pipeline visualization
+│   ├── AuditInput.vue    # Repository input form
+│   └── AuditResults.vue  # Audit results display
+├── assets/
+│   └── holo-theme.css    # Holographic theme styles
+└── store/
+    └── index.js          # Pinia store for state management
 ```
 
-## 🛠 Development
+## 🛠️ Setup & Installation
 
 ### Prerequisites
 
-- Node.js 18+
+- Node.js 18+ 
 - npm 8+
 
-### Local Development
+### Installation
 
-```bash
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-
-# Build for production
-npm run build
-
-# Preview production build
-npm run preview
-
-# Run linting
-npm run lint
-
-# Run tests
-npm run test
-```
-
-### Environment Variables
-
-Create `.env.local` for local development:
-
-```env
-VITE_API_BASE_URL=http://localhost:8000
-VITE_WHIS_URL=http://localhost:8001
-VITE_JAMES_URL=http://localhost:8002
-VITE_SANITIZER_URL=http://localhost:8003
-VITE_DATA_COLLECTOR_URL=http://localhost:8004
-```
-
-## 🐳 Docker Deployment
-
-### Build Image
-
-```bash
-# Build production image
-docker build -t linkopsacr.azurecr.io/frontend:latest .
-
-# Run locally
-docker run -p 80:80 linkopsacr.azurecr.io/frontend:latest
-```
-
-### Multi-stage Build
-
-The Dockerfile uses a multi-stage build:
-1. **Builder stage** - Compiles Vue.js application
-2. **Production stage** - Nginx serves static files
-
-## ☸️ Kubernetes Deployment
-
-### Prerequisites
-
-- AKS cluster with NGINX ingress controller
-- Azure Container Registry (ACR)
-- ArgoCD (optional)
-
-### Deploy to Kubernetes
-
-```bash
-# Apply all resources
-kubectl apply -k infrastructure/k8s/base/
-
-# Check deployment status
-kubectl get pods -n linkops
-kubectl get services -n linkops
-kubectl get ingress -n linkops
-```
-
-### Access the Application
-
-After deployment, access via:
-- **Primary**: `http://linkops.local`
-- **Alternative**: `http://www.linkops.local`
-
-## 🔧 Configuration
-
-### Nginx Configuration
-
-The `nginx.conf` includes:
-- Gzip compression
-- Security headers
-- Static asset caching
-- Vue Router history mode support
-- Health check endpoint
-- API proxy configuration
-
-### Vite Configuration
-
-Optimized for production:
-- Code splitting
-- Tree shaking
-- Minification
-- Source map generation (disabled in prod)
-- Manual chunks for vendor libraries
-
-## 📊 Monitoring & Health Checks
-
-### Health Endpoints
-
-- **Application Health**: `GET /health`
-- **Readiness Probe**: `GET /`
-- **Liveness Probe**: `GET /`
-
-### Kubernetes Probes
-
-```yaml
-livenessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 30
-  periodSeconds: 10
-
-readinessProbe:
-  httpGet:
-    path: /
-    port: 80
-  initialDelaySeconds: 5
-  periodSeconds: 5
-```
-
-## 🔄 CI/CD Pipeline
-
-### GitHub Actions
-
-The `.github/workflows/frontend-build.yml` workflow:
-1. Builds Docker image on push/PR
-2. Pushes to Azure Container Registry
-3. Deploys to AKS (main branch only)
-
-### ArgoCD Integration
-
-The frontend is included in the ArgoCD application:
-- **Path**: `infrastructure/k8s/base/frontend/`
-- **Auto-sync**: Enabled
-- **Self-heal**: Enabled
-
-## 🎨 UI Components
-
-### Core Pages
-
-- **Dashboard** - System overview and monitoring
-- **James** - AI assistant interface
-- **Whis** - Training system management
-- **Agents** - Agent profiles and performance
-- **Login** - Authentication interface
-- **About** - System information and profiles
-
-### Design System
-
-- **Color Palette**: Cyberpunk theme with neon cyan (#00ffff)
-- **Typography**: Futuristic fonts with glowing effects
-- **Animations**: GSAP-powered smooth transitions
-- **Layout**: Responsive grid system with glassmorphism
-
-## 🔌 API Integration
-
-### Service Layer
-
-The `src/shadows/api.js` provides:
-- Centralized API client configuration
-- Service-specific API functions
-- Error handling and retry logic
-- Health check utilities
-
-### Microservice Communication
-
-- **Backend**: Core API endpoints
-- **Whis**: Training and approval workflows
-- **James**: Task submission and AI assistance
-- **Sanitizer**: Data processing
-- **Data Collector**: Data ingestion
-
-## 🚀 Performance Optimization
-
-### Build Optimizations
-
-- **Code Splitting**: Automatic vendor chunk separation
-- **Tree Shaking**: Unused code elimination
-- **Minification**: Terser for JavaScript compression
-- **Asset Optimization**: Image and font optimization
-
-### Runtime Optimizations
-
-- **Lazy Loading**: Route-based code splitting
-- **Caching**: Static asset caching with nginx
-- **Compression**: Gzip compression enabled
-- **CDN Ready**: Static assets optimized for CDN
-
-## 🔒 Security
-
-### Security Headers
-
-```nginx
-add_header X-Frame-Options "SAMEORIGIN" always;
-add_header X-XSS-Protection "1; mode=block" always;
-add_header X-Content-Type-Options "nosniff" always;
-add_header Referrer-Policy "no-referrer-when-downgrade" always;
-add_header Content-Security-Policy "default-src 'self' http: https: data: blob: 'unsafe-inline'" always;
-```
-
-### Best Practices
-
-- Non-root container execution
-- Minimal attack surface
-- Regular security updates
-- Environment variable management
-
-## 🧪 Testing
-
-### Test Commands
-
-```bash
-# Unit tests
-npm run test
-
-# UI tests
-npm run test:ui
-
-# Coverage report
-npm run test:coverage
-
-# Type checking
-npm run type-check
-```
-
-### Test Coverage
-
-- Component unit tests
-- API service tests
-- Integration tests
-- E2E tests (planned)
-
-## 📈 Scaling
-
-### Horizontal Scaling
-
-```bash
-# Scale frontend deployment
-kubectl scale deployment frontend --replicas=5 -n linkops
-
-# Auto-scaling (HPA)
-kubectl apply -f infrastructure/k8s/base/frontend/hpa.yaml
-```
-
-### Load Balancing
-
-- Kubernetes Service load balancing
-- NGINX ingress controller
-- Session affinity support
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-1. **Build Failures**
+1. **Install dependencies:**
    ```bash
-   # Clear node_modules and reinstall
-   rm -rf node_modules package-lock.json
    npm install
    ```
 
-2. **Docker Build Issues**
+2. **Start development server:**
    ```bash
-   # Clear Docker cache
-   docker system prune -a
+   npm run dev
    ```
 
-3. **Kubernetes Deployment Issues**
+3. **Build for production:**
    ```bash
-   # Check pod logs
-   kubectl logs deployment/frontend -n linkops
-   
-   # Check pod status
-   kubectl describe pod -l app=frontend -n linkops
+   npm run build
    ```
 
-### Debug Mode
+4. **Preview production build:**
+   ```bash
+   npm run preview
+   ```
 
-Enable debug mode in development:
-```env
-VITE_ENABLE_DEBUG=true
+## 🎨 Design System
+
+### Color Palette
+
+- **Primary**: `#00d4ff` (Cyan)
+- **Secondary**: `#ff00ff` (Magenta)
+- **Accent**: `#00ff88` (Green)
+- **Background**: Dark gradients from `#0a0a0a` to `#16213e`
+- **Text**: `#e0e0e0` (Light gray)
+
+### Typography
+
+- **Font Family**: Orbitron (primary), Courier New (fallback)
+- **Weights**: 400 (regular), 700 (bold), 900 (black)
+
+### Components
+
+#### Cards
+- Holographic borders with glow effects
+- Hover animations with transform and shadow
+- Backdrop blur for depth
+
+#### Buttons
+- Gradient backgrounds
+- Hover effects with transform
+- Icon + text combinations
+
+#### Status Indicators
+- Color-coded severity levels
+- Animated pulse effects
+- Glow shadows
+
+## 🔧 Configuration
+
+### Vite Configuration
+
+The `vite.config.js` includes:
+- Vue plugin
+- Path aliases (`@` and `~`)
+- Development server with proxy
+- Build optimization
+- PostCSS integration
+
+### Tailwind CSS
+
+Tailwind CSS v4 is configured with:
+- Custom color palette
+- Responsive breakpoints
+- Custom utilities for holographic effects
+
+### PostCSS
+
+PostCSS is configured with:
+- Tailwind CSS plugin
+- Autoprefixer
+- Custom plugins for advanced CSS features
+
+## 📱 Responsive Design
+
+The application is fully responsive with:
+- Mobile-first approach
+- Flexible grid layouts
+- Adaptive navigation
+- Touch-friendly interactions
+
+### Breakpoints
+
+- **Mobile**: < 768px
+- **Tablet**: 768px - 1024px
+- **Desktop**: > 1024px
+
+## 🔄 State Management
+
+### Pinia Store
+
+The main store (`store/index.js`) manages:
+
+- **System Status**: Online/offline, active jobs, errors
+- **Orbs**: Active tasks and their status
+- **Runes**: Available tools and their costs
+- **Whis Pipeline**: Processing state and results
+- **Audit Results**: Security scan findings
+- **Search**: Query and filter state
+- **UI State**: Sidebar, theme, notifications
+
+### Store Actions
+
+- `addOrb()` / `updateOrb()` / `removeOrb()`
+- `activateRune()`
+- `startWhisPipeline()`
+- `runAudit()`
+- `performSearch()`
+- `addNotification()`
+
+## 🎯 Key Components
+
+### Dashboard View
+- System status overview
+- Active orbs grid
+- Available runes
+- Quick actions
+- Search functionality
+
+### Whis Pipeline View
+- Visual pipeline steps
+- Real-time processing
+- Configuration options
+- Results display
+
+### Audit View
+- Repository input
+- Security scanning
+- Results analysis
+- Export functionality
+
+## 🚀 Performance
+
+### Optimizations
+
+- **Code Splitting**: Route-based lazy loading
+- **Tree Shaking**: Unused code elimination
+- **Asset Optimization**: Image and CSS minification
+- **Caching**: Browser and service worker caching
+
+### Bundle Analysis
+
+- Vendor chunks for Vue and utilities
+- Component-level code splitting
+- Optimized imports
+
+## 🔒 Security
+
+### Best Practices
+
+- Input sanitization
+- XSS prevention
+- CSRF protection
+- Secure headers
+
+### Audit Features
+
+- Dependency vulnerability scanning
+- Code quality analysis
+- Secret detection
+- Security score calculation
+
+## 🧪 Testing
+
+### Available Scripts
+
+```bash
+npm run test          # Run unit tests
+npm run test:ui       # Run tests with UI
+npm run test:coverage # Run tests with coverage
 ```
 
-## 📚 Resources
+### Testing Strategy
 
-- [Vue 3 Documentation](https://vuejs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [GSAP Documentation](https://greensock.com/docs/)
-- [Kubernetes Documentation](https://kubernetes.io/docs/)
+- Unit tests for components
+- Integration tests for store
+- E2E tests for critical flows
+- Visual regression testing
+
+## 📦 Deployment
+
+### Build Process
+
+1. **Development**: `npm run dev`
+2. **Staging**: `npm run build:staging`
+3. **Production**: `npm run build`
+
+### Docker Support
+
+```dockerfile
+FROM node:18-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "run", "preview"]
+```
 
 ## 🤝 Contributing
 
+### Development Workflow
+
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+3. Make changes with tests
+4. Submit a pull request
+
+### Code Style
+
+- ESLint configuration
+- Prettier formatting
+- Vue 3 Composition API
+- TypeScript support
 
 ## 📄 License
 
-This project is part of the LinkOps platform and follows the same licensing terms. 
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For support and questions:
+- Create an issue on GitHub
+- Check the documentation
+- Review the troubleshooting guide
+
+---
+
+**Built with ❤️ for the LinkOps MLOps Platform** 

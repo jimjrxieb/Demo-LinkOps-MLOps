@@ -2,6 +2,7 @@
 """
 Frontend Auto-Fix Script for LinkOps-MLOps
 Automatically fixes common ESLint warnings and build issues in Vue.js frontend
+Updated for new frontend structure with authentication and demo mode
 """
 
 import json
@@ -20,6 +21,130 @@ def run_command(cmd, cwd=None):
         return result.returncode == 0, result.stdout, result.stderr
     except Exception as e:
         return False, "", str(e)
+
+
+def fix_npm_ci_errors(frontend_dir):
+    """Fix npm ci errors by syncing package-lock.json with package.json"""
+    print("🔧 Checking for npm ci sync issues...")
+
+    # First, try to run npm ci to see if there are sync issues
+    success, stdout, stderr = run_command("npm ci", cwd=frontend_dir)
+
+    if success:
+        print("  ✅ npm ci completed successfully - no sync issues found")
+        return True
+
+    # Check if the error is related to package-lock.json sync
+    if "package-lock.json" in stderr and "sync" in stderr.lower():
+        print("  🔧 Detected package-lock.json sync issue - attempting to fix...")
+
+        # Remove the existing package-lock.json
+        lock_file = frontend_dir / "package-lock.json"
+        if lock_file.exists():
+            try:
+                lock_file.unlink()
+                print("  🗑️ Removed outdated package-lock.json")
+            except Exception as e:
+                print(f"  ❌ Failed to remove package-lock.json: {e}")
+                return False
+
+        # Run npm install to generate a new package-lock.json
+        print("  📦 Running npm install to generate new package-lock.json...")
+        success, stdout, stderr = run_command("npm install", cwd=frontend_dir)
+
+        if success:
+            print("  ✅ Successfully generated new package-lock.json")
+
+            # Verify the fix by running npm ci again
+            print("  🔍 Verifying fix with npm ci...")
+            success, stdout, stderr = run_command("npm ci", cwd=frontend_dir)
+
+            if success:
+                print("  ✅ npm ci now works correctly!")
+                return True
+            else:
+                print("  ❌ npm ci still failing after package-lock.json regeneration")
+                print(f"  Error: {stderr}")
+                return False
+        else:
+            print("  ❌ Failed to run npm install")
+            print(f"  Error: {stderr}")
+            return False
+
+    # Check for specific dependency version conflicts
+    elif "Invalid: lock file's" in stderr:
+        print("  🔧 Detected dependency version conflicts - attempting to resolve...")
+
+        # Extract the conflicting packages from the error
+        conflicts = []
+        for line in stderr.split("\n"):
+            if "Invalid: lock file's" in line:
+                # Extract package name and version info
+                match = re.search(
+                    r"lock file's (\w+)@([\d.]+) does not satisfy (\w+)@([\d.]+)", line
+                )
+                if match:
+                    package = match.group(1)
+                    lock_version = match.group(2)
+                    required_version = match.group(4)
+                    conflicts.append((package, lock_version, required_version))
+
+        if conflicts:
+            print(f"  📋 Found {len(conflicts)} dependency conflicts:")
+            for package, lock_ver, req_ver in conflicts:
+                print(f"    • {package}: lock has {lock_ver}, needs {req_ver}")
+
+            # Remove package-lock.json and node_modules, then reinstall
+            print("  🧹 Cleaning npm cache and reinstalling...")
+
+            # Remove package-lock.json
+            lock_file = frontend_dir / "package-lock.json"
+            if lock_file.exists():
+                lock_file.unlink()
+                print("  🗑️ Removed package-lock.json")
+
+            # Remove node_modules (optional, but helps with stubborn conflicts)
+            node_modules = frontend_dir / "node_modules"
+            if node_modules.exists():
+                try:
+                    import shutil
+
+                    shutil.rmtree(node_modules)
+                    print("  🗑️ Removed node_modules directory")
+                except Exception as e:
+                    print(f"  ⚠️ Could not remove node_modules: {e}")
+
+            # Clear npm cache
+            print("  🧹 Clearing npm cache...")
+            run_command("npm cache clean --force", cwd=frontend_dir)
+
+            # Reinstall dependencies
+            print("  📦 Reinstalling dependencies...")
+            success, stdout, stderr = run_command("npm install", cwd=frontend_dir)
+
+            if success:
+                print("  ✅ Dependencies reinstalled successfully")
+
+                # Test npm ci again
+                print("  🔍 Testing npm ci...")
+                success, stdout, stderr = run_command("npm ci", cwd=frontend_dir)
+
+                if success:
+                    print("  ✅ npm ci now works correctly!")
+                    return True
+                else:
+                    print("  ❌ npm ci still failing after reinstall")
+                    print(f"  Error: {stderr}")
+                    return False
+            else:
+                print("  ❌ Failed to reinstall dependencies")
+                print(f"  Error: {stderr}")
+                return False
+
+    else:
+        print("  ❌ npm ci failed with unknown error")
+        print(f"  Error: {stderr}")
+        return False
 
 
 def fix_console_statements(file_path, content):
@@ -74,20 +199,24 @@ def fix_unused_variables(file_path, content):
         original_line = line
 
         # Fix unused parameters in catch blocks
-        if re.search(r"catch\s*\(\s*(\w+)\s*\)", line):
-            # Replace 'err' with '_err' to indicate intentionally unused
-            line = re.sub(r"catch\s*\(\s*(\w+)\s*\)", r"catch (_\1)", line)
-            if line != original_line:
+        if "catch (" in line and "error" in line:
+            # Replace unused error parameter with underscore
+            fixed_line = re.sub(r"catch\s*\(\s*error\s*\)", "catch (_error)", line)
+            if fixed_line != original_line:
+                fixed_lines.append(fixed_line)
                 changes_made += 1
+                continue
 
         # Fix unused variables in destructuring
-        if re.search(r"const\s+(\w+)\s*=", line) and "error" in line.lower():
-            # Replace 'error' with '_error' if it appears unused
-            line = re.sub(r"const\s+(error)\s*=", r"const _\1 =", line)
-            if line != original_line:
+        if "const {" in line and "} =" in line:
+            # Add underscore prefix to unused destructured variables
+            fixed_line = re.sub(r"const\s*{\s*([^}]+)\s*}\s*=", r"const {_\1} =", line)
+            if fixed_line != original_line:
+                fixed_lines.append(fixed_line)
                 changes_made += 1
+                continue
 
-        fixed_lines.append(line)
+        fixed_lines.append(original_line)
 
     if changes_made > 0:
         print(f"    ✅ Fixed {changes_made} unused variables")
@@ -96,43 +225,48 @@ def fix_unused_variables(file_path, content):
 
 
 def fix_vue_props(file_path, content):
-    """Fix Vue component prop issues"""
-    if not file_path.endswith(".vue"):
-        return content
-
+    """Fix Vue.js props validation issues"""
     print(f"  🔧 Fixing Vue props in {file_path}")
 
     lines = content.split("\n")
     fixed_lines = []
     changes_made = 0
-    in_props = False
 
-    for i, line in enumerate(lines):
+    for line in lines:
         original_line = line
 
-        # Detect props section
-        if "props:" in line and "{" in line:
-            in_props = True
-        elif in_props and "}" in line and line.strip() == "}":
-            in_props = False
+        # Fix missing required props
+        if "props:" in line and "required:" not in line:
+            # Add required: false for optional props
+            if "type:" in line and "default:" not in line:
+                fixed_line = line.replace("type:", "required: false, type:")
+                fixed_lines.append(fixed_line)
+                changes_made += 1
+                continue
 
-        # Fix props that need default values
-        if in_props and ":" in line and "type:" in line and "default" not in line:
-            # Add default value for common prop types
-            if "String" in line:
-                line = line.rstrip(",") + ",\n" + "    default: ''"
-                changes_made += 1
-            elif "Boolean" in line:
-                line = line.rstrip(",") + ",\n" + "    default: false"
-                changes_made += 1
-            elif "Number" in line:
-                line = line.rstrip(",") + ",\n" + "    default: 0"
-                changes_made += 1
+        # Fix prop type definitions
+        if "type: String" in line and "default:" not in line:
+            fixed_line = line.replace("type: String", "type: String, default: ''")
+            fixed_lines.append(fixed_line)
+            changes_made += 1
+            continue
 
-        fixed_lines.append(line)
+        if "type: Number" in line and "default:" not in line:
+            fixed_line = line.replace("type: Number", "type: Number, default: 0")
+            fixed_lines.append(fixed_line)
+            changes_made += 1
+            continue
+
+        if "type: Boolean" in line and "default:" not in line:
+            fixed_line = line.replace("type: Boolean", "type: Boolean, default: false")
+            fixed_lines.append(fixed_line)
+            changes_made += 1
+            continue
+
+        fixed_lines.append(original_line)
 
     if changes_made > 0:
-        print(f"    ✅ Fixed {changes_made} Vue prop defaults")
+        print(f"    ✅ Fixed {changes_made} Vue props")
 
     return "\n".join(fixed_lines)
 
@@ -141,52 +275,56 @@ def fix_javascript_issues(file_path, content):
     """Fix common JavaScript issues"""
     print(f"  🔧 Fixing JavaScript issues in {file_path}")
 
+    lines = content.split("\n")
+    fixed_lines = []
     changes_made = 0
 
-    # Remove unused imports (basic cleanup)
-    lines = content.split("\n")
-    import_lines = []
-    other_lines = []
-
     for line in lines:
-        if line.strip().startswith("import ") and not line.strip().startswith(
-            "import {"
-        ):
-            # Keep import but check if it's used
-            import_name = re.search(r"import\s+(\w+)", line)
-            if import_name:
-                name = import_name.group(1)
-                # Check if the imported name is used in the file
-                if content.count(name) > 1:  # More than just the import line
-                    import_lines.append(line)
-                else:
-                    import_lines.append(f"// Unused import: {line}")
+        original_line = line
+
+        # Fix missing semicolons
+        if line.strip() and not line.strip().endswith((";", "{", "}", ":", ",")):
+            if not line.strip().startswith(("//", "/*", "*", "import", "export")):
+                # Add semicolon if line doesn't already have one
+                if not line.rstrip().endswith(";"):
+                    fixed_line = line.rstrip() + ";"
+                    fixed_lines.append(fixed_line)
                     changes_made += 1
-            else:
-                import_lines.append(line)
-        else:
-            other_lines.append(line)
+                    continue
+
+        # Fix double quotes to single quotes (optional)
+        if '"' in line and not line.strip().startswith(("//", "/*")):
+            # Only fix simple string literals, not complex ones
+            if re.search(r'"[^"]*"', line) and not re.search(r'"[^"]*"[^"]*"', line):
+                fixed_line = line.replace('"', "'")
+                fixed_lines.append(fixed_line)
+                changes_made += 1
+                continue
+
+        fixed_lines.append(original_line)
 
     if changes_made > 0:
         print(f"    ✅ Fixed {changes_made} JavaScript issues")
-        content = "\n".join(import_lines + other_lines)
 
-    return content
+    return "\n".join(fixed_lines)
 
 
 def process_file(file_path):
-    """Process a single file to fix ESLint issues"""
+    """Process a single file and apply fixes"""
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
 
-        # Apply fixes in sequence
-        content = fix_console_statements(file_path, content)
-        content = fix_unused_variables(file_path, content)
-        content = fix_vue_props(file_path, content)
-        content = fix_javascript_issues(file_path, content)
+        # Apply fixes based on file type
+        if file_path.suffix in [".vue", ".js"]:
+            content = fix_console_statements(file_path, content)
+            content = fix_unused_variables(file_path, content)
+            content = fix_javascript_issues(file_path, content)
+
+        if file_path.suffix == ".vue":
+            content = fix_vue_props(file_path, content)
 
         # Write back if changes were made
         if content != original_content:
@@ -203,108 +341,129 @@ def process_file(file_path):
 
 def find_frontend_files(frontend_dir):
     """Find all frontend files that need processing"""
-    extensions = [".vue", ".js", ".jsx", ".ts", ".tsx"]
-    files = []
+    print("🔍 Scanning for frontend files...")
 
-    for root, dirs, filenames in os.walk(frontend_dir):
-        # Skip node_modules and dist directories
-        dirs[:] = [
-            d for d in dirs if d not in ["node_modules", "dist", "dist-ssr", "coverage"]
-        ]
+    # Updated file patterns for new structure
+    patterns = [
+        "*.vue",  # Vue components
+        "*.js",   # JavaScript files
+        "*.ts",   # TypeScript files (if any)
+    ]
 
-        for filename in filenames:
-            if any(filename.endswith(ext) for ext in extensions):
-                files.append(os.path.join(root, filename))
+    # Updated directories to scan
+    directories = [
+        "",           # Root frontend directory
+        "components", # Components directory
+        "views",      # Views directory
+        "router",     # Router directory
+        "store",      # Store directory
+        "utils",      # Utils directory
+        "assets",     # Assets directory
+    ]
 
-    return files
+    files_to_process = []
+
+    for directory in directories:
+        dir_path = frontend_dir / directory if directory else frontend_dir
+        if dir_path.exists():
+            for pattern in patterns:
+                files = list(dir_path.glob(pattern))
+                files_to_process.extend(files)
+
+    # Remove duplicates and sort
+    files_to_process = sorted(set(files_to_process))
+    
+    print(f"  📁 Found {len(files_to_process)} files to process")
+    return files_to_process
 
 
 def run_eslint_fix(frontend_dir):
-    """Run ESLint with auto-fix"""
+    """Run ESLint auto-fix"""
     print("🔧 Running ESLint auto-fix...")
-    success, stdout, stderr = run_command("npm run lint", cwd=frontend_dir)
-
+    
+    success, stdout, stderr = run_command("npm run lint:fix", cwd=frontend_dir)
+    
     if success:
         print("  ✅ ESLint auto-fix completed successfully")
     else:
-        print("  ⚠️ ESLint completed with warnings")
-        if stdout:
-            print(f"  Output: {stdout[:500]}...")  # Truncate long output
-
+        print("  ⚠️ ESLint auto-fix completed with warnings")
+        print(f"  Output: {stdout}")
+        if stderr:
+            print(f"  Errors: {stderr}")
+    
     return success
 
 
 def test_build(frontend_dir):
-    """Test the frontend build"""
-    print("🏗️ Testing frontend build...")
+    """Test the build process"""
+    print("🏗️ Testing build process...")
+    
     success, stdout, stderr = run_command("npm run build", cwd=frontend_dir)
-
+    
     if success:
-        print("  ✅ Frontend build successful!")
+        print("  ✅ Build test completed successfully")
         return True
     else:
-        print("  ❌ Frontend build failed!")
-        if stderr:
-            print(f"  Error: {stderr}")
-        if stdout:
-            print(f"  Output: {stdout}")
+        print("  ❌ Build test failed")
+        print(f"  Error: {stderr}")
         return False
 
 
 def main():
-    """Main function to fix all frontend issues"""
-    print("🚀 LinkOps Frontend Auto-Fix Tool")
+    """Main function"""
+    print("🚀 LinkOps Frontend Auto-Fix Script")
     print("=" * 50)
 
-    # Set paths
-    script_dir = Path(__file__).parent
-    frontend_dir = script_dir / "frontend"
-
+    # Find frontend directory
+    frontend_dir = Path("frontend")
     if not frontend_dir.exists():
-        print(f"❌ Frontend directory not found: {frontend_dir}")
-        return False
+        print("❌ Frontend directory not found!")
+        return 1
 
-    print(f"📂 Processing frontend directory: {frontend_dir}")
+    print(f"📁 Working in: {frontend_dir.absolute()}")
 
-    # Find all frontend files
+    # Step 1: Fix npm ci issues
+    print("\n1️⃣ Fixing npm ci issues...")
+    npm_success = fix_npm_ci_errors(frontend_dir)
+    
+    if not npm_success:
+        print("❌ Failed to fix npm ci issues")
+        return 1
+
+    # Step 2: Find and process files
+    print("\n2️⃣ Processing frontend files...")
     files = find_frontend_files(frontend_dir)
-    print(f"📁 Found {len(files)} frontend files to process")
-
-    # Process each file
-    fixed_files = 0
+    
+    files_processed = 0
     for file_path in files:
-        relative_path = os.path.relpath(file_path, frontend_dir)
-        print(f"\n🔍 Processing: {relative_path}")
-
         if process_file(file_path):
-            fixed_files += 1
+            files_processed += 1
 
-    print(f"\n📊 Processing complete: {fixed_files}/{len(files)} files modified")
+    print(f"  ✅ Processed {files_processed} files")
 
-    # Run ESLint auto-fix
-    print("\n" + "=" * 50)
-    run_eslint_fix(frontend_dir)
+    # Step 3: Run ESLint auto-fix
+    print("\n3️⃣ Running ESLint auto-fix...")
+    eslint_success = run_eslint_fix(frontend_dir)
 
-    # Test build
-    print("\n" + "=" * 50)
+    # Step 4: Test build
+    print("\n4️⃣ Testing build...")
     build_success = test_build(frontend_dir)
 
     # Summary
     print("\n" + "=" * 50)
-    print("📋 Frontend Fix Summary:")
-    print(f"  • Files processed: {len(files)}")
-    print(f"  • Files modified: {fixed_files}")
-    print(f"  • ESLint auto-fix: ✅ Completed")
-    print(f"  • Build test: {'✅ Success' if build_success else '❌ Failed'}")
+    print("📊 Summary:")
+    print(f"  • npm ci: {'✅' if npm_success else '❌'}")
+    print(f"  • Files processed: {files_processed}")
+    print(f"  • ESLint fix: {'✅' if eslint_success else '⚠️'}")
+    print(f"  • Build test: {'✅' if build_success else '❌'}")
 
     if build_success:
-        print("\n🎉 All frontend issues have been resolved!")
-        print("Your frontend is now ready for deployment.")
+        print("\n🎉 Frontend auto-fix completed successfully!")
+        return 0
     else:
-        print("\n⚠️ Some issues remain. Please check the build output above.")
-
-    return build_success
+        print("\n⚠️ Frontend auto-fix completed with issues")
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())

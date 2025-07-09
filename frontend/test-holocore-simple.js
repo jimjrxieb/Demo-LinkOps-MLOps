@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node;
 
 /**
  * HoloCore Simple Integration Test
@@ -7,7 +7,7 @@
 
 const API_BASE = 'http://localhost:8000';
 
-const testCases = [
+const testCases = [;
   {
     name: 'Backend Health Check',
     test: async () => {
@@ -20,14 +20,14 @@ const testCases = [
     test: async () => {
       const taskData = {
         task_id: 'test/holocore-integration',
-        task_description: 'Test HoloCore integration with Vue frontend'
+        task_description: 'Test HoloCore integration with Vue frontend';
       };
       const response = await fetch(`${API_BASE}/api/james/evaluate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(taskData)
+        body: JSON.stringify(taskData);
       });
       const data = await response.json();
       return data && data.detected_category;
@@ -61,7 +61,7 @@ const testCases = [
 
 async function runTests() {
   // Development log removed
-  console.log('=' .repeat(50));
+ // Removed console statement: console.log('=' .repeat(50)
   // Development log removed
   // Development log removed
 
@@ -80,14 +80,14 @@ async function runTests() {
         // Development log removed
         failed++;
       }
-    } catch (error) {
+    } catch (__error) {
       // Development log removed
       failed++;
     }
     // Development log removed
   }
 
-  console.log('=' .repeat(50));
+ // Removed console statement: console.log('=' .repeat(50)
   // Development log removed
   
   if (failed === 0) {
@@ -107,7 +107,7 @@ async function checkBackend() {
   try {
     const response = await fetch(`${API_BASE}/health`);
     return response.status === 200;
-  } catch (error) {
+  } catch (__error) {
     // Development log removed
     return false;
   }

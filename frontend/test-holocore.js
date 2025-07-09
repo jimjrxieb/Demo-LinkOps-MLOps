@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node;
 
 /**
  * HoloCore Integration Test
@@ -10,7 +10,7 @@ import axios from 'axios';
 const API_BASE = 'http://localhost:8000';
 const FRONTEND_URL = 'http://localhost:3000';
 
-const testCases = [
+const testCases = [;
   {
     name: 'Backend Health Check',
     test: async () => {
@@ -23,7 +23,7 @@ const testCases = [
     test: async () => {
       const taskData = {
         task_id: 'test/holocore-integration',
-        task_description: 'Test HoloCore integration with Vue frontend'
+        task_description: 'Test HoloCore integration with Vue frontend';
       };
       const response = await axios.post(`${API_BASE}/api/james/evaluate`, taskData);
       return response.data && response.data.detected_category;
@@ -61,7 +61,7 @@ const testCases = [
 
 async function runTests() {
   // Development log removed
-  console.log('=' .repeat(50));
+ // Removed console statement: console.log('=' .repeat(50)
   // Development log removed
   // Development log removed
   // Development log removed
@@ -81,14 +81,14 @@ async function runTests() {
         // Development log removed
         failed++;
       }
-    } catch (error) {
+    } catch (__error) {
       // Development log removed
       failed++;
     }
     // Development log removed
   }
 
-  console.log('=' .repeat(50));
+ // Removed console statement: console.log('=' .repeat(50)
   // Development log removed
   
   if (failed === 0) {
@@ -108,7 +108,7 @@ async function checkBackend() {
   try {
     await axios.get(`${API_BASE}/health`);
     return true;
-  } catch (error) {
+  } catch (__error) {
     // Development log removed
     return false;
   }
