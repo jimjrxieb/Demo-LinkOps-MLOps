@@ -188,7 +188,7 @@ def clean_yaml_file(filepath, conservative_mode=False):
 
     # Apply general indentation fixes
     if not conservative_mode:
-        lines = fix_indentation_errors(lines)
+    lines = fix_indentation_errors(lines)
 
     # Apply GitHub Actions specific fixes
     if is_github_actions:
