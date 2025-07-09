@@ -23,6 +23,127 @@ def run_command(cmd, cwd=None):
         return False, "", str(e)
 
 
+def fix_vite_config_syntax(file_path):
+    """Fix common Vite config syntax errors"""
+    print(f"  🔧 Checking Vite config syntax in {file_path}")
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        original_content = content
+        changes_made = 0
+        
+        # Fix extra semicolons in object properties
+        # Pattern: 'value'; -> 'value'
+        content = re.sub(r"'([^']+)';", r"'\1'", content)
+        content = re.sub(r'"([^"]+)";', r'"\1"', content)
+        
+        # Fix extra semicolons in array items
+        # Pattern: 'item'; -> 'item'
+        content = re.sub(r"'([^']+)',\s*;", r"'\1',", content)
+        content = re.sub(r'"([^"]+)",\s*;', r'"\1",', content)
+        
+        # Fix trailing semicolons in object properties
+        content = re.sub(r':\s*([^,}]+);\s*([,}])', r': \1\2', content)
+        
+        # Fix missing commas in object properties
+        content = re.sub(r"'([^']+)'\s*\n\s*'([^']+)'", r"'\1',\n      '\2'", content)
+        content = re.sub(r'"([^"]+)"\s*\n\s*"([^"]+)"', r'"\1",\n      "\2"', content)
+        
+        # Fix function calls with extra semicolons
+        content = re.sub(r'\(\s*([^)]+)\s*\)\s*;', r'(\1)', content)
+        
+        if content != original_content:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            print(f"    ✅ Fixed Vite config syntax errors")
+            return True
+        
+        return False
+        
+    except Exception as e:
+        print(f"    ❌ Error fixing Vite config: {e}")
+        return False
+
+
+def fix_package_json_scripts(file_path):
+    """Fix missing scripts in package.json"""
+    print(f"  🔧 Checking package.json scripts in {file_path}")
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        
+        original_data = json.dumps(data, indent=2)
+        changes_made = 0
+        
+        # Ensure lint:fix script exists
+        if 'scripts' in data:
+            scripts = data['scripts']
+            
+            # Add lint:fix if it doesn't exist
+            if 'lint' in scripts and 'lint:fix' not in scripts:
+                lint_cmd = scripts['lint']
+                if '--fix' not in lint_cmd:
+                    scripts['lint:fix'] = lint_cmd + ' --fix'
+                    changes_made += 1
+                    print(f"    ✅ Added lint:fix script")
+            
+            # Ensure lint script doesn't have --fix flag
+            if 'lint' in scripts and '--fix' in scripts['lint']:
+                scripts['lint'] = scripts['lint'].replace(' --fix', '')
+                changes_made += 1
+                print(f"    ✅ Fixed lint script (removed --fix flag)")
+        
+        if changes_made > 0:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                json.dump(data, f, indent=2)
+            return True
+        
+        return False
+        
+    except Exception as e:
+        print(f"    ❌ Error fixing package.json: {e}")
+        return False
+
+
+def fix_eslint_config(file_path):
+    """Fix ESLint configuration issues"""
+    print(f"  🔧 Checking ESLint config in {file_path}")
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        
+        original_content = content
+        changes_made = 0
+        
+        # Fix common ESLint config issues
+        if 'extends' in content and 'vue' not in content:
+            # Add Vue ESLint plugin if missing
+            if 'plugins' not in content:
+                content = content.replace('extends: [', 'plugins: ["vue"],\n  extends: [')
+                changes_made += 1
+        
+        # Fix parser options for Vue files
+        if 'parserOptions' in content and 'ecmaVersion' not in content:
+            content = content.replace('parserOptions: {', 'parserOptions: {\n      ecmaVersion: 2020,')
+            changes_made += 1
+        
+        if changes_made > 0:
+            with open(file_path, 'w', encoding='utf-8') as f:
+                f.write(content)
+            print(f"    ✅ Fixed ESLint configuration")
+            return True
+        
+        return False
+        
+    except Exception as e:
+        print(f"    ❌ Error fixing ESLint config: {e}")
+        return False
+
+
 def fix_npm_ci_errors(frontend_dir):
     """Fix npm ci errors by syncing package-lock.json with package.json"""
     print("🔧 Checking for npm ci sync issues...")
@@ -381,6 +502,11 @@ def run_eslint_fix(frontend_dir):
     """Run ESLint auto-fix"""
     print("🔧 Running ESLint auto-fix...")
     
+    # First check if lint:fix script exists
+    package_json = frontend_dir / "package.json"
+    if package_json.exists():
+        fix_package_json_scripts(package_json)
+    
     success, stdout, stderr = run_command("npm run lint:fix", cwd=frontend_dir)
     
     if success:
@@ -395,17 +521,46 @@ def run_eslint_fix(frontend_dir):
 
 
 def test_build(frontend_dir):
-    """Test the build process"""
+    """Test the build process with error recovery"""
     print("🏗️ Testing build process...")
     
+    # First fix any Vite config issues
+    vite_config = frontend_dir / "vite.config.js"
+    if vite_config.exists():
+        fix_vite_config_syntax(vite_config)
+    
+    # Try the build
     success, stdout, stderr = run_command("npm run build", cwd=frontend_dir)
     
     if success:
         print("  ✅ Build test completed successfully")
         return True
     else:
-        print("  ❌ Build test failed")
+        print("  ❌ Build test failed - attempting error recovery...")
         print(f"  Error: {stderr}")
+        
+        # Try to fix common build errors
+        if "Expected" in stderr and "but found" in stderr:
+            print("  🔧 Detected syntax error - attempting to fix...")
+            
+            # Re-fix Vite config
+            if vite_config.exists():
+                if fix_vite_config_syntax(vite_config):
+                    print("  🔄 Retrying build after syntax fix...")
+                    success, stdout, stderr = run_command("npm run build", cwd=frontend_dir)
+                    if success:
+                        print("  ✅ Build successful after syntax fix!")
+                        return True
+        
+        # Check for missing dependencies
+        if "Cannot find module" in stderr:
+            print("  🔧 Detected missing dependencies - reinstalling...")
+            run_command("npm install", cwd=frontend_dir)
+            success, stdout, stderr = run_command("npm run build", cwd=frontend_dir)
+            if success:
+                print("  ✅ Build successful after dependency reinstall!")
+                return True
+        
         return False
 
 
@@ -422,16 +577,40 @@ def main():
 
     print(f"📁 Working in: {frontend_dir.absolute()}")
 
-    # Step 1: Fix npm ci issues
-    print("\n1️⃣ Fixing npm ci issues...")
+    # Step 1: Fix configuration files
+    print("\n1️⃣ Fixing configuration files...")
+    config_fixes = 0
+    
+    # Fix package.json scripts
+    package_json = frontend_dir / "package.json"
+    if package_json.exists():
+        if fix_package_json_scripts(package_json):
+            config_fixes += 1
+    
+    # Fix Vite config
+    vite_config = frontend_dir / "vite.config.js"
+    if vite_config.exists():
+        if fix_vite_config_syntax(vite_config):
+            config_fixes += 1
+    
+    # Fix ESLint config
+    eslint_config = frontend_dir / ".eslintrc.js"
+    if eslint_config.exists():
+        if fix_eslint_config(eslint_config):
+            config_fixes += 1
+    
+    print(f"  ✅ Fixed {config_fixes} configuration files")
+
+    # Step 2: Fix npm ci issues
+    print("\n2️⃣ Fixing npm ci issues...")
     npm_success = fix_npm_ci_errors(frontend_dir)
     
     if not npm_success:
         print("❌ Failed to fix npm ci issues")
         return 1
 
-    # Step 2: Find and process files
-    print("\n2️⃣ Processing frontend files...")
+    # Step 3: Find and process files
+    print("\n3️⃣ Processing frontend files...")
     files = find_frontend_files(frontend_dir)
     
     files_processed = 0
@@ -441,17 +620,18 @@ def main():
 
     print(f"  ✅ Processed {files_processed} files")
 
-    # Step 3: Run ESLint auto-fix
-    print("\n3️⃣ Running ESLint auto-fix...")
+    # Step 4: Run ESLint auto-fix
+    print("\n4️⃣ Running ESLint auto-fix...")
     eslint_success = run_eslint_fix(frontend_dir)
 
-    # Step 4: Test build
-    print("\n4️⃣ Testing build...")
+    # Step 5: Test build with error recovery
+    print("\n5️⃣ Testing build...")
     build_success = test_build(frontend_dir)
 
     # Summary
     print("\n" + "=" * 50)
     print("📊 Summary:")
+    print(f"  • Config fixes: {config_fixes}")
     print(f"  • npm ci: {'✅' if npm_success else '❌'}")
     print(f"  • Files processed: {files_processed}")
     print(f"  • ESLint fix: {'✅' if eslint_success else '⚠️'}")

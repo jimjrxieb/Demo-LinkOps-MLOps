@@ -7,7 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': resolve(__dirname, './'),
-      '~': resolve(__dirname, './');
+      '~': resolve(__dirname, './')
     }
   },
   server: {
@@ -17,7 +17,7 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '');
+        rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   },
@@ -28,12 +28,12 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['vue', 'vue-router'],
-          utils: ['axios'];
+          utils: ['axios']
         }
       }
     }
   },
   css: {
-    postcss: './postcss.config.js';
+    postcss: './postcss.config.js'
   }
-});
+})
