@@ -1,20 +1,20 @@
 <template>;
   <div v-if="isDemoMode" class="demo-banner">;
-    <div class="banner-content">;
-      <div class="banner-icon">🎭</div>;
-      <div class="banner-text">;
+    <div class='banner-content'>;
+      <div class='banner-icon'>🎭</div>;
+      <div class='banner-text'>;
         <strong>Demo Mode Active</strong>;
-        <span class="banner-description">;
+        <span class='banner-description'>;
           You're viewing simulated data. No real changes will be made to the system.;
         </span>;
       </div>;
       <button class="banner-close" @click="dismissBanner">;
-        <span class="close-icon">×</span>;
+        <span class='close-icon'>×</span>;
       </button>;
     </div>;
     
     <!-- Animated border -->;
-    <div class="banner-border"></div>;
+    <div class='banner-border'></div>;
   </div>;
 </template>;
 

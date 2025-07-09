@@ -1,67 +1,67 @@
 <template>;
-  <div class="login-page">;
-    <div class="login-container">;
+  <div class='login-page'>;
+    <div class='login-container'>;
       <!-- Logo and Title -->;
-      <div class="login-header">;
-        <div class="logo-container">;
-          <h1 class="logo-text">LinkOps</h1>;
-          <div class="logo-glow"></div>;
+      <div class='login-header'>;
+        <div class='logo-container'>;
+          <h1 class='logo-text'>LinkOps</h1>;
+          <div class='logo-glow'></div>;
         </div>;
-        <h2 class="login-title">MLOps Command Center</h2>;
-        <p class="login-subtitle">Choose your access level</p>;
+        <h2 class='login-title'>MLOps Command Center</h2>;
+        <p class='login-subtitle'>Choose your access level</p>;
       </div>;
 
       <!-- Login Options -->;
-      <div class="login-options">;
+      <div class='login-options'>;
         <div class="option-card demo" @click="loginAs('demo')">;
-          <div class="option-icon">👤</div>;
-          <h3 class="option-title">Demo Mode</h3>;
-          <p class="option-description">;
+          <div class='option-icon'>👤</div>;
+          <h3 class='option-title'>Demo Mode</h3>;
+          <p class='option-description'>;
             Explore the platform with simulated data and limited functionality;
           </p>;
-          <div class="option-features">;
-            <span class="feature">• View-only dashboard</span>;
-            <span class="feature">• Simulated pipelines</span>;
-            <span class="feature">• Mock audit results</span>;
+          <div class='option-features'>;
+            <span class='feature'>• View-only dashboard</span>;
+            <span class='feature'>• Simulated pipelines</span>;
+            <span class='feature'>• Mock audit results</span>;
           </div>;
-          <button class="login-btn demo-btn">;
-            <span class="btn-icon">🚀</span>;
+          <button class='login-btn demo-btn'>;
+            <span class='btn-icon'>🚀</span>;
             Enter Demo Mode;
           </button>;
         </div>;
 
         <div class="option-card admin" @click="loginAs('admin')">;
-          <div class="option-icon">⚡</div>;
-          <h3 class="option-title">Admin Access</h3>;
-          <p class="option-description">;
+          <div class='option-icon'>⚡</div>;
+          <h3 class='option-title'>Admin Access</h3>;
+          <p class='option-description'>;
             Full platform access with real data and administrative controls;
           </p>;
-          <div class="option-features">;
-            <span class="feature">• Full dashboard access</span>;
-            <span class="feature">• Real pipeline management</span>;
-            <span class="feature">• Live audit capabilities</span>;
+          <div class='option-features'>;
+            <span class='feature'>• Full dashboard access</span>;
+            <span class='feature'>• Real pipeline management</span>;
+            <span class='feature'>• Live audit capabilities</span>;
           </div>;
-          <button class="login-btn admin-btn">;
-            <span class="btn-icon">🔐</span>;
+          <button class='login-btn admin-btn'>;
+            <span class='btn-icon'>🔐</span>;
             Admin Login;
           </button>;
         </div>;
       </div>;
 
       <!-- Demo Notice -->;
-      <div class="demo-notice">;
-        <div class="notice-icon">💡</div>;
-        <p class="notice-text">;
+      <div class='demo-notice'>;
+        <div class='notice-icon'>💡</div>;
+        <p class='notice-text'>;
           <strong>Demo Mode:</strong> Perfect for exploring features without affecting production data.;
           All actions are simulated and no real changes are made.;
         </p>;
       </div>;
 
       <!-- Background Effects -->;
-      <div class="background-effects">;
-        <div class="floating-orb orb-1"></div>;
-        <div class="floating-orb orb-2"></div>;
-        <div class="floating-orb orb-3"></div>;
+      <div class='background-effects'>;
+        <div class='floating-orb orb-1'></div>;
+        <div class='floating-orb orb-2'></div>;
+        <div class='floating-orb orb-3'></div>;
       </div>;
     </div>;
   </div>;
@@ -101,7 +101,7 @@ export default {
         this.$router.push('/');
         
       } catch (_error) {
-        // Development logging: console.error('Login failed:', error)
+ // Development logging: console.error('Login failed:', error)
         const store = useMainStore();
         store.addNotification({
           type: 'error',

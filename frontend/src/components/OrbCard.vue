@@ -1,33 +1,33 @@
 <template>;
   <div class="orb-card" @click="$emit('click', orb)">;
-    <div class="orb-header">;
-      <div class="orb-icon">{{ orb.icon || '🔮' }}</div>;
+    <div class='orb-header'>;
+      <div class='orb-icon'>{{ orb.icon || '🔮' }}</div>;
       <div class="orb-priority" :class="orb.priority">{{ orb.priority }}</div>;
     </div>;
     
-    <div class="orb-content">;
-      <h3 class="orb-title">{{ orb.title }}</h3>;
-      <p class="orb-description">{{ orb.description }}</p>;
+    <div class='orb-content'>;
+      <h3 class='orb-title'>{{ orb.title }}</h3>;
+      <p class='orb-description'>{{ orb.description }}</p>;
       
-      <div class="orb-metrics">;
-        <div class="metric">;
-          <span class="metric-label">Score</span>;
-          <div class="score-bar">;
+      <div class='orb-metrics'>;
+        <div class='metric'>;
+          <span class='metric-label'>Score</span>;
+          <div class='score-bar'>;
             <div class="score-fill" :style="{ width: orb.score + '%' }"></div>;
           </div>;
-          <span class="metric-value">{{ orb.score }}/100</span>;
+          <span class='metric-value'>{{ orb.score }}/100</span>;
         </div>;
       </div>;
     </div>;
     
-    <div class="orb-footer">;
+    <div class='orb-footer'>;
       <span class="orb-status" :class="orb.status">{{ orb.status }}</span>;
-      <div class="orb-actions">;
+      <div class='orb-actions'>;
         <button class="action-btn" @click.stop="viewDetails">;
-          <span class="btn-icon">👁️</span>;
+          <span class='btn-icon'>👁️</span>;
         </button>;
         <button class="action-btn" @click.stop="editOrb">;
-          <span class="btn-icon">✏️</span>;
+          <span class='btn-icon'>✏️</span>;
         </button>;
       </div>;
     </div>;

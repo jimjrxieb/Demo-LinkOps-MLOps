@@ -1,39 +1,39 @@
 <template>;
-  <div class="dashboard">;
-    <div class="dashboard-header">;
-      <h1 class="page-title">Dashboard</h1>;
-      <p class="page-subtitle">MLOps Command Center Overview</p>;
+  <div class='dashboard'>;
+    <div class='dashboard-header'>;
+      <h1 class='page-title'>Dashboard</h1>;
+      <p class='page-subtitle'>MLOps Command Center Overview</p>;
     </div>;
 
     <!-- System Status Grid -->;
-    <div class="status-grid">;
-      <div class="status-card system-status">;
-        <div class="status-icon">🟢</div>;
-        <div class="status-content">;
+    <div class='status-grid'>;
+      <div class='status-card system-status'>;
+        <div class='status-icon'>🟢</div>;
+        <div class='status-content'>;
           <h3>System Status</h3>;
           <p>All services operational</p>;
         </div>;
       </div>;
       
-      <div class="status-card active-jobs">;
-        <div class="status-icon">⚡</div>;
-        <div class="status-content">;
+      <div class='status-card active-jobs'>;
+        <div class='status-icon'>⚡</div>;
+        <div class='status-content'>;
           <h3>Active Jobs</h3>;
           <p>{{ activeJobs }} running</p>;
         </div>;
       </div>;
       
-      <div class="status-card completed-jobs">;
-        <div class="status-icon">✅</div>;
-        <div class="status-content">;
+      <div class='status-card completed-jobs'>;
+        <div class='status-icon'>✅</div>;
+        <div class='status-content'>;
           <h3>Completed Today</h3>;
           <p>{{ completedJobs }} jobs</p>;
         </div>;
       </div>;
       
-      <div class="status-card error-count">;
-        <div class="status-icon">⚠️</div>;
-        <div class="status-content">;
+      <div class='status-card error-count'>;
+        <div class='status-icon'>⚠️</div>;
+        <div class='status-content'>;
           <h3>Errors</h3>;
           <p>{{ errorCount }} issues</p>;
         </div>;
@@ -41,54 +41,54 @@
     </div>;
 
     <!-- Orbs Section -->;
-    <section class="dashboard-section">;
-      <h2 class="section-title">Active Orbs</h2>;
-      <div class="orbs-grid">;
+    <section class='dashboard-section'>;
+      <h2 class='section-title'>Active Orbs</h2>;
+      <div class='orbs-grid'>;
         <OrbCard;
-          v-for="orb in activeOrbs";
-          :key="orb.id";
-          :orb="orb";
-          @click="selectOrb(orb)";
+          v-for='orb in activeOrbs';
+          :key='orb.id';
+          :orb='orb';
+          @click='selectOrb(orb)';
         />;
       </div>;
     </section>;
 
     <!-- Runes Section -->;
-    <section class="dashboard-section">;
-      <h2 class="section-title">Available Runes</h2>;
-      <div class="runes-grid">;
+    <section class='dashboard-section'>;
+      <h2 class='section-title'>Available Runes</h2>;
+      <div class='runes-grid'>;
         <RuneCard;
-          v-for="rune in availableRunes";
-          :key="rune.id";
-          :rune="rune";
-          @click="activateRune(rune)";
+          v-for='rune in availableRunes';
+          :key='rune.id';
+          :rune='rune';
+          @click='activateRune(rune)';
         />;
       </div>;
     </section>;
 
     <!-- Quick Actions -->;
-    <section class="dashboard-section">;
-      <h2 class="section-title">Quick Actions</h2>;
-      <div class="quick-actions">;
+    <section class='dashboard-section'>;
+      <h2 class='section-title'>Quick Actions</h2>;
+      <div class='quick-actions'>;
         <button class="action-btn primary" @click="startWhisPipeline">;
-          <span class="btn-icon">⚡</span>;
+          <span class='btn-icon'>⚡</span>;
           Start Whis Pipeline;
         </button>;
         <button class="action-btn secondary" @click="runSecurityAudit">;
-          <span class="btn-icon">🔍</span>;
+          <span class='btn-icon'>🔍</span>;
           Security Audit;
         </button>;
         <button class="action-btn secondary" @click="viewLogs">;
-          <span class="btn-icon">📋</span>;
+          <span class='btn-icon'>📋</span>;
           View Logs;
         </button>;
       </div>;
     </section>;
 
     <!-- Search Component -->;
-    <section class="dashboard-section">;
-      <h2 class="section-title">Find Orbs & Tasks</h2>;
-      <FicknurySearch @search="handleSearch" />;
+    <section class='dashboard-section'>;
+      <h2 class='section-title'>Find Orbs & Tasks</h2>;
+      <FicknurySearch @search='handleSearch' />;
     </section>;
   </div>;
 </template>;
@@ -163,11 +163,11 @@ export default {
   },
   methods: {
     selectOrb(orb) {
-      // Removed console statement: console.log('Selected orb:', orb)
+ // Removed console statement: console.log('Selected orb:', orb)
       // Navigate to orb details or open modal
     },
     activateRune(rune) {
-      // Removed console statement: console.log('Activated rune:', rune)
+ // Removed console statement: console.log('Activated rune:', rune)
       // Activate the rune and show effects
     },
     startWhisPipeline() {
@@ -177,11 +177,11 @@ export default {
       this.$router.push('/audit');
     },
     viewLogs() {
-      // Removed console statement: console.log('Viewing logs...')
+ // Removed console statement: console.log('Viewing logs...')
       // Open logs viewer
     },
     handleSearch(query) {
-      // Removed console statement: console.log('Search query:', query)
+ // Removed console statement: console.log('Search query:', query)
       // Handle search functionality
     }
   }

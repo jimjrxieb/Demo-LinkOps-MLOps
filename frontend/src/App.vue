@@ -1,89 +1,13 @@
-<template>;
-  <div id="app" class="holo-app">;
-    <!-- Demo Banner -->;
-    <DemoBanner />;
-    
-    <!-- Navigation Header -->;
-    <nav class="holo-nav">;
-      <div class="nav-container">;
-        <div class="nav-brand">;
-          <h1 class="brand-text">LinkOps</h1>;
-          <span class="brand-subtitle">MLOps Command Center</span>;
-        </div>;
-        <div class="nav-links">;
-          <router-link to="/" class="nav-link" active-class="active">;
-            <span class="nav-icon">🏠</span>;
-            Dashboard;
-          </router-link>;
-          <router-link to="/whis" class="nav-link" active-class="active">;
-            <span class="nav-icon">⚡</span>;
-            Whis Pipeline;
-          </router-link>;
-          <router-link to="/audit" class="nav-link" active-class="active">;
-            <span class="nav-icon">🔍</span>;
-            Security Audit;
-          </router-link>;
-        </div>;
-        <div class="nav-actions">;
-          <div class="user-info">;
-            <span class="user-role">{{ userRoleDisplay }}</span>;
-            <button class="logout-btn" @click="logout">;
-              <span class="btn-icon">🚪</span>;
-              Logout;
-            </button>;
-          </div>;
-        </div>;
-      </div>;
-    </nav>;
-
-    <!-- Main Content Area -->;
-    <main class="main-content">;
-      <router-view />;
-    </main>;
-
-    <!-- Footer -->;
-    <footer class="holo-footer">;
-      <div class="footer-content">;
-        <span class="footer-text">LinkOps MLOps Platform v1.0.0</span>;
-        <span class="footer-status">🟢 System Online</span>;
-      </div>;
-    </footer>;
+<template>
+  ;
+  <div>
+    ;
+    <DashboardView />;
   </div>;
 </template>;
 
-<script>;
-import { useMainStore } from './store/index.js'
-import DemoBanner from './components/DemoBanner.vue'
-
-export default {
-  name: 'App',
-  components: {
-    DemoBanner;
-  },
-  computed: {
-    userRoleDisplay() {
-      const store = useMainStore();
-      if (store.isDemoMode) {
-        return 'Demo User';
-      } else if (store.isAdminMode) {
-        return 'Administrator';
-      }
-      return 'Guest';
-    }
-  },
-  methods: {
-    logout() {
-      const store = useMainStore();
-      store.logout();
-      this.$router.push('/login');
-    }
-  },
-  mounted() {
-    // Initialize store
-    const store = useMainStore();
-    store.initialize();
-  }
-}
+<script setup>;
+import DashboardView from './views/DashboardView.vue';
 </script>;
 
 <style>;

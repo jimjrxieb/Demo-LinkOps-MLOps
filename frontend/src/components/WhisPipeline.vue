@@ -1,51 +1,51 @@
 <template>;
-  <div class="whis-pipeline">;
-    <div class="pipeline-header">;
-      <h2 class="pipeline-title">Whis Pipeline Flow</h2>;
-      <p class="pipeline-subtitle">Data Processing & Enhancement Workflow</p>;
+  <div class='whis-pipeline'>;
+    <div class='pipeline-header'>;
+      <h2 class='pipeline-title'>Whis Pipeline Flow</h2>;
+      <p class='pipeline-subtitle'>Data Processing & Enhancement Workflow</p>;
     </div>;
     
-    <div class="pipeline-container">;
-      <div class="pipeline-steps">;
+    <div class='pipeline-container'>;
+      <div class='pipeline-steps'>;
         <div;
-          v-for="(step, index) in pipelineData";
-          :key="step.id";
-          class="pipeline-step";
+          v-for='(step, index) in pipelineData';
+          :key='step.id';
+          class='pipeline-step';
           :class="{
             'active': index === currentStep,
             'completed': index < currentStep,
             'pending': index > currentStep;
           }";
-          @click="$emit('step-click', step)";
+          @click='$emit('step-click', step)';
         >;
-          <div class="step-icon">{{ step.icon }}</div>;
-          <div class="step-content">;
-            <h3 class="step-title">{{ step.name }}</h3>;
-            <p class="step-description">{{ step.description }}</p>;
-            <div class="step-status">;
+          <div class='step-icon'>{{ step.icon }}</div>;
+          <div class='step-content'>;
+            <h3 class='step-title'>{{ step.name }}</h3>;
+            <p class='step-description'>{{ step.description }}</p>;
+            <div class='step-status'>;
               <span class="status-indicator" :class="getStepStatus(index)"></span>;
-              <span class="status-text">{{ getStepStatusText(index) }}</span>;
+              <span class='status-text'>{{ getStepStatusText(index) }}</span>;
             </div>;
           </div>;
           
           <!-- Connection Line -->;
           <div v-if="index < pipelineData.length - 1" class="step-connector">;
-            <div class="connector-line"></div>;
-            <div class="connector-arrow">→</div>;
+            <div class='connector-line'></div>;
+            <div class='connector-arrow'>→</div>;
           </div>;
         </div>;
       </div>;
     </div>;
     
     <!-- Pipeline Progress -->;
-    <div class="pipeline-progress">;
-      <div class="progress-bar">;
+    <div class='pipeline-progress'>;
+      <div class='progress-bar'>;
         <div;
-          class="progress-fill";
-          :style="{ width: progressPercentage + '%' }";
+          class='progress-fill';
+          :style='{ width: progressPercentage + '%' }';
         ></div>;
       </div>;
-      <div class="progress-text">;
+      <div class='progress-text'>;
         Step {{ currentStep + 1 }} of {{ pipelineData.length }}
         ({{ Math.round(progressPercentage) }}% complete);
       </div>;

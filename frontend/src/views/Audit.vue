@@ -1,62 +1,62 @@
 <template>;
-  <div class="audit-page">;
-    <div class="page-header">;
-      <h1 class="page-title">Security Audit</h1>;
-      <p class="page-subtitle">Comprehensive Security & Code Quality Analysis</p>;
+  <div class='audit-page'>;
+    <div class='page-header'>;
+      <h1 class='page-title'>Security Audit</h1>;
+      <p class='page-subtitle'>Comprehensive Security & Code Quality Analysis</p>;
     </div>;
 
     <!-- Input Section -->;
-    <section class="input-section">;
-      <h2 class="section-title">Repository Analysis</h2>;
+    <section class='input-section'>;
+      <h2 class='section-title'>Repository Analysis</h2>;
       <AuditInput;
-        @submit="runAudit";
-        :loading="isAuditing";
+        @submit='runAudit';
+        :loading='isAuditing';
       />;
     </section>;
 
     <!-- Results Section -->;
     <section v-if="auditResults" class="results-section">;
-      <h2 class="section-title">Audit Results</h2>;
+      <h2 class='section-title'>Audit Results</h2>;
       <AuditResults;
-        :results="auditResults";
-        :loading="isAuditing";
+        :results='auditResults';
+        :loading='isAuditing';
       />;
     </section>;
 
     <!-- Quick Actions -->;
-    <section class="actions-section">;
-      <h2 class="section-title">Quick Actions</h2>;
-      <div class="action-buttons">;
+    <section class='actions-section'>;
+      <h2 class='section-title'>Quick Actions</h2>;
+      <div class='action-buttons'>;
         <button;
-          class="action-btn primary";
-          @click="runFullAudit";
-          :disabled="isAuditing";
+          class='action-btn primary';
+          @click='runFullAudit';
+          :disabled='isAuditing';
         >;
-          <span class="btn-icon">🔍</span>;
+          <span class='btn-icon'>🔍</span>;
           Full Security Scan;
         </button>;
         <button;
-          class="action-btn secondary";
-          @click="runLintCheck";
-          :disabled="isAuditing";
+          class='action-btn secondary';
+          @click='runLintCheck';
+          :disabled='isAuditing';
         >;
-          <span class="btn-icon">📋</span>;
+          <span class='btn-icon'>📋</span>;
           Code Quality Check;
         </button>;
         <button;
-          class="action-btn secondary";
-          @click="runDependencyScan";
-          :disabled="isAuditing";
+          class='action-btn secondary';
+          @click='runDependencyScan';
+          :disabled='isAuditing';
         >;
-          <span class="btn-icon">📦</span>;
+          <span class='btn-icon'>📦</span>;
           Dependency Analysis;
         </button>;
         <button;
-          class="action-btn secondary";
-          @click="exportResults";
-          :disabled="!auditResults";
+          class='action-btn secondary';
+          @click='exportResults';
+          :disabled='!auditResults';
         >;
-          <span class="btn-icon">📄</span>;
+          <span class='btn-icon'>📄</span>;
           Export Report;
         </button>;
       </div>;
@@ -64,31 +64,31 @@
 
     <!-- Recent Audits -->;
     <section v-if="recentAudits.length > 0" class="recent-section">;
-      <h2 class="section-title">Recent Audits</h2>;
-      <div class="recent-audits">;
+      <h2 class='section-title'>Recent Audits</h2>;
+      <div class='recent-audits'>;
         <div;
-          v-for="audit in recentAudits";
-          :key="audit.id";
-          class="audit-card";
-          @click="loadAudit(audit)";
+          v-for='audit in recentAudits';
+          :key='audit.id';
+          class='audit-card';
+          @click='loadAudit(audit)';
         >;
-          <div class="audit-header">;
+          <div class='audit-header'>;
             <h3>{{ audit.repository }}</h3>;
-            <span class="audit-date">{{ formatDate(audit.date) }}</span>;
+            <span class='audit-date'>{{ formatDate(audit.date) }}</span>;
           </div>;
-          <div class="audit-summary">;
-            <div class="summary-item">;
-              <span class="label">Security Score:</span>;
+          <div class='audit-summary'>;
+            <div class='summary-item'>;
+              <span class='label'>Security Score:</span>;
               <span class="value" :class="getScoreClass(audit.securityScore)">;
                 {{ audit.securityScore }}/100;
               </span>;
             </div>;
-            <div class="summary-item">;
-              <span class="label">Issues Found:</span>;
-              <span class="value">{{ audit.issuesCount }}</span>;
+            <div class='summary-item'>;
+              <span class='label'>Issues Found:</span>;
+              <span class='value'>{{ audit.issuesCount }}</span>;
             </div>;
-            <div class="summary-item">;
-              <span class="label">Status:</span>;
+            <div class='summary-item'>;
+              <span class='label'>Status:</span>;
               <span class="status" :class="audit.status">;
                 {{ audit.status }}
               </span>;
@@ -222,7 +222,7 @@ export default {
         });
         
       } catch (_error) {
-        // Development logging: console.error('Audit failed:', error)
+ // Development logging: console.error('Audit failed:', error)
         this.auditResults = {
           error: 'Audit failed. Please try again.';
         }
@@ -304,7 +304,7 @@ export default {
     },
     
     loadAudit(audit) {
-      // Removed console statement: console.log('Loading audit:', audit)
+ // Removed console statement: console.log('Loading audit:', audit)
       // Load the specific audit results
     },
     

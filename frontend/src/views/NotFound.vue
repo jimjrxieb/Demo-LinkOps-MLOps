@@ -1,31 +1,50 @@
-<template>;
-  <div class="not-found">;
-    <div class="error-container">;
-      <div class="error-code">404</div>;
-      <h1 class="error-title">Page Not Found</h1>;
-      <p class="error-message">;
+<template>
+  ;
+  <div class="not-found">
+    ;
+    <div class="error-container">
+      ;
+      <div class="error-code">
+        404
+      </div>;
+      <h1 class="error-title">
+        Page Not Found
+      </h1>;
+      <p class="error-message">
+        ;
         The page you're looking for doesn't exist in this dimension.;
       </p>;
-      <div class="error-actions">;
-        <router-link to="/" class="btn primary">;
+      <div class="error-actions">
+        ;
+        <router-link
+          to="/"
+          class="btn primary"
+        >
+          ;
           <span class="btn-icon">🏠</span>;
           Return to Dashboard;
         </router-link>;
-        <button class="btn secondary" @click="goBack">;
+        <button
+          class="btn secondary"
+          @click="goBack"
+        >
+          ;
           <span class="btn-icon">⬅️</span>;
           Go Back;
         </button>;
       </div>;
     </div>;
     
-    <div class="error-graphic">;
-      <div class="holo-cube">;
-        <div class="cube-face front"></div>;
-        <div class="cube-face back"></div>;
-        <div class="cube-face right"></div>;
-        <div class="cube-face left"></div>;
-        <div class="cube-face top"></div>;
-        <div class="cube-face bottom"></div>;
+    <div class="error-graphic">
+      ;
+      <div class="holo-cube">
+        ;
+        <div class="cube-face front" />;
+        <div class="cube-face back" />;
+        <div class="cube-face right" />;
+        <div class="cube-face left" />;
+        <div class="cube-face top" />;
+        <div class="cube-face bottom" />;
       </div>;
     </div>;
   </div>;

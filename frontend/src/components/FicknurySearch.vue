@@ -1,71 +1,71 @@
 <template>;
-  <div class="search-container">;
-    <div class="search-box">;
-      <div class="search-icon">🔍</div>;
+  <div class='search-container'>;
+    <div class='search-box'>;
+      <div class='search-icon'>🔍</div>;
       <input;
-        v-model="searchQuery";
-        type="text";
-        placeholder="Search orbs, tasks, or repositories...";
-        class="search-input";
-        @input="handleSearch";
-        @keyup.enter="performSearch";
+        v-model='searchQuery';
+        type='text';
+        placeholder='Search orbs, tasks, or repositories...';
+        class='search-input';
+        @input='handleSearch';
+        @keyup.enter='performSearch';
       />;
       <button class="search-btn" @click="performSearch">;
-        <span class="btn-icon">⚡</span>;
+        <span class='btn-icon'>⚡</span>;
         Search;
       </button>;
     </div>;
     
     <!-- Search Filters -->;
-    <div class="search-filters">;
-      <div class="filter-group">;
-        <label class="filter-label">Type:</label>;
+    <div class='search-filters'>;
+      <div class='filter-group'>;
+        <label class='filter-label'>Type:</label>;
         <select v-model="filters.type" class="filter-select">;
-          <option value="">All Types</option>;
-          <option value="orb">Orbs</option>;
-          <option value="task">Tasks</option>;
-          <option value="repository">Repositories</option>;
+          <option value=''>All Types</option>;
+          <option value='orb'>Orbs</option>;
+          <option value='task'>Tasks</option>;
+          <option value='repository'>Repositories</option>;
         </select>;
       </div>;
       
-      <div class="filter-group">;
-        <label class="filter-label">Status:</label>;
+      <div class='filter-group'>;
+        <label class='filter-label'>Status:</label>;
         <select v-model="filters.status" class="filter-select">;
-          <option value="">All Status</option>;
-          <option value="active">Active</option>;
-          <option value="pending">Pending</option>;
-          <option value="completed">Completed</option>;
+          <option value=''>All Status</option>;
+          <option value='active'>Active</option>;
+          <option value='pending'>Pending</option>;
+          <option value='completed'>Completed</option>;
         </select>;
       </div>;
       
-      <div class="filter-group">;
-        <label class="filter-label">Priority:</label>;
+      <div class='filter-group'>;
+        <label class='filter-label'>Priority:</label>;
         <select v-model="filters.priority" class="filter-select">;
-          <option value="">All Priorities</option>;
-          <option value="critical">Critical</option>;
-          <option value="high">High</option>;
-          <option value="medium">Medium</option>;
-          <option value="low">Low</option>;
+          <option value=''>All Priorities</option>;
+          <option value='critical'>Critical</option>;
+          <option value='high'>High</option>;
+          <option value='medium'>Medium</option>;
+          <option value='low'>Low</option>;
         </select>;
       </div>;
     </div>;
     
     <!-- Search Results -->;
     <div v-if="searchResults.length > 0" class="search-results">;
-      <h3 class="results-title">Search Results ({{ searchResults.length }})</h3>;
-      <div class="results-list">;
+      <h3 class='results-title'>Search Results ({{ searchResults.length }})</h3>;
+      <div class='results-list'>;
         <div;
-          v-for="result in searchResults";
-          :key="result.id";
-          class="result-item";
-          @click="selectResult(result)";
+          v-for='result in searchResults';
+          :key='result.id';
+          class='result-item';
+          @click='selectResult(result)';
         >;
-          <div class="result-icon">{{ result.icon }}</div>;
-          <div class="result-content">;
-            <h4 class="result-title">{{ result.title }}</h4>;
-            <p class="result-description">{{ result.description }}</p>;
-            <div class="result-meta">;
-              <span class="result-type">{{ result.type }}</span>;
+          <div class='result-icon'>{{ result.icon }}</div>;
+          <div class='result-content'>;
+            <h4 class='result-title'>{{ result.title }}</h4>;
+            <p class='result-description'>{{ result.description }}</p>;
+            <div class='result-meta'>;
+              <span class='result-type'>{{ result.type }}</span>;
               <span class="result-status" :class="result.status">{{ result.status }}</span>;
             </div>;
           </div>;
@@ -75,7 +75,7 @@
     
     <!-- No Results -->;
     <div v-else-if="hasSearched && searchQuery" class="no-results">;
-      <div class="no-results-icon">🔍</div>;
+      <div class='no-results-icon'>🔍</div>;
       <h3>No results found</h3>;
       <p>Try adjusting your search terms or filters</p>;
     </div>;
@@ -168,7 +168,7 @@ export default {
         });
         
       } catch (_error) {
-        // Development logging: console.error('Search failed:', error)
+ // Development logging: console.error('Search failed:', error)
         this.searchResults = [];
       }
     },

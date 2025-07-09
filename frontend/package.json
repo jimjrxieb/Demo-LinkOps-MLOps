@@ -16,8 +16,6 @@
   },
   "dependencies": {
     "vue": "^3.4.21",
-    "vue-router": "^4.4.5",
-    "pinia": "^2.1.7",
     "axios": "^1.6.8"
   },
   "devDependencies": {

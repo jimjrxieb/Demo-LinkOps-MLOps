@@ -1,30 +1,30 @@
 <template>;
-  <div class="audit-results">;
+  <div class='audit-results'>;
     <!-- Loading State -->;
     <div v-if="loading" class="loading-state">;
-      <div class="spinner"></div>;
+      <div class='spinner'></div>;
       <h3>Running Security Audit...</h3>;
       <p>This may take a few minutes depending on repository size</p>;
     </div>;
     
     <!-- Error State -->;
     <div v-else-if="results.error" class="error-state">;
-      <div class="error-icon">❌</div>;
+      <div class='error-icon'>❌</div>;
       <h3>Audit Failed</h3>;
       <p>{{ results.error }}</p>;
       <button class="retry-btn" @click="$emit('retry')">;
-        <span class="btn-icon">🔄</span>;
+        <span class='btn-icon'>🔄</span>;
         Retry Audit;
       </button>;
     </div>;
     
     <!-- Results -->;
-    <div v-else class="results-content">;
+    <div v-else class='results-content'>;
       <!-- Summary Cards -->;
-      <div class="summary-grid">;
-        <div class="summary-card security">;
-          <div class="summary-icon">🛡️</div>;
-          <div class="summary-content">;
+      <div class='summary-grid'>;
+        <div class='summary-card security'>;
+          <div class='summary-icon'>🛡️</div>;
+          <div class='summary-content'>;
             <h3>Security Score</h3>;
             <div class="score-value" :class="getScoreClass(results.securityScore)">;
               {{ results.securityScore }}/100;
@@ -32,9 +32,9 @@
           </div>;
         </div>;
         
-        <div class="summary-card quality">;
-          <div class="summary-icon">📋</div>;
-          <div class="summary-content">;
+        <div class='summary-card quality'>;
+          <div class='summary-icon'>📋</div>;
+          <div class='summary-content'>;
             <h3>Code Quality</h3>;
             <div class="score-value" :class="getScoreClass(results.codeQualityScore)">;
               {{ results.codeQualityScore }}/100;
@@ -42,9 +42,9 @@
           </div>;
         </div>;
         
-        <div class="summary-card dependencies">;
-          <div class="summary-icon">📦</div>;
-          <div class="summary-content">;
+        <div class='summary-card dependencies'>;
+          <div class='summary-icon'>📦</div>;
+          <div class='summary-content'>;
             <h3>Dependencies</h3>;
             <div class="score-value" :class="getScoreClass(results.dependencyScore)">;
               {{ results.dependencyScore }}/100;
@@ -55,50 +55,50 @@
       
       <!-- Issues Section -->;
       <div v-if="results.issues && results.issues.length > 0" class="issues-section">;
-        <h2 class="section-title">;
+        <h2 class='section-title'>;
           Issues Found ({{ results.issues.length }});
         </h2>;
         
-        <div class="issues-filters">;
+        <div class='issues-filters'>;
           <button;
-            v-for="severity in ['all', 'high', 'medium', 'low']";
-            :key="severity";
-            class="filter-btn";
-            :class="{ active: activeFilter === severity }";
-            @click="activeFilter = severity";
+            v-for='severity in ['all', 'high', 'medium', 'low']';
+            :key='severity';
+            class='filter-btn';
+            :class='{ active: activeFilter === severity }';
+            @click='activeFilter = severity';
           >;
             {{ severity.charAt(0).toUpperCase() + severity.slice(1) }}
-            <span class="filter-count">{{ getFilterCount(severity) }}</span>;
+            <span class='filter-count'>{{ getFilterCount(severity) }}</span>;
           </button>;
         </div>;
         
-        <div class="issues-list">;
+        <div class='issues-list'>;
           <div;
-            v-for="issue in filteredIssues";
-            :key="issue.id";
-            class="issue-card";
-            :class="issue.severity";
+            v-for='issue in filteredIssues';
+            :key='issue.id';
+            class='issue-card';
+            :class='issue.severity';
           >;
-            <div class="issue-header">;
-              <div class="issue-severity">;
-                <span class="severity-icon">{{ getSeverityIcon(issue.severity) }}</span>;
-                <span class="severity-text">{{ issue.severity.toUpperCase() }}</span>;
+            <div class='issue-header'>;
+              <div class='issue-severity'>;
+                <span class='severity-icon'>{{ getSeverityIcon(issue.severity) }}</span>;
+                <span class='severity-text'>{{ issue.severity.toUpperCase() }}</span>;
               </div>;
-              <div class="issue-type">{{ issue.type }}</div>;
+              <div class='issue-type'>{{ issue.type }}</div>;
             </div>;
             
-            <h3 class="issue-title">{{ issue.title }}</h3>;
-            <p class="issue-description">{{ issue.description }}</p>;
+            <h3 class='issue-title'>{{ issue.title }}</h3>;
+            <p class='issue-description'>{{ issue.description }}</p>;
             
-            <div class="issue-location">;
-              <span class="location-label">Location:</span>;
-              <span class="location-file">{{ issue.file }}</span>;
-              <span class="location-line">Line {{ issue.line }}</span>;
+            <div class='issue-location'>;
+              <span class='location-label'>Location:</span>;
+              <span class='location-file'>{{ issue.file }}</span>;
+              <span class='location-line'>Line {{ issue.line }}</span>;
             </div>;
             
-            <div class="issue-recommendation">;
-              <span class="recommendation-label">Recommendation:</span>;
-              <p class="recommendation-text">{{ issue.recommendation }}</p>;
+            <div class='issue-recommendation'>;
+              <span class='recommendation-label'>Recommendation:</span>;
+              <p class='recommendation-text'>{{ issue.recommendation }}</p>;
             </div>;
           </div>;
         </div>;
@@ -106,43 +106,43 @@
       
       <!-- Dependencies Section -->;
       <div v-if="results.dependencies && results.dependencies.length > 0" class="dependencies-section">;
-        <h2 class="section-title">Dependencies Analysis</h2>;
+        <h2 class='section-title'>Dependencies Analysis</h2>;
         
-        <div class="dependencies-table">;
-          <div class="table-header">;
-            <div class="header-cell">Package</div>;
-            <div class="header-cell">Version</div>;
-            <div class="header-cell">Status</div>;
-            <div class="header-cell">Vulnerabilities</div>;
+        <div class='dependencies-table'>;
+          <div class='table-header'>;
+            <div class='header-cell'>Package</div>;
+            <div class='header-cell'>Version</div>;
+            <div class='header-cell'>Status</div>;
+            <div class='header-cell'>Vulnerabilities</div>;
           </div>;
           
           <div;
-            v-for="dep in results.dependencies";
-            :key="dep.name";
-            class="table-row";
-            :class="dep.status";
+            v-for='dep in results.dependencies';
+            :key='dep.name';
+            class='table-row';
+            :class='dep.status';
           >;
-            <div class="table-cell package-name">{{ dep.name }}</div>;
-            <div class="table-cell package-version">{{ dep.version }}</div>;
-            <div class="table-cell package-status">;
+            <div class='table-cell package-name'>{{ dep.name }}</div>;
+            <div class='table-cell package-version'>{{ dep.version }}</div>;
+            <div class='table-cell package-status'>;
               <span class="status-badge" :class="dep.status">;
                 {{ dep.status }}
               </span>;
             </div>;
-            <div class="table-cell vulnerabilities">;
+            <div class='table-cell vulnerabilities'>;
               <span v-if="dep.vulnerabilities > 0" class="vuln-count high">;
                 {{ dep.vulnerabilities }} found;
               </span>;
-              <span v-else class="vuln-count safe">None</span>;
+              <span v-else class='vuln-count safe'>None</span>;
             </div>;
           </div>;
         </div>;
       </div>;
       
       <!-- Export Section -->;
-      <div class="export-section">;
+      <div class='export-section'>;
         <button class="export-btn" @click="$emit('export')">;
-          <span class="btn-icon">📄</span>;
+          <span class='btn-icon'>📄</span>;
           Export Report;
         </button>;
       </div>;

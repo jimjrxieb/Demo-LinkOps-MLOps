@@ -1,22 +1,22 @@
 <template>;
   <div class="rune-card" @click="$emit('click', rune)">;
-    <div class="rune-header">;
-      <div class="rune-icon">{{ getRuneIcon(rune.type) }}</div>;
-      <div class="rune-cost">{{ rune.cost }} ⚡</div>;
+    <div class='rune-header'>;
+      <div class='rune-icon'>{{ getRuneIcon(rune.type) }}</div>;
+      <div class='rune-cost'>{{ rune.cost }} ⚡</div>;
     </div>;
     
-    <div class="rune-content">;
-      <h3 class="rune-name">{{ rune.name }}</h3>;
-      <p class="rune-description">{{ rune.description }}</p>;
+    <div class='rune-content'>;
+      <h3 class='rune-name'>{{ rune.name }}</h3>;
+      <p class='rune-description'>{{ rune.description }}</p>;
       
-      <div class="rune-type">;
+      <div class='rune-type'>;
         <span class="type-badge" :class="rune.type">{{ rune.type }}</span>;
       </div>;
     </div>;
     
-    <div class="rune-footer">;
+    <div class='rune-footer'>;
       <button class="activate-btn" @click.stop="activateRune">;
-        <span class="btn-icon">⚡</span>;
+        <span class='btn-icon'>⚡</span>;
         Activate;
       </button>;
     </div>;

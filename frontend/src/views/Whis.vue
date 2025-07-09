@@ -1,38 +1,38 @@
 <template>;
-  <div class="whis-page">;
-    <div class="page-header">;
-      <h1 class="page-title">Whis Pipeline</h1>;
-      <p class="page-subtitle">MLOps Data Processing & Enhancement</p>;
+  <div class='whis-page'>;
+    <div class='page-header'>;
+      <h1 class='page-title'>Whis Pipeline</h1>;
+      <p class='page-subtitle'>MLOps Data Processing & Enhancement</p>;
     </div>;
 
     <!-- Pipeline Visualization -->;
     <WhisPipeline;
-      :pipeline-data="pipelineData";
-      :current-step="currentStep";
-      @step-click="handleStepClick";
+      :pipeline-data='pipelineData';
+      :current-step='currentStep';
+      @step-click='handleStepClick';
     />;
 
     <!-- Input Section -->;
-    <section class="input-section">;
-      <h2 class="section-title">Data Input</h2>;
-      <div class="input-container">;
+    <section class='input-section'>;
+      <h2 class='section-title'>Data Input</h2>;
+      <div class='input-container'>;
         <textarea;
-          v-model="inputData";
-          placeholder="Enter your data here or paste JSON/CSV content...";
-          class="data-input";
-          rows="8";
+          v-model='inputData';
+          placeholder='Enter your data here or paste JSON/CSV content...';
+          class='data-input';
+          rows='8';
         ></textarea>;
-        <div class="input-actions">;
+        <div class='input-actions'>;
           <button class="btn primary" @click="processData">;
-            <span class="btn-icon">⚡</span>;
+            <span class='btn-icon'>⚡</span>;
             Process Data;
           </button>;
           <button class="btn secondary" @click="loadSampleData">;
-            <span class="btn-icon">📋</span>;
+            <span class='btn-icon'>📋</span>;
             Load Sample;
           </button>;
           <button class="btn secondary" @click="clearData">;
-            <span class="btn-icon">🗑️</span>;
+            <span class='btn-icon'>🗑️</span>;
             Clear;
           </button>;
         </div>;
@@ -41,33 +41,33 @@
 
     <!-- Results Section -->;
     <section v-if="results.length > 0" class="results-section">;
-      <h2 class="section-title">Processing Results</h2>;
-      <div class="results-container">;
+      <h2 class='section-title'>Processing Results</h2>;
+      <div class='results-container'>;
         <div;
-          v-for="(result, index) in results";
-          :key="index";
-          class="result-card";
+          v-for='(result, index) in results';
+          :key='index';
+          class='result-card';
         >;
-          <div class="result-header">;
+          <div class='result-header'>;
             <h3>{{ result.step }}</h3>;
             <span class="result-status" :class="result.status">;
               {{ result.status }}
             </span>;
           </div>;
-          <div class="result-content">;
+          <div class='result-content'>;
             <p><strong>Input:</strong> {{ result.input }}</p>;
             <p><strong>Output:</strong> {{ result.output }}</p>;
-            <p v-if="result.metrics"><strong>Metrics:</strong> {{ result.metrics }}</p>;
+            <p v-if='result.metrics'><strong>Metrics:</strong> {{ result.metrics }}</p>;
           </div>;
         </div>;
       </div>;
     </section>;
 
     <!-- Configuration Panel -->;
-    <section class="config-section">;
-      <h2 class="section-title">Pipeline Configuration</h2>;
-      <div class="config-grid">;
-        <div class="config-card">;
+    <section class='config-section'>;
+      <h2 class='section-title'>Pipeline Configuration</h2>;
+      <div class='config-grid'>;
+        <div class='config-card'>;
           <h3>Data Sanitization</h3>;
           <label>;
             <input type="checkbox" v-model="config.sanitize" />;
@@ -79,7 +79,7 @@
           </label>;
         </div>;
         
-        <div class="config-card">;
+        <div class='config-card'>;
           <h3>Data Enhancement</h3>;
           <label>;
             <input type="checkbox" v-model="config.enhance" />;
@@ -91,12 +91,12 @@
           </label>;
         </div>;
         
-        <div class="config-card">;
+        <div class='config-card'>;
           <h3>Output Format</h3>;
           <select v-model="config.outputFormat" class="format-select">;
-            <option value="json">JSON</option>;
-            <option value="csv">CSV</option>;
-            <option value="xml">XML</option>;
+            <option value='json'>JSON</option>;
+            <option value='csv'>CSV</option>;
+            <option value='xml'>XML</option>;
           </select>;
         </div>;
       </div>;
@@ -252,7 +252,7 @@ export default {
     },
     
     handleStepClick(step) {
-      // Removed console statement: console.log('Step clicked:', step)
+ // Removed console statement: console.log('Step clicked:', step)
       // Show step details or configuration
     },
     

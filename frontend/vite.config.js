@@ -28,12 +28,11 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['vue', 'vue-router'],
-          utils: ['axios']
-        }
+          utils: ['axios']}
       }
     }
   },
   css: {
     postcss: './postcss.config.js'
   }
-})
+});
