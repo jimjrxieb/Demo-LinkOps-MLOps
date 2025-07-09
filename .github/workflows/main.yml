@@ -136,44 +136,121 @@ jobs:
 
     - uses: docker/setup-buildx-action@v3
 
-    - uses: docker/login-action@v3
+    - name: Validate Docker Registry Secrets
+      run: |
+        echo "🔍 Validating Docker registry configuration..."
+        if [[ -z "${{ secrets.DOCKER_USER }}" ]]; then
+          echo "❌ DOCKER_USER secret is not set"
+          echo "Please set DOCKER_USER in repository Settings → Secrets and variables → Actions"
+          exit 1
+        fi
+        if [[ -z "${{ secrets.DOCKER_CRED }}" ]]; then
+          echo "❌ DOCKER_CRED secret is not set"
+          echo "Please set DOCKER_CRED in repository Settings → Secrets and variables → Actions"
+          exit 1
+        fi
+        echo "✅ Docker secrets are configured"
+        echo "Registry: Docker Hub (docker.io)"
+        echo "Username: ${{ secrets.DOCKER_USER }}"
+        echo "Target namespace: linkops/"
+        echo ""
+        echo "⚠️  IMPORTANT: Ensure ${{ secrets.DOCKER_USER }} has push permissions to 'linkops' organization"
+        echo "   - If using organization: Add user to 'linkops' org with write permissions"
+        echo "   - If testing: Consider changing namespace to: ${{ secrets.DOCKER_USER }}/"
+
+    - name: Docker Registry Login
+      uses: docker/login-action@v3
       with:
+        registry: docker.io
         username: ${{ secrets.DOCKER_USER }}
         password: ${{ secrets.DOCKER_CRED }}
       continue-on-error: false
+
+    - name: Verify Docker Authentication
+      run: |
+        echo "🔐 Verifying Docker Hub authentication..."
+        docker info
+        echo "✅ Docker login successful"
 
     - name: Build + Push all services
       run: |
         success_count=0
         total_count=0
+        failed_services=()
+
+        echo "🏗️ Starting Docker build and push for all services..."
+        echo "Target registry: docker.io/linkops/"
 
         for dir in mlops/* shadows/*; do
           if [[ -f "$dir/Dockerfile" ]]; then
             name=$(basename $dir)
             total_count=$((total_count + 1))
-            echo "🏗️ Building $name..."
+            # Option 1: Use organization namespace (requires org permissions)
+            image_name="linkops/$name:latest"
+            
+            # Option 2: Use personal namespace (uncomment line below and comment line above)
+            # image_name="${{ secrets.DOCKER_USER }}/$name:latest"
+            
+            echo ""
+            echo "📦 Processing service: $name"
+            echo "├── Directory: $dir"
+            echo "├── Image name: $image_name"
+            echo "└── Build starting..."
 
-            if docker build -t linkops/$name:latest $dir; then
+            # Build with detailed logging
+            if docker build -t "$image_name" "$dir" --progress=plain; then
               echo "✅ Build successful for $name"
-              if docker push linkops/$name:latest; then
-                echo "✅ Push successful for $name"
-                success_count=$((success_count + 1))
-              else
-                echo "❌ Push failed for $name"
-              fi
+              
+              # Push with retry logic
+              push_attempts=0
+              max_attempts=3
+              
+              while [[ $push_attempts -lt $max_attempts ]]; do
+                ((push_attempts++))
+                echo "🚀 Push attempt $push_attempts/$max_attempts for $name..."
+                
+                if docker push "$image_name"; then
+                  echo "✅ Push successful for $name"
+                  success_count=$((success_count + 1))
+                  break
+                else
+                  echo "❌ Push attempt $push_attempts failed for $name"
+                  if [[ $push_attempts -lt $max_attempts ]]; then
+                    echo "⏳ Waiting 10 seconds before retry..."
+                    sleep 10
+                  else
+                    echo "❌ All push attempts failed for $name"
+                    failed_services+=("$name")
+                  fi
+                fi
+              done
             else
               echo "❌ Build failed for $name"
+              failed_services+=("$name")
             fi
           fi
         done
 
-        echo "📊 Build Summary: $success_count/$total_count services built successfully"
+        echo ""
+        echo "📊 Build and Push Summary:"
+        echo "=========================="
+        echo "✅ Successful: $success_count/$total_count services"
+        echo "❌ Failed: ${#failed_services[@]} services"
+        
+        if [[ ${#failed_services[@]} -gt 0 ]]; then
+          echo "Failed services:"
+          for service in "${failed_services[@]}"; do
+            echo "  - $service"
+          done
+        fi
 
-        # Continue if at least 50% of services built successfully
-        if [[ $success_count -gt 0 ]] && [[ $((success_count * 2)) -ge $total_count ]]; then
-          echo "✅ Sufficient services built successfully"
+        # Success criteria: at least 70% of services must succeed
+        if [[ $success_count -gt 0 ]] && [[ $((success_count * 10)) -ge $((total_count * 7)) ]]; then
+          echo "✅ Build pipeline successful (≥70% services deployed)"
         else
-          echo "❌ Too many build failures"
+          echo "❌ Build pipeline failed (insufficient successful deployments)"
+          echo "Required: ≥70% success rate"
+          echo "Actual: $((success_count * 100 / total_count))% success rate"
           exit 1
         fi
       continue-on-error: false

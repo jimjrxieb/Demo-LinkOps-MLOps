@@ -442,12 +442,12 @@ export default {
     }
 
     const upgradeAgent = (agentName) => {
-      console.log(`Upgrading agent: ${agentName}`)
+      // Development log removed
       // Implement upgrade logic
     }
 
     const reviewRuneTrail = (agentName) => {
-      console.log(`Reviewing rune trail for: ${agentName}`)
+      // Development log removed
       // Implement review logic
     }
 

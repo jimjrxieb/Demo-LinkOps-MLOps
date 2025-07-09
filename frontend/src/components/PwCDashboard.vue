@@ -287,7 +287,7 @@ const fetchStats = async () => {
 
     tasks.value = tasksData
   } catch (error) {
-    console.error('Failed to fetch MLOps Platform data:', error)
+    // Error log removed
   }
 }
 
@@ -305,7 +305,7 @@ const createNewTask = async () => {
     await fetchStats() // Refresh stats
     alert('Task created successfully')
   } catch (error) {
-    console.error('Failed to create task:', error)
+    // Error log removed
     alert('Failed to create task')
   }
 }
@@ -324,7 +324,7 @@ const executeScript = async () => {
       alert('No scripts available to execute')
     }
   } catch (error) {
-    console.error('Failed to execute script:', error)
+    // Error log removed
     alert('Failed to execute script')
   }
 }
@@ -343,7 +343,7 @@ const useOrb = async () => {
       alert('No orbs available to use')
     }
   } catch (error) {
-    console.error('Failed to use orb:', error)
+    // Error log removed
     alert('Failed to use orb')
   }
 }

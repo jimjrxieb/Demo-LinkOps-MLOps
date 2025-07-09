@@ -218,7 +218,7 @@ export default {
         speak("Task submitted successfully to the queue.")
         taskForm.value.description = ''
       } catch (error) {
-        console.error('Error submitting task:', error)
+        // Error log removed
         speak("Error submitting task. Please try again.")
       }
     }
@@ -231,7 +231,7 @@ export default {
         qaResponse.value = "Based on my analysis, here's what I found: [Mock response]"
         speak("Question processed. Check the response below.")
       } catch (error) {
-        console.error('Error submitting question:', error)
+        // Error log removed
         speak("Error processing question. Please try again.")
       }
     }
@@ -244,7 +244,7 @@ export default {
         speak("Information processed and stored.")
         infoDumpForm.value.content = ''
       } catch (error) {
-        console.error('Error submitting info dump:', error)
+        // Error log removed
         speak("Error processing information. Please try again.")
       }
     }
@@ -264,7 +264,7 @@ export default {
         imageResult.value = "Extracted text: [Mock OCR result]"
         speak("Image extraction complete.")
       } catch (error) {
-        console.error('Error extracting from image:', error)
+        // Error log removed
         speak("Error extracting from image. Please try again.")
       }
     }
@@ -285,7 +285,7 @@ export default {
         }
         speak("Solution path generated successfully.")
       } catch (error) {
-        console.error('Error generating solution:', error)
+        // Error log removed
         speak("Error generating solution. Please try again.")
       }
     }

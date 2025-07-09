@@ -187,12 +187,12 @@ export default {
           try {
             await activationAudio.value.play()
           } catch (error) {
-            console.log('Audio playback not available')
+            // Development log removed
           }
         }
         
         // Show success message from James
-        console.log(activationResponse.data.message)
+        // Development log removed
         
         // Navigate to dashboard after a brief delay
         setTimeout(() => {
@@ -200,13 +200,13 @@ export default {
         }, 2000)
         
       } catch (error) {
-        console.error('Activation failed:', error)
+        // Error log removed
         isActivating.value = false
       }
     }
 
     const handleAudioError = () => {
-      console.error('Audio playback error')
+      // Error log removed
     }
 
     // Check if audio file exists
@@ -216,7 +216,7 @@ export default {
         audioFileExists.value = response.ok
       } catch (error) {
         audioFileExists.value = false
-        console.log('Audio file not available')
+        // Development log removed
       }
     }
 

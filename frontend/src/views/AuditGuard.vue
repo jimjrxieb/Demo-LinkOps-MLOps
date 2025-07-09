@@ -308,7 +308,7 @@ export default {
         })
         
       } catch (error) {
-        console.error('Audit failed:', error)
+        // Error log removed
         // Fallback to demo data if API fails
         auditResults.value = {
           compliance: 'non-compliant',
@@ -415,7 +415,7 @@ resource "aws_ecs_cluster" "main" {
           securityAlerts.value = alertsResponse.data.alerts
         }
       } catch (error) {
-        console.error('Failed to load initial data:', error)
+        // Error log removed
       }
     })
 

@@ -56,13 +56,13 @@ async function submitData() {
   try {
     const res = await axios.post('http://localhost:8001/api/collect/qna', payload)
     logPreview.value = res.data || payload
-    console.log('Data queued:', res.data)
+    // Development log removed
     
     // Clear form
     task.value = ''
     answer.value = ''
   } catch (error) {
-    console.error('Error submitting data:', error)
+    // Error log removed
     logPreview.value = { error: 'Failed to submit data' }
   }
 }
@@ -72,7 +72,7 @@ async function approveRune(taskId) {
     await axios.post('/api/whis/approve-rune', { task_id: taskId })
     loadQueue()
   } catch (error) {
-    console.error('Error approving rune:', error)
+    // Error log removed
   }
 }
 
@@ -81,7 +81,7 @@ async function loadQueue() {
     const res = await axios.get('/api/whis/approvals')
     approvalQueue.value = res.data || []
   } catch (error) {
-    console.error('Error loading queue:', error)
+    // Error log removed
   }
 }
 
@@ -90,7 +90,7 @@ async function loadDigest() {
     const res = await axios.get('/api/whis/digest')
     digest.value = res.data || {}
   } catch (error) {
-    console.error('Error loading digest:', error)
+    // Error log removed
   }
 }
 

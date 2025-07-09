@@ -204,7 +204,7 @@ export default {
         this.addMessage('user', 'Listening...')
         
       } catch (error) {
-        console.error('Error starting listening:', error)
+        // Error log removed
         this.addMessage('error', 'Could not access microphone.')
       } finally {
         this.isLoading = false
@@ -260,7 +260,7 @@ export default {
         }
         
       } catch (error) {
-        console.error('Error processing audio:', error)
+        // Error log removed
         this.addMessage('error', 'Voice processing failed.')
       } finally {
         this.isLoading = false
@@ -277,7 +277,7 @@ export default {
           this.isSpeaking = false
         }
       } catch (error) {
-        console.error('Error playing audio:', error)
+        // Error log removed
         this.isSpeaking = false
       }
     },
@@ -309,7 +309,7 @@ export default {
         }
         
       } catch (error) {
-        console.error('Error processing image:', error)
+        // Error log removed
         this.addMessage('error', 'Image processing failed.')
       } finally {
         this.isLoading = false
@@ -347,7 +347,7 @@ export default {
         }
         
       } catch (error) {
-        console.error('Error sending text message:', error)
+        // Error log removed
         this.addMessage('error', 'Message processing failed.')
       } finally {
         this.isLoading = false

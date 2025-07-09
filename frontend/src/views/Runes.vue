@@ -451,26 +451,26 @@ export default {
 
     const copyCode = (code) => {
       navigator.clipboard.writeText(code)
-      console.log('Code copied to clipboard')
+      // Development log removed
     }
 
     const viewRune = (rune) => {
-      console.log('Viewing rune:', rune.title)
+      // Development log removed
       // Navigate to detailed rune view
     }
 
     const executeRune = (rune) => {
-      console.log('Executing rune:', rune.title)
+      // Development log removed
       // Execute the rune script
     }
 
     const approveRune = (rune) => {
       rune.status = 'approved'
-      console.log('Approved rune:', rune.title)
+      // Development log removed
     }
 
     const loadMore = () => {
-      console.log('Loading more runes...')
+      // Development log removed
       hasMore.value = false
     }
 

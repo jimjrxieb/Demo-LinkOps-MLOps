@@ -337,7 +337,7 @@ export default {
           summary: 'Terraform plan completed successfully. 3 resources will be created, 2 modified, 0 destroyed. Estimated cost: $45.20/month.'
         }
       } catch (error) {
-        console.error('Error running simulation:', error)
+        // Error log removed
         simulationResults.value = {
           status: 'failed',
           duration: 0,

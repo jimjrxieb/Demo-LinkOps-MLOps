@@ -245,10 +245,10 @@ export default {
         })
 
         auditResults.value = response
-        console.log('Audit completed:', response)
+        // Development log removed
       } catch (err) {
         error.value = err.response?.data?.detail || err.message || 'Audit failed'
-        console.error('Audit error:', err)
+        // Error log removed
       } finally {
         isLoading.value = false
       }
@@ -276,7 +276,7 @@ export default {
       isGeneratingMigration.value = true
       try {
         // This would call the audit_migrate service
-        console.log('Generating migration plan...')
+        // Development log removed
         // const response = await auditMigrateService.generateMigration(auditResults.value)
         // Handle migration response
       } catch (err) {

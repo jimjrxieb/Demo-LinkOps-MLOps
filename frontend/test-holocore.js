@@ -60,46 +60,46 @@ const testCases = [
 ];
 
 async function runTests() {
-  console.log('🧠 HoloCore Integration Test');
+  // Development log removed
   console.log('=' .repeat(50));
-  console.log(`Testing Backend: ${API_BASE}`);
-  console.log(`Frontend URL: ${FRONTEND_URL}`);
-  console.log('');
+  // Development log removed
+  // Development log removed
+  // Development log removed
 
   let passed = 0;
   let failed = 0;
 
   for (const testCase of testCases) {
     try {
-      console.log(`Testing: ${testCase.name}...`);
+      // Development log removed
       const result = await testCase.test();
       
       if (result) {
-        console.log(`✅ ${testCase.name} - PASSED`);
+        // Development log removed
         passed++;
       } else {
-        console.log(`❌ ${testCase.name} - FAILED`);
+        // Development log removed
         failed++;
       }
     } catch (error) {
-      console.log(`❌ ${testCase.name} - ERROR: ${error.message}`);
+      // Development log removed
       failed++;
     }
-    console.log('');
+    // Development log removed
   }
 
   console.log('=' .repeat(50));
-  console.log(`Results: ${passed} passed, ${failed} failed`);
+  // Development log removed
   
   if (failed === 0) {
-    console.log('🎉 All tests passed! HoloCore is ready.');
-    console.log('');
-    console.log('Next steps:');
-    console.log('1. Start frontend: npm run dev');
-    console.log('2. Visit: http://localhost:3000');
-    console.log('3. Command your AI army!');
+    // Development log removed
+    // Development log removed
+    // Development log removed
+    // Development log removed
+    // Development log removed
+    // Development log removed
   } else {
-    console.log('⚠️  Some tests failed. Check backend status.');
+    // Development log removed
   }
 }
 
@@ -109,7 +109,7 @@ async function checkBackend() {
     await axios.get(`${API_BASE}/health`);
     return true;
   } catch (error) {
-    console.log('❌ Backend not running. Start with: cd ../core && docker-compose up -d');
+    // Development log removed
     return false;
   }
 }

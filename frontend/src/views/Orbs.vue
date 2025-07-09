@@ -331,7 +331,7 @@ export default {
     }
 
     const viewOrb = (orb) => {
-      console.log('Viewing orb:', orb.title)
+      // Development log removed
       // Navigate to detailed orb view
     }
 
@@ -339,11 +339,11 @@ export default {
       orb.status = 'approved'
       stats.value.approved++
       stats.value.pending--
-      console.log('Approved orb:', orb.title)
+      // Development log removed
     }
 
     const loadMore = () => {
-      console.log('Loading more orbs...')
+      // Development log removed
       hasMore.value = false
     }
 

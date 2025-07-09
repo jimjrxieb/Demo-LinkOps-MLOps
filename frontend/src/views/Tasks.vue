@@ -422,7 +422,7 @@ export default {
         })
         
       } catch (error) {
-        console.error('Error submitting task:', error)
+        // Error log removed
       } finally {
         isSubmitting.value = false
       }

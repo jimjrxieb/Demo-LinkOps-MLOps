@@ -15,4 +15,4 @@ flake8==6.1.0
 
 # Security fixes
 zipp>=3.19.1
-anyio>=4.4.0 
+anyio>=4.4.0

@@ -300,7 +300,7 @@ export default {
         await checkHealth()
 
       } catch (error) {
-        console.error('Error loading dashboard data:', error)
+        // Error log removed
       }
     }
 
@@ -321,7 +321,7 @@ export default {
           { name: 'Whis Enhance', status: results[3].value || 'unhealthy' }
         ]
       } catch (error) {
-        console.error('Error checking health:', error)
+        // Error log removed
       }
     }
 
@@ -331,32 +331,32 @@ export default {
 
     const createNewTask = () => {
       // Navigate to task creation
-      console.log('Navigate to task creation')
+      // Development log removed
     }
 
     const runAudit = () => {
       // Navigate to audit page
-      console.log('Navigate to audit page')
+      // Development log removed
     }
 
     const viewAnalytics = () => {
       // Navigate to analytics page
-      console.log('Navigate to analytics page')
+      // Development log removed
     }
 
     const loadTasks = () => {
       // Navigate to tasks page
-      console.log('Navigate to tasks page')
+      // Development log removed
     }
 
     const loadAuditHistory = () => {
       // Navigate to audit history
-      console.log('Navigate to audit history')
+      // Development log removed
     }
 
     const loadTrainingStats = () => {
       // Navigate to training stats
-      console.log('Navigate to training stats')
+      // Development log removed
     }
 
     onMounted(() => {

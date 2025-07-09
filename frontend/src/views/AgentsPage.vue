@@ -288,7 +288,7 @@ const fetchAgentStats = async () => {
     recentRunes.value = runesData.slice(0, 5) // Show last 5
     
   } catch (error) {
-    console.error('Failed to fetch agent stats:', error)
+    // Error log removed
   }
 }
 

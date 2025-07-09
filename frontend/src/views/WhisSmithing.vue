@@ -304,7 +304,7 @@ python3 validate_migration.py`,
           timestamp: "Just now"
         })
       } catch (error) {
-        console.error('Failed to approve item:', error)
+        // Error log removed
       }
     }
 
@@ -322,7 +322,7 @@ python3 validate_migration.py`,
           timestamp: "Just now"
         })
       } catch (error) {
-        console.error('Failed to deny item:', error)
+        // Error log removed
       }
     }
 
@@ -362,7 +362,7 @@ python3 validate_migration.py`,
           timestamp: "Just now"
         })
       } catch (error) {
-        console.error('Failed to save edit:', error)
+        // Error log removed
       }
     }
 

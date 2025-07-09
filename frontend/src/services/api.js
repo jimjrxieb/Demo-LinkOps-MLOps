@@ -45,7 +45,7 @@ api.interceptors.request.use(
     return config
   },
   (error) => {
-    console.error('API Request Error:', error)
+    // Error log removed
     return Promise.reject(error)
   }
 )
@@ -56,15 +56,15 @@ api.interceptors.response.use(
     return response
   },
   (error) => {
-    console.error('API Response Error:', error.response?.data || error.message)
+    // Error log removed
     
     // Handle specific error cases
     if (error.response?.status === 401) {
       // Handle unauthorized
-      console.log('Unauthorized access, redirecting to login')
+      // Development log removed
     } else if (error.response?.status === 503) {
       // Handle service unavailable
-      console.log('Service temporarily unavailable')
+      // Development log removed
     }
     
     return Promise.reject(error)

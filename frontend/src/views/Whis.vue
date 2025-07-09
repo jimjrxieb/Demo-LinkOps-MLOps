@@ -461,7 +461,7 @@ export default {
           timestamp: 'Just now'
         })
       } catch (error) {
-        console.error('Error submitting YouTube video:', error)
+        // Error log removed
       } finally {
         isSubmittingYouTube.value = false
       }
@@ -488,7 +488,7 @@ export default {
           timestamp: 'Just now'
         })
       } catch (error) {
-        console.error('Error submitting manual task:', error)
+        // Error log removed
       } finally {
         isSubmittingManual.value = false
       }

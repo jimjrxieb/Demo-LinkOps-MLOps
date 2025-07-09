@@ -142,7 +142,7 @@ export default {
         // Redirect to dashboard
         router.push('/dashboard')
       } catch (error) {
-        console.error('Login failed:', error)
+        // Error log removed
       } finally {
         isLoading.value = false
       }
@@ -155,7 +155,7 @@ export default {
         showRegistration.value = false
         // Show success message or auto-login
       } catch (error) {
-        console.error('Registration failed:', error)
+        // Error log removed
       }
     }
 
