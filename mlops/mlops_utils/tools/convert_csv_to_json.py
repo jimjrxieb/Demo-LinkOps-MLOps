@@ -106,7 +106,7 @@ def json_to_csv(json_path: str, csv_path: Optional[str] = None) -> bool:
             # Convert dict to list of dicts
             rows = list(data.values())
         else:
-            print(f"Error: Unsupported JSON structure")
+            print("Error: Unsupported JSON structure")
             return False
 
         if not rows:

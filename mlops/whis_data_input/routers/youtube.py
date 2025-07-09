@@ -125,7 +125,7 @@ async def download_youtube_transcripts_batch(urls: List[str]):
             results.append(result)
 
         return {
-            "message": f"Batch processing completed",
+            "message": "Batch processing completed",
             "batch_id": batch_id,
             "total_urls": len(urls),
             "successful": len([r for r in results if r["status"] == "downloaded"]),

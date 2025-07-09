@@ -326,8 +326,7 @@ class SecurityScanner:
                     "description": f"Environment file {rel_path} should not be committed to version control",
                     "file": str(rel_path),
                     "recommendation": "Add .env* to .gitignore and use environment variables or secrets management",
-                }
-            )
+                })
 
         return issues
 
@@ -376,8 +375,7 @@ class SecurityScanner:
                                             "line": line_num,
                                             "context": line.strip(),
                                             "recommendation": "Use environment variables or configuration files",
-                                        }
-                                    )
+                                        })
                 except Exception:
                     continue
 
@@ -445,8 +443,7 @@ class SecurityScanner:
                                 "description": f"Container in {rel_path} should not run as root",
                                 "file": rel_path,
                                 "recommendation": "Add non-root user and use USER directive",
-                            }
-                        )
+                            })
 
                     # Check for latest tag
                     if "FROM" in content and ":latest" in content:
@@ -458,8 +455,7 @@ class SecurityScanner:
                                 "description": f"Dockerfile {rel_path} uses latest tag",
                                 "file": rel_path,
                                 "recommendation": "Use specific version tags for reproducibility",
-                            }
-                        )
+                            })
 
             except Exception:
                 continue
@@ -491,8 +487,7 @@ class SecurityScanner:
                                 "description": f"Kubernetes manifest {rel_path} missing resource limits",
                                 "file": str(rel_path),
                                 "recommendation": "Add CPU and memory limits to prevent resource exhaustion",
-                            }
-                        )
+                            })
 
             except Exception:
                 continue

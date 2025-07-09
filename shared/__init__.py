@@ -12,7 +12,6 @@ __author__ = "LinkOps Team"
 __email__ = "team@linkops.com"
 
 from .config.logging import get_logger, setup_logging
-
 # Import commonly used components for easy access
 from .config.settings import Settings, get_settings
 from .constants.tags import AUDIT_SEVERITIES, ORB_CATEGORIES, RUNE_TYPES

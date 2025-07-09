@@ -202,7 +202,7 @@ class PipelineRunner:
         self.end_time = datetime.now()
         duration = self.end_time - self.start_time
 
-        print(f"\n📊 Pipeline Summary:")
+        print("\n📊 Pipeline Summary:")
         print(f"   Steps completed: {success_count}/{len(steps)}")
         print(f"   Duration: {duration}")
         print(f"   Success: {success_count == len(steps)}")

@@ -105,7 +105,7 @@ async def extract_text_from_base64(request: ImageTextRequest):
 
         # Decode base64 image
         try:
-            image_data = base64.b64decode(request.image_data)
+            base64.b64decode(request.image_data)
         except Exception:
             raise HTTPException(status_code=400, detail="Invalid base64 image data")
 

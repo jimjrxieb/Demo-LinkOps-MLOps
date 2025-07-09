@@ -7,13 +7,9 @@ Tests the loopback refinement functionality.
 import asyncio
 import json
 
-from logic.loopback import (
-    find_matching_rune,
-    get_loopback_statistics,
-    load_failed_tasks,
-    load_repeat_tasks,
-    loopback_refine,
-)
+from logic.loopback import (find_matching_rune, get_loopback_statistics,
+                            load_failed_tasks, load_repeat_tasks,
+                            loopback_refine)
 from logic.version_control import get_version_history, save_version
 
 

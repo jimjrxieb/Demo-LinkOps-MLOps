@@ -1,6 +1,6 @@
 import os
-import subprocess
 import re
+import subprocess
 
 YAML_EXTENSIONS = (".yaml", ".yml")
 
@@ -10,6 +10,120 @@ def find_yaml_files():
         for file in files:
             if file.endswith(YAML_EXTENSIONS):
                 yield os.path.join(root, file)
+
+
+def fix_github_actions_formatting(lines):
+    """Fix GitHub Actions workflow specific formatting issues"""
+    fixed_lines = []
+    i = 0
+    
+    while i < len(lines):
+        line = lines[i]
+        original_line = line
+        
+        # Skip empty lines
+        if not line.strip():
+            fixed_lines.append(line)
+            i += 1
+            continue
+            
+        leading_spaces = len(line) - len(line.lstrip())
+        content = line.lstrip()
+        
+        # Fix 'with:' block indentation after 'uses:' statements
+        if content.startswith("with:") and i > 0:
+            prev_line = lines[i - 1].strip()
+            if prev_line.startswith("- uses:") or "uses:" in prev_line:
+                # 'with:' should be indented 2 more spaces than the 'uses:' line
+                prev_leading = len(lines[i - 1]) - len(lines[i - 1].lstrip())
+                correct_indent = prev_leading + 2
+                if leading_spaces != correct_indent:
+                    fixed_line = " " * correct_indent + content
+                    fixed_lines.append(fixed_line)
+                    print(f"  🔧 Fixed 'with:' indentation: {leading_spaces} → {correct_indent} spaces")
+                    i += 1
+                    continue
+        
+        # Fix properties under 'with:' blocks
+        elif (":" in content and not content.startswith("#") and 
+              i > 0 and "with:" in lines[i - 1]):
+            # Properties under 'with:' should be indented 2 more spaces than 'with:'
+            with_line_indent = len(lines[i - 1]) - len(lines[i - 1].lstrip())
+            correct_indent = with_line_indent + 2
+            if leading_spaces != correct_indent:
+                fixed_line = " " * correct_indent + content
+                fixed_lines.append(fixed_line)
+                print(f"  🔧 Fixed 'with:' property indentation: {leading_spaces} → {correct_indent} spaces")
+                i += 1
+                continue
+        
+        # Fix 'continue-on-error:' alignment
+        elif content.startswith("continue-on-error:"):
+            # Find the corresponding step to align with
+            step_indent = None
+            for j in range(i - 1, -1, -1):
+                prev_content = lines[j].lstrip()
+                if (prev_content.startswith("- name:") or 
+                    prev_content.startswith("- uses:") or 
+                    prev_content.startswith("- run:")):
+                    step_indent = len(lines[j]) - len(lines[j].lstrip()) + 2
+                    break
+            
+            if step_indent and leading_spaces != step_indent:
+                fixed_line = " " * step_indent + content
+                fixed_lines.append(fixed_line)
+                print(f"  🔧 Fixed 'continue-on-error:' alignment: {leading_spaces} → {step_indent} spaces")
+                i += 1
+                continue
+        
+        # Fix step properties (run:, env:, etc.) alignment
+        elif (content.startswith(("run:", "env:", "name:", "uses:")) and 
+              not content.startswith("- ") and i > 0):
+            # Check if previous line is a step
+            prev_content = lines[i - 1].lstrip()
+            if (prev_content.startswith("- name:") or 
+                prev_content.startswith("- uses:") or 
+                prev_content.startswith("- run:")):
+                prev_indent = len(lines[i - 1]) - len(lines[i - 1].lstrip())
+                correct_indent = prev_indent + 2
+                if leading_spaces != correct_indent:
+                    fixed_line = " " * correct_indent + content
+                    fixed_lines.append(fixed_line)
+                    print(f"  🔧 Fixed step property indentation: {leading_spaces} → {correct_indent} spaces")
+                    i += 1
+                    continue
+        
+        # Fix bash syntax in run blocks
+        if content.startswith("run:") and i + 1 < len(lines):
+            # Look for bash syntax issues in subsequent lines
+            j = i + 1
+            while j < len(lines) and (lines[j].startswith(" ") or not lines[j].strip()):
+                if lines[j].strip():
+                    bash_line = lines[j]
+                    fixed_bash = fix_bash_syntax(bash_line)
+                    if fixed_bash != bash_line:
+                        lines[j] = fixed_bash
+                        print(f"  🔧 Fixed bash syntax in run block")
+                j += 1
+        
+        # Keep original line if no fixes applied
+        fixed_lines.append(original_line)
+        i += 1
+    
+    return fixed_lines
+
+
+def fix_bash_syntax(line):
+    """Fix common bash syntax issues in YAML run blocks"""
+    # Fix single bracket usage to double brackets
+    line = re.sub(r'\[\s+([^]]+)\s+\]', r'[[\1]]', line)  # [ -f ] -> [[ -f ]]
+    line = re.sub(r'\[\s*([^]]+?)\s*\](?!\])', r'[[\1]]', line)  # [ condition ] -> [[ condition ]]
+    
+    # Don't double-fix already correct patterns
+    line = re.sub(r'\[\[\[\[', r'[[', line)
+    line = re.sub(r'\]\]\]\]', r']]', line)
+    
+    return line
 
 
 def fix_indentation_errors(lines):
@@ -91,15 +205,72 @@ def fix_indentation_errors(lines):
     return fixed_lines
 
 
+def fix_github_actions_structure(lines):
+    """Fix GitHub Actions workflow structure issues"""
+    fixed_lines = []
+    
+    for i, line in enumerate(lines):
+        original_line = line
+        
+        # Skip empty lines
+        if not line.strip():
+            fixed_lines.append(line)
+            continue
+            
+        # Fix action step structure issues
+        content = line.lstrip()
+        leading_spaces = len(line) - len(line.lstrip())
+        
+        # Fix missing dash before action names
+        if (content.startswith("name:") and i > 0 and 
+            "steps:" in lines[i-1] and 
+            not any("- name:" in lines[j] for j in range(max(0, i-5), i))):
+            # Add dash for first step
+            fixed_line = " " * (leading_spaces - 2) + "- " + content
+            fixed_lines.append(fixed_line)
+            print(f"  🔧 Added missing dash before step name")
+            continue
+            
+        # Fix action uses without proper structure
+        if (content.startswith("uses:") and 
+            not content.startswith("- uses:") and
+            i > 0 and "steps:" in "".join(lines[max(0, i-10):i])):
+            # Check if this should be a step
+            needs_dash = True
+            for j in range(i-1, max(0, i-5), -1):
+                if lines[j].lstrip().startswith("- "):
+                    needs_dash = False
+                    break
+                elif lines[j].lstrip().startswith(("name:", "run:", "with:", "env:")):
+                    break
+                    
+            if needs_dash:
+                fixed_line = " " * (leading_spaces - 2) + "- " + content
+                fixed_lines.append(fixed_line)
+                print(f"  🔧 Added missing dash before uses statement")
+                continue
+        
+        # Keep original line if no fixes applied
+        fixed_lines.append(original_line)
+    
+    return fixed_lines
+
+
 def clean_yaml_file(filepath):
     print(f"\n🔧 Cleaning YAML: {filepath}")
+    is_github_actions = "/.github/workflows/" in filepath or "\\.github\\workflows\\" in filepath
     helm_safe = filepath.startswith("./helm")
 
     with open(filepath, "r") as f:
         lines = f.readlines()
 
-    # Apply indentation fixes
+    # Apply general indentation fixes
     lines = fix_indentation_errors(lines)
+    
+    # Apply GitHub Actions specific fixes
+    if is_github_actions:
+        lines = fix_github_actions_structure(lines)
+        lines = fix_github_actions_formatting(lines)
 
     cleaned = []
     for i, line in enumerate(lines):
@@ -142,6 +313,8 @@ def lint_yaml_file(filepath):
                     print(f"  🔲 {line}")
                 elif "no new line character at the end" in line:
                     print(f"  📄 {line}")
+                elif "syntax error" in line:
+                    print(f"  ⚠️  {line}")
                 else:
                     print(f"  ⚠️  {line}")
         return False
@@ -174,6 +347,23 @@ def auto_fix_remaining_issues(filepath):
                 lines[-1] += "\n"
                 fixed = True
                 print(f"  🔧 Added newline at end of file")
+                
+        # Fix syntax errors related to mapping structure
+        elif "syntax error" in issue_line and "mapping" in issue_line:
+            # Extract line number from yamllint output
+            try:
+                line_num = int(issue_line.split(":")[1]) - 1
+                if 0 <= line_num < len(lines):
+                    line = lines[line_num]
+                    # Fix common mapping structure issues
+                    if "with:" in line and not line.lstrip().startswith("with:"):
+                        # Fix indentation for with block
+                        fixed_line = "      with:\n"
+                        lines[line_num] = fixed_line
+                        fixed = True
+                        print(f"  🔧 Fixed 'with:' block structure at line {line_num + 1}")
+            except (ValueError, IndexError):
+                pass
 
     if fixed:
         with open(filepath, "w") as f:
@@ -227,6 +417,7 @@ def main():
         print("  • Check for complex indentation in nested structures")
         print("  • Verify Helm template syntax is preserved")
         print("  • Review any custom YAML constructs")
+        print("  • For GitHub Actions: ensure proper step structure and indentation")
 
 
 if __name__ == "__main__":

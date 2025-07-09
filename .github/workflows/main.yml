@@ -40,14 +40,14 @@ jobs:
           flake8 mlops/ shadows/ --count --show-source --statistics
           exit 1
         }
-        
+
         echo "🎨 Checking code formatting..."
         black --check mlops/ shadows/ || {
           echo "⚠️ Code formatting issues found - running auto-fix"
           black mlops/ shadows/
           echo "✅ Auto-formatting applied"
         }
-        
+
         echo "🔒 Running security scan..."
         bandit -r mlops/ shadows/ -f json || {
           echo "⚠️ Security issues found but continuing build"
@@ -68,13 +68,13 @@ jobs:
       run: |
         cd frontend
         npm ci
-        
+
         echo "🔍 Running frontend linting..."
         npm run lint || {
           echo "⚠️ Linting issues found - attempting auto-fix"
           npm run lint:fix || echo "Auto-fix completed with warnings"
         }
-        
+
         echo "🏗️ Building frontend..."
         npm run build
       continue-on-error: false
@@ -88,7 +88,7 @@ jobs:
     - name: YAML Quality Check
       run: |
         pip install yamllint
-        
+
         echo "🔍 Running YAML linting..."
         yamllint helm/ .github/ || {
           echo "⚠️ YAML issues found - attempting auto-fix"
@@ -112,14 +112,14 @@ jobs:
     - name: Helm Validation
       run: |
         cd helm/linkops
-        
+
         echo "📦 Updating Helm dependencies..."
         helm dependency update || {
           echo "⚠️ Dependency update failed - trying without cache"
           rm -rf charts/ Chart.lock
           helm dependency update || echo "Dependencies may be outdated"
         }
-        
+
         echo "🔍 Linting Helm charts..."
         helm lint . || {
           echo "⚠️ Helm lint found issues but charts may still be deployable"
@@ -146,13 +146,13 @@ jobs:
       run: |
         success_count=0
         total_count=0
-        
+
         for dir in mlops/* shadows/*; do
-          if [ -f "$dir/Dockerfile" ]; then
+          if [[ -f "$dir/Dockerfile" ]]; then
             name=$(basename $dir)
             total_count=$((total_count + 1))
             echo "🏗️ Building $name..."
-            
+
             if docker build -t linkops/$name:latest $dir; then
               echo "✅ Build successful for $name"
               if docker push linkops/$name:latest; then
@@ -166,11 +166,11 @@ jobs:
             fi
           fi
         done
-        
+
         echo "📊 Build Summary: $success_count/$total_count services built successfully"
-        
+
         # Continue if at least 50% of services built successfully
-        if [ $success_count -gt 0 ] && [ $((success_count * 2)) -ge $total_count ]; then
+        if [[ $success_count -gt 0 ]] && [[ $((success_count * 2)) -ge $total_count ]]; then
           echo "✅ Sufficient services built successfully"
         else
           echo "❌ Too many build failures"
@@ -215,7 +215,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Update ArgoCD Pull Config
     needs: [docker-build-push]
-    if: always() && github.ref == 'refs/heads/main' && (needs.docker-build-push.result == 'success' || needs.docker-build-push.result == 'failure')
+    if: always() && github.ref == 'refs/heads/main' &&
+        (needs.docker-build-push.result == 'success' || needs.docker-build-push.result == 'failure')
     steps:
     - uses: actions/checkout@v4
       with:
@@ -223,7 +224,7 @@ jobs:
 
     - name: Update ArgoCD sync trigger
       run: |
-        if [ -f "helm/argocd/application.yaml" ]; then
+        if [[ -f "helm/argocd/application.yaml" ]]; then
           echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
@@ -253,22 +254,22 @@ jobs:
         echo "Trivy Scan: ${{ needs.trivy-scan.result }}"
         echo "GitGuardian: ${{ needs.gitguardian.result }}"
         echo "ArgoCD Update: ${{ needs.update-argocd.result }}"
-        
+
         # Determine if critical jobs passed
         critical_jobs=("lint-python" "lint-frontend" "docker-build-push")
         failed_critical=0
-        
-        if [ "${{ needs.lint-python.result }}" != "success" ]; then
+
+        if [[ "${{ needs.lint-python.result }}" != "success" ]]; then
           failed_critical=$((failed_critical + 1))
         fi
-        if [ "${{ needs.lint-frontend.result }}" != "success" ]; then
+        if [[ "${{ needs.lint-frontend.result }}" != "success" ]]; then
           failed_critical=$((failed_critical + 1))
         fi
-        if [ "${{ needs.docker-build-push.result }}" != "success" ] && [ "${{ github.ref }}" == "refs/heads/main" ]; then
+        if [[ "${{ needs.docker-build-push.result }}" != "success" ]] && [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
           failed_critical=$((failed_critical + 1))
         fi
-        
-        if [ $failed_critical -eq 0 ]; then
+
+        if [[ $failed_critical -eq 0 ]]; then
           echo "✅ Pipeline completed successfully!"
           echo "status=success" >> $GITHUB_OUTPUT
         else

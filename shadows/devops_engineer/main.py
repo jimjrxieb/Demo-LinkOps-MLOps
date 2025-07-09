@@ -3,13 +3,12 @@ from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, HTTPException
-from logic.git_secrets import add_git_hooks, check_git_history, scan_git_secrets
-from logic.sast_scans import analyze_vulnerabilities, generate_report, run_sast_scan
-from logic.security_lint import (
-    audit_permissions,
-    check_compliance,
-    lint_security_config,
-)
+from logic.git_secrets import (add_git_hooks, check_git_history,
+                               scan_git_secrets)
+from logic.sast_scans import (analyze_vulnerabilities, generate_report,
+                              run_sast_scan)
+from logic.security_lint import (audit_permissions, check_compliance,
+                                 lint_security_config)
 from pydantic import BaseModel
 
 # Configure logging

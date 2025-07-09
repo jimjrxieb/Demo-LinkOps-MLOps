@@ -12,16 +12,9 @@ from typing import Dict
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-
 # Import routers
-from routers import (
-    daily_router,
-    model_router,
-    orb_router,
-    rune_router,
-    script_router,
-    task_router,
-)
+from routers import (daily_router, model_router, orb_router, rune_router,
+                     script_router, task_router)
 
 app = FastAPI(
     title="Jimmie Logic - Unified Control Brain",

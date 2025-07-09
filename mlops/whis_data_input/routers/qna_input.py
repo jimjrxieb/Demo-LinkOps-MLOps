@@ -97,7 +97,7 @@ async def submit_qna_batch(batch: QnABatch):
 
         # TODO: Send batch to whis_sanitize service
         return {
-            "message": f"Batch submitted successfully",
+            "message": "Batch submitted successfully",
             "batch_id": batch_id,
             "processed_count": processed_count,
             "batch_data": batch_data,
