@@ -1,62 +1,55 @@
 <template>
-  <div
-    v-if="isDemoMode"
-    class="demo-banner"
-  >
+  <div v-if="isDemoMode" class="demo-banner">
     <div class="banner-content">
-      <div class="banner-icon">
-        🎭
-      </div>
+      <div class="banner-icon">🎭</div>
       <div class="banner-text">
         <strong>Demo Mode Active</strong>
         <span class="banner-description">
-          You're viewing simulated data. No real changes will be made to the system.
+          You're viewing simulated data. No real changes will be made to the
+          system.
         </span>
       </div>
-      <button
-        class="banner-close"
-        @click="dismissBanner"
-      >
+      <button class="banner-close" @click="dismissBanner">
         <span class="close-icon">×</span>
       </button>
     </div>
-    
+
     <!-- Animated border -->
     <div class="banner-border" />
   </div>
 </template>
 
 <script>
-import { useMainStore } from '../store/index.js'
+import { useMainStore } from '../store/index.js';
 
 export default {
   name: 'DemoBanner',
   data() {
     return {
-      isDismissed: false
-    }
+      isDismissed: false,
+    };
   },
   computed: {
     isDemoMode() {
-      const store = useMainStore()
-      return store.authRole === 'demo' && !this.isDismissed
-    }
+      const store = useMainStore();
+      return store.authRole === 'demo' && !this.isDismissed;
+    },
   },
   mounted() {
     // Check if banner was previously dismissed
-    const dismissed = localStorage.getItem('demo-banner-dismissed')
+    const dismissed = localStorage.getItem('demo-banner-dismissed');
     if (dismissed === 'true') {
-      this.isDismissed = true
+      this.isDismissed = true;
     }
   },
   methods: {
     dismissBanner() {
-      this.isDismissed = true
+      this.isDismissed = true;
       // Store dismissal in localStorage
-      localStorage.setItem('demo-banner-dismissed', 'true')
-    }
-  }
-}
+      localStorage.setItem('demo-banner-dismissed', 'true');
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -65,7 +58,11 @@ export default {
   top: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(90deg, rgba(255, 170, 0, 0.9), rgba(255, 140, 0, 0.9));
+  background: linear-gradient(
+    90deg,
+    rgba(255, 170, 0, 0.9),
+    rgba(255, 140, 0, 0.9)
+  );
   backdrop-filter: blur(10px);
   border-bottom: 2px solid #ffaa00;
   z-index: 9999;
@@ -164,24 +161,24 @@ export default {
     padding: 0.75rem 1rem;
     gap: 0.75rem;
   }
-  
+
   .banner-text {
     gap: 0.125rem;
   }
-  
+
   .banner-text strong {
     font-size: 0.9rem;
   }
-  
+
   .banner-description {
     font-size: 0.8rem;
   }
-  
+
   .banner-close {
     width: 28px;
     height: 28px;
   }
-  
+
   .close-icon {
     font-size: 1.2rem;
   }

@@ -26,14 +26,24 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Orbitron', 'Courier New', monospace;
-  background: linear-gradient(135deg, var(--background-dark) 0%, var(--background-medium) 50%, var(--background-light) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--background-dark) 0%,
+    var(--background-medium) 50%,
+    var(--background-light) 100%
+  );
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
 }
 
 /* Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Orbitron', 'Courier New', monospace;
   font-weight: 700;
   margin: 0;
@@ -41,7 +51,11 @@ h1, h2, h3, h4, h5, h6 {
 
 h1 {
   font-size: 2.5rem;
-  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(
+    45deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   text-shadow: 0 0 20px var(--shadow-color);
@@ -85,7 +99,12 @@ h3 {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -146,7 +165,11 @@ h3 {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(
+    90deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -161,7 +184,9 @@ h3 {
 }
 
 /* Form Elements */
-input, textarea, select {
+input,
+textarea,
+select {
   background: rgba(0, 0, 0, 0.8);
   border: 1px solid #333;
   border-radius: 8px;
@@ -172,7 +197,9 @@ input, textarea, select {
   transition: all 0.3s ease;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: var(--primary-color);
   box-shadow: 0 0 15px var(--shadow-color);
@@ -216,7 +243,8 @@ input:focus, textarea:focus, select:focus {
 
 /* Animations */
 @keyframes glow {
-  0%, 100% {
+  0%,
+  100% {
     box-shadow: 0 0 20px var(--shadow-color);
   }
   50% {
@@ -225,7 +253,8 @@ input:focus, textarea:focus, select:focus {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -271,7 +300,11 @@ input:focus, textarea:focus, select:focus {
 }
 
 .text-gradient {
-  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  background: linear-gradient(
+    45deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -310,8 +343,12 @@ input:focus, textarea:focus, select:focus {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive Design */
@@ -319,20 +356,20 @@ input:focus, textarea:focus, select:focus {
   h1 {
     font-size: 2rem;
   }
-  
+
   h2 {
     font-size: 1.5rem;
   }
-  
+
   h3 {
     font-size: 1.2rem;
   }
-  
+
   .btn {
     padding: 0.5rem 1rem;
     font-size: 0.9rem;
   }
-  
+
   .card {
     padding: 1rem;
   }
@@ -353,4 +390,4 @@ input:focus, textarea:focus, select:focus {
     --text-primary: #ffffff;
     --text-secondary: #cccccc;
   }
-} 
+}

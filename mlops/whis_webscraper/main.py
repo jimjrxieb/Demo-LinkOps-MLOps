@@ -2,6 +2,35 @@ import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 from fastapi import BackgroundTasks, FastAPI, HTTPException
 from logic.scraper import extract_content, scrape_url, validate_url
 from pydantic import BaseModel
@@ -281,4 +310,4 @@ async def root() -> Dict[str, str]:
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)

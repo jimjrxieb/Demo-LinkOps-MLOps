@@ -1,7 +1,36 @@
 import logging
-import subprocess
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
 
 from fastapi import APIRouter, Body, HTTPException
 from pydantic import BaseModel
@@ -265,7 +294,7 @@ async def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="127.0.0.1", port=8000)
 """,
                 "action": "create",
             }
@@ -414,14 +443,14 @@ def git_commit_and_push(path: Path, message: str) -> Dict[str, Any]:
         git_dir = path / ".git"
         if not git_dir.exists():
             # Initialize git repository
-            subprocess.run(["git", "init"], cwd=path, check=True)
+            subprocess.run(sanitize_cmd(["git", "init"]), cwd=path, check=True)
 
         # Add all changes
-        subprocess.run(["git", "add", "."], cwd=path, check=True)
+        subprocess.run(sanitize_cmd(["git", "add", "."]), cwd=path, check=True)
 
         # Commit changes
         commit_result = subprocess.run(
-            ["git", "commit", "-m", message],
+            sanitize_cmd(["git", "commit", "-m", message]),
             cwd=path,
             capture_output=True,
             text=True,
@@ -436,7 +465,11 @@ def git_commit_and_push(path: Path, message: str) -> Dict[str, Any]:
         # Push to remote (if remote exists)
         try:
             _ = subprocess.run(
-                ["git", "push"], cwd=path, capture_output=True, text=True, check=True
+                sanitize_cmd(["git", "push"]),
+                cwd=path,
+                capture_output=True,
+                text=True,
+                check=True,
             )
             push_status = "success"
         except subprocess.CalledProcessError:

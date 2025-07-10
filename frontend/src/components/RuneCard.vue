@@ -1,89 +1,94 @@
 <template>
   ;
-  <div
-    class="rune-card"
-    @click="$emit('click', rune)"
-  >
+  <div class="rune-card" @click="$emit('click', rune)">
     ;
     <div class="rune-header">
       ;
       <div class="rune-icon">
         {{ getRuneIcon(rune.type) }}
-      </div>;
-      <div class="rune-cost">
-        {{ rune.cost }} ⚡
-      </div>;
-    </div>;
-    
+      </div>
+      ;
+      <div class="rune-cost">{{ rune.cost }} ⚡</div>
+      ;
+    </div>
+    ;
+
     <div class="rune-content">
       ;
       <h3 class="rune-name">
         {{ rune.name }}
-      </h3>;
+      </h3>
+      ;
       <p class="rune-description">
         {{ rune.description }}
-      </p>;
-      
+      </p>
+      ;
+
       <div class="rune-type">
         ;
-        <span
-          class="type-badge"
-          :class="rune.type"
-        >{{ rune.type }}</span>;
-      </div>;
-    </div>;
-    
+        <span class="type-badge" :class="rune.type">{{ rune.type }}</span
+        >;
+      </div>
+      ;
+    </div>
+    ;
+
     <div class="rune-footer">
       ;
-      <button
-        class="activate-btn"
-        @click.stop="activateRune"
-      >
+      <button class="activate-btn" @click.stop="activateRune">
         ;
-        <span class="btn-icon">⚡</span>;
-        Activate;
-      </button>;
-    </div>;
-  </div>;
-</template>;
-<script>;
+        <span class="btn-icon">⚡</span>; Activate;</button
+      >;
+    </div>
+    ;
+  </div>
+  ;
+</template>
+;
+<script>
 export default {
   name: 'RuneCard',
+  emits: ['click', 'activate'],
   props: {
     rune: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     typeClass() {
       switch (this.rune.type) {
-        case 'data-processing': return 'rune-data-processing'
-        case 'security': return 'rune-security'
-        case 'optimization': return 'rune-optimization'
-        default: return ''
+        case 'data-processing':
+          return 'rune-data-processing';
+        case 'security':
+          return 'rune-security';
+        case 'optimization':
+          return 'rune-optimization';
+        default:
+          return '';
       }
-    }
+    },
   },
   methods: {
     getRuneIcon(type) {
       const icons = {
         'data-processing': '🔄',
-        'security': '🛡️',
-        'optimization': '⚡',
-        'analysis': '🔍',
-        'enhancement': '✨',
-        'default': '🔮'
-      }
+        security: '🛡️',
+        optimization: '⚡',
+        analysis: '🔍',
+        enhancement: '✨',
+        default: '🔮',
+      };
       return icons[type] || icons.default;
     },
     activateRune() {
       this.$emit('activate', this.rune);
-    }
-  }
-}
-</script>;
-<style scoped>;
+    },
+  },
+};
+</script>
+;
+<style scoped>
 .rune-card {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid #00d4ff;
@@ -237,17 +242,18 @@ export default {
   .rune-card {
     padding: 1rem;
   }
-  
+
   .rune-name {
     font-size: 1.1rem;
   }
-  
+
   .rune-description {
     font-size: 0.8rem;
   }
-  
+
   .rune-icon {
     font-size: 2rem;
   }
 }
-</style>;
+</style>
+;

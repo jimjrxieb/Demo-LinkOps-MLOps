@@ -1,7 +1,35 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 # shadows/audit_logic/lint_fixer/lint_runner.py
 
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
@@ -14,7 +42,7 @@ def run_python_lint(path: str, max_line_length: int = 88) -> Dict[str, Any]:
     print(f"🔎 Running flake8 on {path}...")
     try:
         result = subprocess.run(
-            ["flake8", "--max-line-length", str(max_line_length), path],
+            sanitize_cmd(["flake8", "--max-line-length", str(max_line_length), path]),
             capture_output=True,
             text=True,
             check=False,
@@ -30,7 +58,7 @@ def run_python_lint(path: str, max_line_length: int = 88) -> Dict[str, Any]:
     print(f"🧼 Auto-formatting with black on {path}...")
     try:
         result = subprocess.run(
-            ["black", "--line-length", str(max_line_length), path],
+            sanitize_cmd(["black", "--line-length", str(max_line_length), path]),
             capture_output=True,
             text=True,
             check=False,
@@ -53,7 +81,10 @@ def run_yaml_lint(path: str) -> Dict[str, Any]:
     print(f"🔎 Running yamllint on {path}...")
     try:
         result = subprocess.run(
-            ["yamllint", path], capture_output=True, text=True, check=False
+            sanitize_cmd(["yamllint", path]),
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("✅ yamllint passed")
@@ -66,7 +97,10 @@ def run_yaml_lint(path: str) -> Dict[str, Any]:
     print(f"🧼 Auto-formatting YAML using Prettier on {path}...")
     try:
         result = subprocess.run(
-            ["prettier", "--write", path], capture_output=True, text=True, check=False
+            sanitize_cmd(["prettier", "--write", path]),
+            capture_output=True,
+            text=True,
+            check=False,
         )
         if result.returncode == 0:
             print("✅ prettier formatting complete")

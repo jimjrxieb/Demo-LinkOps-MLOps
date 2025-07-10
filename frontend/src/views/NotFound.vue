@@ -1,33 +1,23 @@
 <template>
   <div class="not-found">
     <div class="error-container">
-      <div class="error-code">
-        404
-      </div>
-      <h1 class="error-title">
-        Page Not Found
-      </h1>
+      <div class="error-code">404</div>
+      <h1 class="error-title">Page Not Found</h1>
       <p class="error-message">
         The page you're looking for doesn't exist in this dimension.
       </p>
       <div class="error-actions">
-        <router-link
-          to="/"
-          class="btn primary"
-        >
+        <router-link to="/" class="btn primary">
           <span class="btn-icon">🏠</span>
           Return to Dashboard
         </router-link>
-        <button
-          class="btn secondary"
-          @click="goBack"
-        >
+        <button class="btn secondary" @click="goBack">
           <span class="btn-icon">⬅️</span>
           Go Back
         </button>
       </div>
     </div>
-    
+
     <div class="error-graphic">
       <div class="holo-cube">
         <div class="cube-face front" />
@@ -46,10 +36,10 @@ export default {
   name: 'NotFound',
   methods: {
     goBack() {
-      this.$router.go(-1)
-    }
-  }
-}
+      this.$router.go(-1);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -196,20 +186,20 @@ export default {
   .error-code {
     font-size: 6rem;
   }
-  
+
   .error-title {
     font-size: 2rem;
   }
-  
+
   .error-message {
     font-size: 1rem;
   }
-  
+
   .error-actions {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .btn {
     width: 100%;
     max-width: 300px;

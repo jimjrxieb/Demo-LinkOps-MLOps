@@ -1,9 +1,6 @@
 <template>
   <div class="audit-results">
-    <div
-      v-if="loading"
-      class="loading-state"
-    >
+    <div v-if="loading" class="loading-state">
       <div class="spinner" />
       <p>Loading audit results...</p>
     </div>
@@ -11,9 +8,7 @@
       <!-- Summary Section -->
       <div class="summary-grid">
         <div class="summary-card">
-          <div class="summary-icon">
-            🔒
-          </div>
+          <div class="summary-icon">🔒</div>
           <div class="summary-content">
             <h3>Security Score</h3>
             <div
@@ -25,9 +20,7 @@
           </div>
         </div>
         <div class="summary-card">
-          <div class="summary-icon">
-            🧹
-          </div>
+          <div class="summary-icon">🧹</div>
           <div class="summary-content">
             <h3>Code Quality</h3>
             <div
@@ -39,9 +32,7 @@
           </div>
         </div>
         <div class="summary-card">
-          <div class="summary-icon">
-            📦
-          </div>
+          <div class="summary-icon">📦</div>
           <div class="summary-content">
             <h3>Dependencies</h3>
             <div
@@ -82,8 +73,12 @@
           >
             <div class="issue-header">
               <div class="issue-severity">
-                <span class="severity-icon">{{ getSeverityIcon(issue.severity) }}</span>
-                <span class="severity-text">{{ issue.severity.toUpperCase() }}</span>
+                <span class="severity-icon">{{
+                  getSeverityIcon(issue.severity)
+                }}</span>
+                <span class="severity-text">{{
+                  issue.severity.toUpperCase()
+                }}</span>
               </div>
               <div class="issue-type">
                 {{ issue.type }}
@@ -115,23 +110,13 @@
       v-if="results.dependencies && results.dependencies.length > 0"
       class="dependencies-section"
     >
-      <h2 class="section-title">
-        Dependencies Analysis
-      </h2>
+      <h2 class="section-title">Dependencies Analysis</h2>
       <div class="dependencies-table">
         <div class="table-header">
-          <div class="header-cell">
-            Package
-          </div>
-          <div class="header-cell">
-            Version
-          </div>
-          <div class="header-cell">
-            Status
-          </div>
-          <div class="header-cell">
-            Vulnerabilities
-          </div>
+          <div class="header-cell">Package</div>
+          <div class="header-cell">Version</div>
+          <div class="header-cell">Status</div>
+          <div class="header-cell">Vulnerabilities</div>
         </div>
         <div
           v-for="dep in results.dependencies"
@@ -146,10 +131,7 @@
             {{ dep.version }}
           </div>
           <div class="table-cell package-status">
-            <span
-              class="status-badge"
-              :class="dep.status"
-            >
+            <span class="status-badge" :class="dep.status">
               {{ dep.status }}
             </span>
           </div>
@@ -170,41 +152,55 @@ export default {
   props: {
     results: {
       type: Object,
-      required: true
+      required: true,
     },
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   computed: {
     hasIssues() {
-      return this.results && this.results.issues && this.results.issues.length > 0
+      return (
+        this.results && this.results.issues && this.results.issues.length > 0
+      );
     },
     hasDependencies() {
-      return this.results && this.results.dependencies && this.results.dependencies.length > 0
-    }
+      return (
+        this.results &&
+        this.results.dependencies &&
+        this.results.dependencies.length > 0
+      );
+    },
   },
   methods: {
     getSeverityClass(severity) {
       switch (severity) {
-        case 'high': return 'high-severity'
-        case 'medium': return 'medium-severity'
-        case 'low': return 'low-severity'
-        default: return ''
+        case 'high':
+          return 'high-severity';
+        case 'medium':
+          return 'medium-severity';
+        case 'low':
+          return 'low-severity';
+        default:
+          return '';
       }
     },
     getStatusClass(status) {
       switch (status) {
-        case 'up-to-date': return 'status-up-to-date'
-        case 'outdated': return 'status-outdated'
-        default: return ''
+        case 'up-to-date':
+          return 'status-up-to-date';
+        case 'outdated':
+          return 'status-outdated';
+        default:
+          return '';
       }
-    }
-  }
-}
-</script>;
-<style scoped>;
+    },
+  },
+};
+</script>
+;
+<style scoped>
 .audit-results {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid #00d4ff;
@@ -230,8 +226,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .error-icon {
@@ -593,33 +593,34 @@ export default {
   .summary-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .issues-filters {
     flex-direction: column;
   }
-  
+
   .filter-btn {
     justify-content: center;
   }
-  
+
   .table-header,
   .table-row {
     grid-template-columns: 1fr;
     gap: 0.5rem;
   }
-  
+
   .table-header {
     display: none;
   }
-  
+
   .table-cell {
     justify-content: space-between;
   }
-  
+
   .table-cell::before {
     content: attr(data-label);
     font-weight: bold;
     color: #00d4ff;
   }
 }
-</style>;
+</style>
+;

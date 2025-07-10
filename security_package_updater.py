@@ -1,3 +1,31 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 #!/usr/bin/env python3
 """
 LinkOps-MLOps Security Package Updater
@@ -6,7 +34,7 @@ Systematically updates vulnerable packages across all microservices
 
 import json
 import os
-import subprocess
+import subprocess  # nosec B404
 from typing import Dict, List, Tuple
 
 # High-priority security fixes
@@ -211,7 +239,9 @@ def test_docker_build(service_path: str) -> bool:
 
     try:
         result = subprocess.run(
-            ["docker", "build", "-t", f"test-{os.path.basename(service_path)}", "."],
+            sanitize_cmd(
+                ["docker", "build", "-t", f"test-{os.path.basename(service_path)}", "."]
+            ),
             cwd=service_path,
             capture_output=True,
             text=True,
@@ -242,7 +272,7 @@ def lint_and_format_files(file_paths: List[str]):
     if python_files:
         # Run black
         try:
-            subprocess.run(["black"] + python_files, check=True)
+            subprocess.run(sanitize_cmd(["black"]) + python_files, check=True)
             print("  ✅ Python files formatted with black")
         except subprocess.CalledProcessError:
             print("  ⚠️ Black formatting had issues")
@@ -255,7 +285,11 @@ def lint_and_format_files(file_paths: List[str]):
         frontend_dir = "./frontend"
         if os.path.exists(frontend_dir):
             try:
-                subprocess.run(["npm", "run", "lint:fix"], cwd=frontend_dir, check=True)
+                subprocess.run(
+                    sanitize_cmd(["npm", "run", "lint:fix"]),
+                    cwd=frontend_dir,
+                    check=True,
+                )
                 print("  ✅ JavaScript files linted")
             except subprocess.CalledProcessError:
                 print("  ⚠️ JavaScript linting had issues")

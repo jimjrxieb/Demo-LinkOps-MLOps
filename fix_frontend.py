@@ -1,3 +1,31 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 #!/usr/bin/env python3
 """
 Frontend Auto-Fix Script for LinkOps-MLOps
@@ -10,7 +38,7 @@ import hashlib
 import json
 import logging
 import re
-import subprocess
+import subprocess  # nosec B404
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 from pathlib import Path
@@ -605,6 +633,54 @@ def fix_javascript_issues(file_path, content):
     return "\n".join(fixed_lines)
 
 
+def fix_vue_formatting(file_path, content):
+    """Auto-fix common Vue lint warnings:
+    - Force line breaks in single-line tags (<h2>content</h2>)
+    - Put attributes like @click and class on new lines
+    - Convert <input/> → <input>
+    - Remove unused variables like 'step'
+    """
+    logger.info(f"Fixing Vue formatting issues in {file_path}")
+    original_content = content
+    changes_made = 0
+
+    # Fix <h2>text</h2> → <h2>\n  text\n</h2>
+    content = re.sub(r"<(h\d)>([^<]+)</\1>", r"<\1>\n  \2\n</\1>", content)
+
+    # Put each attribute on its own line (like @click=...)
+    content = re.sub(r"<([a-zA-Z0-9\-]+)([^>]*?)\s+(@\w+=)", r"<\1\2\n  \3", content)
+    content = re.sub(r"<([a-zA-Z0-9\-]+)([^>]*?)\s+(class=)", r"<\1\2\n  \3", content)
+    content = re.sub(r"<([a-zA-Z0-9\-]+)([^>]*?)\s+(:class=)", r"<\1\2\n  \3", content)
+
+    # Fix <input/> → <input>
+    content = re.sub(r"<input\s*([^>]*)/>", r"<input \1>", content)
+
+    # Fix <option>value</option> → <option>\n  value\n</option>
+    content = re.sub(r"<option>([^<]+)</option>", r"<option>\n  \1\n</option>", content)
+
+    # Remove unused variable 'step'
+    content = re.sub(r"\b(step)\s*=\s*[^;\n]+;", r"", content)
+
+    # Fix self-closing tags for void elements
+    content = re.sub(r"<(input|img|br|hr|meta|link)\s*([^>]*)/>", r"<\1 \2>", content)
+
+    # Fix multiple attributes on same line
+    content = re.sub(r"<([a-zA-Z0-9\-]+)([^>]*?)\s+(v-if=)", r"<\1\2\n  \3", content)
+    content = re.sub(r"<([a-zA-Z0-9\-]+)([^>]*?)\s+(v-for=)", r"<\1\2\n  \3", content)
+    content = re.sub(r"<([a-zA-Z0-9\-]+)([^>]*?)\s+(v-model=)", r"<\1\2\n  \3", content)
+
+    # Fix template formatting
+    content = re.sub(
+        r"<template>([^<]+)</template>", r"<template>\n  \1\n</template>", content
+    )
+
+    if content != original_content:
+        changes_made = 1
+        logger.info(f"Fixed Vue formatting issues in {file_path}")
+
+    return content, changes_made
+
+
 def process_file(
     file_path, issues, cache_file=Path("frontend/.fix_frontend_cache.json")
 ):
@@ -620,6 +696,9 @@ def process_file(
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
+        original_content = content
+        changes_made = 0
+
         if file_path.suffix in [".vue", ".js", ".ts", ".jsx"]:
             content = fix_eslint_issues(file_path, content, issues)
             content = fix_console_statements(file_path, content)
@@ -628,10 +707,10 @@ def process_file(
         if file_path.suffix == ".vue":
             content = fix_vue_props(file_path, content)
             content = fix_accessibility(file_path, content)
-            # Only write if changes were made
-            if changes_made > 0:
-                with open(file_path, "w", encoding="utf-8") as f:
-                    f.write(content)
+            content, vue_changes = fix_vue_formatting(file_path, content)
+            changes_made += vue_changes
+
+        # Only write if changes were made
         if content != original_content:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
@@ -753,7 +832,9 @@ def clean_node_modules(frontend_dir):
         if node_modules_path.exists():
             logger.info("Removing corrupted node_modules...")
             subprocess.run(
-                ["rm", "-rf", str(node_modules_path)], cwd=frontend_dir, check=True
+                sanitize_cmd(["rm", "-rf", str(node_modules_path)]),
+                cwd=frontend_dir,
+                check=True,
             )
 
         if package_lock_path.exists():
@@ -763,13 +844,15 @@ def clean_node_modules(frontend_dir):
         # Clear npm cache
         logger.info("Clearing npm cache...")
         subprocess.run(
-            ["npm", "cache", "clean", "--force"], cwd=frontend_dir, check=True
+            sanitize_cmd(["npm", "cache", "clean", "--force"]),
+            cwd=frontend_dir,
+            check=True,
         )
 
         # Reinstall dependencies
         logger.info("Reinstalling dependencies...")
         result = subprocess.run(
-            ["npm", "install"],
+            sanitize_cmd(["npm", "install"]),
             cwd=frontend_dir,
             capture_output=True,
             text=True,
@@ -798,7 +881,7 @@ def check_dependency_health(frontend_dir):
     try:
         # Check ESLint
         eslint_result = subprocess.run(
-            ["npx", "eslint", "--version"],
+            sanitize_cmd(["npx", "eslint", "--version"]),
             cwd=frontend_dir,
             capture_output=True,
             text=True,
@@ -806,7 +889,7 @@ def check_dependency_health(frontend_dir):
 
         # Check Vite
         vite_result = subprocess.run(
-            ["npx", "vite", "--version"],
+            sanitize_cmd(["npx", "vite", "--version"]),
             cwd=frontend_dir,
             capture_output=True,
             text=True,

@@ -47,22 +47,25 @@ frontend/
 
 ### Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - npm 8+
 
 ### Installation
 
 1. **Install dependencies:**
+
    ```bash
    npm install
    ```
 
 2. **Start development server:**
+
    ```bash
    npm run dev
    ```
 
 3. **Build for production:**
+
    ```bash
    npm run build
    ```
@@ -90,16 +93,19 @@ frontend/
 ### Components
 
 #### Cards
+
 - Holographic borders with glow effects
 - Hover animations with transform and shadow
 - Backdrop blur for depth
 
 #### Buttons
+
 - Gradient backgrounds
 - Hover effects with transform
 - Icon + text combinations
 
 #### Status Indicators
+
 - Color-coded severity levels
 - Animated pulse effects
 - Glow shadows
@@ -109,6 +115,7 @@ frontend/
 ### Vite Configuration
 
 The `vite.config.js` includes:
+
 - Vue plugin
 - Path aliases (`@` and `~`)
 - Development server with proxy
@@ -118,6 +125,7 @@ The `vite.config.js` includes:
 ### Tailwind CSS
 
 Tailwind CSS v4 is configured with:
+
 - Custom color palette
 - Responsive breakpoints
 - Custom utilities for holographic effects
@@ -125,6 +133,7 @@ Tailwind CSS v4 is configured with:
 ### PostCSS
 
 PostCSS is configured with:
+
 - Tailwind CSS plugin
 - Autoprefixer
 - Custom plugins for advanced CSS features
@@ -132,6 +141,7 @@ PostCSS is configured with:
 ## 📱 Responsive Design
 
 The application is fully responsive with:
+
 - Mobile-first approach
 - Flexible grid layouts
 - Adaptive navigation
@@ -169,6 +179,7 @@ The main store (`store/index.js`) manages:
 ## 🎯 Key Components
 
 ### Dashboard View
+
 - System status overview
 - Active orbs grid
 - Available runes
@@ -176,12 +187,14 @@ The main store (`store/index.js`) manages:
 - Search functionality
 
 ### Whis Pipeline View
+
 - Visual pipeline steps
 - Real-time processing
 - Configuration options
 - Results display
 
 ### Audit View
+
 - Repository input
 - Security scanning
 - Results analysis
@@ -279,10 +292,11 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🆘 Support
 
 For support and questions:
+
 - Create an issue on GitHub
 - Check the documentation
 - Review the troubleshooting guide
 
 ---
 
-**Built with ❤️ for the LinkOps MLOps Platform** 
+**Built with ❤️ for the LinkOps MLOps Platform**

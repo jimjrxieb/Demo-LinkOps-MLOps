@@ -1,208 +1,119 @@
 <template>
-  ;
-  ;
-  ;
-  ;
-  ;
+  ; ; ; ; ;
   <div class="audit-panel-container">
-    ;
-    ;
-    ;
-    ;
-    ;
+    ; ; ; ; ;
     <div class="audit-header">
-      ;
-      ;
-      ;
-      ;
-      ;
+      ; ; ; ; ;
       <h2 class="text-2xl font-bold text-red-500">
-        ;
-        ;
-        ;
-        ;
-        ;
-        Security Audit Panel;
-      </h2>;
+        ; ; ; ; ; Security Audit Panel;
+      </h2>
+      ;
       <p class="text-gray-400">
-        ;
-        ;
-        ;
-        ;
-        ;
-        System Security & Compliance Monitoring;
-      </p>;
-    </div>;
-    
+        ; ; ; ; ; System Security & Compliance Monitoring;
+      </p>
+      ;
+    </div>
+    ;
+
     <div class="audit-content">
-      ;
-      ;
-      ;
-      ;
-      ;
+      ; ; ; ; ;
       <div class="audit-grid">
-        ;
-        ;
-        ;
-        ;
-        ;
+        ; ; ; ; ;
         <div class="audit-card">
+          ; ; ; ; ;
+          <h4 class="text-lg font-semibold mb-3">; ; ; ; ; Security Status;</h4>
           ;
-          ;
-          ;
-          ;
-          ;
-          <h4 class="text-lg font-semibold mb-3">
-            ;
-            ;
-            ;
-            ;
-            ;
-            Security Status;
-          </h4>;
           <div class="security-indicators">
-            ;
-            ;
-            ;
-            ;
-            ;
+            ; ; ; ; ;
             <div class="security-item">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="security-icon">🔒</span>;
               <span class="security-label">Authentication</span>;
               <span class="security-status secure">Secure</span>;
-            </div>;
+            </div>
+            ;
             <div class="security-item">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="security-icon">🛡️</span>;
               <span class="security-label">Firewall</span>;
               <span class="security-status secure">Active</span>;
-            </div>;
+            </div>
+            ;
             <div class="security-item">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="security-icon">🔍</span>;
               <span class="security-label">Intrusion Detection</span>;
               <span class="security-status warning">Monitoring</span>;
-            </div>;
+            </div>
+            ;
             <div class="security-item">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="security-icon">📊</span>;
               <span class="security-label">Data Encryption</span>;
               <span class="security-status secure">Enabled</span>;
-            </div>;
-          </div>;
-        </div>;
-        
+            </div>
+            ;
+          </div>
+          ;
+        </div>
+        ;
+
         <div class="audit-card">
+          ; ; ; ; ;
+          <h4 class="text-lg font-semibold mb-3">; ; ; ; ; Recent Alerts;</h4>
           ;
-          ;
-          ;
-          ;
-          ;
-          <h4 class="text-lg font-semibold mb-3">
-            ;
-            ;
-            ;
-            ;
-            ;
-            Recent Alerts;
-          </h4>;
           <div class="alerts-list">
-            ;
-            ;
-            ;
-            ;
-            ;
+            ; ; ; ; ;
             <div class="alert-item info">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="alert-icon">ℹ️</span>;
-              <span class="alert-message">System backup completed successfully</span>;
-              <span class="alert-time">2 min ago</span>;
-            </div>;
+              <span class="alert-message"
+                >System backup completed successfully</span
+              >; <span class="alert-time">2 min ago</span>;
+            </div>
+            ;
             <div class="alert-item warning">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="alert-icon">⚠️</span>;
               <span class="alert-message">Unusual login attempt detected</span>;
               <span class="alert-time">15 min ago</span>;
-            </div>;
+            </div>
+            ;
             <div class="alert-item success">
-              ;
-              ;
-              ;
-              ;
-              ;
+              ; ; ; ; ;
               <span class="alert-icon">✅</span>;
-              <span class="alert-message">Security scan completed - no threats found</span>;
-              <span class="alert-time">1 hour ago</span>;
-            </div>;
-          </div>;
-        </div>;
-      </div>;
-      
+              <span class="alert-message"
+                >Security scan completed - no threats found</span
+              >; <span class="alert-time">1 hour ago</span>;
+            </div>
+            ;
+          </div>
+          ;
+        </div>
+        ;
+      </div>
+      ;
+
       <div class="audit-actions">
-        ;
-        ;
-        ;
-        ;
-        ;
-        <button class="audit-btn primary">
-          ;
-          ;
-          ;
-          ;
-          ;
-          Run Security Scan;
-        </button>;
-        <button class="audit-btn secondary">
-          ;
-          ;
-          ;
-          ;
-          ;
-          View Audit Logs;
-        </button>;
-        <button class="audit-btn secondary">
-          ;
-          ;
-          ;
-          ;
-          ;
-          Export Report;
-        </button>;
-      </div>;
-    </div>;
-  </div>;
-</template>;
+        ; ; ; ; ;
+        <button class="audit-btn primary">; ; ; ; ; Run Security Scan;</button>;
+        <button class="audit-btn secondary">; ; ; ; ; View Audit Logs;</button>;
+        <button class="audit-btn secondary">; ; ; ; ; Export Report;</button>;
+      </div>
+      ;
+    </div>
+    ;
+  </div>
+  ;
+</template>
+;
 
-<script setup>;
+<script setup>
 // AuditPanel component logic
-</script>;
+</script>
+;
 
-<style scoped>;
+<style scoped>
 .audit-panel-container {
   @apply bg-gray-900 rounded-lg p-6 border border-gray-700 mb-6;
 }
@@ -298,4 +209,5 @@
 .audit-btn.secondary {
   @apply bg-gray-600 hover:bg-gray-700 text-white;
 }
-</style>;
+</style>
+;

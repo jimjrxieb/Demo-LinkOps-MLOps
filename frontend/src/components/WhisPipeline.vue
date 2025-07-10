@@ -1,14 +1,10 @@
 <template>
   <div class="whis-pipeline">
     <div class="pipeline-header">
-      <h2 class="pipeline-title">
-        Whis Pipeline Flow
-      </h2>
-      <p class="pipeline-subtitle">
-        Data Processing & Enhancement Workflow
-      </p>
+      <h2 class="pipeline-title">Whis Pipeline Flow</h2>
+      <p class="pipeline-subtitle">Data Processing & Enhancement Workflow</p>
     </div>
-    
+
     <div class="pipeline-container">
       <div class="pipeline-steps">
         <div
@@ -16,9 +12,9 @@
           :key="step.id"
           class="pipeline-step"
           :class="{
-            'active': index === currentStep,
-            'completed': index < currentStep,
-            'pending': index > currentStep
+            active: index === currentStep,
+            completed: index < currentStep,
+            pending: index > currentStep,
           }"
           @click="$emit('step-click', step)"
         >
@@ -33,28 +29,20 @@
               {{ step.description }}
             </p>
             <div class="step-status">
-              <span
-                class="status-indicator"
-                :class="getStepStatus(index)"
-              />
+              <span class="status-indicator" :class="getStepStatus(index)" />
               <span class="status-text">{{ getStepStatusText(index) }}</span>
             </div>
           </div>
-          
+
           <!-- Connection Line -->
-          <div
-            v-if="index < pipelineData.length - 1"
-            class="step-connector"
-          >
+          <div v-if="index < pipelineData.length - 1" class="step-connector">
             <div class="connector-line" />
-            <div class="connector-arrow">
-              →
-            </div>
+            <div class="connector-arrow">→</div>
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- Pipeline Progress -->
     <div class="pipeline-progress">
       <div class="progress-bar">
@@ -65,8 +53,9 @@
       </div>
     </div>
     <div class="progress-text">
-      Step {{ currentStep + 1 }} of {{ pipelineData.length }}
-      ({{ Math.round(progressPercentage) }}% complete)
+      Step {{ currentStep + 1 }} of {{ pipelineData.length }} ({{
+        Math.round(progressPercentage)
+      }}% complete)
     </div>
   </div>
 </template>
@@ -74,34 +63,35 @@
 <script>
 export default {
   name: 'WhisPipeline',
+  emits: ['step-click'],
   props: {
     pipelineData: {
       type: Array,
-      required: true
+      required: true,
     },
     currentStep: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   computed: {
     progressPercentage() {
-      return (this.currentStep / (this.pipelineData.length - 1)) * 100
-    }
+      return (this.currentStep / (this.pipelineData.length - 1)) * 100;
+    },
   },
   methods: {
     getStepStatus(index) {
-      if (index < this.currentStep) return 'completed'
-      if (index === this.currentStep) return 'active'
-      return 'pending'
+      if (index < this.currentStep) return 'completed';
+      if (index === this.currentStep) return 'active';
+      return 'pending';
     },
     getStepStatusText(index) {
-      if (index < this.currentStep) return 'Completed'
-      if (index === this.currentStep) return 'Processing'
-      return 'Pending'
-    }
-  }
-}
+      if (index < this.currentStep) return 'Completed';
+      if (index === this.currentStep) return 'Processing';
+      return 'Pending';
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -285,17 +275,17 @@ export default {
   .whis-pipeline {
     padding: 1.5rem;
   }
-  
+
   .pipeline-step {
     flex-direction: column;
     text-align: center;
     gap: 1rem;
   }
-  
+
   .step-connector {
     display: none;
   }
-  
+
   .pipeline-title {
     font-size: 1.5rem;
   }

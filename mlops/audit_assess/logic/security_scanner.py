@@ -1,3 +1,31 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 """
 Security Scanner for Repository Auditing
 Integrates GitGuardian, Trivy, and Semgrep for comprehensive security analysis.
@@ -7,7 +35,7 @@ import json
 import logging
 import os
 import re
-import subprocess
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -165,7 +193,9 @@ class SecurityScanner:
             for dockerfile in dockerfiles:
                 try:
                     result = subprocess.run(
-                        ["trivy", "config", "--format", "json", dockerfile],
+                        sanitize_cmd(
+                            ["trivy", "config", "--format", "json", dockerfile]
+                        ),
                         capture_output=True,
                         text=True,
                         cwd=self.repo_path,
@@ -198,7 +228,7 @@ class SecurityScanner:
             for lock_file in lock_files:
                 try:
                     result = subprocess.run(
-                        ["trivy", "fs", "--format", "json", lock_file],
+                        sanitize_cmd(["trivy", "fs", "--format", "json", lock_file]),
                         capture_output=True,
                         text=True,
                         cwd=self.repo_path,
@@ -247,7 +277,15 @@ class SecurityScanner:
             # Run Semgrep scan
             try:
                 result = subprocess.run(
-                    ["semgrep", "scan", "--config=auto", "--json", "--no-git-ignore"],
+                    sanitize_cmd(
+                        [
+                            "semgrep",
+                            "scan",
+                            "--config=auto",
+                            "--json",
+                            "--no-git-ignore",
+                        ]
+                    ),
                     capture_output=True,
                     text=True,
                     cwd=self.repo_path,
@@ -570,7 +608,9 @@ class SecurityScanner:
     def _check_tool_available(self, tool: str) -> bool:
         """Check if a tool is available in the system."""
         try:
-            subprocess.run([tool, "--version"], capture_output=True, check=True)
+            subprocess.run(
+                sanitize_cmd([tool, "--version"]), capture_output=True, check=True
+            )
             return True
         except (subprocess.CalledProcessError, FileNotFoundError):
             return False

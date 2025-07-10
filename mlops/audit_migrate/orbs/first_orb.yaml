@@ -8,19 +8,19 @@ triggers:
 - manager UI
 
 output:
-  description: Fully scaffolded microservices + report + triggers
-  details:
-  - Receives scaffold plan from audit_assess
-  - Builds real service folders based on that plan
-  - Scaffolds:
+description: Fully scaffolded microservices + report + triggers
+details:
+- Receives scaffold plan from audit_assess
+- Builds real service folders based on that plan
+- Scaffolds:
     - main.py
     - Dockerfile
     - requirements.txt
     - routers/
     - helm/Chart.yaml
     - .github/workflows/{service}-ci.yml
-  - Links to other agents (audit_assess, audit_logic)
-  - Optionally forwards results to Whis and Igris
+- Links to other agents (audit_assess, audit_logic)
+- Optionally forwards results to Whis and Igris
 
 core_endpoints:
 - POST /migrate/
@@ -38,3 +38,5 @@ linked_agents:
 - audit_logic
 - whis_logic
 - igris_logic
+
+

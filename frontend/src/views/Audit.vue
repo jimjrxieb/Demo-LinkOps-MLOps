@@ -1,9 +1,7 @@
 <template>
   <div class="audit-page">
     <div class="page-header">
-      <h1 class="page-title">
-        Security Audit
-      </h1>
+      <h1 class="page-title">Security Audit</h1>
       <p class="page-subtitle">
         Comprehensive security analysis and code quality assessment
       </p>
@@ -11,34 +9,19 @@
 
     <!-- Audit Input -->
     <section class="input-section">
-      <h2 class="section-title">
-        Repository Analysis
-      </h2>
-      <AuditInput
-        :loading="isAuditing"
-        @submit="runAudit"
-      />
+      <h2 class="section-title">Repository Analysis</h2>
+      <AuditInput :loading="isAuditing" @submit="runAudit" />
     </section>
 
     <!-- Audit Results -->
-    <section
-      v-if="auditResults"
-      class="results-section"
-    >
-      <h2 class="section-title">
-        Audit Results
-      </h2>
-      <AuditResults
-        :results="auditResults"
-        :loading="isAuditing"
-      />
+    <section v-if="auditResults" class="results-section">
+      <h2 class="section-title">Audit Results</h2>
+      <AuditResults :results="auditResults" :loading="isAuditing" />
     </section>
 
     <!-- Quick Actions -->
     <section class="actions-section">
-      <h2 class="section-title">
-        Quick Actions
-      </h2>
+      <h2 class="section-title">Quick Actions</h2>
       <div class="action-buttons">
         <button
           class="action-btn primary"
@@ -76,13 +59,8 @@
     </section>
 
     <!-- Recent Audits -->
-    <section
-      v-if="recentAudits.length > 0"
-      class="recent-section"
-    >
-      <h2 class="section-title">
-        Recent Audits
-      </h2>
+    <section v-if="recentAudits.length > 0" class="recent-section">
+      <h2 class="section-title">Recent Audits</h2>
       <div class="recent-audits">
         <div
           v-for="audit in recentAudits"
@@ -97,10 +75,7 @@
           <div class="audit-summary">
             <div class="summary-item">
               <span class="label">Security Score:</span>
-              <span
-                class="value"
-                :class="getScoreClass(audit.securityScore)"
-              >
+              <span class="value" :class="getScoreClass(audit.securityScore)">
                 {{ audit.securityScore }}/100
               </span>
             </div>
@@ -110,10 +85,7 @@
             </div>
             <div class="summary-item">
               <span class="label">Status:</span>
-              <span
-                class="status"
-                :class="audit.status"
-              >
+              <span class="status" :class="audit.status">
                 {{ audit.status }}
               </span>
             </div>
@@ -124,14 +96,14 @@
   </div>
 </template>
 <script>
-import AuditInput from '../components/AuditInput.vue'
-import AuditResults from '../components/AuditResults.vue'
+import AuditInput from '../components/AuditInput.vue';
+import AuditResults from '../components/AuditResults.vue';
 
 export default {
   name: 'Audit',
   components: {
     AuditInput,
-    AuditResults
+    AuditResults,
   },
   data() {
     return {
@@ -144,7 +116,7 @@ export default {
           date: new Date('2024-01-15'),
           securityScore: 85,
           issuesCount: 12,
-          status: 'completed'
+          status: 'completed',
         },
         {
           id: 2,
@@ -152,7 +124,7 @@ export default {
           date: new Date('2024-01-14'),
           securityScore: 92,
           issuesCount: 5,
-          status: 'completed'
+          status: 'completed',
         },
         {
           id: 3,
@@ -160,17 +132,17 @@ export default {
           date: new Date('2024-01-13'),
           securityScore: 78,
           issuesCount: 18,
-          status: 'completed'
-        }
-      ]
-    }
+          status: 'completed',
+        },
+      ],
+    };
   },
   methods: {
     async runAudit(repositoryUrl) {
-      this.isAuditing = true
-      this.auditResults = null
+      this.isAuditing = true;
+      this.auditResults = null;
       try {
-        await new Promise(resolve => setTimeout(resolve, 3000))
+        await new Promise((resolve) => setTimeout(resolve, 3000));
         this.auditResults = {
           repository: repositoryUrl,
           timestamp: new Date(),
@@ -186,7 +158,7 @@ export default {
               description: 'Potential SQL injection in user input validation',
               file: 'src/api/users.js:45',
               line: 45,
-              recommendation: 'Use parameterized queries and input validation'
+              recommendation: 'Use parameterized queries and input validation',
             },
             {
               id: 2,
@@ -196,7 +168,7 @@ export default {
               description: 'API key found in source code',
               file: 'config/database.js:12',
               line: 12,
-              recommendation: 'Move API keys to environment variables'
+              recommendation: 'Move API keys to environment variables',
             },
             {
               id: 3,
@@ -206,54 +178,54 @@ export default {
               description: 'Variable declared but never used',
               file: 'src/utils/helpers.js:23',
               line: 23,
-              recommendation: 'Remove unused variable or use it'
-            }
+              recommendation: 'Remove unused variable or use it',
+            },
           ],
           dependencies: [
             {
               name: 'lodash',
               version: '4.17.21',
               status: 'up-to-date',
-              vulnerabilities: 0
+              vulnerabilities: 0,
             },
             {
               name: 'express',
               version: '4.18.2',
               status: 'outdated',
-              vulnerabilities: 2
+              vulnerabilities: 2,
             },
             {
               name: 'axios',
               version: '1.6.2',
               status: 'up-to-date',
-              vulnerabilities: 0
-            }
-          ]
-        }
+              vulnerabilities: 0,
+            },
+          ],
+        };
         this.recentAudits.unshift({
           id: Date.now(),
           repository: repositoryUrl,
           date: new Date(),
           securityScore: this.auditResults.securityScore,
           issuesCount: this.auditResults.issues.length,
-          status: 'completed'
-        })
-      } catch (_error) {
+          status: 'completed',
+        });
+      } catch {
         this.auditResults = {
-          error: 'Audit failed. Please try again.'
-        }
+          error: 'Audit failed. Please try again.',
+        };
       } finally {
-        this.isAuditing = false
+        this.isAuditing = false;
       }
     },
     async runFullAudit() {
-      const sampleRepo = 'https://github.com/linkops/sample-repo'
-      await this.runAudit(sampleRepo)
+      const sampleRepo = 'https://github.com/linkops/sample-repo';
+      await this.runAudit(sampleRepo);
     },
     async runLintCheck() {
-      this.isAuditing = true
+      this.isAuditing = true;
       try {
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        await new Promise((resolve) => setTimeout(resolve, 2000));
         this.auditResults = {
           repository: 'Current Repository',
           timestamp: new Date(),
@@ -267,18 +239,18 @@ export default {
               description: 'Missing semicolon at end of statement',
               file: 'src/components/Button.js:15',
               line: 15,
-              recommendation: 'Add semicolon at end of statement'
-            }
-          ]
-        }
+              recommendation: 'Add semicolon at end of statement',
+            },
+          ],
+        };
       } finally {
-        this.isAuditing = false
+        this.isAuditing = false;
       }
     },
     async runDependencyScan() {
-      this.isAuditing = true
+      this.isAuditing = true;
       try {
-        await new Promise(resolve => setTimeout(resolve, 1500))
+        await new Promise((resolve) => setTimeout(resolve, 1500));
         this.auditResults = {
           repository: 'Current Repository',
           timestamp: new Date(),
@@ -288,48 +260,48 @@ export default {
               name: 'vue',
               version: '3.4.21',
               status: 'up-to-date',
-              vulnerabilities: 0
+              vulnerabilities: 0,
             },
             {
               name: 'axios',
               version: '1.6.8',
               status: 'up-to-date',
-              vulnerabilities: 0
-            }
-          ]
-        }
+              vulnerabilities: 0,
+            },
+          ],
+        };
       } finally {
-        this.isAuditing = false
+        this.isAuditing = false;
       }
     },
     exportResults() {
-      if (!this.auditResults) return
-      const dataStr = JSON.stringify(this.auditResults, null, 2)
-      const dataBlob = new Blob([dataStr], { type: 'application/json' })
-      const url = URL.createObjectURL(dataBlob)
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `audit-report-${new Date().toISOString().split('T')[0]}.json`
-      link.click()
+      if (!this.auditResults) return;
+      const dataStr = JSON.stringify(this.auditResults, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `audit-report-${new Date().toISOString().split('T')[0]}.json`;
+      link.click();
     },
-    loadAudit(audit) {
+    loadAudit() {
       // Load the specific audit results
     },
     formatDate(date) {
       return new Intl.DateTimeFormat('en-US', {
         year: 'numeric',
         month: 'short',
-        day: 'numeric'
-      }).format(date)
+        day: 'numeric',
+      }).format(date);
     },
     getScoreClass(score) {
-      if (score >= 90) return 'excellent'
-      if (score >= 80) return 'good'
-      if (score >= 70) return 'fair'
-      return 'poor'
-    }
-  }
-}
+      if (score >= 90) return 'excellent';
+      if (score >= 80) return 'good';
+      if (score >= 70) return 'fair';
+      return 'poor';
+    },
+  },
+};
 </script>
 <style scoped>
 .audit-page {
@@ -526,15 +498,15 @@ export default {
   .page-title {
     font-size: 2rem;
   }
-  
+
   .action-buttons {
     flex-direction: column;
   }
-  
+
   .action-btn {
     justify-content: center;
   }
-  
+
   .audit-summary {
     grid-template-columns: 1fr;
   }

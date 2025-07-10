@@ -1,24 +1,16 @@
 <template>
   <div class="dashboard">
     <div class="dashboard-header">
-      <h1 class="page-title">
-        LinkOps Dashboard
-      </h1>
-      <p class="page-subtitle">
-        MLOps Platform Control Center
-      </p>
+      <h1 class="page-title">LinkOps Dashboard</h1>
+      <p class="page-subtitle">MLOps Platform Control Center</p>
     </div>
 
     <!-- Status Overview -->
     <section class="dashboard-section">
-      <h2 class="section-title">
-        System Status
-      </h2>
+      <h2 class="section-title">System Status</h2>
       <div class="status-grid">
         <div class="status-card">
-          <div class="status-icon">
-            ⚡
-          </div>
+          <div class="status-icon">⚡</div>
           <div class="status-content">
             <h3>Active Jobs</h3>
             <div class="status-value">
@@ -27,9 +19,7 @@
           </div>
         </div>
         <div class="status-card">
-          <div class="status-icon">
-            ✅
-          </div>
+          <div class="status-icon">✅</div>
           <div class="status-content">
             <h3>Completed</h3>
             <div class="status-value">
@@ -38,9 +28,7 @@
           </div>
         </div>
         <div class="status-card">
-          <div class="status-icon">
-            ⚠️
-          </div>
+          <div class="status-icon">⚠️</div>
           <div class="status-content">
             <h3>Errors</h3>
             <div class="status-value error">
@@ -53,9 +41,7 @@
 
     <!-- Orbs Section -->
     <section class="dashboard-section">
-      <h2 class="section-title">
-        Active Orbs
-      </h2>
+      <h2 class="section-title">Active Orbs</h2>
       <div class="orbs-grid">
         <OrbCard
           v-for="orb in activeOrbs"
@@ -68,9 +54,7 @@
 
     <!-- Runes Section -->
     <section class="dashboard-section">
-      <h2 class="section-title">
-        Available Runes
-      </h2>
+      <h2 class="section-title">Available Runes</h2>
       <div class="runes-grid">
         <RuneCard
           v-for="rune in availableRunes"
@@ -83,28 +67,17 @@
 
     <!-- Quick Actions -->
     <section class="dashboard-section">
-      <h2 class="section-title">
-        Quick Actions
-      </h2>
+      <h2 class="section-title">Quick Actions</h2>
       <div class="quick-actions">
-        <button
-          class="action-btn primary"
-          @click="startWhisPipeline"
-        >
+        <button class="action-btn primary" @click="startWhisPipeline">
           <span class="btn-icon">⚡</span>
           Start Whis Pipeline
         </button>
-        <button
-          class="action-btn secondary"
-          @click="runSecurityAudit"
-        >
+        <button class="action-btn secondary" @click="runSecurityAudit">
           <span class="btn-icon">🔍</span>
           Security Audit
         </button>
-        <button
-          class="action-btn secondary"
-          @click="viewLogs"
-        >
+        <button class="action-btn secondary" @click="viewLogs">
           <span class="btn-icon">📋</span>
           View Logs
         </button>
@@ -113,24 +86,22 @@
 
     <!-- Search Component -->
     <section class="dashboard-section">
-      <h2 class="section-title">
-        Find Orbs & Tasks
-      </h2>
+      <h2 class="section-title">Find Orbs & Tasks</h2>
       <FicknurySearch @search="handleSearch" />
     </section>
   </div>
 </template>
-<script>;
-import OrbCard from '../components/OrbCard.vue'
-import RuneCard from '../components/RuneCard.vue'
-import FicknurySearch from '../components/FicknurySearch.vue'
+<script>
+import OrbCard from '../components/OrbCard.vue';
+import RuneCard from '../components/RuneCard.vue';
+import FicknurySearch from '../components/FicknurySearch.vue';
 
 export default {
   name: 'Dashboard',
   components: {
     OrbCard,
     RuneCard,
-    FicknurySearch
+    FicknurySearch,
   },
   data() {
     return {
@@ -141,10 +112,11 @@ export default {
         {
           id: 1,
           title: 'Data Pipeline Optimization',
-          description: 'Optimize ML data processing pipeline for faster training',
+          description:
+            'Optimize ML data processing pipeline for faster training',
           score: 85,
           status: 'active',
-          priority: 'high'
+          priority: 'high',
         },
         {
           id: 2,
@@ -152,7 +124,7 @@ export default {
           description: 'Deploy new ML model to production environment',
           score: 92,
           status: 'active',
-          priority: 'critical'
+          priority: 'critical',
         },
         {
           id: 3,
@@ -160,8 +132,8 @@ export default {
           description: 'Run comprehensive security audit on codebase',
           score: 78,
           status: 'pending',
-          priority: 'medium'
-        }
+          priority: 'medium',
+        },
       ],
       availableRunes: [
         {
@@ -169,48 +141,49 @@ export default {
           name: 'Whis Enhancement',
           description: 'Enhance data quality through Whis pipeline',
           type: 'data-processing',
-          cost: 100
+          cost: 100,
         },
         {
           id: 2,
           name: 'Security Audit',
           description: 'Comprehensive security and vulnerability scan',
           type: 'security',
-          cost: 50
+          cost: 50,
         },
         {
           id: 3,
           name: 'Performance Tuning',
           description: 'Optimize system performance and resource usage',
           type: 'optimization',
-          cost: 75
-        }
-      ]
-    }
+          cost: 75,
+        },
+      ],
+    };
   },
   methods: {
-    selectOrb(orb) {
+    selectOrb() {
       // Navigate to orb details or open modal
     },
-    activateRune(rune) {
+    activateRune() {
       // Activate the rune and show effects
     },
     startWhisPipeline() {
-      this.$router.push('/whis')
+      this.$router.push('/whis');
     },
     runSecurityAudit() {
-      this.$router.push('/audit')
+      this.$router.push('/audit');
     },
     viewLogs() {
       // Open logs viewer
     },
-    handleSearch(query) {
+    handleSearch() {
       // Handle search functionality
-    }
-  }
-}
-</script>;
-<style scoped>;
+    },
+  },
+};
+</script>
+;
+<style scoped>
 .dashboard {
   max-width: 1200px;
   margin: 0 auto;
@@ -343,22 +316,23 @@ export default {
   .page-title {
     font-size: 2rem;
   }
-  
+
   .status-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .orbs-grid,
   .runes-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .quick-actions {
     flex-direction: column;
   }
-  
+
   .action-btn {
     justify-content: center;
   }
 }
-</style>;
+</style>
+;

@@ -1,12 +1,8 @@
 <template>
   <div class="whis-page">
     <div class="page-header">
-      <h1 class="page-title">
-        Whis Pipeline
-      </h1>
-      <p class="page-subtitle">
-        Data Processing & Enhancement Workflow
-      </p>
+      <h1 class="page-title">Whis Pipeline</h1>
+      <p class="page-subtitle">Data Processing & Enhancement Workflow</p>
     </div>
 
     <!-- Pipeline Visualization -->
@@ -18,9 +14,7 @@
 
     <!-- Input Section -->
     <section class="input-section">
-      <h2 class="section-title">
-        Data Input
-      </h2>
+      <h2 class="section-title">Data Input</h2>
       <div class="input-container">
         <textarea
           v-model="inputData"
@@ -29,24 +23,15 @@
           rows="8"
         />
         <div class="input-actions">
-          <button
-            class="btn primary"
-            @click="processData"
-          >
+          <button class="btn primary" @click="processData">
             <span class="btn-icon">⚡</span>
             Process Data
           </button>
-          <button
-            class="btn secondary"
-            @click="loadSampleData"
-          >
+          <button class="btn secondary" @click="loadSampleData">
             <span class="btn-icon">📋</span>
             Load Sample
           </button>
-          <button
-            class="btn secondary"
-            @click="clearData"
-          >
+          <button class="btn secondary" @click="clearData">
             <span class="btn-icon">🗑️</span>
             Clear
           </button>
@@ -55,13 +40,8 @@
     </section>
 
     <!-- Results Section -->
-    <section
-      v-if="results.length > 0"
-      class="results-section"
-    >
-      <h2 class="section-title">
-        Processing Results
-      </h2>
+    <section v-if="results.length > 0" class="results-section">
+      <h2 class="section-title">Processing Results</h2>
       <div class="results-container">
         <div
           v-for="(result, index) in results"
@@ -70,10 +50,7 @@
         >
           <div class="result-header">
             <h3>{{ result.step }}</h3>
-            <span
-              class="result-status"
-              :class="result.status"
-            >
+            <span class="result-status" :class="result.status">
               {{ result.status }}
             </span>
           </div>
@@ -90,61 +67,38 @@
 
     <!-- Configuration Panel -->
     <section class="config-section">
-      <h2 class="section-title">
-        Pipeline Configuration
-      </h2>
+      <h2 class="section-title">Pipeline Configuration</h2>
       <div class="config-grid">
         <div class="config-card">
           <h3>Data Sanitization</h3>
           <label>
-            <input
-              v-model="config.sanitize"
-              type="checkbox"
-            >
+            <input v-model="config.sanitize" type="checkbox" />
             Enable data cleaning
           </label>
           <label>
-            <input
-              v-model="config.removeDuplicates"
-              type="checkbox"
-            >
+            <input v-model="config.removeDuplicates" type="checkbox" />
             Remove duplicates
           </label>
         </div>
-        
+
         <div class="config-card">
           <h3>Data Enhancement</h3>
           <label>
-            <input
-              v-model="config.enhance"
-              type="checkbox"
-            >
+            <input v-model="config.enhance" type="checkbox" />
             Enable enhancement
           </label>
           <label>
-            <input
-              v-model="config.validate"
-              type="checkbox"
-            >
+            <input v-model="config.validate" type="checkbox" />
             Validate output
           </label>
         </div>
-        
+
         <div class="config-card">
           <h3>Output Format</h3>
-          <select
-            v-model="config.outputFormat"
-            class="format-select"
-          >
-            <option value="json">
-              JSON
-            </option>
-            <option value="csv">
-              CSV
-            </option>
-            <option value="xml">
-              XML
-            </option>
+          <select v-model="config.outputFormat" class="format-select">
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="xml">XML</option>
           </select>
         </div>
       </div>
@@ -152,12 +106,12 @@
   </div>
 </template>
 <script>
-import WhisPipeline from '../components/WhisPipeline.vue'
+import WhisPipeline from '../components/WhisPipeline.vue';
 
 export default {
   name: 'Whis',
   components: {
-    WhisPipeline
+    WhisPipeline,
   },
   data() {
     return {
@@ -169,7 +123,7 @@ export default {
         removeDuplicates: true,
         enhance: true,
         validate: true,
-        outputFormat: 'json'
+        outputFormat: 'json',
       },
       pipelineData: [
         {
@@ -177,70 +131,70 @@ export default {
           name: 'Data Input',
           description: 'Raw data ingestion',
           status: 'pending',
-          icon: '📥'
+          icon: '📥',
         },
         {
           id: 2,
           name: 'Sanitization',
           description: 'Clean and validate data',
           status: 'pending',
-          icon: '🧹'
+          icon: '🧹',
         },
         {
           id: 3,
           name: 'Smithing',
           description: 'Transform and structure',
           status: 'pending',
-          icon: '⚒️'
+          icon: '⚒️',
         },
         {
           id: 4,
           name: 'Enhancement',
           description: 'Add ML enhancements',
           status: 'pending',
-          icon: '✨'
+          icon: '✨',
         },
         {
           id: 5,
           name: 'Output',
           description: 'Final processed data',
           status: 'pending',
-          icon: '📤'
-        }
-      ]
-    }
+          icon: '📤',
+        },
+      ],
+    };
   },
   methods: {
     async processData() {
       if (!this.inputData.trim()) {
-        alert('Please enter some data to process')
-        return
+        alert('Please enter some data to process');
+        return;
       }
 
-      this.results = []
-      this.currentStep = 0
+      this.results = [];
+      this.currentStep = 0;
 
       // Simulate pipeline processing
       for (let i = 0; i < this.pipelineData.length; i++) {
-        this.currentStep = i
-        this.pipelineData[i].status = 'processing'
-        
+        this.currentStep = i;
+        this.pipelineData[i].status = 'processing';
+
         // Simulate processing delay
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
         // Process step
-        const result = await this.processStep(i, this.inputData)
-        this.results.push(result)
-        
-        this.pipelineData[i].status = 'completed'
+        const result = await this.processStep(i, this.inputData);
+        this.results.push(result);
+
+        this.pipelineData[i].status = 'completed';
       }
-      
-      this.currentStep = this.pipelineData.length
+
+      this.currentStep = this.pipelineData.length;
     },
-    
+
     async processStep(stepIndex, data) {
-      const step = this.pipelineData[stepIndex]
-      
+      const step = this.pipelineData[stepIndex];
+
       switch (stepIndex) {
         case 0: // Data Input
           return {
@@ -248,60 +202,63 @@ export default {
             status: 'success',
             input: 'Raw data',
             output: `${data.length} characters received`,
-            metrics: { characters: data.length, lines: data.split('\n').length }
-          }
-        
+            metrics: {
+              characters: data.length,
+              lines: data.split('\n').length,
+            },
+          };
+
         case 1: // Sanitization
           return {
             step: 'Data Sanitization',
             status: 'success',
             input: `${data.length} characters`,
             output: `${data.length - 10} characters (cleaned)`,
-            metrics: { cleaned: data.length - 10, removed: 10 }
-          }
-        
+            metrics: { cleaned: data.length - 10, removed: 10 },
+          };
+
         case 2: // Smithing
           return {
             step: 'Data Smithing',
             status: 'success',
             input: `${data.length - 10} characters`,
             output: 'Structured data object',
-            metrics: { structured: true, fields: 5 }
-          }
-        
+            metrics: { structured: true, fields: 5 },
+          };
+
         case 3: // Enhancement
           return {
             step: 'Data Enhancement',
             status: 'success',
             input: 'Structured data',
             output: 'Enhanced with ML features',
-            metrics: { enhanced: true, features: 8 }
-          }
-        
+            metrics: { enhanced: true, features: 8 },
+          };
+
         case 4: // Output
           return {
             step: 'Data Output',
             status: 'success',
             input: 'Enhanced data',
             output: `Final ${this.config.outputFormat.toUpperCase()} output`,
-            metrics: { format: this.config.outputFormat, size: '2.5KB' }
-          }
-        
+            metrics: { format: this.config.outputFormat, size: '2.5KB' },
+          };
+
         default:
           return {
             step: 'Unknown Step',
             status: 'error',
             input: 'Unknown',
             output: 'Error occurred',
-            metrics: { error: true, message: 'Unknown step' }
-          }
+            metrics: { error: true, message: 'Unknown step' },
+          };
       }
     },
-    
-    handleStepClick(step) {
+
+    handleStepClick() {
       // Show step details or configuration
     },
-    
+
     loadSampleData() {
       this.inputData = `{
   "name": "Sample Data",
@@ -310,19 +267,19 @@ export default {
     "source": "test",
     "timestamp": "2024-01-15T10:30:00Z"
   }
-}`
+}`;
     },
-    
+
     clearData() {
-      this.inputData = ''
-      this.results = []
-      this.currentStep = 0
-      this.pipelineData.forEach(step => {
-        step.status = 'pending'
-      })
-    }
-  }
-}
+      this.inputData = '';
+      this.results = [];
+      this.currentStep = 0;
+      this.pipelineData.forEach((step) => {
+        step.status = 'pending';
+      });
+    },
+  },
+};
 </script>
 <style scoped>
 .whis-page {
@@ -536,15 +493,15 @@ export default {
   .page-title {
     font-size: 2rem;
   }
-  
+
   .input-actions {
     flex-direction: column;
   }
-  
+
   .btn {
     justify-content: center;
   }
-  
+
   .config-grid {
     grid-template-columns: 1fr;
   }

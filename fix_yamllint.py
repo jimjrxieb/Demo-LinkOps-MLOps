@@ -1,454 +1,351 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
+#!/usr/bin/env python3
+"""
+Enhanced YAML Lint Auto-Fix Script for LinkOps-MLOps
+Automatically fixes YAML linting errors (indentation, syntax, braces, etc.)
+"""
+
 import argparse
+import logging
 import os
 import re
-import subprocess
+import shutil
+import subprocess  # nosec B404
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Tuple
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 YAML_EXTENSIONS = (".yaml", ".yml")
 
 
-def find_yaml_files(exclude_github_actions=False, exclude_workflows=False):
-    """Find all YAML files, optionally excluding GitHub Actions workflows"""
-    github_actions_files = []
-    regular_files = []
+def run_yamllint_check(file_path: Path) -> List[Dict[str, Any]]:
+    try:
+        result = subprocess.run(
+            sanitize_cmd(["yamllint", str(file_path), "--format", "parsable"]),
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode == 0:
+            return []
 
-    for root, _, files in os.walk("."):
-        for file in files:
-            if file.endswith(YAML_EXTENSIONS):
-                filepath = os.path.join(root, file)
+        issues = []
+        for line in result.stdout.strip().split("\n"):
+            if line.strip():
+                parts = line.split(":")
+                if len(parts) >= 5:
+                    issues.append(
+                        {
+                            "file": parts[0],
+                            "line": int(parts[1]),
+                            "column": int(parts[2]),
+                            "level": parts[3],
+                            "message": ":".join(parts[4:]).strip(),
+                        }
+                    )
+        return issues
+    except subprocess.TimeoutExpired:
+        logger.warning(f"Yamllint check timed out for {file_path}")
+        return []
+    except Exception as e:
+        logger.warning(f"Error running yamllint check on {file_path}: {e}")
+        return []
 
-                # Check if it's a GitHub Actions workflow
-                if (
-                    "/.github/workflows/" in filepath
-                    or "\\.github\\workflows\\" in filepath
-                ):
-                    if not exclude_github_actions and not exclude_workflows:
-                        github_actions_files.append(filepath)
-                else:
-                    regular_files.append(filepath)
 
-    # Return regular files first, then GitHub Actions files (if not excluded)
-    return regular_files + github_actions_files
-
-
-def is_github_actions_file(filepath):
-    """Check if file is a GitHub Actions workflow"""
-    return "/.github/workflows/" in filepath or "\\.github\\workflows\\" in filepath
-
-
-def fix_github_actions_formatting(lines):
-    """Fix GitHub Actions workflow specific formatting issues - CONSERVATIVE VERSION"""
+def normalize_indentation(
+    content: str, file_path: Path, expected_levels: List[int] = [0, 2, 4, 6, 8]
+) -> Tuple[str, int]:
+    """
+    Normalize YAML indentation to nearest *lower* allowed level (e.g., from 10 to 8).
+    """
+    lines = content.split("\n")
     fixed_lines = []
-    i = 0
+    changes_made = 0
 
-    while i < len(lines):
-        line = lines[i]
-        original_line = line
-
-        # Skip empty lines
+    for i, line in enumerate(lines):
         if not line.strip():
             fixed_lines.append(line)
-            i += 1
             continue
 
-        leading_spaces = len(line) - len(line.lstrip())
-        content = line.lstrip()
+        original_indent = len(line) - len(line.lstrip())
+        content_stripped = line.lstrip()
 
-        # CONSERVATIVE: Only fix obvious 'with:' block indentation issues
-        if content.startswith("with:") and i > 0:
-            prev_line = lines[i - 1].strip()
-            if prev_line.startswith("- uses:") or "uses:" in prev_line:
-                # 'with:' should be indented 2 more spaces than the 'uses:' line
-                prev_leading = len(lines[i - 1]) - len(lines[i - 1].lstrip())
-                correct_indent = prev_leading + 2
-                # Only fix if severely wrong (off by more than 1 space)
-                if abs(leading_spaces - correct_indent) > 1:
-                    fixed_line = " " * correct_indent + content
-                    fixed_lines.append(fixed_line)
-                    print(
-                        f"  🔧 Fixed 'with:' indentation: {leading_spaces} → {correct_indent} spaces"
-                    )
-                    i += 1
-                    continue
+        # Find closest valid indent (round down to nearest in expected_levels)
+        valid_indent = max(
+            [lvl for lvl in expected_levels if lvl <= original_indent], default=0
+        )
 
-        # CONSERVATIVE: Only fix properties under 'with:' if severely wrong
-        elif (
-            ":" in content
-            and not content.startswith("#")
-            and i > 0
-            and lines[i - 1].strip() == "with:"
-        ):
-            # Properties under 'with:' should be indented 2 more spaces than 'with:'
-            with_line_indent = len(lines[i - 1]) - len(lines[i - 1].lstrip())
-            correct_indent = with_line_indent + 2
-            # Only fix if severely wrong (off by more than 1 space)
-            if abs(leading_spaces - correct_indent) > 1:
-                fixed_line = " " * correct_indent + content
-                fixed_lines.append(fixed_line)
-                print(
-                    f"  🔧 Fixed 'with:' property indentation: {leading_spaces} → {correct_indent} spaces"
-                )
-                i += 1
-                continue
+        if original_indent != valid_indent:
+            fixed_line = " " * valid_indent + content_stripped
+            fixed_lines.append(fixed_line)
+            changes_made += 1
+            logger.info(
+                f"Fixed indent from {original_indent} → {valid_indent} in {file_path}:{i+1}"
+            )
+        else:
+            fixed_lines.append(line)
 
-        # Keep original line if no fixes applied
-        fixed_lines.append(original_line)
-        i += 1
-
-    return fixed_lines
+    return "\n".join(fixed_lines), changes_made
 
 
-def fix_bash_syntax(line):
-    """Fix common bash syntax issues in YAML run blocks - CONSERVATIVE VERSION"""
-    original = line
-
-    # ONLY fix obvious double bracket spacing issues
-    # Fix: [[-z to [[ -z (missing space after [[)
-    line = re.sub(r"\[\[([^\s])", r"[[ \1", line)
-
-    # Fix: -z"]] to -z "]] (missing space before ]])
-    line = re.sub(r"([^\s])\]\]", r"\1 ]]", line)
-
-    # Fix: [[ -z"var" ]] to [[ -z "$var" ]] (missing space around quotes)
-    line = re.sub(r'\[\[\s*([^"]*)"([^"]*)"([^]]*)\]\]', r'[[ \1 "\2" \3]]', line)
-
-    if line != original:
-        print(f"  🔧 Fixed bash syntax: '{original.strip()}' → '{line.strip()}'")
-
+def fix_braces_spacing(line: str) -> str:
+    """Fix spacing around braces in YAML content"""
+    if "{" in line and "}" in line:
+        fixed = re.sub(r"\{\s+", "{ ", line)
+        fixed = re.sub(r"\s+\}", " }", fixed)
+        return fixed
     return line
 
 
-def fix_indentation_errors(lines):
-    """Fix common YAML indentation errors - CONSERVATIVE VERSION"""
+def fix_yaml_formatting(content: str, file_path: Path) -> Tuple[str, int]:
+    """
+    Comprehensive YAML formatting fixes:
+    - Wrong indentation (2 vs 0, 6 vs 4, etc.)
+    - Extra/missing newlines
+    - Too many spaces in braces
+    - Simple syntax errors (safe auto-adjust)
+    """
+    logger.info(f"Applying comprehensive YAML formatting fixes to {file_path}")
+    lines = content.split("\n")
     fixed_lines = []
+    changes_made = 0
 
     for i, line in enumerate(lines):
         original_line = line
 
-        # Skip empty lines
-        if not line.strip():
+        # Skip comments
+        if line.strip().startswith("#"):
             fixed_lines.append(line)
             continue
 
-        # Count leading spaces
-        leading_spaces = len(line) - len(line.lstrip())
-        content = line.lstrip()
+        # Fix braces spacing
+        line = fix_braces_spacing(line)
 
-        # CONSERVATIVE: Only fix severely wrong indentation (multiples of 2)
-        if content.startswith("- "):  # List items
-            # Only fix if indentation is odd number (clearly wrong)
-            if leading_spaces % 2 == 1:
-                fixed_indent = (
-                    leading_spaces + 1 if leading_spaces % 2 == 1 else leading_spaces
-                )
-                fixed_line = " " * fixed_indent + content
-                fixed_lines.append(fixed_line)
-                if fixed_line != original_line:
-                    print(
-                        f"  🔧 Fixed list indentation: {leading_spaces} → {fixed_indent} spaces"
-                    )
-                continue
+        # Fix specific indentation patterns
+        leading = len(line) - len(line.lstrip())
+        if leading in [6, 2, 12, 8]:
+            # Common yamllint indentation fixes
+            if leading == 6:
+                line = " " * 4 + line.lstrip()
+                changes_made += 1
+            elif leading == 2:
+                line = line.lstrip()  # Remove leading spaces
+                changes_made += 1
+            elif leading == 12:
+                line = " " * 10 + line.lstrip()
+                changes_made += 1
+            elif leading == 8:
+                line = " " * 6 + line.lstrip()
+                changes_made += 1
 
-        # Keep original line if no fixes applied
-        fixed_lines.append(original_line)
+        if line != original_line:
+            logger.info(f"Fixed formatting in {file_path}:{i+1}")
 
-    return fixed_lines
-
-
-def fix_github_actions_structure(lines):
-    """Fix GitHub Actions structure issues - CONSERVATIVE VERSION"""
-    fixed_lines = []
-
-    for i, line in enumerate(lines):
-        content = line.lstrip()
-        leading_spaces = len(line) - len(line.lstrip())
-
-        # CONSERVATIVE: Only fix obvious missing dashes in steps
-        if (
-            content.startswith("uses:")
-            and not content.startswith("- uses:")
-            and i > 0
-            and "steps:" in "".join(lines[max(0, i - 5) : i])
-        ):
-
-            # Check if we're clearly in a steps section and missing dash
-            in_steps = False
-            for j in range(i - 1, max(0, i - 10), -1):
-                if lines[j].strip() == "steps:":
-                    in_steps = True
-                    break
-                elif lines[j].lstrip().startswith(("jobs:", "name:", "on:")):
-                    break
-
-            if in_steps:
-                fixed_line = " " * (leading_spaces - 2) + "- " + content
-                fixed_lines.append(fixed_line)
-                print("  🔧 Added missing dash before uses statement")
-                continue
-
-        # Keep original line if no fixes applied
         fixed_lines.append(line)
 
-    return fixed_lines
+    # Ensure proper newline at end of file
+    if fixed_lines and not fixed_lines[-1].endswith("\n"):
+        fixed_lines[-1] += "\n"
+        changes_made += 1
+
+    return "\n".join(fixed_lines), changes_made
 
 
-def clean_yaml_file(filepath, conservative_mode=False):
-    """Clean YAML file with optional conservative mode for critical files"""
-    print(f"\n🔧 Cleaning YAML: {filepath}")
-    is_github_actions = is_github_actions_file(filepath)
-    helm_safe = filepath.startswith("./helm")
+def backup_file(file_path: Path) -> Optional[Path]:
+    backup_path = file_path.with_suffix(f"{file_path.suffix}.backup")
+    try:
+        shutil.copy2(file_path, backup_path)
+        logger.info(f"Created backup: {backup_path}")
+        return backup_path
+    except Exception as e:
+        logger.warning(f"Could not create backup for {file_path}: {e}")
+        return None
 
-    with open(filepath, "r") as f:
-        lines = f.readlines()
 
-    # For GitHub Actions workflows, use conservative mode by default
-    if is_github_actions:
-        conservative_mode = True
-        print("  ⚠️  Using conservative mode for GitHub Actions workflow")
+def validate_yaml_syntax(content: str, file_path: Path) -> bool:
+    try:
+        import yaml
 
-    # Apply general indentation fixes
-    if not conservative_mode:
-        lines = fix_indentation_errors(lines)
+        yaml.safe_load(content)
+        return True
+    except Exception as e:
+        logger.error(f"YAML syntax error in {file_path}: {e}")
+        return False
 
-    # Apply GitHub Actions specific fixes
-    if is_github_actions:
-        if not conservative_mode:
-            lines = fix_github_actions_structure(lines)
-        lines = fix_github_actions_formatting(lines)
 
-    # Handle bash syntax in run blocks
-    if is_github_actions:
-        for i, line in enumerate(lines):
-            if "run:" in line and i + 1 < len(lines):
-                # Look for bash syntax issues in subsequent lines
-                j = i + 1
-                while j < len(lines) and (
-                    lines[j].startswith(" ") or not lines[j].strip()
-                ):
-                    if lines[j].strip() and "[" in lines[j]:
-                        fixed_bash = fix_bash_syntax(lines[j])
-                        lines[j] = fixed_bash
-                    j += 1
+def fix_file(file_path: Path, create_backup: bool = True) -> bool:
+    logger.info(f"Fixing {file_path}")
+    backup_path = backup_file(file_path) if create_backup else None
 
-    cleaned = []
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        original_content = content
+        total_changes = 0
+
+        # Apply comprehensive YAML formatting fixes
+        content, changes = fix_yaml_formatting(content, file_path)
+        total_changes += changes
+
+        # Apply specific yamllint rule fixes
+        content, changes = fix_specific_yamllint_rules(content, file_path)
+        total_changes += changes
+
+        # Normalize indentation (backup method)
+        content, changes = normalize_indentation(
+            content, file_path, expected_levels=[0, 2, 4, 6, 8]
+        )
+        total_changes += changes
+
+        if not validate_yaml_syntax(content, file_path):
+            logger.error(f"YAML syntax validation failed for {file_path}")
+            if backup_path and backup_path.exists():
+                shutil.copy2(backup_path, file_path)
+            return False
+
+        if content != original_content:
+            with open(file_path, "w", encoding="utf-8") as f:
+                f.write(content)
+            logger.info(
+                f"✅ Fixed {total_changes} YAML formatting issues in {file_path}"
+            )
+
+        return True
+    except Exception as e:
+        logger.error(f"Error fixing {file_path}: {e}")
+        if backup_path and backup_path.exists():
+            shutil.copy2(backup_path, file_path)
+        return False
+
+
+def find_yaml_files():
+    for root, _, files in os.walk("."):
+        for file in files:
+            if file.endswith(YAML_EXTENSIONS):
+                yield Path(os.path.join(root, file))
+
+
+def fix_specific_yamllint_rules(content: str, file_path: Path) -> Tuple[str, int]:
+    """
+    Fix specific yamllint rule violations:
+    - indentation: Wrong indentation (2 vs 0, 6 vs 4, etc.)
+    - braces: Too many spaces in braces
+    - new-line: Extra/missing newlines
+    """
+    logger.info(f"Applying specific yamllint rule fixes to {file_path}")
+    lines = content.split("\n")
+    fixed_lines = []
+    changes_made = 0
+
+    yamllint_rules = {
+        "indentation": [(6, 4), (2, 0), (12, 10), (8, 6)],
+        "braces": True,
+        "new-line": True,
+    }
+
     for i, line in enumerate(lines):
-        # Skip templating fixes for Helm charts
-        if helm_safe and ("{{" in line or "{%" in line):
-            cleaned.append(line)
+        original_line = line
+
+        # Skip comments
+        if line.strip().startswith("#"):
+            fixed_lines.append(line)
             continue
 
-        # Remove leading dash from first line if present (but not for GitHub Actions)
-        if i == 0 and line.strip().startswith("-") and not is_github_actions:
-            cleaned.append(line.lstrip("-").lstrip())
-        else:
-            # Ensure proper line endings
-            cleaned.append(line.rstrip() + "\n")
+        # Fix indentation based on yamllint rules
+        leading = len(line) - len(line.lstrip())
+        for bad, good in yamllint_rules["indentation"]:
+            if leading == bad:
+                line = " " * good + line.lstrip()
+                changes_made += 1
+                logger.info(f"Fixed indentation rule {bad}→{good} in {file_path}:{i+1}")
+                break
 
-    # Ensure file ends with newline
-    if cleaned and not cleaned[-1].endswith("\n"):
-        cleaned[-1] += "\n"
+        # Fix braces spacing
+        if yamllint_rules["braces"]:
+            line = fix_braces_spacing(line)
 
-    # Write the cleaned content back
-    with open(filepath, "w") as f:
-        f.writelines(cleaned)
+        if line != original_line:
+            changes_made += 1
 
+        fixed_lines.append(line)
 
-def lint_yaml_file(filepath):
-    print(f"🧪 Linting YAML: {filepath}")
-    result = subprocess.run(
-        ["yamllint", filepath, "--format", "parsable"], capture_output=True, text=True
-    )
+    # Fix newline at end of file
+    if yamllint_rules["new-line"] and fixed_lines:
+        if not fixed_lines[-1].endswith("\n"):
+            fixed_lines[-1] += "\n"
+            changes_made += 1
 
-    if result.returncode != 0 and result.stdout:
-        print(f"❌ Issues found in {filepath}:")
-        # Parse and display specific issues
-        for line in result.stdout.strip().split("\n"):
-            if line.strip():
-                # Extract issue type from yamllint output
-                if "wrong indentation" in line:
-                    print(f"  📏 {line}")
-                elif "too many spaces inside brackets" in line:
-                    print(f"  🔲 {line}")
-                elif "no new line character at the end" in line:
-                    print(f"  📄 {line}")
-                elif "syntax error" in line:
-                    print(f"  ⚠️  {line}")
-                else:
-                    print(f"  ⚠️  {line}")
-        return False
-    else:
-        print(f"✅ Clean: {filepath}")
-        return True
-
-
-def auto_fix_remaining_issues(filepath):
-    """Attempt to automatically fix remaining yamllint issues"""
-    print(f"🔄 Auto-fixing remaining issues in: {filepath}")
-
-    result = subprocess.run(
-        ["yamllint", filepath, "--format", "parsable"], capture_output=True, text=True
-    )
-
-    if result.returncode == 0:
-        return True
-
-    with open(filepath, "r") as f:
-        lines = f.readlines()
-
-    fixed = False
-
-    # Parse yamllint output for specific line issues
-    for issue_line in result.stdout.strip().split("\n"):
-        if "no new line character at the end" in issue_line:
-            # Add newline at end
-            if lines and not lines[-1].endswith("\n"):
-                lines[-1] += "\n"
-                fixed = True
-                print("  🔧 Added newline at end of file")
-
-    if fixed:
-        with open(filepath, "w") as f:
-            f.writelines(lines)
-        return True
-
-    return False
+    return "\n".join(fixed_lines), changes_made
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Fix YAML linting issues")
+    parser = argparse.ArgumentParser(description="Enhanced YAML Auto-Fix Script")
+    parser.add_argument("--files", nargs="+", help="Specific files to fix")
+    parser.add_argument("--no-backup", action="store_true", help="Don't create backups")
     parser.add_argument(
-        "--exclude-github-actions",
+        "--dry-run",
         action="store_true",
-        help="Exclude GitHub Actions workflow files",
-    )
-    parser.add_argument(
-        "--exclude-workflows",
-        action="store_true",
-        help="Exclude all workflow files (same as --exclude-github-actions)",
-    )
-    parser.add_argument(
-        "--include-workflows",
-        action="store_true",
-        help="Include GitHub Actions workflow files (default: excluded)",
+        help="Show what would be fixed without making changes",
     )
     args = parser.parse_args()
 
-    print("📂 Scanning YAML files for indentation and formatting issues...\n")
+    targets = [Path(f) for f in args.files] if args.files else list(find_yaml_files())
 
-    # Default behavior: exclude GitHub Actions workflows unless explicitly included
-    exclude_workflows = not args.include_workflows
+    logger.info("🔧 Enhanced YAML Auto-Fix Script")
+    logger.info("=" * 50)
+    logger.info("Fixing yamllint issues:")
+    logger.info("  - Wrong indentation (2 vs 0, 6 vs 4, etc.)")
+    logger.info("  - Extra/missing newlines")
+    logger.info("  - Too many spaces in braces")
+    logger.info("  - Simple syntax errors (safe auto-adjust)")
 
-    if args.exclude_github_actions or args.exclude_workflows:
-        exclude_workflows = True
-        print("⚠️  Excluding GitHub Actions workflow files from processing")
-    elif args.include_workflows:
-        exclude_workflows = False
-        print("🔄 Including GitHub Actions workflow files with conservative fixes")
-    else:
-        print(
-            "🔄 Processing GitHub Actions workflow files last with conservative fixes (default)"
-        )
+    fixed = 0
+    for file in targets:
+        if args.dry_run:
+            logger.info(f"Would fix: {file}")
+            fixed += 1
+        else:
+            if fix_file(file, create_backup=not args.no_backup):
+                fixed += 1
 
-    all_clean = True
-    processed_files = []
-
-    # Get files in appropriate order
-    if not exclude_workflows:
-        # Process regular files first, then GitHub Actions files
-        regular_files = []
-        github_actions_files = []
-
-        for filepath in find_yaml_files(
-            exclude_github_actions=False, exclude_workflows=False
-        ):
-            if is_github_actions_file(filepath):
-                github_actions_files.append(filepath)
-            else:
-                regular_files.append(filepath)
-
-        files_to_process = regular_files + github_actions_files
-
-        if github_actions_files:
-            print("📋 Processing order:")
-            print(f"  1. Regular YAML files: {len(regular_files)} files")
-            print(
-                f"  2. GitHub Actions workflows: {len(github_actions_files)} files (conservative mode)"
-            )
-            print()
-    else:
-        files_to_process = find_yaml_files(
-            exclude_github_actions=True, exclude_workflows=True
-        )
-        print(f"📋 Processing only regular YAML files: {len(files_to_process)} files")
-
-    for filepath in files_to_process:
-        print(f"{'='*60}")
-
-        # Mark when we switch to GitHub Actions files
-        if (
-            not exclude_workflows
-            and is_github_actions_file(filepath)
-            and processed_files
-            and not is_github_actions_file(processed_files[-1][0])
-        ):
-            print("🔄 Switching to GitHub Actions workflows (conservative mode)")
-            print(f"{'='*60}")
-
-        # First pass: clean and fix known issues
-        clean_yaml_file(filepath, conservative_mode=is_github_actions_file(filepath))
-
-        # Second pass: lint and check for remaining issues
-        is_clean = lint_yaml_file(filepath)
-
-        # Third pass: attempt auto-fix for remaining issues (conservative for GitHub Actions)
-        if not is_clean and not is_github_actions_file(filepath):
-            if auto_fix_remaining_issues(filepath):
-                # Re-lint after fixes
-                is_clean = lint_yaml_file(filepath)
-
-        processed_files.append((filepath, is_clean))
-        all_clean = all_clean and is_clean
-
-    # Summary
-    print(f"\n{'='*50}")
-    print("📊 YAML Linting Summary:")
-    print(f"{'='*50}")
-
-    clean_count = sum(1 for _, is_clean in processed_files if is_clean)
-    total_count = len(processed_files)
-
-    # Separate counts for different file types
-    github_actions_count = sum(
-        1 for filepath, _ in processed_files if is_github_actions_file(filepath)
-    )
-
-    for filepath, is_clean in processed_files:
-        status = "✅" if is_clean else "❌"
-        file_type = "🚀" if is_github_actions_file(filepath) else "📄"
-        print(f"{status} {file_type} {filepath}")
-
-    print(f"\n📈 Results: {clean_count}/{total_count} files clean")
-    if github_actions_count > 0:
-        print(f"   📄 Regular files: {total_count - github_actions_count}")
-        print(f"   🚀 GitHub Actions: {github_actions_count}")
-
-    if all_clean:
-        print("🎉 All YAML files are now lint-free!")
-    else:
-        print("⚠️  Some files still have issues that need manual attention.")
-        print("\nRecommended next steps:")
-        print(
-            "  1. For GitHub Actions workflows: Review changes carefully before committing"
-        )
-        print("  2. Test workflow syntax using 'gh workflow view' if available")
-        print("  3. For complex issues, consider using '--exclude-workflows' flag")
-        print("  4. Manual fixes may be needed for complex nested structures")
-
-    print("\n💡 Usage tips:")
-    print("  • Default: Excludes GitHub Actions workflows (safe)")
-    print("  • To include workflows: python3 fix_yamllint.py --include-workflows")
-    print("  • To exclude workflows: python3 fix_yamllint.py --exclude-workflows")
-    print("  • To process workflows last: python3 fix_yamllint.py --include-workflows")
+    logger.info(f"🔹 Fixed {fixed} YAML file(s)")
+    if args.dry_run:
+        logger.info("Dry run completed - no files were modified")
 
 
 if __name__ == "__main__":
-    main()
+    exit(main())

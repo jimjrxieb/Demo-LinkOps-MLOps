@@ -9,4 +9,4 @@
   "plugins": ["react", "@typescript-eslint"],
   "rules": { "react/prop-types": "off" },
   "parser": "@typescript-eslint/parser"
-} 
+}

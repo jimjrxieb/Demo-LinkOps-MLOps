@@ -1,5 +1,7 @@
 extends: default
 rules:
-  document-start: { present: true }
-  line-length: { max: 80 }
-  indentation: { spaces: 2 } 
+document-start: { present: true }
+line-length: { max: 80 }
+indentation: { spaces: 2 }
+
+

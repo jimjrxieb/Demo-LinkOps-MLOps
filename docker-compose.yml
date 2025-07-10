@@ -1,30 +1,30 @@
 networks:
-  linkops-network:
+linkops-network:
     driver: bridge
 
 services:
   ### 🗄️ POSTGRESQL
-  db:
+db:
     image: postgres:15
     container_name: linkops-postgres
     ports:
     - "5432:5432"
     environment:
     POSTGRES_DB: linkops
-      POSTGRES_USER: linkops
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linkops_password}
+    POSTGRES_USER: linkops
+    POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-linkops_password}
     volumes:
     - postgres_data:/var/lib/postgresql/data
     healthcheck:
     test: ["CMD-SHELL", "pg_isready -U linkops"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    interval: 30s
+    timeout: 10s
+    retries: 3
     networks:
     - linkops-network
 
   ### 🔧 MLOPS PLATFORM (FastAPI)
-  mlops_platform:
+mlops_platform:
     build:
     context: ./mlops/mlops_platform
     container_name: linkops-mlops-platform
@@ -43,14 +43,14 @@ services:
     - kafka
     healthcheck:
     test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    interval: 30s
+    timeout: 10s
+    retries: 3
     networks:
     - linkops-network
 
   ### 🧠 FRONTEND (Vue Dev Server)
-  frontend:
+frontend:
     build:
     context: ./frontend
     container_name: linkops-frontend
@@ -70,27 +70,27 @@ services:
     - linkops-network
 
   ### 🦁 ZOOKEEPER
-  zookeeper:
+zookeeper:
     image: confluentinc/cp-zookeeper:7.4.0
     container_name: linkops-zookeeper
     ports:
     - "2181:2181"
     environment:
     ZOOKEEPER_CLIENT_PORT: 2181
-      ZOOKEEPER_TICK_TIME: 2000
+    ZOOKEEPER_TICK_TIME: 2000
     volumes:
     - zookeeper_data:/var/lib/zookeeper/data
     - zookeeper_logs:/var/lib/zookeeper/log
     healthcheck:
     test: ["CMD-SHELL", "echo ruok | nc localhost 2181"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    interval: 30s
+    timeout: 10s
+    retries: 3
     networks:
     - linkops-network
 
   ### 🔴 REDIS (Caching & Session Store)
-  redis:
+redis:
     image: redis:7-alpine
     container_name: linkops-redis
     ports:
@@ -99,40 +99,40 @@ services:
     - redis_data:/data
     healthcheck:
     test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    interval: 30s
+    timeout: 10s
+    retries: 3
     networks:
     - linkops-network
 
   ### 📡 KAFKA (Zookeeper Mode)
-  kafka:
+kafka:
     image: confluentinc/cp-kafka:7.4.0
     container_name: linkops-kafka
     ports:
     - "9092:9092"
     environment:
     KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+    KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+    KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
     depends_on:
     - zookeeper
     volumes:
     - kafka_data:/var/lib/kafka/data
     healthcheck:
     test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+    interval: 30s
+    timeout: 10s
+    retries: 3
     networks:
     - linkops-network
 
   ### 📥 WHIS DATA INPUT SERVICE
-  whis_data_input:
+whis_data_input:
     build: ./mlops/whis_data_input
     container_name: linkops-whis-data-input
     ports:
@@ -150,7 +150,7 @@ services:
     - linkops-network
 
   ### 🧹 WHIS SANITIZE SERVICE
-  whis_sanitize:
+whis_sanitize:
     build: ./mlops/whis_sanitize
     container_name: linkops-whis-sanitize
     ports:
@@ -169,7 +169,7 @@ services:
     - linkops-network
 
   ### 🔨 WHIS SMITHING SERVICE
-  whis_smithing:
+whis_smithing:
     build: ./mlops/whis_smithing
     container_name: linkops-whis-smithing
     ports:
@@ -187,7 +187,7 @@ services:
     - linkops-network
 
   ### 🚀 WHIS ENHANCE SERVICE
-  whis_enhance:
+whis_enhance:
     build: ./mlops/whis_enhance
     container_name: linkops-whis-enhance
     ports:
@@ -206,7 +206,7 @@ services:
     - linkops-network
 
   ### 🧠 WHIS LOGIC SERVICE
-  whis_logic:
+whis_logic:
     build: ./mlops/whis_logic
     container_name: linkops-whis-logic
     ports:
@@ -225,7 +225,7 @@ services:
     - linkops-network
 
   ### 🕷️ WHIS WEBSCRAPER SERVICE
-  whis_webscraper:
+whis_webscraper:
     build: ./mlops/whis_webscraper
     container_name: linkops-whis-webscraper
     ports:
@@ -244,7 +244,7 @@ services:
     - linkops-network
 
   ### 🔍 AUDIT ASSESS SERVICE
-  audit_assess:
+audit_assess:
     build: ./mlops/audit_assess
     container_name: linkops-audit-assess
     ports:
@@ -264,7 +264,7 @@ services:
     - linkops-network
 
   ### 🚀 AUDIT MIGRATE SERVICE
-  audit_migrate:
+audit_migrate:
     build: ./mlops/audit_migrate
     container_name: linkops-audit-migrate
     ports:
@@ -282,7 +282,7 @@ services:
     - linkops-network
 
   ### 🛠️ MLOPS UTILS SERVICE
-  mlops_utils:
+mlops_utils:
     build: ./mlops/mlops_utils
     container_name: linkops-mlops-utils
     ports:
@@ -300,7 +300,7 @@ services:
     - linkops-network
 
   ### 🤖 JIMMIE LOGIC (Shadow Agent)
-  jimmie_logic:
+jimmie_logic:
     build: ./shadows/jimmie_logic
     container_name: linkops-jimmie-logic
     ports:
@@ -319,7 +319,7 @@ services:
     - linkops-network
 
   ### 🤖 FICKNURY EVALUATOR (Shadow Agent)
-  ficknury_evaluator:
+ficknury_evaluator:
     build: ./shadows/ficknury_evaluator
     container_name: linkops-ficknury-evaluator
     ports:
@@ -337,7 +337,7 @@ services:
     - linkops-network
 
   ### 🛡️ AUDIT LOGIC (Shadow Agent)
-  audit_logic:
+audit_logic:
     build: ./shadows/audit_logic
     container_name: linkops-audit-logic
     ports:
@@ -355,7 +355,7 @@ services:
     - linkops-network
 
   ### 🛡️ AUDITGUARD LOGIC (Shadow Agent)
-  auditguard_logic:
+auditguard_logic:
     build: ./shadows/auditguard_logic
     container_name: linkops-auditguard-logic
     ports:
@@ -373,7 +373,7 @@ services:
     - linkops-network
 
   ### ☸️ KUBERNETES SPECIALIST (Shadow Agent)
-  kubernetes_specialist:
+kubernetes_specialist:
     build: ./shadows/kubernetes_specialist
     container_name: linkops-kubernetes-specialist
     ports:
@@ -393,7 +393,7 @@ services:
     - linkops-network
 
   ### 🧬 ML DATA SCIENTIST (Shadow Agent)
-  ml_data_scientist:
+ml_data_scientist:
     build: ./shadows/ml_data_scientist
     container_name: linkops-ml-data-scientist
     ports:
@@ -411,7 +411,7 @@ services:
     - linkops-network
 
   ### 🏗️ PLATFORM ENGINEER (Shadow Agent)
-  platform_engineer:
+platform_engineer:
     build: ./shadows/platform_engineer
     container_name: linkops-platform-engineer
     ports:
@@ -434,7 +434,7 @@ services:
     - linkops-network
 
   ### 🔧 DEVOPS ENGINEER (Shadow Agent)
-  devops_engineer:
+devops_engineer:
     build: ./shadows/devops_engineer
     container_name: linkops-devops-engineer
     ports:
@@ -452,8 +452,10 @@ services:
     - linkops-network
 
 volumes:
-  postgres_data:
-  kafka_data:
-  zookeeper_data:
-  zookeeper_logs:
-  redis_data:
+postgres_data:
+kafka_data:
+zookeeper_data:
+zookeeper_logs:
+redis_data:
+
+

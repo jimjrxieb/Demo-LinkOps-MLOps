@@ -1,14 +1,14 @@
-import { defineConfig } from "vite"
-import vue from '@vitejs/plugin-vue'
-import { resolve } from 'path'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
       '@': resolve(__dirname, './'),
-      '~': resolve(__dirname, './')
-    }
+      '~': resolve(__dirname, './'),
+    },
   },
   server: {
     port: 3000,
@@ -17,9 +17,9 @@ export default defineConfig({
       '/api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, '')
-      }
-    }
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
   },
   build: {
     outDir: 'dist',
@@ -28,12 +28,12 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['vue', 'vue-router'],
-          utils: ['axios']
-        }
-      }
-    }
+          utils: ['axios'],
+        },
+      },
+    },
   },
   css: {
-    postcss: './postcss.config.js'
-  }
-})
+    postcss: './postcss.config.js',
+  },
+});

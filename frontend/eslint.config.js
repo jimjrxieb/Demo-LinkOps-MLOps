@@ -1,6 +1,6 @@
-import js from '@eslint/js'
-import pluginVue from 'eslint-plugin-vue'
-import globals from 'globals'
+import js from '@eslint/js';
+import pluginVue from 'eslint-plugin-vue';
+import globals from 'globals';
 
 export default [
   {
@@ -29,13 +29,13 @@ export default [
       'no-unused-vars': 'warn',
       'vue/multi-word-component-names': 'off',
       'vue/no-unused-vars': 'warn',
-      
+
       // Allow template literals with embedded code
       'no-template-curly-in-string': 'off',
-      
+
       // Allow console for development
       'no-console': 'warn',
-      
+
       // Vue-specific rules
       'vue/attribute-hyphenation': 'error',
       'vue/v-on-event-hyphenation': 'error',

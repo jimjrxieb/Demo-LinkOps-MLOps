@@ -9,150 +9,153 @@
         ;
         <div class="logo-container">
           ;
-          <h1 class="logo-text">
-            LinkOps
-          </h1>;
-          <div class="logo-glow" />;
-        </div>;
-        <h2 class="login-title">
-          MLOps Command Center
-        </h2>;
-        <p class="login-subtitle">
-          Choose your access level
-        </p>;
-      </div>;
+          <h1 class="logo-text">LinkOps</h1>
+          ;
+          <div class="logo-glow" />
+          ;
+        </div>
+        ;
+        <h2 class="login-title">MLOps Command Center</h2>
+        ;
+        <p class="login-subtitle">Choose your access level</p>
+        ;
+      </div>
+      ;
 
       <!-- Login Options -->;
       <div class="login-options">
         ;
-        <div
-          class="option-card demo"
-          @click="loginAs('demo')"
-        >
+        <div class="option-card demo" @click="loginAs('demo')">
           ;
-          <div class="option-icon">
-            👤
-          </div>;
-          <h3 class="option-title">
-            Demo Mode
-          </h3>;
+          <div class="option-icon">👤</div>
+          ;
+          <h3 class="option-title">Demo Mode</h3>
+          ;
           <p class="option-description">
-            ;
-            Explore the platform with simulated data and limited functionality;
-          </p>;
+            ; Explore the platform with simulated data and limited
+            functionality;
+          </p>
+          ;
           <div class="option-features">
             ;
             <span class="feature">• View-only dashboard</span>;
             <span class="feature">• Simulated pipelines</span>;
             <span class="feature">• Mock audit results</span>;
-          </div>;
+          </div>
+          ;
           <button class="login-btn demo-btn">
             ;
-            <span class="btn-icon">🚀</span>;
-            Enter Demo Mode;
-          </button>;
-        </div>;
+            <span class="btn-icon">🚀</span>; Enter Demo Mode;</button
+          >;
+        </div>
+        ;
 
-        <div
-          class="option-card admin"
-          @click="loginAs('admin')"
-        >
+        <div class="option-card admin" @click="loginAs('admin')">
           ;
-          <div class="option-icon">
-            ⚡
-          </div>;
-          <h3 class="option-title">
-            Admin Access
-          </h3>;
+          <div class="option-icon">⚡</div>
+          ;
+          <h3 class="option-title">Admin Access</h3>
+          ;
           <p class="option-description">
-            ;
-            Full platform access with real data and administrative controls;
-          </p>;
+            ; Full platform access with real data and administrative controls;
+          </p>
+          ;
           <div class="option-features">
             ;
             <span class="feature">• Full dashboard access</span>;
             <span class="feature">• Real pipeline management</span>;
             <span class="feature">• Live audit capabilities</span>;
-          </div>;
+          </div>
+          ;
           <button class="login-btn admin-btn">
             ;
-            <span class="btn-icon">🔐</span>;
-            Admin Login;
-          </button>;
-        </div>;
-      </div>;
+            <span class="btn-icon">🔐</span>; Admin Login;</button
+          >;
+        </div>
+        ;
+      </div>
+      ;
 
       <!-- Demo Notice -->;
       <div class="demo-notice">
         ;
-        <div class="notice-icon">
-          💡
-        </div>;
+        <div class="notice-icon">💡</div>
+        ;
         <p class="notice-text">
           ;
-          <strong>Demo Mode:</strong> Perfect for exploring features without affecting production data.;
-          All actions are simulated and no real changes are made.;
-        </p>;
-      </div>;
+          <strong>Demo Mode:</strong> Perfect for exploring features without
+          affecting production data.; All actions are simulated and no real
+          changes are made.;
+        </p>
+        ;
+      </div>
+      ;
 
       <!-- Background Effects -->;
       <div class="background-effects">
         ;
-        <div class="floating-orb orb-1" />;
-        <div class="floating-orb orb-2" />;
-        <div class="floating-orb orb-3" />;
-      </div>;
-    </div>;
-  </div>;
-</template>;
+        <div class="floating-orb orb-1" />
+        ;
+        <div class="floating-orb orb-2" />
+        ;
+        <div class="floating-orb orb-3" />
+        ;
+      </div>
+      ;
+    </div>
+    ;
+  </div>
+  ;
+</template>
+;
 <script>
-import { useMainStore } from '../store/index.js'
+import { useMainStore } from '../store/index.js';
 
 export default {
   name: 'Login',
   data() {
     return {
-      isLoading: false
-    }
+      isLoading: false,
+    };
   },
   methods: {
     async loginAs(role) {
-      this.isLoading = true
-      
+      this.isLoading = true;
+
       try {
         // Simulate login process
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        const store = useMainStore()
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+
+        const store = useMainStore();
+
         // Set authentication role
-        store.setAuthRole(role)
-        
+        store.setAuthRole(role);
+
         // Add notification
         store.addNotification({
           type: 'success',
           message: `Welcome! You're now logged in as ${role === 'demo' ? 'Demo User' : 'Administrator'}`,
-          duration: 3000
-        })
-        
+          duration: 3000,
+        });
+
         // Redirect to dashboard
-        this.$router.push('/')
-        
-      } catch (_error) {
-        const store = useMainStore()
+        this.$router.push('/');
+      } catch {
+        const store = useMainStore();
         store.addNotification({
           type: 'error',
           message: 'Login failed. Please try again.',
-          duration: 5000
-        })
+          duration: 5000,
+        });
       } finally {
-        this.isLoading = false
+        this.isLoading = false;
       }
-    }
-  }
-}
-</script>;
-<style scoped>;
+    },
+  },
+};
+</script>
+;
+<style scoped>
 .login-page {
   min-height: 100vh;
   display: flex;
@@ -200,7 +203,11 @@ export default {
   transform: translate(-50%, -50%);
   width: 120%;
   height: 120%;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.3) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(0, 212, 255, 0.3) 0%,
+    transparent 70%
+  );
   animation: pulse 3s ease-in-out infinite;
   z-index: 1;
 }
@@ -340,7 +347,12 @@ export default {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -412,7 +424,11 @@ export default {
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(0, 212, 255, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(0, 212, 255, 0.2) 0%,
+    transparent 70%
+  );
   animation: float 6s ease-in-out infinite;
 }
 
@@ -426,18 +442,27 @@ export default {
   top: 60%;
   right: 15%;
   animation-delay: 2s;
-  background: radial-gradient(circle, rgba(255, 0, 255, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 0, 255, 0.2) 0%,
+    transparent 70%
+  );
 }
 
 .orb-3 {
   bottom: 20%;
   left: 20%;
   animation-delay: 4s;
-  background: radial-gradient(circle, rgba(0, 255, 136, 0.2) 0%, transparent 70%);
+  background: radial-gradient(
+    circle,
+    rgba(0, 255, 136, 0.2) 0%,
+    transparent 70%
+  );
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) rotate(0deg);
   }
   50% {
@@ -446,7 +471,8 @@ export default {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.5;
     transform: translate(-50%, -50%) scale(1);
   }
@@ -461,27 +487,28 @@ export default {
   .login-container {
     padding: 1rem;
   }
-  
+
   .logo-text {
     font-size: 3rem;
   }
-  
+
   .login-title {
     font-size: 1.5rem;
   }
-  
+
   .login-options {
     grid-template-columns: 1fr;
     gap: 1.5rem;
   }
-  
+
   .option-card {
     padding: 1.5rem;
   }
-  
+
   .demo-notice {
     flex-direction: column;
     text-align: center;
   }
 }
-</style>;
+</style>
+;

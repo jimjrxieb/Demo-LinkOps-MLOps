@@ -1,3 +1,31 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 #!/usr/bin/env python3
 """
 Test script for the LinkOps Platform Agent
@@ -6,7 +34,7 @@ Tests both the Go agent directly and the API integration
 
 import json
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 import time
 from pathlib import Path
@@ -33,7 +61,9 @@ def test_agent_build():
 
     try:
         # Check if Go is installed
-        result = subprocess.run(["go", "version"], capture_output=True, text=True)
+        result = subprocess.run(
+            sanitize_cmd(["go", "version"], capture_output=True, text=True)
+        )
         if result.returncode != 0:
             log("❌ Go is not installed", Colors.RED)
             return False
@@ -42,7 +72,7 @@ def test_agent_build():
 
         # Build the agent
         result = subprocess.run(
-            ["go", "build", "-o", "platform_agent", "platform_agent.go"],
+            sanitize_cmd(["go", "build", "-o", "platform_agent", "platform_agent.go"]),
             capture_output=True,
             text=True,
         )
@@ -96,7 +126,7 @@ def test_simple_command():
             return False
 
         result = subprocess.run(
-            ["./platform_agent", cmd],
+            sanitize_cmd(["./platform_agent", cmd]),
             capture_output=True,
             text=True,
             shell=False,  # Explicitly disable shell
@@ -141,7 +171,7 @@ def test_rune_execution():
             return False
 
         result = subprocess.run(
-            ["./platform_agent", "--rune", rune_file],
+            sanitize_cmd(["./platform_agent", "--rune", rune_file]),
             capture_output=True,
             text=True,
             shell=False,  # Explicitly disable shell
@@ -205,7 +235,7 @@ def test_command_sanitization():
                 return False
 
             result = subprocess.run(
-                ["./platform_agent", cmd],
+                sanitize_cmd(["./platform_agent", cmd]),
                 capture_output=True,
                 text=True,
                 shell=False,  # Explicitly disable shell

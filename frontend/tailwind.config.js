@@ -3,8 +3,8 @@ export default {
   content: [
     './index.html',
     './**/*.{vue,js,ts,jsx,tsx}',
-    './src/**/*.vue', 
-    "./index.html"
+    './src/**/*.vue',
+    './index.html',
   ],
   theme: {
     extend: {
@@ -57,25 +57,25 @@ export default {
           800: '#333333',
           900: '#1a1a1a',
           950: '#0a0a0a',
-        }
+        },
       },
       fontFamily: {
-        'orbitron': ['Orbitron', 'Courier New', 'monospace'],
-        'sans': ['Orbitron', 'system-ui', 'sans-serif'],
+        orbitron: ['Orbitron', 'Courier New', 'monospace'],
+        sans: ['Orbitron', 'system-ui', 'sans-serif'],
       },
       animation: {
-        'glow': 'glow 2s ease-in-out infinite',
+        glow: 'glow 2s ease-in-out infinite',
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'shimmer': 'shimmer 2s linear infinite',
-        'float': 'float 6s ease-in-out infinite',
+        shimmer: 'shimmer 2s linear infinite',
+        float: 'float 6s ease-in-out infinite',
         'spin-slow': 'spin 3s linear infinite',
       },
       keyframes: {
         glow: {
-          '0%, 100%': { 
+          '0%, 100%': {
             boxShadow: '0 0 20px rgba(0, 212, 255, 0.3)',
           },
-          '50%': { 
+          '50%': {
             boxShadow: '0 0 40px rgba(0, 212, 255, 0.6)',
           },
         },
@@ -92,26 +92,28 @@ export default {
         xs: '2px',
       },
       boxShadow: {
-        'holo': '0 0 20px rgba(0, 212, 255, 0.3)',
+        holo: '0 0 20px rgba(0, 212, 255, 0.3)',
         'holo-lg': '0 0 40px rgba(0, 212, 255, 0.5)',
         'holo-xl': '0 0 60px rgba(0, 212, 255, 0.7)',
-        'neon': '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor',
+        neon: '0 0 5px currentColor, 0 0 10px currentColor, 0 0 15px currentColor',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
-        'holo-gradient': 'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'holo-gradient':
+          'linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%)',
         'cyber-gradient': 'linear-gradient(45deg, #00d4ff, #ff00ff)',
       },
       borderColor: {
-        'holo': 'rgba(0, 212, 255, 0.3)',
-        'neon': 'currentColor',
+        holo: 'rgba(0, 212, 255, 0.3)',
+        neon: 'currentColor',
       },
     },
   },
   plugins: [
     // Custom plugin for holographic effects
-    function({ addUtilities }) {
+    function ({ addUtilities }) {
       const newUtilities = {
         '.text-glow': {
           'text-shadow': '0 0 10px currentColor',
@@ -123,11 +125,11 @@ export default {
           'backdrop-filter': 'blur(10px)',
         },
         '.bg-holo': {
-          'background': 'rgba(0, 0, 0, 0.6)',
+          background: 'rgba(0, 0, 0, 0.6)',
           'backdrop-filter': 'blur(10px)',
         },
-      }
-      addUtilities(newUtilities)
-    }
+      };
+      addUtilities(newUtilities);
+    },
   ],
-} 
+};

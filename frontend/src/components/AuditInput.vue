@@ -10,29 +10,21 @@
           class="repo-input"
           :disabled="loading"
           @keyup.enter="submitAudit"
-        >
+        />
         <button
           class="submit-btn"
           :disabled="loading || !repositoryUrl.trim()"
           @click="submitAudit"
         >
-          <span
-            v-if="loading"
-            class="spinner"
-          />
-          <span
-            v-else
-            class="btn-icon"
-          >🔍</span>
+          <span v-if="loading" class="spinner" />
+          <span v-else class="btn-icon">🔍</span>
           {{ loading ? 'Scanning...' : 'Run Audit' }}
         </button>
       </div>
     </div>
-    
+
     <div class="options-section">
-      <h3 class="options-title">
-        Audit Options
-      </h3>
+      <h3 class="options-title">Audit Options</h3>
       <div class="options-grid">
         <div class="option-group">
           <label class="option-label">
@@ -40,49 +32,43 @@
               v-model="options.securityScan"
               type="checkbox"
               :disabled="loading"
-            >
+            />
             Security Scan
           </label>
-          <p class="option-description">
-            Vulnerability and security analysis
-          </p>
+          <p class="option-description">Vulnerability and security analysis</p>
         </div>
-        
+
         <div class="option-group">
           <label class="option-label">
             <input
               v-model="options.codeQuality"
               type="checkbox"
               :disabled="loading"
-            >
+            />
             Code Quality
           </label>
-          <p class="option-description">
-            Linting and code style analysis
-          </p>
+          <p class="option-description">Linting and code style analysis</p>
         </div>
-        
+
         <div class="option-group">
           <label class="option-label">
             <input
               v-model="options.dependencyScan"
               type="checkbox"
               :disabled="loading"
-            >
+            />
             Dependency Analysis
           </label>
-          <p class="option-description">
-            Outdated and vulnerable dependencies
-          </p>
+          <p class="option-description">Outdated and vulnerable dependencies</p>
         </div>
-        
+
         <div class="option-group">
           <label class="option-label">
             <input
               v-model="options.secretScan"
               type="checkbox"
               :disabled="loading"
-            >
+            />
             Secret Detection
           </label>
           <p class="option-description">
@@ -91,12 +77,10 @@
         </div>
       </div>
     </div>
-    
+
     <!-- Quick Templates -->
     <div class="templates-section">
-      <h3 class="templates-title">
-        Quick Templates
-      </h3>
+      <h3 class="templates-title">Quick Templates</h3>
       <div class="template-buttons">
         <button
           class="template-btn"
@@ -134,11 +118,12 @@
 <script>
 export default {
   name: 'AuditInput',
+  emits: ['submit'],
   props: {
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
   data() {
     return {
@@ -147,31 +132,32 @@ export default {
         securityScan: true,
         codeQuality: true,
         dependencyScan: true,
-        secretScan: true
-      }
-    }
+        secretScan: true,
+      },
+    };
   },
   methods: {
     submitAudit() {
-      if (!this.repositoryUrl.trim()) return
-      
+      if (!this.repositoryUrl.trim()) return;
+
       this.$emit('submit', {
         repositoryUrl: this.repositoryUrl.trim(),
-        options: { ...this.options }
-      })
+        options: { ...this.options },
+      });
     },
     loadTemplate(type) {
       const templates = {
         linkops: 'https://github.com/shadow-link-industries/linkops-platform',
-        frontend: '/home/jimjrxieb/shadow-link-industries/LinkOps-MLOps/frontend',
+        frontend:
+          '/home/jimjrxieb/shadow-link-industries/LinkOps-MLOps/frontend',
         backend: '/home/jimjrxieb/shadow-link-industries/LinkOps-MLOps/backend',
-        custom: ''
-      }
-      
-      this.repositoryUrl = templates[type] || ''
-    }
-  }
-}
+        custom: '',
+      };
+
+      this.repositoryUrl = templates[type] || '';
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -261,8 +247,12 @@ export default {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .btn-icon {
@@ -308,7 +298,7 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-.option-label input[type="checkbox"] {
+.option-label input[type='checkbox'] {
   width: 18px;
   height: 18px;
   accent-color: #00d4ff;
@@ -365,24 +355,24 @@ export default {
   .audit-input {
     padding: 1.5rem;
   }
-  
+
   .input-group {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .submit-btn {
     width: 100%;
   }
-  
+
   .options-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .template-buttons {
     flex-direction: column;
   }
-  
+
   .template-btn {
     width: 100%;
   }

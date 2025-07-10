@@ -10,13 +10,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_logic
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_logic
+        tag: latest
     - service:
-          port: 8001
+        port: 8001
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: whis-kubeflow
     namespace: linkops
@@ -24,13 +24,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_kubeflow
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_kubeflow
+        tag: latest
     - service:
-          port: 8005
+        port: 8005
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: whis-data-input
     namespace: linkops
@@ -38,13 +38,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_data_input
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_data_input
+        tag: latest
     - service:
-          port: 8004
+        port: 8004
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: whis-sanitize
     namespace: linkops
@@ -52,13 +52,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_sanitize
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_sanitize
+        tag: latest
     - service:
-          port: 8003
+        port: 8003
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: whis-smithing
     namespace: linkops
@@ -66,13 +66,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_smithing
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_smithing
+        tag: latest
     - service:
-          port: 8005
+        port: 8005
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: whis-enhance
     namespace: linkops
@@ -80,13 +80,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_enhance
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_enhance
+        tag: latest
     - service:
-          port: 8006
+        port: 8006
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: whis-webscraper
     namespace: linkops
@@ -94,13 +94,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/whis_webscraper
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/whis_webscraper
+        tag: latest
     - service:
-          port: 8009
+        port: 8009
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   # Platform Engineering Services
   - name: igris-logic
@@ -109,16 +109,16 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/igris_logic
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/igris_logic
+        tag: latest
     - service:
-          port: 8011
+        port: 8011
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
-          AWS_ACCESS_KEY_ID: "dummy"
-          AWS_SECRET_ACCESS_KEY: "dummy"
-          AWS_DEFAULT_REGION: "us-east-1"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        AWS_ACCESS_KEY_ID: "dummy"
+        AWS_SECRET_ACCESS_KEY: "dummy"
+        AWS_DEFAULT_REGION: "us-east-1"
 
   - name: katie-logic
     namespace: linkops
@@ -126,13 +126,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/katie_logic
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/katie_logic
+        tag: latest
     - service:
-          port: 8012
+        port: 8012
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   # AI Assistant Services
   - name: james-logic
@@ -141,14 +141,14 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/james_logic
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/james_logic
+        tag: latest
     - service:
-          port: 8002
+        port: 8002
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
-          OPENAI_API_KEY: "sk-dummy"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        OPENAI_API_KEY: "sk-dummy"
 
   # Deployment & Evaluation Services
   - name: ficknury-deploy
@@ -157,13 +157,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/ficknury_deploy
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/ficknury_deploy
+        tag: latest
     - service:
-          port: 8007
+        port: 8007
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: ficknury-evaluator
     namespace: linkops
@@ -171,13 +171,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/ficknury_evaluator
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/ficknury_evaluator
+        tag: latest
     - service:
-          port: 8008
+        port: 8008
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   # Audit & Security Services
   - name: audit-logic
@@ -186,13 +186,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/audit_logic
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/audit_logic
+        tag: latest
     - service:
-          port: 8014
+        port: 8014
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: audit-assess
     namespace: linkops
@@ -200,13 +200,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/audit_assess
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/audit_assess
+        tag: latest
     - service:
-          port: 8015
+        port: 8015
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: audit-migrate
     namespace: linkops
@@ -214,13 +214,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/audit_migrate
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/audit_migrate
+        tag: latest
     - service:
-          port: 8016
+        port: 8016
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: auditguard-logic
     namespace: linkops
@@ -228,13 +228,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/auditguard_logic
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/auditguard_logic
+        tag: latest
     - service:
-          port: 8017
+        port: 8017
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: frontend
     namespace: linkops
@@ -242,13 +242,13 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/frontend
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/frontend
+        tag: latest
     - service:
-          port: 8018
+        port: 8018
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
 
   - name: backend
     namespace: linkops
@@ -256,10 +256,10 @@ releases:
     values:
     - replicaCount: 1
     - image:
-          repository: ghcr.io/shadow-link-industries/backend
-          tag: latest
+        repository: ghcr.io/shadow-link-industries/backend
+        tag: latest
     - service:
-          port: 8019
+        port: 8019
     - env:
-          DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
-          KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"
+        DATABASE_URL: "postgresql://linkops:${POSTGRES_PASSWORD:-linkops_password}@db:5432/linkops"
+        KAFKA_BOOTSTRAP_SERVERS: "kafka:29092"

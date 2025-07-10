@@ -1,9 +1,7 @@
 <template>
   <div class="search-container">
     <div class="search-box">
-      <div class="search-icon">
-        🔍
-      </div>
+      <div class="search-icon">🔍</div>
       <input
         v-model="searchQuery"
         type="text"
@@ -11,11 +9,8 @@
         class="search-input"
         @input="handleSearch"
         @keyup.enter="performSearch"
-      >
-      <button
-        class="search-btn"
-        @click="performSearch"
-      >
+      />
+      <button class="search-btn" @click="performSearch">
         <span class="btn-icon">⚡</span>
         Search
       </button>
@@ -25,79 +20,39 @@
     <div class="search-filters">
       <div class="filter-group">
         <label class="filter-label">Type:</label>
-        <select
-          v-model="filters.type"
-          class="filter-select"
-        >
-          <option value="">
-            All Types
-          </option>
-          <option value="orb">
-            Orbs
-          </option>
-          <option value="task">
-            Tasks
-          </option>
-          <option value="repository">
-            Repositories
-          </option>
+        <select v-model="filters.type" class="filter-select">
+          <option value="">All Types</option>
+          <option value="orb">Orbs</option>
+          <option value="task">Tasks</option>
+          <option value="repository">Repositories</option>
         </select>
       </div>
 
       <div class="filter-group">
         <label class="filter-label">Status:</label>
-        <select
-          v-model="filters.status"
-          class="filter-select"
-        >
-          <option value="">
-            All Status
-          </option>
-          <option value="active">
-            Active
-          </option>
-          <option value="pending">
-            Pending
-          </option>
-          <option value="completed">
-            Completed
-          </option>
+        <select v-model="filters.status" class="filter-select">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="pending">Pending</option>
+          <option value="completed">Completed</option>
         </select>
       </div>
 
       <div class="filter-group">
         <label class="filter-label">Priority:</label>
-        <select
-          v-model="filters.priority"
-          class="filter-select"
-        >
-          <option value="">
-            All Priorities
-          </option>
-          <option value="critical">
-            Critical
-          </option>
-          <option value="high">
-            High
-          </option>
-          <option value="medium">
-            Medium
-          </option>
-          <option value="low">
-            Low
-          </option>
+        <select v-model="filters.priority" class="filter-select">
+          <option value="">All Priorities</option>
+          <option value="critical">Critical</option>
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
         </select>
       </div>
     </div>
 
     <!-- Search Results -->
-    <div
-      v-if="searchResults.length > 0"
-      class="search-results"
-    >
-      <h3 class="results-title">
-        Search Results ({{ searchResults.length }})
-      </h3>
+    <div v-if="searchResults.length > 0" class="search-results">
+      <h3 class="results-title">Search Results ({{ searchResults.length }})</h3>
       <div class="results-list">
         <div
           v-for="result in searchResults"
@@ -117,10 +72,9 @@
             </p>
             <div class="result-meta">
               <span class="result-type">{{ result.type }}</span>
-              <span
-                class="result-status"
-                :class="result.status"
-              >{{ result.status }}</span>
+              <span class="result-status" :class="result.status">{{
+                result.status
+              }}</span>
             </div>
           </div>
         </div>
@@ -128,13 +82,8 @@
     </div>
 
     <!-- No Results -->
-    <div
-      v-else-if="hasSearched && searchQuery"
-      class="no-results"
-    >
-      <div class="no-results-icon">
-        🔍
-      </div>
+    <div v-else-if="hasSearched && searchQuery" class="no-results">
+      <div class="no-results-icon">🔍</div>
       <h3>No results found</h3>
       <p>Try adjusting your search terms or filters</p>
     </div>
@@ -144,11 +93,12 @@
 <script>
 export default {
   name: 'FicknurySearch',
+  emits: ['search', 'select'],
   props: {
     value: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
   data() {
     return {
@@ -158,21 +108,21 @@ export default {
       filters: {
         type: '',
         status: '',
-        priority: ''
-      }
-    }
+        priority: '',
+      },
+    };
   },
   methods: {
     onInput(event) {
-      this.searchQuery = event.target.value
-      this.$emit('search', this.searchQuery)
+      this.searchQuery = event.target.value;
+      this.$emit('search', this.searchQuery);
     },
     clearSearch() {
-      this.searchQuery = ''
-      this.$emit('search', '')
+      this.searchQuery = '';
+      this.$emit('search', '');
     },
     performSearch() {
-      this.hasSearched = true
+      this.hasSearched = true;
       // Simulate search results
       this.searchResults = [
         {
@@ -181,7 +131,7 @@ export default {
           description: 'Optimize ML data processing pipeline',
           type: 'orb',
           status: 'active',
-          icon: '⚡'
+          icon: '⚡',
         },
         {
           id: 2,
@@ -189,18 +139,18 @@ export default {
           description: 'Comprehensive security scan',
           type: 'task',
           status: 'pending',
-          icon: '🔍'
-        }
-      ]
+          icon: '🔍',
+        },
+      ];
     },
     selectResult(result) {
-      this.$emit('select', result)
+      this.$emit('select', result);
     },
     handleSearch() {
-      this.$emit('search', this.searchQuery)
-    }
-  }
-}
+      this.$emit('search', this.searchQuery);
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -428,16 +378,16 @@ export default {
     flex-direction: column;
     gap: 0.75rem;
   }
-  
+
   .search-filters {
     flex-direction: column;
   }
-  
+
   .result-item {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .result-meta {
     justify-content: center;
   }

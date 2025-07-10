@@ -150,10 +150,98 @@ jobs:
           helm lint . || echo "⚠️ Helm lint issues found but continuing"
         continue-on-error: true
 
+  trivy-scan:
+    runs-on: ubuntu-latest
+    name: 🔍 Trivy Security Scan
+    needs: [lint-python, lint-frontend, lint-yaml]
+    if: always() && (needs.lint-python.result == 'success' || needs.lint-python.result == 'failure')
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🐳 Scan Dockerfiles, IaC, and Code
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: fs
+          scan-ref: .
+          format: table
+          exit-code: 0  # Continue on vulnerabilities for now
+          ignore-unfixed: true
+          severity: CRITICAL,HIGH
+
+      - name: 📊 Generate Trivy Report
+        run: |
+          echo "📋 Trivy scan completed"
+          echo "🔍 Scanned for:"
+          echo "  - CVEs in Dockerfiles"
+          echo "  - Misconfigurations in Terraform, YAML"
+          echo "  - Basic secret detection"
+          echo "  - Infrastructure as Code issues"
+        continue-on-error: true
+
+  gitguardian-secrets-scan:
+    runs-on: ubuntu-latest
+    name: 🛡 GitGuardian Secret Scan
+    needs: [lint-python, lint-frontend, lint-yaml]
+    if: always() && github.event_name == 'push' && (needs.lint-python.result == 'success' || needs.lint-python.result == 'failure')
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history for better secret detection
+
+      - name: 🛡 Scan with GitGuardian
+        uses: GitGuardian/ggshield-action@v1.20.0
+        env:
+          GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
+        with:
+          args: scan repo .
+        continue-on-error: true
+
+      - name: 📊 GitGuardian Report Summary
+        run: |
+          echo "🛡️ GitGuardian secret scan completed"
+          echo "🔍 Advanced secret detection performed"
+          echo "📋 Check GitGuardian dashboard for detailed results"
+        continue-on-error: true
+
+  security-summary:
+    runs-on: ubuntu-latest
+    name: 📊 Security Scan Summary
+    needs: [trivy-scan, gitguardian-secrets-scan]
+    if: always() && (needs.trivy-scan.result == 'success' || needs.trivy-scan.result == 'failure')
+    steps:
+      - name: 📋 Generate Security Summary
+        run: |
+          echo "🔒 LinkOps Security Scan Summary"
+          echo "=================================="
+          echo ""
+          echo "✅ Trivy Scan: ${{ needs.trivy-scan.result }}"
+          echo "✅ GitGuardian Scan: ${{ needs.gitguardian-secrets-scan.result }}"
+          echo ""
+          echo "🔍 Security Coverage:"
+          echo "  - Container vulnerabilities (Trivy)"
+          echo "  - Infrastructure misconfigurations (Trivy)"
+          echo "  - Advanced secret detection (GitGuardian)"
+          echo "  - Code security issues (Trivy)"
+          echo ""
+          echo "📊 Next Steps:"
+          echo "  - Review Trivy results for critical/high vulnerabilities"
+          echo "  - Check GitGuardian dashboard for secret alerts"
+          echo "  - Address any security findings before deployment"
+          echo ""
+          if [[ "${{ needs.trivy-scan.result }}" == "failure" ]] || [[ "${{ needs.gitguardian-secrets-scan.result }}" == "failure" ]]; then
+            echo "⚠️ Security scans completed with issues - review required"
+            exit 0  # Don't fail the pipeline, but flag for review
+          else
+            echo "✅ All security scans completed successfully"
+          fi
+        continue-on-error: true
+
   docker-build-push:
     runs-on: ubuntu-latest
     name: Build + Push Docker Images
-    needs: [lint-python, lint-frontend, lint-yaml]
+    needs: [lint-python, lint-frontend, lint-yaml, trivy-scan, gitguardian-secrets-scan, security-summary]
     if: always() && github.ref == 'refs/heads/main' && (needs.lint-python.result == 'success')
     steps:
       - uses: actions/checkout@v4

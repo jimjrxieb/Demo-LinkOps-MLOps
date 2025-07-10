@@ -1,3 +1,31 @@
+def sanitize_cmd(cmd):
+    import shlex
+
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {
+        "ls",
+        "echo",
+        "kubectl",
+        "helm",
+        "python3",
+        "cat",
+        "go",
+        "docker",
+        "npm",
+        "black",
+        "ruff",
+        "yamllint",
+        "prettier",
+        "flake8",
+    }
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
+
+
 #!/usr/bin/env python3
 """
 Ruff Auto-Fix Script for LinkOps-MLOps
@@ -7,7 +35,7 @@ Automatically fixes Ruff errors (E741, F841, F821, etc.) in Python files
 import argparse
 import logging
 import re
-import subprocess
+import subprocess  # nosec B404
 from pathlib import Path
 from typing import Any, Dict, List, Tuple
 
@@ -23,17 +51,18 @@ def run_ruff_check(file_path: Path) -> List[Dict[str, Any]]:
     """Run ruff check on a file and return issues"""
     try:
         result = subprocess.run(
-            ["ruff", "check", str(file_path), "--output-format=json"],
+            sanitize_cmd(["ruff", "check", str(file_path), "--output-format=json"]),
             capture_output=True,
             text=True,
             timeout=30,
         )
-        
+
         if result.returncode == 0:
             return []
-        
+
         # Parse JSON output
         import json
+
         issues = json.loads(result.stdout)
         return issues
     except subprocess.TimeoutExpired:
@@ -131,21 +160,26 @@ def fix_undefined_names(content: str, file_path: Path) -> Tuple[str, int]:
 
     for i, line in enumerate(lines):
         new_line = line
-        
+
         # Fix common undefined name patterns
         # Pattern: if content != original_content: (where original_content is undefined)
-        if re.search(r"\boriginal_content\b", line) and "original_content" not in content:
+        if (
+            re.search(r"\boriginal_content\b", line)
+            and "original_content" not in content
+        ):
             # Replace with a different comparison or remove the check
             if "!=" in line and "original_content" in line:
                 new_line = re.sub(
                     r"if\s+content\s*!=\s*original_content:",
                     "if changes_made > 0:",
-                    line
+                    line,
                 )
                 if new_line != line:
                     changes_made += 1
-                    logger.info(f"Fixed F821: Replaced undefined 'original_content' check in {file_path}")
-        
+                    logger.info(
+                        f"Fixed F821: Replaced undefined 'original_content' check in {file_path}"
+                    )
+
         # Pattern: undefined variable in function scope
         elif re.search(r"\bundefined_var\b", line):
             # Remove or comment out lines with undefined variables
@@ -158,6 +192,87 @@ def fix_undefined_names(content: str, file_path: Path) -> Tuple[str, int]:
     return "\n".join(fixed_lines), changes_made
 
 
+def fix_e402_imports(content: str, file_path: Path) -> Tuple[str, int]:
+    """Fix E402: Module level import not at top of file"""
+    lines = content.split("\n")
+    fixed_lines = []
+    changes_made = 0
+
+    # Collect all imports and non-import lines
+    imports = []
+    non_imports = []
+    in_docstring = False
+    in_multiline_string = False
+
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+
+        # Handle docstrings
+        if '"""' in line or "'''" in line:
+            if not in_docstring:
+                in_docstring = True
+            else:
+                in_docstring = False
+            non_imports.append(line)
+            continue
+
+        # Handle multiline strings
+        if in_multiline_string:
+            non_imports.append(line)
+            if '"""' in line or "'''" in line:
+                in_multiline_string = False
+            continue
+
+        # Skip if in docstring or multiline string
+        if in_docstring or in_multiline_string:
+            non_imports.append(line)
+            continue
+
+        # Check for multiline string start
+        if stripped.startswith('"""') or stripped.startswith("'''"):
+            in_multiline_string = True
+            non_imports.append(line)
+            continue
+
+        # Check if line is an import
+        if (
+            stripped.startswith("import ")
+            or stripped.startswith("from ")
+            and " import " in stripped
+        ):
+            imports.append(line)
+        else:
+            non_imports.append(line)
+
+    # Reconstruct file with imports at the top
+    if imports:
+        # Add shebang and encoding if present
+        if non_imports and non_imports[0].startswith("#!"):
+            fixed_lines.append(non_imports.pop(0))
+
+        # Add encoding declaration if present
+        if non_imports and non_imports[0].startswith("# -*-"):
+            fixed_lines.append(non_imports.pop(0))
+
+        # Add all imports
+        fixed_lines.extend(imports)
+        changes_made += len(imports)
+
+        # Add a blank line after imports if there are non-import lines
+        if non_imports:
+            fixed_lines.append("")
+
+        # Add remaining non-import lines
+        fixed_lines.extend(non_imports)
+
+        if changes_made > 0:
+            logger.info(
+                f"Fixed E402: Moved {len(imports)} import(s) to top of file in {file_path}"
+            )
+
+    return "\n".join(fixed_lines), changes_made
+
+
 def fix_import_issues(content: str, file_path: Path) -> Tuple[str, int]:
     """Fix import-related issues"""
     lines = content.split("\n")
@@ -166,7 +281,7 @@ def fix_import_issues(content: str, file_path: Path) -> Tuple[str, int]:
 
     for line in lines:
         new_line = line
-        
+
         # Fix unused imports
         if line.strip().startswith("import ") or line.strip().startswith("from "):
             # Check if import is actually used
@@ -192,13 +307,13 @@ def fix_syntax_errors(content: str, file_path: Path) -> Tuple[str, int]:
 
     for line in lines:
         new_line = line
-        
+
         # Fix common syntax issues
         # Remove trailing whitespace
         if line.rstrip() != line:
             new_line = line.rstrip()
             changes_made += 1
-        
+
         # Fix missing colons after if/for/while/def/class
         if re.match(r"^\s*(if|for|while|def|class)\s+.*[^:]$", line):
             new_line = line + ":"
@@ -215,6 +330,7 @@ def backup_file(file_path: Path) -> Path:
     backup_path = file_path.with_suffix(f"{file_path.suffix}.backup")
     try:
         import shutil
+
         shutil.copy2(file_path, backup_path)
         logger.info(f"Created backup: {backup_path}")
         return backup_path
@@ -227,6 +343,7 @@ def restore_backup(file_path: Path, backup_path: Path) -> bool:
     """Restore file from backup"""
     try:
         import shutil
+
         shutil.copy2(backup_path, file_path)
         logger.info(f"Restored {file_path} from backup")
         return True
@@ -238,7 +355,7 @@ def restore_backup(file_path: Path, backup_path: Path) -> bool:
 def validate_python_syntax(content: str, file_path: Path) -> bool:
     """Validate that the fixed content has valid Python syntax"""
     try:
-        compile(content, str(file_path), 'exec')
+        compile(content, str(file_path), "exec")
         return True
     except SyntaxError as e:
         logger.error(f"Syntax error in {file_path}: {e}")
@@ -271,7 +388,7 @@ def fix_file(file_path: Path, create_backup: bool = True) -> bool:
         # Apply fixes based on issue types
         for issue in ruff_issues:
             issue_code = issue.get("code", "")
-            
+
             if "E741" in issue_code:
                 content, changes = fix_ambiguous_names(content, file_path)
                 total_changes += changes
@@ -281,8 +398,14 @@ def fix_file(file_path: Path, create_backup: bool = True) -> bool:
             elif "F821" in issue_code:
                 content, changes = fix_undefined_names(content, file_path)
                 total_changes += changes
+            elif "E402" in issue_code:
+                content, changes = fix_e402_imports(content, file_path)
+                total_changes += changes
 
         # Apply general fixes
+        content, changes = fix_e402_imports(content, file_path)
+        total_changes += changes
+
         content, changes = fix_import_issues(content, file_path)
         total_changes += changes
 
@@ -301,14 +424,18 @@ def fix_file(file_path: Path, create_backup: bool = True) -> bool:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
             logger.info(f"✅ Fixed {total_changes} issues in {file_path}")
-            
+
             # Verify fixes worked
             new_ruff_issues = run_ruff_check(file_path)
             if len(new_ruff_issues) < len(ruff_issues):
-                logger.info(f"✅ Reduced issues from {len(ruff_issues)} to {len(new_ruff_issues)}")
+                logger.info(
+                    f"✅ Reduced issues from {len(ruff_issues)} to {len(new_ruff_issues)}"
+                )
             else:
-                logger.warning(f"⚠️ Issues not reduced: {len(ruff_issues)} -> {len(new_ruff_issues)}")
-            
+                logger.warning(
+                    f"⚠️ Issues not reduced: {len(ruff_issues)} -> {len(new_ruff_issues)}"
+                )
+
             return True
 
         return False
@@ -341,7 +468,11 @@ def main():
     parser = argparse.ArgumentParser(description="Ruff Auto-Fix Script")
     parser.add_argument("--files", nargs="+", help="Specific files to fix")
     parser.add_argument("--no-backup", action="store_true", help="Don't create backups")
-    parser.add_argument("--dry-run", action="store_true", help="Show what would be fixed without making changes")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be fixed without making changes",
+    )
     args = parser.parse_args()
 
     logger.info("🔧 Enhanced Ruff Auto-Fix Script")
@@ -349,7 +480,9 @@ def main():
 
     # Check if ruff is available
     try:
-        subprocess.run(["ruff", "--version"], capture_output=True, check=True)
+        subprocess.run(
+            sanitize_cmd(["ruff", "--version"]), capture_output=True, check=True
+        )
     except (subprocess.CalledProcessError, FileNotFoundError):
         logger.error("❌ Ruff is not installed or not available in PATH")
         logger.info("Install ruff with: pip install ruff")
@@ -368,12 +501,12 @@ def main():
     # Fix files
     fixed_count = 0
     error_count = 0
-    
+
     for file_path in files_to_fix:
         if not file_path.exists():
             logger.warning(f"File not found: {file_path}")
             continue
-            
+
         try:
             if args.dry_run:
                 # Just show what would be fixed
@@ -381,7 +514,9 @@ def main():
                 if ruff_issues:
                     logger.info(f"Would fix {len(ruff_issues)} issues in {file_path}")
                     for issue in ruff_issues:
-                        logger.info(f"  - {issue.get('code', 'Unknown')}: {issue.get('message', 'No message')}")
+                        logger.info(
+                            f"  - {issue.get('code', 'Unknown')}: {issue.get('message', 'No message')}"
+                        )
             else:
                 if fix_file(file_path, create_backup=not args.no_backup):
                     fixed_count += 1

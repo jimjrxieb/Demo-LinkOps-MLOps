@@ -1,32 +1,31 @@
 <template>
   ;
-  <div
-    class="orb-card"
-    @click="$emit('click', orb)"
-  >
+  <div class="orb-card" @click="$emit('click', orb)">
     ;
     <div class="orb-header">
       ;
       <div class="orb-icon">
         {{ orb.icon || '🔮' }}
-      </div>;
-      <div
-        class="orb-priority"
-        :class="orb.priority"
-      >
+      </div>
+      ;
+      <div class="orb-priority" :class="orb.priority">
         {{ orb.priority }}
-      </div>;
-    </div>;
-    
+      </div>
+      ;
+    </div>
+    ;
+
     <div class="orb-content">
       ;
       <h3 class="orb-title">
         {{ orb.title }}
-      </h3>;
+      </h3>
+      ;
       <p class="orb-description">
         {{ orb.description }}
-      </p>;
-      
+      </p>
+      ;
+
       <div class="orb-metrics">
         ;
         <div class="metric">
@@ -34,60 +33,62 @@
           <span class="metric-label">Score</span>;
           <div class="score-bar">
             ;
-            <div
-              class="score-fill"
-              :style="{ width: orb.score + '%' }"
-            />;
-          </div>;
-          <span class="metric-value">{{ orb.score }}/100</span>;
-        </div>;
-      </div>;
-    </div>;
-    
+            <div class="score-fill" :style="{ width: orb.score + '%' }" />
+            ;
+          </div>
+          ; <span class="metric-value">{{ orb.score }}/100</span>;
+        </div>
+        ;
+      </div>
+      ;
+    </div>
+    ;
+
     <div class="orb-footer">
       ;
-      <span
-        class="orb-status"
-        :class="orb.status"
-      >{{ orb.status }}</span>;
+      <span class="orb-status" :class="orb.status">{{ orb.status }}</span
+      >;
       <div class="orb-actions">
         ;
-        <button
-          class="action-btn"
-          @click.stop="viewDetails"
-        >
+        <button class="action-btn" @click.stop="viewDetails">
           ;
-          <span class="btn-icon">👁️</span>;
-        </button>;
-        <button
-          class="action-btn"
-          @click.stop="editOrb"
-        >
+          <span class="btn-icon">👁️</span>;</button
+        >;
+        <button class="action-btn" @click.stop="editOrb">
           ;
-          <span class="btn-icon">✏️</span>;
-        </button>;
-      </div>;
-    </div>;
-  </div>;
-</template>;
+          <span class="btn-icon">✏️</span>;</button
+        >;
+      </div>
+      ;
+    </div>
+    ;
+  </div>
+  ;
+</template>
+;
 <script>
 export default {
   name: 'OrbCard',
+  emits: ['click', 'view-details', 'edit-orb'],
   props: {
     orb: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
   computed: {
     statusClass() {
       switch (this.orb.status) {
-        case 'active': return 'orb-active'
-        case 'pending': return 'orb-pending'
-        case 'completed': return 'orb-completed'
-        default: return ''
+        case 'active':
+          return 'orb-active';
+        case 'pending':
+          return 'orb-pending';
+        case 'completed':
+          return 'orb-completed';
+        default:
+          return '';
       }
-    }
+    },
   },
   methods: {
     viewDetails() {
@@ -95,11 +96,12 @@ export default {
     },
     editOrb() {
       this.$emit('edit-orb', this.orb);
-    }
-  }
-}
-</script>;
-<style scoped>;
+    },
+  },
+};
+</script>
+;
+<style scoped>
 .orb-card {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid #00d4ff;
@@ -236,13 +238,22 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   animation: shimmer 2s infinite;
 }
 
 @keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
 }
 
 .metric-value {
@@ -326,21 +337,22 @@ export default {
   .orb-card {
     padding: 1rem;
   }
-  
+
   .orb-title {
     font-size: 1.1rem;
   }
-  
+
   .orb-description {
     font-size: 0.8rem;
   }
-  
+
   .orb-actions {
     gap: 0.25rem;
   }
-  
+
   .action-btn {
     padding: 0.4rem;
   }
 }
-</style>;
+</style>
+;

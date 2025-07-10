@@ -30,11 +30,5 @@
     "src/**/*.vue",
     "vite.config.js"
   ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "coverage",
-    "**/*.config.js",
-    "test-*.js"
-  ]
-} 
+  "exclude": ["node_modules", "dist", "coverage", "**/*.config.js", "test-*.js"]
+}

@@ -1,26 +1,19 @@
 <template>
-  ;
-  ;
-  ;
-  ;
-  ;
-  ;
+  ; ; ; ; ; ;
   <div>
-    ;
-    ;
-    ;
-    ;
-    ;
-    ;
+    ; ; ; ; ; ;
     <DashboardView />;
-  </div>;
-</template>;
+  </div>
+  ;
+</template>
+;
 
-<script setup>;
+<script setup>
 import DashboardView from './views/DashboardView.vue';
-</script>;
+</script>
+;
 
-<style>;
+<style>
 @import './assets/holo-theme.css';
 
 .holo-app {
@@ -183,27 +176,28 @@ import DashboardView from './views/DashboardView.vue';
     flex-direction: column;
     gap: 1rem;
   }
-  
+
   .nav-links {
     gap: 1rem;
   }
-  
+
   .nav-actions {
     margin-top: 1rem;
   }
-  
+
   .user-info {
     flex-direction: column;
     gap: 0.5rem;
   }
-  
+
   .main-content {
     padding: 1rem;
   }
-  
+
   .footer-content {
     flex-direction: column;
     gap: 0.5rem;
   }
 }
-</style>;
+</style>
+;
