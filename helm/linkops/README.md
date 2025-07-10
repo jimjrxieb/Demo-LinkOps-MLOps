@@ -7,23 +7,27 @@ This Helm chart deploys the complete LinkOps MLOps Platform with all microservic
 The chart deploys the following components:
 
 ### Core Services
+
 - **MLOps Platform** - Main platform service with API endpoints
 - **Frontend** - Vue.js web interface
 - **Audit Assess** - Security and compliance scanning
 - **Whis Services** - Data processing pipeline (data input, sanitize, smithing, enhance, webscraper)
 
 ### Infrastructure
+
 - **PostgreSQL** - Primary database
 - **Redis** - Caching layer
 - **Platform Agent** - Go CLI agent for task execution
 
 ### Monitoring
+
 - **Prometheus** - Metrics collection
 - **Grafana** - Monitoring dashboards
 
 ## 📦 Installation
 
 ### Prerequisites
+
 - Kubernetes cluster (1.20+)
 - Helm 3.0+
 - ArgoCD (for GitOps deployment)
@@ -167,29 +171,36 @@ autoscaling:
 ## 🔒 Security
 
 ### Network Policies
+
 Network policies are enabled by default to restrict inter-service communication.
 
 ### RBAC
+
 Service accounts and roles are created for proper access control.
 
 ### Pod Security
+
 Security contexts are configured for non-root execution.
 
 ## 📈 Monitoring & Observability
 
 ### Metrics Endpoints
+
 - Prometheus: `http://prometheus:9090`
 - Grafana: `http://grafana:3000`
 
 ### Health Checks
+
 All services include liveness and readiness probes.
 
 ### Logging
+
 Structured logging is configured for all services.
 
 ## 🚀 Deployment Strategies
 
 ### Development Environment
+
 ```yaml
 # values-dev.yaml
 global:
@@ -209,6 +220,7 @@ monitoring:
 ```
 
 ### Production Environment
+
 ```yaml
 # values-prod.yaml
 global:
@@ -232,18 +244,21 @@ monitoring:
 ### Common Issues
 
 1. **Pods not starting**
+
    ```bash
    kubectl describe pod <pod-name> -n linkops
    kubectl logs <pod-name> -n linkops
    ```
 
 2. **Services not accessible**
+
    ```bash
    kubectl get svc -n linkops
    kubectl describe svc <service-name> -n linkops
    ```
 
 3. **Ingress issues**
+
    ```bash
    kubectl describe ingress -n linkops
    kubectl get events -n linkops
@@ -274,12 +289,14 @@ kubectl get pvc -n linkops
 ## 📚 API Documentation
 
 Once deployed, API documentation is available at:
+
 - MLOps Platform: `http://mlops-platform:8000/docs`
 - Audit Assess: `http://audit-assess:8003/docs`
 
 ## 🔄 Upgrades
 
 ### Helm Upgrade
+
 ```bash
 helm upgrade linkops ./helm/linkops \
   --namespace linkops \
@@ -287,6 +304,7 @@ helm upgrade linkops ./helm/linkops \
 ```
 
 ### GitOps Upgrade
+
 Simply update the values in your Git repository and ArgoCD will automatically sync the changes.
 
 ## 🗑️ Uninstallation
@@ -302,10 +320,10 @@ kubectl delete namespace linkops
 ## 📋 Requirements
 
 | Dependency | Version |
-|------------|---------|
+| ---------- | ------- |
 | Kubernetes | >= 1.20 |
-| Helm | >= 3.0 |
-| ArgoCD | >= 2.0 |
+| Helm       | >= 3.0  |
+| ArgoCD     | >= 2.0  |
 
 ## 🤝 Contributing
 
@@ -317,4 +335,4 @@ kubectl delete namespace linkops
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the LICENSE file for details.

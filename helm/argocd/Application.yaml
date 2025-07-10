@@ -4,7 +4,7 @@ metadata:
   name: linkops
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
   labels:
     app: linkops
     team: mlops
@@ -73,7 +73,7 @@ metadata:
   name: linkops-dev
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
   labels:
     app: linkops
     team: mlops
@@ -111,7 +111,7 @@ spec:
     automated:
       prune: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
   revisionHistoryLimit: 5
 
 ---
@@ -122,7 +122,7 @@ metadata:
   name: linkops-staging
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
   labels:
     app: linkops
     team: mlops
@@ -154,5 +154,5 @@ spec:
     automated:
       prune: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
   revisionHistoryLimit: 5
