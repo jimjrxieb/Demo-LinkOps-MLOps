@@ -7,7 +7,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.services.audit_assess.replicas }}
   selector:
@@ -96,7 +96,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
@@ -115,7 +115,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 data:
   config.yaml: |
     security:
@@ -151,7 +151,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
   {{- with .Values.services.audit_assess.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -188,7 +188,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -220,7 +220,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 
 ---
 apiVersion: rbac.authorization.k8s.io/v1
@@ -230,7 +230,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 rules:
 - apiGroups: [""]
   resources: ["pods", "services", "configmaps", "secrets"]
@@ -250,7 +250,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 subjects:
 - kind: ServiceAccount
   name: audit-assess-sa
@@ -270,7 +270,7 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: audit-assess
-    {{- include "linkops.labels" . | nindent 4 }}
+{{- include "linkops.labels" . | nindent 4 }}
 spec:
   podSelector:
     matchLabels:

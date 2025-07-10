@@ -31,16 +31,16 @@ spec:
           value: "2"
         - name: autoscaling.enabled
           value: "true"
-  syncPolicy:
+    syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
-    - PrunePropagationPolicy=foreground
-    - PruneLast=true
+      - CreateNamespace=true
+      - PrunePropagationPolicy=foreground
+      - PruneLast=true
     retry:
-    limit: 5
+      limit: 5
       backoff:
         duration: 5s
         factor: 2
@@ -48,22 +48,22 @@ spec:
   revisionHistoryLimit: 10
   # Ignore differences for autoscaling and replica changes
   ignoreDifferences:
-  - group: apps
-    kind: Deployment
-    jsonPointers:
-    - /spec/replicas
-  - group: autoscaling
-    kind: HorizontalPodAutoscaler
-    jsonPointers:
-    - /spec/minReplicas
-    - /spec/maxReplicas
-    - /spec/targetCPUUtilizationPercentage
-    - /spec/targetMemoryUtilizationPercentage
-  - group: ""
-    kind: Service
-    jsonPointers:
-    - /spec/clusterIP
-    - /spec/clusterIPs
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/replicas
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+      jsonPointers:
+        - /spec/minReplicas
+        - /spec/maxReplicas
+        - /spec/targetCPUUtilizationPercentage
+        - /spec/targetMemoryUtilizationPercentage
+    - group: ""
+      kind: Service
+      jsonPointers:
+        - /spec/clusterIP
+        - /spec/clusterIPs
 
 ---
 # Development Environment Application

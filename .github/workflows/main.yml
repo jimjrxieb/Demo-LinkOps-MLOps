@@ -7,8 +7,8 @@ on:
     branches: [main]
 
 env:
-  PYTHON_VERSION: '3.11'
-  NODE_VERSION: '20'
+  PYTHON_VERSION: "3.11"
+  NODE_VERSION: "20"
 
 permissions:
   contents: write # For ArgoCD updates
@@ -67,7 +67,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install Frontend Dependencies
@@ -112,7 +112,7 @@ jobs:
       - name: Check Prettier Formatting (YAML)
         run: |
           echo "🎨 Checking YAML formatting..."
-          prettier --check "helm/**/*.yaml" ".github/**/*.yml" || {
+          prettier --check "helm/argocd/**/*.yaml" "helm/linkops/values.yaml" "helm/linkops/Chart.yaml" ".github/**/*.yml" || {
             echo "❌ YAML formatting issues found"
             exit 1
           }
@@ -165,7 +165,7 @@ jobs:
           scan-type: fs
           scan-ref: .
           format: table
-          exit-code: 0  # Continue on vulnerabilities for now
+          exit-code: 0 # Continue on vulnerabilities for now
           ignore-unfixed: true
           severity: CRITICAL,HIGH
 
@@ -188,7 +188,7 @@ jobs:
       - name: 📥 Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history for better secret detection
+          fetch-depth: 0 # Full history for better secret detection
 
       - name: 🛡 Scan with GitGuardian
         uses: GitGuardian/ggshield-action@v1.20.0
@@ -241,7 +241,15 @@ jobs:
   docker-build-push:
     runs-on: ubuntu-latest
     name: Build + Push Docker Images
-    needs: [lint-python, lint-frontend, lint-yaml, trivy-scan, gitguardian-secrets-scan, security-summary]
+    needs:
+      [
+        lint-python,
+        lint-frontend,
+        lint-yaml,
+        trivy-scan,
+        gitguardian-secrets-scan,
+        security-summary,
+      ]
     if: always() && github.ref == 'refs/heads/main' && (needs.lint-python.result == 'success')
     steps:
       - uses: actions/checkout@v4
@@ -320,7 +328,7 @@ jobs:
     name: Update ArgoCD Pull Config
     needs: [docker-build-push]
     if: always() && github.ref == 'refs/heads/main' &&
-        (needs.docker-build-push.result == 'success' || needs.docker-build-push.result == 'failure')
+      (needs.docker-build-push.result == 'success' || needs.docker-build-push.result == 'failure')
     steps:
       - uses: actions/checkout@v4
         with:

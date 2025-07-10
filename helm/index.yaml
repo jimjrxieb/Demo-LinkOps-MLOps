@@ -1,28 +1,28 @@
 apiVersion: v1
 entries:
   linkops:
-  - apiVersion: v2
-    appVersion: 1.0.0
-    created: "2025-07-08T13:34:30.010245954-04:00"
-    description: LinkOps MLOps Platform - Complete microservice deployment
-    digest: e5cab7b700fd4ca70ad5f69080f0b50aab05ca016d3c05414b0447d572011bfa
-    home: https://github.com/jimjrxieb/shadow-link-industries
-    icon: https://linkops.com/icon.png
-    keywords:
-    - mlops
-    - kubernetes
-    - gitops
-    - automation
-    - ai
-    - machine-learning
-    maintainers:
-    - name: LinkOps Team
-    email: team@linkops.com
-    name: linkops
-    sources:
-    - https://github.com/jimjrxieb/shadow-link-industries
-    type: application
-    urls:
-    - https://jimjrxieb.github.io/LinkOps-MLOps/helm/linkops-1.0.0.tgz
-    version: 1.0.0
+    - apiVersion: v2
+      appVersion: 1.0.0
+      created: "2025-07-08T13:34:30.010245954-04:00"
+      description: LinkOps MLOps Platform - Complete microservice deployment
+      digest: e5cab7b700fd4ca70ad5f69080f0b50aab05ca016d3c05414b0447d572011bfa
+      home: https://github.com/jimjrxieb/shadow-link-industries
+      icon: https://linkops.com/icon.png
+      keywords:
+        - mlops
+        - kubernetes
+        - gitops
+        - automation
+        - ai
+        - machine-learning
+      maintainers:
+        - name: LinkOps Team
+      email: team@linkops.com
+      name: linkops
+      sources:
+        - https://github.com/jimjrxieb/shadow-link-industries
+      type: application
+      urls:
+        - https://jimjrxieb.github.io/LinkOps-MLOps/helm/linkops-1.0.0.tgz
+      version: 1.0.0
 generated: "2025-07-08T13:34:30.004936974-04:00"
