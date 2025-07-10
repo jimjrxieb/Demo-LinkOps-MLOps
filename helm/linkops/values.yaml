@@ -50,17 +50,17 @@ services:
       limits:
         cpu: 1000m
         memory: 1Gi
-    env:
+  env:
       - name: DATABASE_URL
         value: "postgresql://mlops:password@postgres:5432/mlops"
       - name: REDIS_URL
         value: "redis://redis:6379"
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8000
       initialDelaySeconds: 30
       periodSeconds: 10
-    ingress:
+  ingress:
       enabled: true
       host: mlops.linkops.com
       tls: true
@@ -81,13 +81,13 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    env:
+  env:
       - name: API_KEY
         valueFrom:
           secretKeyRef:
             name: whis-secrets
             key: api-key
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8004
       initialDelaySeconds: 15
@@ -106,7 +106,7 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8005
       initialDelaySeconds: 15
@@ -125,7 +125,7 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8006
       initialDelaySeconds: 15
@@ -144,13 +144,13 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    env:
+  env:
       - name: OPENAI_API_KEY
         valueFrom:
           secretKeyRef:
             name: whis-secrets
             key: openai-api-key
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8007
       initialDelaySeconds: 15
@@ -169,7 +169,7 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8008
       initialDelaySeconds: 15
@@ -188,7 +188,7 @@ services:
       limits:
         cpu: 1000m
         memory: 1Gi
-    env:
+  env:
       - name: GITGUARDIAN_API_KEY
         valueFrom:
           secretKeyRef:
@@ -199,12 +199,12 @@ services:
           secretKeyRef:
             name: audit-secrets
             key: snyk-token
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8003
       initialDelaySeconds: 30
       periodSeconds: 10
-    ingress:
+  ingress:
       enabled: true
       host: audit.linkops.com
       tls: true
@@ -224,7 +224,7 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8009
       initialDelaySeconds: 15
@@ -243,7 +243,7 @@ services:
       limits:
         cpu: 500m
         memory: 512Mi
-    env:
+  env:
       - name: VITE_MLOPS_PLATFORM_URL
         value: "http://mlops-platform:8000"
       - name: VITE_AUDIT_ASSESS_URL
@@ -252,12 +252,12 @@ services:
         value: "http://whis-data-input:8004"
       - name: VITE_WHIS_ENHANCE_URL
         value: "http://whis-enhance:8007"
-    healthCheck:
+  healthCheck:
       path: /
       port: 80
       initialDelaySeconds: 15
       periodSeconds: 10
-    ingress:
+  ingress:
       enabled: true
       host: linkops.com
       tls: true
@@ -280,7 +280,7 @@ infrastructure:
       limits:
         cpu: 1000m
         memory: 2Gi
-    env:
+  env:
       - name: POSTGRES_DB
         value: "mlops"
       - name: POSTGRES_USER
@@ -290,7 +290,7 @@ infrastructure:
           secretKeyRef:
             name: postgres-secrets
             key: password
-    persistence:
+  persistence:
       enabled: true
       size: 10Gi
       storageClass: fast-ssd
@@ -308,7 +308,7 @@ infrastructure:
       limits:
         cpu: 500m
         memory: 512Mi
-    persistence:
+  persistence:
       enabled: true
       size: 5Gi
       storageClass: fast-ssd
@@ -326,7 +326,7 @@ infrastructure:
       limits:
         cpu: 500m
         memory: 256Mi
-    healthCheck:
+  healthCheck:
       path: /health
       port: 8080
       initialDelaySeconds: 10
@@ -347,7 +347,7 @@ monitoring:
       limits:
         cpu: 1000m
         memory: 1Gi
-    persistence:
+  persistence:
       enabled: true
       size: 10Gi
       storageClass: fast-ssd
@@ -365,17 +365,17 @@ monitoring:
       limits:
         cpu: 500m
         memory: 512Mi
-    env:
+  env:
       - name: GF_SECURITY_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
             name: grafana-secrets
             key: admin-password
-    persistence:
+  persistence:
       enabled: true
       size: 5Gi
       storageClass: fast-ssd
-    ingress:
+  ingress:
       enabled: true
       host: grafana.linkops.com
       tls: true
