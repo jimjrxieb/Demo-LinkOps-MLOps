@@ -289,7 +289,7 @@ jobs:
             if [[ -f "$dir/Dockerfile" ]]; then
               name=$(basename $dir)
               total_count=$((total_count + 1))
-              image_name="linkops/$name:latest"
+              image_name="linksrobot/$name:latest"
 
               echo "📦 Processing service: $name"
               if docker build -t "$image_name" "$dir" --progress=plain; then

@@ -5,6 +5,7 @@
 global:
   # Global image settings
   imageRegistry: ""
+  imageRepository: "linksrobot"
   imagePullPolicy: IfNotPresent
   imageTag: "latest"
 
