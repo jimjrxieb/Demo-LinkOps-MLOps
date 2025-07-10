@@ -7,8 +7,7 @@ Verifies that all high-priority security fixes have been applied
 import json
 import os
 import re
-from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Dict, Tuple
 
 # Security requirements to verify
 REQUIRED_VERSIONS = {
@@ -158,15 +157,15 @@ def main():
 
             if service_compliant:
                 compliant_services += 1
-                print(f"  🎉 Service is security compliant")
+                print("  🎉 Service is security compliant")
             else:
-                print(f"  ⚠️ Service needs attention")
+                print("  ⚠️ Service needs attention")
 
-    print(f"\n📊 JavaScript Frontend Security Status:")
+    print("\n📊 JavaScript Frontend Security Status:")
     print("-" * 40)
 
     frontend_results = check_package_json("./frontend/package.json")
-    print(f"\n🔍 Frontend")
+    print("\n🔍 Frontend")
 
     frontend_compliant = True
     for package, status in frontend_results.items():
@@ -179,11 +178,11 @@ def main():
             frontend_compliant = False
 
     if frontend_compliant:
-        print(f"  🎉 Frontend is security compliant")
+        print("  🎉 Frontend is security compliant")
     else:
-        print(f"  ⚠️ Frontend needs attention")
+        print("  ⚠️ Frontend needs attention")
 
-    print(f"\n📈 Overall Security Summary:")
+    print("\n📈 Overall Security Summary:")
     print("=" * 60)
     print(f"✅ Python Services Compliant: {compliant_services}/{total_services}")
     print(f"✅ Frontend Compliant: {'Yes' if frontend_compliant else 'No'}")
@@ -191,10 +190,10 @@ def main():
     overall_compliance = (compliant_services == total_services) and frontend_compliant
 
     if overall_compliance:
-        print(f"🎉 ALL SERVICES ARE SECURITY COMPLIANT!")
-        print(f"🛡️ Platform is protected against known vulnerabilities")
+        print("🎉 ALL SERVICES ARE SECURITY COMPLIANT!")
+        print("🛡️ Platform is protected against known vulnerabilities")
     else:
-        print(f"⚠️ Some services still need security updates")
+        print("⚠️ Some services still need security updates")
 
     return 0 if overall_compliance else 1
 

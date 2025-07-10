@@ -23,7 +23,7 @@ def main():
     with open(args.file, "r") as f:
         payload = json.load(f)
     try:
-        resp = requests.post(args.api, json=payload)
+        resp = requests.post(args.api, json=payload, timeout=30)
         print(f"Status: {resp.status_code}")
         print(resp.json())
     except Exception as e:

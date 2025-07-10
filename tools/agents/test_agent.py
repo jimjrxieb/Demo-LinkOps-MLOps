@@ -64,7 +64,7 @@ def test_agent_help():
     log("📖 Testing agent help...", Colors.BLUE)
 
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603
             ["./platform_agent", "--help"], capture_output=True, text=True
         )
 
@@ -89,10 +89,17 @@ def test_simple_command():
     log("⚡ Testing simple command...", Colors.BLUE)
 
     try:
+        # Use shell=False and validate input to prevent command injection
+        cmd = "echo 'Hello from agent'"
+        if any(char in cmd for char in [";", "&", "|", "`", "$", "(", ")", "<", ">"]):
+            log("❌ Invalid characters in command", Colors.RED)
+            return False
+
         result = subprocess.run(
-            ["./platform_agent", "echo 'Hello from agent'"],
+            ["./platform_agent", cmd],
             capture_output=True,
             text=True,
+            shell=False,  # Explicitly disable shell
         )
 
         if result.returncode != 0:
@@ -128,8 +135,16 @@ def test_rune_execution():
         json.dump(test_rune, f, indent=2)
 
     try:
+        # Validate rune file path to prevent path traversal
+        if not os.path.exists(rune_file) or not rune_file.endswith(".json"):
+            log("❌ Invalid rune file", Colors.RED)
+            return False
+
         result = subprocess.run(
-            ["./platform_agent", "--rune", rune_file], capture_output=True, text=True
+            ["./platform_agent", "--rune", rune_file],
+            capture_output=True,
+            text=True,
+            shell=False,  # Explicitly disable shell
         )
 
         if result.returncode != 0:
@@ -182,8 +197,18 @@ def test_command_sanitization():
 
     for cmd in dangerous_commands:
         try:
+            # Validate command to prevent command injection
+            if any(
+                char in cmd for char in [";", "&", "|", "`", "$", "(", ")", "<", ">"]
+            ):
+                log(f"❌ Invalid characters in command: {cmd}", Colors.RED)
+                return False
+
             result = subprocess.run(
-                ["./platform_agent", cmd], capture_output=True, text=True
+                ["./platform_agent", cmd],
+                capture_output=True,
+                text=True,
+                shell=False,  # Explicitly disable shell
             )
 
             # Should be blocked
@@ -244,7 +269,9 @@ def test_api_integration():
         # Wait for completion
         for _ in range(10):
             time.sleep(1)
-            response = requests.get(f"http://localhost:8000/rune/status/{execution_id}")
+            response = requests.get(
+                f"http://localhost:8000/rune/status/{execution_id}", timeout=10
+            )
             if response.status_code == 200:
                 status = response.json()
                 if status["status"] in ["completed", "failed"]:

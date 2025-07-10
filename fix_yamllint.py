@@ -182,7 +182,7 @@ def fix_github_actions_structure(lines):
             if in_steps:
                 fixed_line = " " * (leading_spaces - 2) + "- " + content
                 fixed_lines.append(fixed_line)
-                print(f"  🔧 Added missing dash before uses statement")
+                print("  🔧 Added missing dash before uses statement")
                 continue
 
         # Keep original line if no fixes applied
@@ -303,7 +303,7 @@ def auto_fix_remaining_issues(filepath):
             if lines and not lines[-1].endswith("\n"):
                 lines[-1] += "\n"
                 fixed = True
-                print(f"  🔧 Added newline at end of file")
+                print("  🔧 Added newline at end of file")
 
     if fixed:
         with open(filepath, "w") as f:
@@ -332,7 +332,7 @@ def main():
     )
     args = parser.parse_args()
 
-    print(f"📂 Scanning YAML files for indentation and formatting issues...\n")
+    print("📂 Scanning YAML files for indentation and formatting issues...\n")
 
     # Default behavior: exclude GitHub Actions workflows unless explicitly included
     exclude_workflows = not args.include_workflows
@@ -368,7 +368,7 @@ def main():
         files_to_process = regular_files + github_actions_files
 
         if github_actions_files:
-            print(f"📋 Processing order:")
+            print("📋 Processing order:")
             print(f"  1. Regular YAML files: {len(regular_files)} files")
             print(
                 f"  2. GitHub Actions workflows: {len(github_actions_files)} files (conservative mode)"
@@ -410,7 +410,7 @@ def main():
 
     # Summary
     print(f"\n{'='*50}")
-    print(f"📊 YAML Linting Summary:")
+    print("📊 YAML Linting Summary:")
     print(f"{'='*50}")
 
     clean_count = sum(1 for _, is_clean in processed_files if is_clean)
@@ -420,7 +420,6 @@ def main():
     github_actions_count = sum(
         1 for filepath, _ in processed_files if is_github_actions_file(filepath)
     )
-    regular_count = total_count - github_actions_count
 
     for filepath, is_clean in processed_files:
         status = "✅" if is_clean else "❌"
@@ -444,11 +443,11 @@ def main():
         print("  3. For complex issues, consider using '--exclude-workflows' flag")
         print("  4. Manual fixes may be needed for complex nested structures")
 
-    print(f"\n💡 Usage tips:")
-    print(f"  • Default: Excludes GitHub Actions workflows (safe)")
-    print(f"  • To include workflows: python3 fix_yamllint.py --include-workflows")
-    print(f"  • To exclude workflows: python3 fix_yamllint.py --exclude-workflows")
-    print(f"  • To process workflows last: python3 fix_yamllint.py --include-workflows")
+    print("\n💡 Usage tips:")
+    print("  • Default: Excludes GitHub Actions workflows (safe)")
+    print("  • To include workflows: python3 fix_yamllint.py --include-workflows")
+    print("  • To exclude workflows: python3 fix_yamllint.py --exclude-workflows")
+    print("  • To process workflows last: python3 fix_yamllint.py --include-workflows")
 
 
 if __name__ == "__main__":

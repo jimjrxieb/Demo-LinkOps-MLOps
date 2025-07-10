@@ -22,7 +22,7 @@ def main():
 
     payload = {"url": args.url, "topic": args.topic}
     try:
-        resp = requests.post(args.api, json=payload)
+        resp = requests.post(args.api, json=payload, timeout=30)
         print(f"Status: {resp.status_code}")
         print(resp.json())
     except Exception as e:

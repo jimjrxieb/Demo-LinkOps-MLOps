@@ -6,9 +6,7 @@ Systematically updates vulnerable packages across all microservices
 
 import json
 import os
-import re
 import subprocess
-from pathlib import Path
 from typing import Dict, List, Tuple
 
 # High-priority security fixes
@@ -221,15 +219,15 @@ def test_docker_build(service_path: str) -> bool:
         )
 
         if result.returncode == 0:
-            print(f"  ✅ Docker build successful")
+            print("  ✅ Docker build successful")
             return True
         else:
-            print(f"  ❌ Docker build failed:")
+            print("  ❌ Docker build failed:")
             print(f"  {result.stderr}")
             return False
 
     except subprocess.TimeoutExpired:
-        print(f"  ⏰ Docker build timed out")
+        print("  ⏰ Docker build timed out")
         return False
     except Exception as e:
         print(f"  ❌ Error testing Docker build: {str(e)}")
@@ -238,7 +236,7 @@ def test_docker_build(service_path: str) -> bool:
 
 def lint_and_format_files(file_paths: List[str]):
     """Lint and format updated files"""
-    print(f"\n🎨 Linting and formatting updated files...")
+    print("\n🎨 Linting and formatting updated files...")
 
     python_files = [f for f in file_paths if f.endswith(".py")]
     if python_files:
@@ -296,7 +294,7 @@ def main():
             all_changes.extend(changes)
 
     # Test Docker builds for services with changes
-    print(f"\n🧪 Testing Docker builds for updated services...")
+    print("\n🧪 Testing Docker builds for updated services...")
     build_failures = []
 
     for req_file in files["requirements"]:
@@ -309,7 +307,7 @@ def main():
     lint_and_format_files(updated_files)
 
     # Summary
-    print(f"\n📊 Update Summary")
+    print("\n📊 Update Summary")
     print("=" * 60)
     print(f"✅ Files updated: {len(updated_files)}")
     print(f"✅ Total package changes: {len(all_changes)}")
@@ -321,11 +319,11 @@ def main():
     else:
         print("✅ All Docker builds successful")
 
-    print(f"\n🎉 Security updates completed!")
+    print("\n🎉 Security updates completed!")
 
     # List changed files
     if updated_files:
-        print(f"\n📝 Files changed:")
+        print("\n📝 Files changed:")
         for file_path in updated_files:
             print(f"  - {file_path}")
 

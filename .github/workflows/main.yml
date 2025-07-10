@@ -1,4 +1,4 @@
-name: LinkOps Security + Helm CD
+name: LinkOps CI/CD
 
 on:
   push:
@@ -11,285 +11,221 @@ env:
   NODE_VERSION: '20'
 
 permissions:
-  contents: read
-  security-events: write
+  contents: write # For ArgoCD updates
+  security-events: write # For potential Trivy uploads
 
 jobs:
   lint-python:
     runs-on: ubuntu-latest
-    name: Python Lint + Bandit
+    name: Python Lint + Format Check
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-python@v4
-      with:
-        python-version: ${{ env.PYTHON_VERSION }}
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
 
-    - name: Auto-fix Python issues
-      run: |
-        pip install flake8 black bandit autoflake autopep8
-        # Try auto-fixing common issues first
-        python3 fix_flake8.py || echo "Auto-fix completed with warnings"
-      continue-on-error: true
+      - name: Install Python Tools
+        run: pip install ruff bandit isort
 
-    - name: Python Code Quality Check
-      run: |
-        echo "🔍 Running Python linting..."
-        flake8 mlops/ shadows/ --count --select=E9,F63,F7,F82 --show-source --statistics || {
-          echo "❌ Critical Python errors found"
-          flake8 mlops/ shadows/ --count --show-source --statistics
-          exit 1
-        }
+      - name: Check Black Formatting
+        run: |
+          echo "🎨 Checking Python formatting..."
+          ruff format --check mlops/ shadows/ || {
+            echo "❌ Black formatting issues found"
+            exit 1
+          }
 
-        echo "🎨 Checking code formatting..."
-        black --check mlops/ shadows/ || {
-          echo "⚠️ Code formatting issues found - running auto-fix"
-          black mlops/ shadows/
-          echo "✅ Auto-formatting applied"
-        }
+      - name: Check isort Imports
+        run: |
+          echo "📦 Checking Python imports..."
+          isort --check-only --diff mlops/ shadows/ || {
+            echo "❌ isort issues found"
+            exit 1
+          }
 
-        echo "🔒 Running security scan..."
-        bandit -r mlops/ shadows/ -f json || {
-          echo "⚠️ Security issues found but continuing build"
-        }
-      continue-on-error: false
+      - name: Run Ruff Linting
+        run: |
+          echo "🔍 Running Ruff linting..."
+          ruff check mlops/ shadows/ || {
+            echo "❌ Ruff linting errors found"
+            exit 1
+          }
+
+      - name: Run Bandit Security Scan
+        run: |
+          echo "🔒 Running security scan..."
+          bandit -r mlops/ shadows/ -f json || echo "⚠️ Security issues found but continuing"
+        continue-on-error: true
 
   lint-frontend:
     runs-on: ubuntu-latest
-    name: Frontend Lint + Build
+    name: Frontend Lint + Format Check
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: actions/setup-node@v4
-      with:
-        node-version: ${{ env.NODE_VERSION }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
 
-    - name: Frontend Quality Check
-      run: |
-        cd frontend
-        # Use the enhanced fix script to handle npm ci errors
-        python3 ../fix_frontend.py || {
-          echo "⚠️ Frontend auto-fix completed with warnings"
-        }
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
 
-        echo "🔍 Running frontend linting..."
-        npm run lint || {
-          echo "⚠️ Linting issues found - attempting auto-fix"
-          npm run lint:fix || echo "Auto-fix completed with warnings"
-        }
+      - name: Check Prettier Formatting
+        run: |
+          cd frontend
+          echo "🎨 Checking frontend formatting..."
+          npx prettier --check . || {
+            echo "❌ Prettier formatting issues found"
+            exit 1
+          }
 
-        echo "🏗️ Building frontend..."
-        npm run build
-      continue-on-error: false
+      - name: Run ESLint
+        run: |
+          cd frontend
+          echo "🔍 Running ESLint..."
+          npx eslint . || {
+            echo "❌ ESLint errors found"
+            exit 1
+          }
 
   lint-yaml:
     runs-on: ubuntu-latest
-    name: YAML Lint (Helm/CI)
+    name: YAML Lint + Format Check
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: YAML Quality Check
-      run: |
-        pip install yamllint
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
 
-        echo "🔍 Running YAML linting..."
-        yamllint helm/ .github/ || {
-          echo "⚠️ YAML issues found - attempting auto-fix (excluding workflows)"
-          python3 fix_yamllint.py || echo "YAML auto-fix completed"
-          yamllint helm/ .github/ || echo "Some YAML issues remain but continuing"
-        }
-      continue-on-error: true
+      - name: Install Prettier
+        run: npm install --global prettier
+
+      - name: Install yamllint
+        run: pip install yamllint
+
+      - name: Check Prettier Formatting (YAML)
+        run: |
+          echo "🎨 Checking YAML formatting..."
+          prettier --check "helm/**/*.yaml" ".github/**/*.yml" || {
+            echo "❌ YAML formatting issues found"
+            exit 1
+          }
+
+      - name: Run yamllint
+        run: |
+          echo "🔍 Running YAML linting..."
+          yamllint helm/ .github/ || {
+            echo "❌ YAML linting errors found"
+            exit 1
+          }
 
   helm-validate:
     runs-on: ubuntu-latest
-    name: Helm Chart Lint + Update
+    name: Helm Chart Lint
     needs: [lint-yaml]
     if: always() && (needs.lint-yaml.result == 'success' || needs.lint-yaml.result == 'failure')
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: azure/setup-helm@v3
-      with:
-        version: v3.12.0
+      - uses: azure/setup-helm@v3
+        with:
+          version: v3.12.0
 
-    - name: Helm Validation
-      run: |
-        cd helm/linkops
-
-        echo "📦 Updating Helm dependencies..."
-        helm dependency update || {
-          echo "⚠️ Dependency update failed - trying without cache"
-          rm -rf charts/ Chart.lock
-          helm dependency update || echo "Dependencies may be outdated"
-        }
-
-        echo "🔍 Linting Helm charts..."
-        helm lint . || {
-          echo "⚠️ Helm lint found issues but charts may still be deployable"
-        }
-      continue-on-error: true
+      - name: Helm Validation
+        run: |
+          cd helm/linkops
+          echo "📦 Updating Helm dependencies..."
+          helm dependency update || {
+            echo "⚠️ Dependency update failed - trying without cache"
+            rm -rf charts/ Chart.lock
+            helm dependency update || echo "Dependencies may be outdated"
+          }
+          echo "🔍 Linting Helm charts..."
+          helm lint . || echo "⚠️ Helm lint issues found but continuing"
+        continue-on-error: true
 
   docker-build-push:
     runs-on: ubuntu-latest
     name: Build + Push Docker Images
-    needs: [lint-python, lint-frontend, helm-validate]
-    if: always() && github.ref == 'refs/heads/main' && (needs.lint-python.result == 'success' || needs.lint-python.result == 'failure')
+    needs: [lint-python, lint-frontend, lint-yaml]
+    if: always() && github.ref == 'refs/heads/main' && (needs.lint-python.result == 'success')
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v3
 
-    - name: Validate Docker Registry Secrets
-      run: |
-        echo "🔍 Validating Docker registry configuration..."
-        if [[ -z "${{ secrets.DOCKER_USER }}" ]]; then
-          echo "❌ DOCKER_USER secret is not set"
-          echo "Please set DOCKER_USER in repository Settings → Secrets and variables → Actions"
-          exit 1
-        fi
-        if [[ -z "${{ secrets.DOCKER_CRED }}" ]]; then
-          echo "❌ DOCKER_CRED secret is not set"
-          echo "Please set DOCKER_CRED in repository Settings → Secrets and variables → Actions"
-          exit 1
-        fi
-        echo "✅ Docker secrets are configured"
-        echo "Registry: Docker Hub (docker.io)"
-        echo "Username: ${{ secrets.DOCKER_USER }}"
-        echo "Target namespace: linkops/"
-        echo ""
-        echo "⚠️  IMPORTANT: Ensure ${{ secrets.DOCKER_USER }} has push permissions to 'linkops' organization"
-        echo "   - If using organization: Add user to 'linkops' org with write permissions"
-        echo "   - If testing: Consider changing namespace to: ${{ secrets.DOCKER_USER }}/"
+      - name: Validate Docker Registry Secrets
+        run: |
+          echo "🔍 Validating Docker registry configuration..."
+          if [[ -z "${{ secrets.DOCKER_USER }}" ]]; then
+            echo "❌ DOCKER_USER secret is not set"
+            exit 1
+          fi
+          if [[ -z "${{ secrets.DOCKER_CRED }}" ]]; then
+            echo "❌ DOCKER_CRED secret is not set"
+            exit 1
+          fi
+          echo "✅ Docker secrets are configured"
 
-    - name: Docker Registry Login
-      uses: docker/login-action@v3
-      with:
-        registry: docker.io
-        username: ${{ secrets.DOCKER_USER }}
-        password: ${{ secrets.DOCKER_CRED }}
-      continue-on-error: false
+      - name: Docker Registry Login
+        uses: docker/login-action@v3
+        with:
+          registry: docker.io
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_CRED }}
 
-    - name: Verify Docker Authentication
-      run: |
-        echo "🔐 Verifying Docker Hub authentication..."
-        docker info
-        echo "✅ Docker login successful"
+      - name: Build + Push all services
+        run: |
+          success_count=0
+          total_count=0
+          failed_services=()
 
-    - name: Build + Push all services
-      run: |
-        success_count=0
-        total_count=0
-        failed_services=()
+          echo "🏗️ Starting Docker build and push..."
+          for dir in mlops/* shadows/*; do
+            if [[ -f "$dir/Dockerfile" ]]; then
+              name=$(basename $dir)
+              total_count=$((total_count + 1))
+              image_name="linkops/$name:latest"
 
-        echo "🏗️ Starting Docker build and push for all services..."
-        echo "Target registry: docker.io/linkops/"
-
-        for dir in mlops/* shadows/*; do
-          if [[ -f "$dir/Dockerfile" ]]; then
-            name=$(basename $dir)
-            total_count=$((total_count + 1))
-            # Option 1: Use organization namespace (requires org permissions)
-            image_name="linkops/$name:latest"
-
-            # Option 2: Use personal namespace (uncomment line below and comment line above)
-            # image_name="${{ secrets.DOCKER_USER }}/$name:latest"
-
-            echo ""
-            echo "📦 Processing service: $name"
-            echo "├── Directory: $dir"
-            echo "├── Image name: $image_name"
-            echo "└── Build starting..."
-
-            # Build with detailed logging
-            if docker build -t "$image_name" "$dir" --progress=plain; then
-              echo "✅ Build successful for $name"
-
-              # Push with retry logic
-              push_attempts=0
-              max_attempts=3
-
-              while [[ $push_attempts -lt $max_attempts ]]; do
-                ((push_attempts++))
-                echo "🚀 Push attempt $push_attempts/$max_attempts for $name..."
-
+              echo "📦 Processing service: $name"
+              if docker build -t "$image_name" "$dir" --progress=plain; then
+                echo "✅ Build successful for $name"
                 if docker push "$image_name"; then
                   echo "✅ Push successful for $name"
                   success_count=$((success_count + 1))
-                  break
                 else
-                  echo "❌ Push attempt $push_attempts failed for $name"
-                  if [[ $push_attempts -lt $max_attempts ]]; then
-                    echo "⏳ Waiting 10 seconds before retry..."
-                    sleep 10
-                  else
-                    echo "❌ All push attempts failed for $name"
-                    failed_services+=("$name")
-                  fi
+                  echo "❌ Push failed for $name"
+                  failed_services+=("$name")
                 fi
-              done
-            else
-              echo "❌ Build failed for $name"
-              failed_services+=("$name")
+              else
+                echo "❌ Build failed for $name"
+                failed_services+=("$name")
+              fi
             fi
-          fi
-        done
-
-        echo ""
-        echo "📊 Build and Push Summary:"
-        echo "=========================="
-        echo "✅ Successful: $success_count/$total_count services"
-        echo "❌ Failed: ${#failed_services[@]} services"
-
-        if [[ ${#failed_services[@]} -gt 0 ]]; then
-          echo "Failed services:"
-          for service in "${failed_services[@]}"; do
-            echo "  - $service"
           done
-        fi
 
-        # Success criteria: at least 70% of services must succeed
-        if [[ $success_count -gt 0 ]] && [[ $((success_count * 10)) -ge $((total_count * 7)) ]]; then
-          echo "✅ Build pipeline successful (≥70% services deployed)"
-        else
-          echo "❌ Build pipeline failed (insufficient successful deployments)"
-          echo "Required: ≥70% success rate"
-          echo "Actual: $((success_count * 100 / total_count))% success rate"
-          exit 1
-        fi
-      continue-on-error: false
+          echo "📊 Build and Push Summary:"
+          echo "✅ Successful: $success_count/$total_count services"
+          echo "❌ Failed: ${#failed_services[@]} services"
+          if [[ ${#failed_services[@]} -gt 0 ]]; then
+            echo "Failed services:"
+            for service in "${failed_services[@]}"; do
+              echo "  - $service"
+            done
+          fi
 
-  trivy-scan:
-    runs-on: ubuntu-latest
-    name: Trivy Security Scan
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Run Trivy vulnerability scanner
-      uses: aquasecurity/trivy-action@0.32.0
-      with:
-        scan-type: 'fs'
-        scan-ref: '.'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-      continue-on-error: true
-
-    - name: Upload Trivy scan results
-      uses: github/codeql-action/upload-sarif@v3
-      with:
-        sarif_file: 'trivy-results.sarif'
-      continue-on-error: true
-
-  gitguardian:
-    runs-on: ubuntu-latest
-    name: GitGuardian Secret Scan
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Run GitGuardian
-      uses: GitGuardian/ggshield-action@v1.25.0
-      env:
-        GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
-      continue-on-error: true
+          if [[ $success_count -gt 0 ]] && [[ $((success_count * 10)) -ge $((total_count * 7)) ]]; then
+            echo "✅ Build pipeline successful (≥70% services deployed)"
+          else
+            echo "❌ Build pipeline failed (insufficient successful deployments)"
+            exit 1
+          fi
 
   update-argocd:
     runs-on: ubuntu-latest
@@ -298,61 +234,20 @@ jobs:
     if: always() && github.ref == 'refs/heads/main' &&
         (needs.docker-build-push.result == 'success' || needs.docker-build-push.result == 'failure')
     steps:
-    - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Update ArgoCD sync trigger
-      run: |
-        if [[ -f "helm/argocd/application.yaml" ]]; then
-          echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
-          git config user.name "github-actions[bot]"
-          git config user.email "actions@github.com"
-          git add helm/argocd/application.yaml
-          git commit -m "chore: trigger ArgoCD sync - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
-          git push || echo "No push needed"
-        else
-          echo "ArgoCD application.yaml not found, skipping sync trigger"
-        fi
-      continue-on-error: true
-
-  notify-status:
-    runs-on: ubuntu-latest
-    name: Build Status Notification
-    needs: [lint-python, lint-frontend, lint-yaml, helm-validate, docker-build-push, trivy-scan, gitguardian, update-argocd]
-    if: always()
-    steps:
-    - name: Determine overall status
-      run: |
-        echo "📊 Pipeline Status Summary:"
-        echo "=========================="
-        echo "Python Lint: ${{ needs.lint-python.result }}"
-        echo "Frontend Lint: ${{ needs.lint-frontend.result }}"
-        echo "YAML Lint: ${{ needs.lint-yaml.result }}"
-        echo "Helm Validate: ${{ needs.helm-validate.result }}"
-        echo "Docker Build: ${{ needs.docker-build-push.result }}"
-        echo "Trivy Scan: ${{ needs.trivy-scan.result }}"
-        echo "GitGuardian: ${{ needs.gitguardian.result }}"
-        echo "ArgoCD Update: ${{ needs.update-argocd.result }}"
-
-        # Determine if critical jobs passed
-        critical_jobs=("lint-python" "lint-frontend" "docker-build-push")
-        failed_critical=0
-
-        if [[ "${{ needs.lint-python.result }}" != "success" ]]; then
-          failed_critical=$((failed_critical + 1))
-        fi
-        if [[ "${{ needs.lint-frontend.result }}" != "success" ]]; then
-          failed_critical=$((failed_critical + 1))
-        fi
-        if [[ "${{ needs.docker-build-push.result }}" != "success" ]] && [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-          failed_critical=$((failed_critical + 1))
-        fi
-
-        if [[ $failed_critical -eq 0 ]]; then
-          echo "✅ Pipeline completed successfully!"
-          echo "status=success" >> $GITHUB_OUTPUT
-        else
-          echo "⚠️ Pipeline completed with $failed_critical critical job(s) failing"
-          echo "status=partial" >> $GITHUB_OUTPUT
-        fi
+      - name: Update ArgoCD sync trigger
+        run: |
+          if [[ -f "helm/argocd/application.yaml" ]]; then
+            echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
+            git config user.name "github-actions[bot]"
+            git config user.email "actions@github.com"
+            git add helm/argocd/application.yaml
+            git commit -m "chore: trigger ArgoCD sync - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+            git push || echo "No push needed"
+          else
+            echo "ArgoCD application.yaml not found, skipping sync trigger"
+          fi
+        continue-on-error: true

@@ -183,7 +183,7 @@ class RuneGenerator:
                 "validation_checks": [
                     "kubectl get pods",
                     "kubectl describe deployment",
-                    "kubectl logs -l app=deployment-name",
+                    "kubectl logs -line app=deployment-name",
                 ],
             }
         elif rune_type == "kubernetes_scale":

@@ -9,7 +9,6 @@ import argparse
 import hashlib
 import json
 import logging
-import os
 import re
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
@@ -204,14 +203,14 @@ def fix_eslint_issues(file_path, content, issues):
             if match:
                 event = match.group(1)
                 script_idx = next(
-                    (i for i, l in enumerate(lines) if "<script" in l), -1
+                    (i for i, line in enumerate(lines) if "<script" in line), -1
                 )
                 if script_idx != -1:
                     define_emits = next(
                         (
                             i
-                            for i, l in enumerate(lines[script_idx:])
-                            if "defineEmits" in l
+                            for i, line in enumerate(lines[script_idx:])
+                            if "defineEmits" in line
                         ),
                         -1,
                     )
@@ -235,14 +234,14 @@ def fix_eslint_issues(file_path, content, issues):
             if match:
                 component = match.group(1)
                 script_idx = next(
-                    (i for i, l in enumerate(lines) if "<script" in l), -1
+                    (i for i, line in enumerate(lines) if "<script" in line), -1
                 )
                 if script_idx != -1:
                     components_line = next(
                         (
                             i
-                            for i, l in enumerate(lines[script_idx:])
-                            if "components:" in l
+                            for i, line in enumerate(lines[script_idx:])
+                            if "components:" in line
                         ),
                         -1,
                     )
@@ -274,7 +273,6 @@ def fix_vite_config_syntax(file_path):
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
-        original_content = content
         changes_made = 0
         # Fix duplicate defineConfig imports
         content = re.sub(
@@ -315,7 +313,8 @@ def fix_vite_config_syntax(file_path):
   },""",
             )
             changes_made += 1
-        if content != original_content:
+        # Only write if content changed
+        if changes_made > 0:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
             logger.info("Fixed Vite config syntax errors")
@@ -332,7 +331,6 @@ def fix_package_json_scripts(file_path):
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
-        original_data = json.dumps(data, indent=2)
         changes_made = 0
         if "scripts" in data:
             scripts = data["scripts"]
@@ -362,7 +360,6 @@ def fix_eslint_config(file_path):
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
-        original_content = content
         changes_made = 0
         if "extends" in content and "vue/essential" not in content:
             content = content.replace(
@@ -623,7 +620,6 @@ def process_file(
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
-        original_content = content
         if file_path.suffix in [".vue", ".js", ".ts", ".jsx"]:
             content = fix_eslint_issues(file_path, content, issues)
             content = fix_console_statements(file_path, content)
@@ -632,6 +628,10 @@ def process_file(
         if file_path.suffix == ".vue":
             content = fix_vue_props(file_path, content)
             content = fix_accessibility(file_path, content)
+            # Only write if changes were made
+            if changes_made > 0:
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(content)
         if content != original_content:
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
@@ -741,6 +741,93 @@ def test_docker_build(frontend_dir):
     return False
 
 
+def clean_node_modules(frontend_dir):
+    """Clean and reinstall node_modules to fix corrupted dependencies"""
+    logger.info("🧹 Cleaning corrupted node_modules...")
+
+    try:
+        # Remove node_modules and package-lock.json
+        node_modules_path = Path(frontend_dir) / "node_modules"
+        package_lock_path = Path(frontend_dir) / "package-lock.json"
+
+        if node_modules_path.exists():
+            logger.info("Removing corrupted node_modules...")
+            subprocess.run(
+                ["rm", "-rf", str(node_modules_path)], cwd=frontend_dir, check=True
+            )
+
+        if package_lock_path.exists():
+            logger.info("Removing package-lock.json...")
+            package_lock_path.unlink()
+
+        # Clear npm cache
+        logger.info("Clearing npm cache...")
+        subprocess.run(
+            ["npm", "cache", "clean", "--force"], cwd=frontend_dir, check=True
+        )
+
+        # Reinstall dependencies
+        logger.info("Reinstalling dependencies...")
+        result = subprocess.run(
+            ["npm", "install"],
+            cwd=frontend_dir,
+            capture_output=True,
+            text=True,
+            timeout=300,
+        )
+
+        if result.returncode == 0:
+            logger.info("✅ Dependencies reinstalled successfully")
+            return True
+        else:
+            logger.error(f"❌ npm install failed: {result.stderr}")
+            return False
+
+    except subprocess.TimeoutExpired:
+        logger.error("❌ npm install timed out")
+        return False
+    except Exception as e:
+        logger.error(f"❌ Error cleaning node_modules: {e}")
+        return False
+
+
+def check_dependency_health(frontend_dir):
+    """Check if ESLint and Vite are properly installed"""
+    logger.info("🔍 Checking dependency health...")
+
+    try:
+        # Check ESLint
+        eslint_result = subprocess.run(
+            ["npx", "eslint", "--version"],
+            cwd=frontend_dir,
+            capture_output=True,
+            text=True,
+        )
+
+        # Check Vite
+        vite_result = subprocess.run(
+            ["npx", "vite", "--version"],
+            cwd=frontend_dir,
+            capture_output=True,
+            text=True,
+        )
+
+        if eslint_result.returncode == 0 and vite_result.returncode == 0:
+            logger.info("✅ ESLint and Vite are working correctly")
+            return True
+        else:
+            logger.warning("⚠️ ESLint or Vite may be corrupted")
+            if eslint_result.returncode != 0:
+                logger.error(f"ESLint error: {eslint_result.stderr}")
+            if vite_result.returncode != 0:
+                logger.error(f"Vite error: {vite_result.stderr}")
+            return False
+
+    except Exception as e:
+        logger.error(f"❌ Error checking dependencies: {e}")
+        return False
+
+
 def commit_and_sync(frontend_dir):
     """Commit fixes and trigger ArgoCD sync"""
     logger.info("Committing fixes and triggering ArgoCD sync...")
@@ -771,9 +858,26 @@ def main():
         logger.error("Frontend directory not found!")
         return 1
     logger.info(f"Working in: {frontend_dir.absolute()}")
-    # Step 1: Fix configuration files
+
+    # Step 0: Check dependency health and clean if needed
+    logger.info("Checking package.json scripts in frontend/package.json")
     config_fixes = 0
     package_json = frontend_dir / "package.json"
+    if package_json.exists():
+        if fix_package_json_scripts(package_json):
+            config_fixes += 1
+
+    # Check if dependencies are corrupted
+    if not check_dependency_health(frontend_dir):
+        logger.warning("Dependencies appear corrupted, cleaning node_modules...")
+        if clean_node_modules(frontend_dir):
+            logger.info("Dependencies cleaned and reinstalled")
+        else:
+            logger.error("Failed to clean dependencies")
+            return 1
+
+    # Step 1: Fix configuration files
+    config_fixes = 0
     if package_json.exists():
         if fix_package_json_scripts(package_json):
             config_fixes += 1
@@ -786,6 +890,7 @@ def main():
         if fix_eslint_config(eslint_config):
             config_fixes += 1
     logger.info(f"Fixed {config_fixes} configuration files")
+
     # Step 2: Fix npm ci issues
     npm_success = fix_npm_ci_errors(frontend_dir)
     # Step 3: Run ESLint and parse issues

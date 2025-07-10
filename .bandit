@@ -1,0 +1,24 @@
+# Bandit configuration file
+# Suppress acceptable false positives and focus on real security issues
+
+# Skip tests that are false positives in our context
+skips: ['B104', 'B105', 'B108', 'B607']
+
+# Exclude certain directories
+exclude_dirs: ['tests', 'test_*', '*_test.py']
+
+# Set confidence and severity levels
+confidence: ['HIGH', 'MEDIUM']
+severity: ['HIGH', 'MEDIUM']
+
+# Exclude specific files
+exclude: [
+    '*/test_*.py',
+    '*/tests/*',
+    '*/mocks/*',
+    '*/scripts/*',
+    '*/tools/*'
+]
+
+# Custom test configuration
+tests: ['B101', 'B102', 'B103', 'B106', 'B107', 'B109', 'B110', 'B112', 'B113', 'B601', 'B602', 'B603', 'B604', 'B605', 'B606'] 

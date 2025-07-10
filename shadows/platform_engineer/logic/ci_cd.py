@@ -354,18 +354,18 @@ async def _trigger_jenkins_job(
                 "JENKINS_USERNAME and JENKINS_TOKEN environment variables not set"
             )
 
-        # Build parameters
-        params = {
-            "ENVIRONMENT": environment,
-            "BRANCH": branch,
-            "REPO_URL": repo_url,
-            **variables,
-        }
+        # Build parameters (placeholder for future implementation)
+        # params = {
+        #     "ENVIRONMENT": environment,
+        #     "BRANCH": branch,
+        #     "REPO_URL": repo_url,
+        #     **variables,
+        # }
 
-        # Trigger job via Jenkins API
-        job_url = (
-            f"{CI_PLATFORMS['jenkins']['api_base']}/job/{name}/buildWithParameters"
-        )
+        # Trigger job via Jenkins API (placeholder for future implementation)
+        # job_url = (
+        #     f"{CI_PLATFORMS['jenkins']['api_base']}/job/{name}/buildWithParameters"
+        # )
 
         # For now, return placeholder response
         pipeline_id = f"jenkins:{name}:{datetime.now().strftime('%Y%m%d%H%M%S')}"
@@ -426,20 +426,21 @@ async def _trigger_azure_pipeline(
         # Extract organization and project
         org, project = _extract_azure_info(repo_url)
 
-        headers = {
-            "Authorization": f"Basic {token}",
-            "Content-Type": "application/json",
-        }
+        # Headers and payload (placeholder for future implementation)
+        # headers = {
+        #     "Authorization": f"Basic {token}",
+        #     "Content-Type": "application/json",
+        # }
 
-        payload = {
-            "resources": {
-                "repositories": {"self": {"refName": f"refs/heads/{branch}"}}
-            },
-            "variables": {
-                "ENVIRONMENT": {"value": environment},
-                **{k: {"value": v} for k, v in variables.items()},
-            },
-        }
+        # payload = {
+        #     "resources": {
+        #         "repositories": {"self": {"refName": f"refs/heads/{branch}"}}
+        #     },
+        #     "variables": {
+        #         "ENVIRONMENT": {"value": environment},
+        #         **{k: {"value": v} for k, v in variables.items()},
+        #     },
+        # }
 
         # Placeholder implementation
         pipeline_id = f"azure:{org}/{project}:{datetime.now().strftime('%Y%m%d%H%M%S')}"

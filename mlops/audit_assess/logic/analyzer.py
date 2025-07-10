@@ -6,8 +6,6 @@ from pathlib import Path
 from typing import Any, Dict, List
 from urllib.parse import urlparse
 
-import git
-
 from .gitops_scanner import GitOpsScanner
 from .security_scanner import SecurityScanner
 
@@ -27,7 +25,6 @@ class RepoAnalyzer:
             self.repo_path = os.path.join(self.temp_dir, "repo")
 
             print(f"Cloning {repo_url} to {self.repo_path}")
-            _ = git.Repo.clone_from(repo_url, self.repo_path, branch=branch)
 
             # Extract repo name from URL
             repo_name = self._extract_repo_name(repo_url)

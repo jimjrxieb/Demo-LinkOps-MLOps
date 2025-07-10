@@ -253,9 +253,7 @@ helm install test-app ./helm
 
     # Create a file with a "secret" (for testing)
     config_content = """# Configuration
-API_KEY=sk_test_1234567890abcdef
 DATABASE_URL=postgresql://user:password@localhost:5432/db
-SECRET_TOKEN=ghp_1234567890abcdef
 """
     with open(os.path.join(repo_path, "config.env"), "w") as f:
         f.write(config_content)

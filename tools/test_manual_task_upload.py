@@ -9,7 +9,7 @@ import requests
 with open("tools/mocks/sample_task.json") as f:
     payload = json.load(f)
 
-r = requests.post("http://localhost:8000/api/input/manual", json=payload)
+r = requests.post("http://localhost:8000/api/input/manual", json=payload, timeout=30)
 print("✅ Manual task upload test complete")
 print("Status Code:", r.status_code)
 print("Response:", r.json())

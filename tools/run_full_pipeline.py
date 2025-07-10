@@ -20,7 +20,7 @@ def submit_manual():
     with open("tools/mocks/sample_task.json") as f:
         payload = json.load(f)
     print("🟢 Submitting manual task to Whis...")
-    res = requests.post(MANUAL_ENDPOINT, json=payload)
+    res = requests.post(MANUAL_ENDPOINT, json=payload, timeout=30)
     print("✅ Submission Response:", res.status_code, res.json())
     return res.ok
 
@@ -29,7 +29,7 @@ def submit_youtube():
     with open("tools/mocks/sample_transcript.json") as f:
         payload = json.load(f)
     print("🟢 Submitting YouTube transcript to Whis...")
-    res = requests.post(YOUTUBE_ENDPOINT, json=payload)
+    res = requests.post(YOUTUBE_ENDPOINT, json=payload, timeout=30)
     print("✅ Submission Response:", res.status_code, res.json())
     return res.ok
 
