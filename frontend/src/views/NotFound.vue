@@ -1,17 +1,27 @@
 <template>
   <div class="not-found">
     <div class="error-container">
-      <div class="error-code">404</div>
-      <h1 class="error-title">Page Not Found</h1>
+      <div class="error-code">
+        404
+      </div>
+      <h1 class="error-title">
+        Page Not Found
+      </h1>
       <p class="error-message">
         The page you're looking for doesn't exist in this dimension.
       </p>
       <div class="error-actions">
-        <router-link to="/" class="btn primary">
+        <router-link
+          to="/"
+          class="btn primary"
+        >
           <span class="btn-icon">🏠</span>
           Return to Dashboard
         </router-link>
-        <button class="btn secondary" @click="goBack">
+        <button
+          class="btn secondary"
+          @click="goBack"
+        >
           <span class="btn-icon">⬅️</span>
           Go Back
         </button>
