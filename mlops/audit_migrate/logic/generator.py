@@ -365,8 +365,8 @@ service:
 
 resources:
   limits:
-    cpu: {resources.get('cpu', '500m')}
-    memory: {resources.get('memory', '512Mi')}
+    cpu: {resources.get("cpu", "500m")}
+    memory: {resources.get("memory", "512Mi")}
   requests:
     cpu: 250m
     memory: 256Mi

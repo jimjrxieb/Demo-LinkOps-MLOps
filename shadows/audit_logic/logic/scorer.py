@@ -375,6 +375,6 @@ class AuditScorer:
             "score": score,
             "confidence": confidence,
             "reasoning": (
-                f"Based on {len(factors)} factors with " f"{confidence:.2f} confidence"
+                f"Based on {len(factors)} factors with {confidence:.2f} confidence"
             ),
         }

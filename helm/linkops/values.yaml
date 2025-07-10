@@ -17,10 +17,10 @@ global:
   # Global resource limits
   resources:
     requests:
-    cpu: 100m
+      cpu: 100m
       memory: 128Mi
     limits:
-    cpu: 500m
+      cpu: 500m
       memory: 512Mi
 
   # Global security context
@@ -44,7 +44,7 @@ services:
     port: 8000
     replicas: 2
     resources:
-    requests:
+      requests:
         cpu: 200m
         memory: 256Mi
       limits:
@@ -75,7 +75,7 @@ services:
     port: 8004
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -100,7 +100,7 @@ services:
     port: 8005
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -119,7 +119,7 @@ services:
     port: 8006
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -138,7 +138,7 @@ services:
     port: 8007
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -163,7 +163,7 @@ services:
     port: 8008
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -182,7 +182,7 @@ services:
     port: 8003
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 200m
         memory: 256Mi
       limits:
@@ -218,7 +218,7 @@ services:
     port: 8009
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -237,7 +237,7 @@ services:
     port: 80
     replicas: 2
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -274,7 +274,7 @@ infrastructure:
     port: 5432
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 200m
         memory: 512Mi
       limits:
@@ -302,7 +302,7 @@ infrastructure:
     port: 6379
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:
@@ -320,7 +320,7 @@ infrastructure:
     port: 8080
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 64Mi
       limits:
@@ -341,7 +341,7 @@ monitoring:
     port: 9090
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 200m
         memory: 256Mi
       limits:
@@ -359,7 +359,7 @@ monitoring:
     port: 3000
     replicas: 1
     resources:
-    requests:
+      requests:
         cpu: 100m
         memory: 128Mi
       limits:

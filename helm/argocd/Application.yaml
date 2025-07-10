@@ -19,23 +19,22 @@ spec:
     targetRevision: HEAD
     path: helm/linkops
     helm:
-    valueFiles:
-    - values.yaml
+      valueFiles:
+        - values.yaml
       # Optional: Override specific values for this environment
       parameters:
-    - name: global.imageTag
-        value: "latest"
-    - name: services.mlops_platform.replicas
-        value: "2"
-    - name: services.frontend.replicas
-        value: "2"
-    - name: autoscaling.enabled
-        value: "true"
+        - name: global.imageTag
+          value: "latest"
+        - name: services.mlops_platform.replicas
+          value: "2"
+        - name: services.frontend.replicas
+          value: "2"
+        - name: autoscaling.enabled
+          value: "true"
   syncPolicy:
     automated:
-    prune: true
+      prune: true
       selfHeal: true
-      allowEmpty: false
     syncOptions:
     - CreateNamespace=true
     - PrunePropagationPolicy=foreground
@@ -89,29 +88,28 @@ spec:
     targetRevision: HEAD
     path: helm/linkops
     helm:
-    valueFiles:
-    - values.yaml
-    parameters:
-    - name: global.imageTag
-        value: "dev"
-    - name: services.mlops_platform.replicas
-        value: "1"
-    - name: services.frontend.replicas
-        value: "1"
-    - name: autoscaling.enabled
-        value: "false"
-    - name: monitoring.prometheus.enabled
-        value: "false"
-    - name: monitoring.grafana.enabled
-        value: "false"
-    - name: infrastructure.postgres.persistence.enabled
-        value: "false"
-    - name: infrastructure.redis.persistence.enabled
-        value: "false"
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: global.imageTag
+          value: "dev"
+        - name: services.mlops_platform.replicas
+          value: "1"
+        - name: services.frontend.replicas
+          value: "1"
+        - name: autoscaling.enabled
+          value: "false"
+        - name: monitoring.prometheus.enabled
+          value: "false"
+        - name: monitoring.grafana.enabled
+          value: "false"
+        - name: infrastructure.postgres.persistence.enabled
+          value: "false"
+        - name: infrastructure.redis.persistence.enabled
+          value: "false"
   syncPolicy:
     automated:
-    prune: true
-      selfHeal: true
+      prune: true
     syncOptions:
     - CreateNamespace=true
   revisionHistoryLimit: 5
@@ -139,23 +137,22 @@ spec:
     targetRevision: HEAD
     path: helm/linkops
     helm:
-    valueFiles:
-    - values.yaml
-    parameters:
-    - name: global.imageTag
-        value: "staging"
-    - name: services.mlops_platform.replicas
-        value: "1"
-    - name: services.frontend.replicas
-        value: "1"
-    - name: autoscaling.enabled
-        value: "true"
-    - name: monitoring.grafana.ingress.enabled
-        value: "false"
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: global.imageTag
+          value: "staging"
+        - name: services.mlops_platform.replicas
+          value: "1"
+        - name: services.frontend.replicas
+          value: "1"
+        - name: autoscaling.enabled
+          value: "true"
+        - name: monitoring.grafana.ingress.enabled
+          value: "false"
   syncPolicy:
     automated:
-    prune: true
-      selfHeal: true
+      prune: true
     syncOptions:
     - CreateNamespace=true
   revisionHistoryLimit: 5

@@ -173,7 +173,8 @@ async def analyze_security_vulnerabilities(
 
 @app.post("/security/report/generate")
 async def generate_security_report(
-    scan_id: str, report_format: str = "html"  # "html", "pdf", "json"
+    scan_id: str,
+    report_format: str = "html",  # "html", "pdf", "json"
 ) -> Dict[str, Any]:
     """
     Generate a detailed security report from scan results.
@@ -309,7 +310,8 @@ async def lint_security_configurations(request: SecurityLintRequest) -> Dict[str
 
 @app.post("/security/audit/permissions")
 async def audit_security_permissions(
-    target: str, scope: List[str]  # "files", "users", "services"
+    target: str,
+    scope: List[str],  # "files", "users", "services"
 ) -> Dict[str, Any]:
     """
     Audit security permissions for files, users, or services.

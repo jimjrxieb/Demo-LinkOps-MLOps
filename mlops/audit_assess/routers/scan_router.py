@@ -337,7 +337,7 @@ async def scan_results(scan_id: str, results: List[Dict[str, Any]]):
             "status": "completed",
             "results": results,
             "insight": (
-                f"Scan completed successfully with {len(results)} " "assessment results"
+                f"Scan completed successfully with {len(results)} assessment results"
             ),
         }
     except Exception as e:
