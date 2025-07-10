@@ -1,12 +1,8 @@
 <template>
   <div class="whis-page">
     <div class="page-header">
-      <h1 class="page-title">
-        Whis Pipeline
-      </h1>
-      <p class="page-subtitle">
-        Data Processing & Enhancement Workflow
-      </p>
+      <h1 class="page-title">Whis Pipeline</h1>
+      <p class="page-subtitle">Data Processing & Enhancement Workflow</p>
     </div>
 
     <!-- Pipeline Visualization -->
@@ -18,9 +14,7 @@
 
     <!-- Input Section -->
     <section class="input-section">
-      <h2 class="section-title">
-        Data Input
-      </h2>
+      <h2 class="section-title">Data Input</h2>
       <div class="input-container">
         <textarea
           v-model="inputData"
@@ -29,24 +23,15 @@
           rows="8"
         />
         <div class="input-actions">
-          <button
-            class="btn primary"
-            @click="processData"
-          >
+          <button class="btn primary" @click="processData">
             <span class="btn-icon">⚡</span>
             Process Data
           </button>
-          <button
-            class="btn secondary"
-            @click="loadSampleData"
-          >
+          <button class="btn secondary" @click="loadSampleData">
             <span class="btn-icon">📋</span>
             Load Sample
           </button>
-          <button
-            class="btn secondary"
-            @click="clearData"
-          >
+          <button class="btn secondary" @click="clearData">
             <span class="btn-icon">🗑️</span>
             Clear
           </button>
@@ -55,13 +40,8 @@
     </section>
 
     <!-- Results Section -->
-    <section
-      v-if="results.length > 0"
-      class="results-section"
-    >
-      <h2 class="section-title">
-        Processing Results
-      </h2>
+    <section v-if="results.length > 0" class="results-section">
+      <h2 class="section-title">Processing Results</h2>
       <div class="results-container">
         <div
           v-for="(result, index) in results"
@@ -70,10 +50,7 @@
         >
           <div class="result-header">
             <h3>{{ result.step }}</h3>
-            <span
-              class="result-status"
-              :class="result.status"
-            >
+            <span class="result-status" :class="result.status">
               {{ result.status }}
             </span>
           </div>
@@ -90,24 +67,16 @@
 
     <!-- Configuration Panel -->
     <section class="config-section">
-      <h2 class="section-title">
-        Pipeline Configuration
-      </h2>
+      <h2 class="section-title">Pipeline Configuration</h2>
       <div class="config-grid">
         <div class="config-card">
           <h3>Data Sanitization</h3>
           <label>
-            <input
-              v-model="config.sanitize"
-              type="checkbox"
-            >
+            <input v-model="config.sanitize" type="checkbox" />
             Enable data cleaning
           </label>
           <label>
-            <input
-              v-model="config.removeDuplicates"
-              type="checkbox"
-            >
+            <input v-model="config.removeDuplicates" type="checkbox" />
             Remove duplicates
           </label>
         </div>
@@ -115,36 +84,21 @@
         <div class="config-card">
           <h3>Data Enhancement</h3>
           <label>
-            <input
-              v-model="config.enhance"
-              type="checkbox"
-            >
+            <input v-model="config.enhance" type="checkbox" />
             Enable enhancement
           </label>
           <label>
-            <input
-              v-model="config.validate"
-              type="checkbox"
-            >
+            <input v-model="config.validate" type="checkbox" />
             Validate output
           </label>
         </div>
 
         <div class="config-card">
           <h3>Output Format</h3>
-          <select
-            v-model="config.outputFormat"
-            class="format-select"
-          >
-            <option value="json">
-              JSON
-            </option>
-            <option value="csv">
-              CSV
-            </option>
-            <option value="xml">
-              XML
-            </option>
+          <select v-model="config.outputFormat" class="format-select">
+            <option value="json">JSON</option>
+            <option value="csv">CSV</option>
+            <option value="xml">XML</option>
           </select>
         </div>
       </div>
