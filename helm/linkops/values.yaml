@@ -107,7 +107,7 @@ services:
         cpu: 500m
         memory: 512Mi
     healthCheck:
-    path: /health
+      path: /health
       port: 8005
       initialDelaySeconds: 15
       periodSeconds: 10
@@ -126,7 +126,7 @@ services:
         cpu: 500m
         memory: 512Mi
     healthCheck:
-    path: /health
+      path: /health
       port: 8006
       initialDelaySeconds: 15
       periodSeconds: 10
@@ -145,13 +145,13 @@ services:
         cpu: 500m
         memory: 512Mi
     env:
-    - name: OPENAI_API_KEY
-    valueFrom:
-        secretKeyRef:
-          name: whis-secrets
-          key: openai-api-key
+      - name: OPENAI_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: whis-secrets
+            key: openai-api-key
     healthCheck:
-    path: /health
+      path: /health
       port: 8007
       initialDelaySeconds: 15
       periodSeconds: 10
@@ -170,7 +170,7 @@ services:
         cpu: 500m
         memory: 512Mi
     healthCheck:
-    path: /health
+      path: /health
       port: 8008
       initialDelaySeconds: 15
       periodSeconds: 10
@@ -189,23 +189,23 @@ services:
         cpu: 1000m
         memory: 1Gi
     env:
-    - name: GITGUARDIAN_API_KEY
-    valueFrom:
-        secretKeyRef:
-          name: audit-secrets
-          key: gitguardian-api-key
-    - name: SNYK_TOKEN
-    valueFrom:
-        secretKeyRef:
-          name: audit-secrets
-          key: snyk-token
+      - name: GITGUARDIAN_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: audit-secrets
+            key: gitguardian-api-key
+      - name: SNYK_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: audit-secrets
+            key: snyk-token
     healthCheck:
-    path: /health
+      path: /health
       port: 8003
       initialDelaySeconds: 30
       periodSeconds: 10
     ingress:
-    enabled: true
+      enabled: true
       host: audit.linkops.com
       tls: true
       annotations:
@@ -225,7 +225,7 @@ services:
         cpu: 500m
         memory: 512Mi
     healthCheck:
-    path: /health
+      path: /health
       port: 8009
       initialDelaySeconds: 15
       periodSeconds: 10
@@ -244,21 +244,21 @@ services:
         cpu: 500m
         memory: 512Mi
     env:
-    - name: VITE_MLOPS_PLATFORM_URL
-    value: "http://mlops-platform:8000"
-    - name: VITE_AUDIT_ASSESS_URL
-    value: "http://audit-assess:8003"
-    - name: VITE_WHIS_DATA_INPUT_URL
-    value: "http://whis-data-input:8004"
-    - name: VITE_WHIS_ENHANCE_URL
-    value: "http://whis-enhance:8007"
+      - name: VITE_MLOPS_PLATFORM_URL
+        value: "http://mlops-platform:8000"
+      - name: VITE_AUDIT_ASSESS_URL
+        value: "http://audit-assess:8003"
+      - name: VITE_WHIS_DATA_INPUT_URL
+        value: "http://whis-data-input:8004"
+      - name: VITE_WHIS_ENHANCE_URL
+        value: "http://whis-enhance:8007"
     healthCheck:
-    path: /
+      path: /
       port: 80
       initialDelaySeconds: 15
       periodSeconds: 10
     ingress:
-    enabled: true
+      enabled: true
       host: linkops.com
       tls: true
       annotations:
@@ -281,17 +281,17 @@ infrastructure:
         cpu: 1000m
         memory: 2Gi
     env:
-    - name: POSTGRES_DB
-    value: "mlops"
-    - name: POSTGRES_USER
-    value: "mlops"
-    - name: POSTGRES_PASSWORD
-    valueFrom:
-        secretKeyRef:
-          name: postgres-secrets
-          key: password
+      - name: POSTGRES_DB
+        value: "mlops"
+      - name: POSTGRES_USER
+        value: "mlops"
+      - name: POSTGRES_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: postgres-secrets
+            key: password
     persistence:
-    enabled: true
+      enabled: true
       size: 10Gi
       storageClass: fast-ssd
 
@@ -309,7 +309,7 @@ infrastructure:
         cpu: 500m
         memory: 512Mi
     persistence:
-    enabled: true
+      enabled: true
       size: 5Gi
       storageClass: fast-ssd
 
@@ -327,7 +327,7 @@ infrastructure:
         cpu: 500m
         memory: 256Mi
     healthCheck:
-    path: /health
+      path: /health
       port: 8080
       initialDelaySeconds: 10
       periodSeconds: 10
@@ -348,7 +348,7 @@ monitoring:
         cpu: 1000m
         memory: 1Gi
     persistence:
-    enabled: true
+      enabled: true
       size: 10Gi
       storageClass: fast-ssd
 
@@ -366,17 +366,17 @@ monitoring:
         cpu: 500m
         memory: 512Mi
     env:
-    - name: GF_SECURITY_ADMIN_PASSWORD
-    valueFrom:
-        secretKeyRef:
-          name: grafana-secrets
-          key: admin-password
+      - name: GF_SECURITY_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: grafana-secrets
+            key: admin-password
     persistence:
-    enabled: true
+      enabled: true
       size: 5Gi
       storageClass: fast-ssd
     ingress:
-    enabled: true
+      enabled: true
       host: grafana.linkops.com
       tls: true
 
@@ -427,12 +427,12 @@ autoscaling:
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-    podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - linkops
-        topologyKey: kubernetes.io/hostname
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - linkops
+          topologyKey: kubernetes.io/hostname
