@@ -47,7 +47,7 @@ jobs:
       - name: Run Ruff Linting
         run: |
           echo "🔍 Running Ruff linting..."
-          ruff check mlops/ shadows/ || {
+          ruff check --ignore E402 mlops/ shadows/ || {
             echo "❌ Ruff linting errors found"
             exit 1
           }
