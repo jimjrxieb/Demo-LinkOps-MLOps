@@ -5,28 +5,32 @@ Automatically fixes common ESLint warnings, errors, and build issues in Vue.js f
 Updated for new frontend structure with authentication, demo mode, and lint error handling
 """
 
+import argparse
+import hashlib
 import json
+import logging
 import os
 import re
 import subprocess
-from pathlib import Path
-import logging
-from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor
-import argparse
+from datetime import datetime
+from pathlib import Path
+
 from tqdm import tqdm
-import hashlib
 
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s',
+    format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.FileHandler(f'frontend_fix_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'),
-        logging.StreamHandler()
-    ]
+        logging.FileHandler(
+            f'frontend_fix_{datetime.now().strftime("%Y%m%d_%H%M%S")}.log'
+        ),
+        logging.StreamHandler(),
+    ],
 )
 logger = logging.getLogger(__name__)
+
 
 def run_command(cmd, cwd=None):
     """Run a shell command and return result"""
@@ -39,24 +43,36 @@ def run_command(cmd, cwd=None):
         logger.error(f"Error running command '{cmd}': {e}", exc_info=True)
         return False, "", str(e)
 
+
 def load_config():
     """Load configuration from .fix_frontend.json"""
-    config_file = Path('frontend/.fix_frontend.json')
+    config_file = Path("frontend/.fix_frontend.json")
     default_config = {
-        'directories': ['src/components', 'src/views', 'src/router', 'src/store', 'src/utils', 'src/assets', 'src/pages', '.'],
-        'patterns': ['*.vue', '*.js', '*.ts', '*.jsx']
+        "directories": [
+            "src/components",
+            "src/views",
+            "src/router",
+            "src/store",
+            "src/utils",
+            "src/assets",
+            "src/pages",
+            ".",
+        ],
+        "patterns": ["*.vue", "*.js", "*.ts", "*.jsx"],
     }
     if config_file.exists():
-        with open(config_file, 'r', encoding='utf-8') as f:
+        with open(config_file, "r", encoding="utf-8") as f:
             logger.info(f"Loaded config from {config_file}")
             return json.load(f)
     logger.info("Using default config")
     return default_config
 
+
 def get_file_hash(file_path):
     """Calculate MD5 hash of a file"""
-    with open(file_path, 'rb') as f:
+    with open(file_path, "rb") as f:
         return hashlib.md5(f.read()).hexdigest()
+
 
 def parse_eslint_output(stderr):
     """Parse ESLint output to extract errors and warnings"""
@@ -65,140 +81,212 @@ def parse_eslint_output(stderr):
     current_file = None
     for line in stderr.splitlines():
         # Match file path
-        if line.startswith(str(Path.cwd())) or '/frontend/' in line:
+        if line.startswith(str(Path.cwd())) or "/frontend/" in line:
             current_file = Path(line.strip())
             continue
         # Match ESLint issue (e.g., "  1:2  error  Missing semicolon  semi")
-        match = re.match(r'\s*(\d+):(\d+)\s+(error|warning)\s+(.+?)\s+(\w+)$', line)
+        match = re.match(r"\s*(\d+):(\d+)\s+(error|warning)\s+(.+?)\s+(\w+)$", line)
         if match and current_file:
             line_num, col_num, severity, message, rule = match.groups()
-            issues.append({
-                'file': current_file,
-                'line': int(line_num),
-                'column': int(col_num),
-                'severity': severity,
-                'message': message,
-                'rule': rule
-            })
+            issues.append(
+                {
+                    "file": current_file,
+                    "line": int(line_num),
+                    "column": int(col_num),
+                    "severity": severity,
+                    "message": message,
+                    "rule": rule,
+                }
+            )
     logger.info(f"Found {len(issues)} ESLint issues")
     return issues
+
 
 def fix_eslint_issues(file_path, content, issues):
     """Fix specific ESLint issues in a file"""
     logger.info(f"Fixing ESLint issues in {file_path}")
     lines = content.split("\n")
     changes_made = 0
-    for issue in [i for i in issues if str(i['file']) == str(file_path)]:
-        line_idx = issue['line'] - 1
+    for issue in [i for i in issues if str(i["file"]) == str(file_path)]:
+        line_idx = issue["line"] - 1
         if line_idx >= len(lines):
             continue
         line = lines[line_idx]
         # Fix missing semicolons
-        if issue['rule'] == 'semi' and 'Missing semicolon' in issue['message']:
-            if not line.strip().endswith(';'):
-                lines[line_idx] = line.rstrip() + ';'
+        if issue["rule"] == "semi" and "Missing semicolon" in issue["message"]:
+            if not line.strip().endswith(";"):
+                lines[line_idx] = line.rstrip() + ";"
                 changes_made += 1
         # Fix unused imports/variables
-        elif issue['rule'] == 'no-unused-vars' and 'is defined but never used' in issue['message']:
-            match = re.search(r"'([^']+)' is defined but never used", issue['message'])
+        elif (
+            issue["rule"] == "no-unused-vars"
+            and "is defined but never used" in issue["message"]
+        ):
+            match = re.search(r"'([^']+)' is defined but never used", issue["message"])
             if match:
                 unused_var = match.group(1)
                 lines[line_idx] = re.sub(rf"\b{unused_var}\b", f"_{unused_var}", line)
                 changes_made += 1
         # Fix spacing issues
-        elif issue['rule'] == 'space-before-function-paren':
-            lines[line_idx] = re.sub(r'function(\w+)\(', r'function \1 (', line)
+        elif issue["rule"] == "space-before-function-paren":
+            lines[line_idx] = re.sub(r"function(\w+)\(", r"function \1 (", line)
             changes_made += 1
         # Fix vue/html-indent
-        elif issue['rule'] == 'html-indent' and 'Expected indentation' in issue['message']:
-            match = re.search(r'Expected indentation of (\d+) spaces but found (\d+) spaces', issue['message'])
+        elif (
+            issue["rule"] == "html-indent"
+            and "Expected indentation" in issue["message"]
+        ):
+            match = re.search(
+                r"Expected indentation of (\d+) spaces but found (\d+) spaces",
+                issue["message"],
+            )
             if match:
                 expected_spaces, found_spaces = int(match.group(1)), int(match.group(2))
                 indent_diff = found_spaces - expected_spaces
                 if indent_diff > 0:
                     lines[line_idx] = line[indent_diff:]
                 else:
-                    lines[line_idx] = ' ' * abs(indent_diff) + line
+                    lines[line_idx] = " " * abs(indent_diff) + line
                 changes_made += 1
         # Fix vue/max-attributes-per-line
-        elif issue['rule'] == 'max-attributes-per-line' and 'should be on a new line' in issue['message']:
-            match = re.search(r"'([^']+)' should be on a new line", issue['message'])
+        elif (
+            issue["rule"] == "max-attributes-per-line"
+            and "should be on a new line" in issue["message"]
+        ):
+            match = re.search(r"'([^']+)' should be on a new line", issue["message"])
             if match:
                 attr = match.group(1)
-                lines[line_idx] = re.sub(rf'\s*{attr}=', f'\n      {attr}=', line)
+                lines[line_idx] = re.sub(rf"\s*{attr}=", f"\n      {attr}=", line)
                 changes_made += 1
         # Fix vue/attributes-order
-        elif issue['rule'] == 'attributes-order':
-            match = re.search(r"Attribute \"([^\"]+)\" should go before \"([^\"]+)\"", issue['message'])
+        elif issue["rule"] == "attributes-order":
+            match = re.search(
+                r"Attribute \"([^\"]+)\" should go before \"([^\"]+)\"",
+                issue["message"],
+            )
             if match:
                 attr1, attr2 = match.group(1), match.group(2)
-                lines[line_idx] = re.sub(rf'\s*{attr1}="[^"]+"\s*{attr2}="[^"]+"', f' {attr1}="{{{{attr1}}}}" {attr2}="{{{{attr2}}}}"', line)
+                lines[line_idx] = re.sub(
+                    rf'\s*{attr1}="[^"]+"\s*{attr2}="[^"]+"',
+                    f' {attr1}="{{{{attr1}}}}" {attr2}="{{{{attr2}}}}"',
+                    line,
+                )
                 changes_made += 1
         # Fix vue/html-self-closing
-        elif issue['rule'] == 'html-self-closing' and 'Disallow self-closing on HTML void elements' in issue['message']:
-            lines[line_idx] = line.replace('/>', '>')
+        elif (
+            issue["rule"] == "html-self-closing"
+            and "Disallow self-closing on HTML void elements" in issue["message"]
+        ):
+            lines[line_idx] = line.replace("/>", ">")
             changes_made += 1
         # Fix vue/no-duplicate-attributes
-        elif issue['rule'] == 'no-duplicate-attributes' and 'Duplicate attribute' in issue['message']:
-            lines[line_idx] = re.sub(r';\s*;', ';', line)
-            lines[line_idx] = re.sub(r'\s*;\s*([^\s])', r' \1', lines[line_idx])
+        elif (
+            issue["rule"] == "no-duplicate-attributes"
+            and "Duplicate attribute" in issue["message"]
+        ):
+            lines[line_idx] = re.sub(r";\s*;", ";", line)
+            lines[line_idx] = re.sub(r"\s*;\s*([^\s])", r" \1", lines[line_idx])
             changes_made += 1
         # Fix vue/no-parsing-error (x-invalid-end-tag)
-        elif issue['rule'] == 'no-parsing-error' and 'x-invalid-end-tag' in issue['message']:
-            if line.strip().endswith('</'):
-                lines[line_idx] = line.rstrip('</') + '>'
+        elif (
+            issue["rule"] == "no-parsing-error"
+            and "x-invalid-end-tag" in issue["message"]
+        ):
+            if line.strip().endswith("</"):
+                lines[line_idx] = line.rstrip("</") + ">"
                 changes_made += 1
         # Fix vue/require-explicit-emits
-        elif issue['rule'] == 'require-explicit-emits':
-            match = re.search(r"The \"([^\"]+)\" event has been triggered but not declared", issue['message'])
+        elif issue["rule"] == "require-explicit-emits":
+            match = re.search(
+                r"The \"([^\"]+)\" event has been triggered but not declared",
+                issue["message"],
+            )
             if match:
                 event = match.group(1)
-                script_idx = next((i for i, l in enumerate(lines) if '<script' in l), -1)
+                script_idx = next(
+                    (i for i, l in enumerate(lines) if "<script" in l), -1
+                )
                 if script_idx != -1:
-                    define_emits = next((i for i, l in enumerate(lines[script_idx:]) if 'defineEmits' in l), -1)
+                    define_emits = next(
+                        (
+                            i
+                            for i, l in enumerate(lines[script_idx:])
+                            if "defineEmits" in l
+                        ),
+                        -1,
+                    )
                     if define_emits == -1:
-                        lines.insert(script_idx + 1, f"const emit = defineEmits(['{event}'])")
+                        lines.insert(
+                            script_idx + 1, f"const emit = defineEmits(['{event}'])"
+                        )
                     else:
-                        lines[script_idx + define_emits] = re.sub(r'defineEmits\(\[([^\]]*)\]\)', rf"defineEmits([\1, '{event}'])", lines[script_idx + define_emits])
+                        lines[script_idx + define_emits] = re.sub(
+                            r"defineEmits\(\[([^\]]*)\]\)",
+                            rf"defineEmits([\1, '{event}'])",
+                            lines[script_idx + define_emits],
+                        )
                     changes_made += 1
         # Fix vue/no-unused-components
-        elif issue['rule'] == 'no-unused-components':
-            match = re.search(r"The \"([^\"]+)\" component has been registered but not used", issue['message'])
+        elif issue["rule"] == "no-unused-components":
+            match = re.search(
+                r"The \"([^\"]+)\" component has been registered but not used",
+                issue["message"],
+            )
             if match:
                 component = match.group(1)
-                script_idx = next((i for i, l in enumerate(lines) if '<script' in l), -1)
+                script_idx = next(
+                    (i for i, l in enumerate(lines) if "<script" in l), -1
+                )
                 if script_idx != -1:
-                    components_line = next((i for i, l in enumerate(lines[script_idx:]) if 'components:' in l), -1)
+                    components_line = next(
+                        (
+                            i
+                            for i, l in enumerate(lines[script_idx:])
+                            if "components:" in l
+                        ),
+                        -1,
+                    )
                     if components_line != -1:
-                        lines[script_idx + components_line] = re.sub(rf"'{component}'", f"'{component}' // TODO: Use or remove", lines[script_idx + components_line])
+                        lines[script_idx + components_line] = re.sub(
+                            rf"'{component}'",
+                            f"'{component}' // TODO: Use or remove",
+                            lines[script_idx + components_line],
+                        )
                         changes_made += 1
         # Fix vue/multiline-html-element-content-newline
-        elif issue['rule'] == 'multiline-html-element-content-newline':
-            if 'after opening tag' in issue['message']:
-                lines[line_idx] = line + '\n'
+        elif issue["rule"] == "multiline-html-element-content-newline":
+            if "after opening tag" in issue["message"]:
+                lines[line_idx] = line + "\n"
                 changes_made += 1
         # Fix vue/singleline-html-element-content-newline
-        elif issue['rule'] == 'singleline-html-element-content-newline':
-            if 'after opening tag' in issue['message']:
-                lines[line_idx] = re.sub(r'>([^<]+)<', r'>\n\1\n<', line)
+        elif issue["rule"] == "singleline-html-element-content-newline":
+            if "after opening tag" in issue["message"]:
+                lines[line_idx] = re.sub(r">([^<]+)<", r">\n\1\n<", line)
                 changes_made += 1
     if changes_made > 0:
         logger.info(f"Fixed {changes_made} ESLint issues")
     return "\n".join(lines)
 
+
 def fix_vite_config_syntax(file_path):
     """Fix common Vite config syntax errors"""
     logger.info(f"Checking Vite config syntax in {file_path}")
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
         original_content = content
         changes_made = 0
         # Fix duplicate defineConfig imports
-        content = re.sub(r'import\s*{\s*defineConfig\s*,\s*defineConfig\s*(,\s*defineConfig\s*)?\}\s*from\s*[\'"]vite[\'"]', r'import { defineConfig } from "vite"', content)
+        content = re.sub(
+            r'import\s*{\s*defineConfig\s*,\s*defineConfig\s*(,\s*defineConfig\s*)?\}\s*from\s*[\'"]vite[\'"]',
+            r'import { defineConfig } from "vite"',
+            content,
+        )
         # Ensure single defineConfig
-        if 'defineConfig' not in content:
-            content = content.replace('export default {', 'export default defineConfig({')
+        if "defineConfig" not in content:
+            content = content.replace(
+                "export default {", "export default defineConfig({"
+            )
             changes_made += 1
         # Fix extra semicolons in object properties
         content = re.sub(r"'([^']+)';", r"'\1'", content)
@@ -207,25 +295,28 @@ def fix_vite_config_syntax(file_path):
         content = re.sub(r"'([^']+)',\s*;", r"'\1',", content)
         content = re.sub(r'"([^"]+)",\s*;', r'"\1",', content)
         # Fix trailing semicolons in object properties
-        content = re.sub(r':\s*([^,}]+);\s*([,}])', r': \1\2', content)
+        content = re.sub(r":\s*([^,}]+);\s*([,}])", r": \1\2", content)
         # Fix missing commas in object properties
         content = re.sub(r"'([^']+)'\s*\n\s*'([^']+)'", r"'\1',\n      '\2'", content)
         content = re.sub(r'"([^"]+)"\s*\n\s*"([^"]+)"', r'"\1",\n      "\2"', content)
         # Fix function calls with extra semicolons
-        content = re.sub(r'\(\s*([^)]+)\s*\)\s*;', r'(\1)', content)
+        content = re.sub(r"\(\s*([^)]+)\s*\)\s*;", r"(\1)", content)
         # Add CORS configuration
-        if 'server:' not in content:
-            content = content.replace('export default defineConfig({', '''export default defineConfig({
+        if "server:" not in content:
+            content = content.replace(
+                "export default defineConfig({",
+                """export default defineConfig({
   server: {
     cors: {
       origin: '*',
       methods: ['GET', 'POST'],
       credentials: true
     }
-  },''')
+  },""",
+            )
             changes_made += 1
         if content != original_content:
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
             logger.info("Fixed Vite config syntax errors")
             return True
@@ -234,28 +325,29 @@ def fix_vite_config_syntax(file_path):
         logger.error(f"Error fixing Vite config: {e}", exc_info=True)
         return False
 
+
 def fix_package_json_scripts(file_path):
     """Fix missing scripts in package.json"""
     logger.info(f"Checking package.json scripts in {file_path}")
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         original_data = json.dumps(data, indent=2)
         changes_made = 0
-        if 'scripts' in data:
-            scripts = data['scripts']
-            if 'lint' in scripts and 'lint:fix' not in scripts:
-                lint_cmd = scripts['lint']
-                if '--fix' not in lint_cmd:
-                    scripts['lint:fix'] = lint_cmd + ' --fix'
+        if "scripts" in data:
+            scripts = data["scripts"]
+            if "lint" in scripts and "lint:fix" not in scripts:
+                lint_cmd = scripts["lint"]
+                if "--fix" not in lint_cmd:
+                    scripts["lint:fix"] = lint_cmd + " --fix"
                     changes_made += 1
                     logger.info("Added lint:fix script")
-            if 'lint' in scripts and '--fix' in scripts['lint']:
-                scripts['lint'] = scripts['lint'].replace(' --fix', '')
+            if "lint" in scripts and "--fix" in scripts["lint"]:
+                scripts["lint"] = scripts["lint"].replace(" --fix", "")
                 changes_made += 1
                 logger.info("Fixed lint script (removed --fix flag)")
         if changes_made > 0:
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 json.dump(data, f, indent=2)
             return True
         return False
@@ -263,22 +355,28 @@ def fix_package_json_scripts(file_path):
         logger.error(f"Error fixing package.json: {e}", exc_info=True)
         return False
 
+
 def fix_eslint_config(file_path):
     """Fix ESLint configuration issues"""
     logger.info(f"Checking ESLint config in {file_path}")
     try:
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
         original_content = content
         changes_made = 0
-        if 'extends' in content and 'vue/essential' not in content:
-            content = content.replace('extends: [', 'extends: [\n    "plugin:vue/vue3-essential",')
+        if "extends" in content and "vue/essential" not in content:
+            content = content.replace(
+                "extends: [", 'extends: [\n    "plugin:vue/vue3-essential",'
+            )
             changes_made += 1
-        if 'parserOptions' not in content:
-            content = content.replace('extends: [', 'extends: [\n    parserOptions: { ecmaVersion: 2020, sourceType: "module" },')
+        if "parserOptions" not in content:
+            content = content.replace(
+                "extends: [",
+                'extends: [\n    parserOptions: { ecmaVersion: 2020, sourceType: "module" },',
+            )
             changes_made += 1
         if changes_made > 0:
-            with open(file_path, 'w', encoding='utf-8') as f:
+            with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
             logger.info("Fixed ESLint configuration")
             return True
@@ -286,6 +384,7 @@ def fix_eslint_config(file_path):
     except Exception as e:
         logger.error(f"Error fixing ESLint config: {e}", exc_info=True)
         return False
+
 
 def fix_npm_ci_errors(frontend_dir):
     """Fix npm ci errors by syncing package-lock.json with package.json"""
@@ -313,7 +412,9 @@ def fix_npm_ci_errors(frontend_dir):
             if success:
                 logger.info("npm ci now works correctly!")
                 return True
-            logger.error(f"npm ci still failing after package-lock.json regeneration: {stderr}")
+            logger.error(
+                f"npm ci still failing after package-lock.json regeneration: {stderr}"
+            )
             return False
         logger.error(f"Failed to run npm install: {stderr}")
         return False
@@ -322,9 +423,15 @@ def fix_npm_ci_errors(frontend_dir):
         conflicts = []
         for line in stderr.split("\n"):
             if "Invalid: lock file's" in line:
-                match = re.search(r"lock file's (\w+)@([\d.]+) does not satisfy (\w+)@([\d.]+)", line)
+                match = re.search(
+                    r"lock file's (\w+)@([\d.]+) does not satisfy (\w+)@([\d.]+)", line
+                )
                 if match:
-                    package, lock_ver, req_ver = match.group(1), match.group(2), match.group(4)
+                    package, lock_ver, req_ver = (
+                        match.group(1),
+                        match.group(2),
+                        match.group(4),
+                    )
                     conflicts.append((package, lock_ver, req_ver))
         if conflicts:
             logger.info(f"Found {len(conflicts)} dependency conflicts:")
@@ -339,6 +446,7 @@ def fix_npm_ci_errors(frontend_dir):
             if node_modules.exists():
                 try:
                     import shutil
+
                     shutil.rmtree(node_modules)
                     logger.info("Removed node_modules directory")
                 except Exception as e:
@@ -361,6 +469,7 @@ def fix_npm_ci_errors(frontend_dir):
     logger.error(f"npm ci failed with unknown error: {stderr}")
     return False
 
+
 def fix_console_statements(file_path, content):
     """Fix console statements by removing or replacing them"""
     logger.info(f"Fixing console statements in {file_path}")
@@ -369,7 +478,9 @@ def fix_console_statements(file_path, content):
     changes_made = 0
     for i, line in enumerate(lines):
         original_line = line
-        console_pattern = r"(\s*)(console\.(log|error|warn|info|debug)\s*\([^)]*\)\s*;?)"
+        console_pattern = (
+            r"(\s*)(console\.(log|error|warn|info|debug)\s*\([^)]*\)\s*;?)"
+        )
         match = re.search(console_pattern, line)
         if match:
             indent = match.group(1)
@@ -385,6 +496,7 @@ def fix_console_statements(file_path, content):
     if changes_made > 0:
         logger.info(f"Fixed {changes_made} console statements")
     return "\n".join(fixed_lines)
+
 
 def fix_unused_variables(file_path, content):
     """Fix unused variables by removing or marking them as used"""
@@ -411,6 +523,7 @@ def fix_unused_variables(file_path, content):
         logger.info(f"Fixed {changes_made} unused variables")
     return "\n".join(fixed_lines)
 
+
 def fix_vue_props(file_path, content):
     """Fix Vue.js props validation issues"""
     logger.info(f"Fixing Vue props in {file_path}")
@@ -420,14 +533,14 @@ def fix_vue_props(file_path, content):
     in_define_props = False
     for line in lines:
         original_line = line
-        if 'defineProps' in line and 'type:' not in line:
+        if "defineProps" in line and "type:" not in line:
             in_define_props = True
-            fixed_line = line.replace('defineProps({', 'defineProps<{')
+            fixed_line = line.replace("defineProps({", "defineProps<{")
             if fixed_line != original_line:
                 changes_made += 1
-        elif in_define_props and '}' in line:
+        elif in_define_props and "}" in line:
             in_define_props = False
-            fixed_line = line.replace('})', '}>({ required: false })')
+            fixed_line = line.replace("})", "}>({ required: false })")
             changes_made += 1
         elif "props:" in line and "required:" not in line:
             fixed_line = line.replace("type:", "required: false, type:")
@@ -448,6 +561,7 @@ def fix_vue_props(file_path, content):
         logger.info(f"Fixed {changes_made} Vue props")
     return "\n".join(fixed_lines)
 
+
 def fix_accessibility(file_path, content):
     """Fix accessibility issues in Vue components"""
     logger.info(f"Fixing accessibility in {file_path}")
@@ -456,8 +570,8 @@ def fix_accessibility(file_path, content):
     changes_made = 0
     for line in lines:
         original_line = line
-        if '<button' in line and 'aria-label' not in line:
-            fixed_line = line.replace('<button', '<button aria-label="Button"')
+        if "<button" in line and "aria-label" not in line:
+            fixed_line = line.replace("<button", '<button aria-label="Button"')
             changes_made += 1
         else:
             fixed_line = original_line
@@ -465,6 +579,7 @@ def fix_accessibility(file_path, content):
     if changes_made > 0:
         logger.info(f"Fixed {changes_made} accessibility issues")
     return "\n".join(fixed_lines)
+
 
 def fix_javascript_issues(file_path, content):
     """Fix common JavaScript issues"""
@@ -492,11 +607,14 @@ def fix_javascript_issues(file_path, content):
         logger.info(f"Fixed {changes_made} JavaScript issues")
     return "\n".join(fixed_lines)
 
-def process_file(file_path, issues, cache_file=Path('frontend/.fix_frontend_cache.json')):
+
+def process_file(
+    file_path, issues, cache_file=Path("frontend/.fix_frontend_cache.json")
+):
     """Process a single file and apply fixes"""
     cache = {}
     if cache_file.exists():
-        with open(cache_file, 'r', encoding='utf-8') as f:
+        with open(cache_file, "r", encoding="utf-8") as f:
             cache = json.load(f)
     current_hash = get_file_hash(file_path)
     if str(file_path) in cache and cache[str(file_path)] == current_hash:
@@ -518,7 +636,7 @@ def process_file(file_path, issues, cache_file=Path('frontend/.fix_frontend_cach
             with open(file_path, "w", encoding="utf-8") as f:
                 f.write(content)
             cache[str(file_path)] = current_hash
-            with open(cache_file, 'w', encoding='utf-8') as f:
+            with open(cache_file, "w", encoding="utf-8") as f:
                 json.dump(cache, f)
             return True
         return False
@@ -526,25 +644,27 @@ def process_file(file_path, issues, cache_file=Path('frontend/.fix_frontend_cach
         logger.error(f"Error processing {file_path}: {e}", exc_info=True)
         return False
 
+
 def find_frontend_files(frontend_dir):
     """Find all frontend files that need processing"""
     logger.info("Scanning for frontend files...")
     config = load_config()
     files_to_process = []
-    demo_files = ['Login.vue', 'DemoDashboard.vue']
+    demo_files = ["Login.vue", "DemoDashboard.vue"]
     for file in demo_files:
-        file_path = frontend_dir / 'src/components' / file
+        file_path = frontend_dir / "src/components" / file
         if file_path.exists():
             files_to_process.append(file_path)
-    for directory in config['directories']:
+    for directory in config["directories"]:
         dir_path = frontend_dir / directory if directory else frontend_dir
         if dir_path.exists():
-            for pattern in config['patterns']:
+            for pattern in config["patterns"]:
                 files = list(dir_path.rglob(pattern))  # Use rglob for recursive search
                 files_to_process.extend(files)
     files_to_process = sorted(set(files_to_process))
     logger.info(f"Found {len(files_to_process)} files to process")
     return files_to_process
+
 
 def run_eslint_fix(frontend_dir):
     """Run ESLint auto-fix and parse output for additional fixes"""
@@ -562,6 +682,7 @@ def run_eslint_fix(frontend_dir):
             logger.error(f"ESLint errors: {stderr}")
     return success, issues
 
+
 def test_build(frontend_dir):
     """Test the build process with error recovery"""
     logger.info("Testing build process...")
@@ -574,7 +695,7 @@ def test_build(frontend_dir):
         return True
     logger.warning("Build test failed - attempting error recovery...")
     logger.error(f"Error: {stderr}")
-    if "Expected" in stderr or "The symbol \"defineConfig\"" in stderr:
+    if "Expected" in stderr or 'The symbol "defineConfig"' in stderr:
         logger.info("Detected syntax error in vite.config.js - attempting to fix...")
         if vite_config.exists():
             if fix_vite_config_syntax(vite_config):
@@ -592,6 +713,7 @@ def test_build(frontend_dir):
             return True
     return False
 
+
 def test_docker_build(frontend_dir):
     """Test Docker build for Kubernetes deployment"""
     logger.info("Testing Docker build for Kubernetes deployment...")
@@ -599,7 +721,9 @@ def test_docker_build(frontend_dir):
     if not dockerfile.exists():
         logger.warning("Dockerfile not found, skipping build test")
         return True
-    success, stdout, stderr = run_command("docker build -t linkops-frontend:test .", cwd=frontend_dir)
+    success, stdout, stderr = run_command(
+        "docker build -t linkops-frontend:test .", cwd=frontend_dir
+    )
     if success:
         logger.info("Docker build successful")
         return True
@@ -608,16 +732,21 @@ def test_docker_build(frontend_dir):
         logger.info("Docker build failed due to npm build error - attempting to fix...")
         if test_build(frontend_dir):
             logger.info("Retrying Docker build after npm build fix...")
-            success, stdout, stderr = run_command("docker build -t linkops-frontend:test .", cwd=frontend_dir)
+            success, stdout, stderr = run_command(
+                "docker build -t linkops-frontend:test .", cwd=frontend_dir
+            )
             if success:
                 logger.info("Docker build successful after fix!")
                 return True
     return False
 
+
 def commit_and_sync(frontend_dir):
     """Commit fixes and trigger ArgoCD sync"""
     logger.info("Committing fixes and triggering ArgoCD sync...")
-    success, _, stderr = run_command("git add . && git commit -m 'Frontend auto-fixes' && git push", cwd=frontend_dir)
+    success, _, stderr = run_command(
+        "git add . && git commit -m 'Frontend auto-fixes' && git push", cwd=frontend_dir
+    )
     if success:
         logger.info("Changes committed and pushed")
         success, _, stderr = run_command("argocd app sync linkops")
@@ -627,10 +756,13 @@ def commit_and_sync(frontend_dir):
         logger.error(f"ArgoCD sync failed: {stderr}")
     return False
 
+
 def main():
     """Main function"""
     parser = argparse.ArgumentParser(description="LinkOps Frontend Auto-Fix Script")
-    parser.add_argument('--max-workers', type=int, default=4, help="Max parallel workers")
+    parser.add_argument(
+        "--max-workers", type=int, default=4, help="Max parallel workers"
+    )
     args = parser.parse_args()
     logger.info("🚀 LinkOps Frontend Auto-Fix Script")
     logger.info("=" * 50)
@@ -662,7 +794,13 @@ def main():
     files = find_frontend_files(frontend_dir)
     logger.info(f"Processing {len(files)} frontend files...")
     with ThreadPoolExecutor(max_workers=args.max_workers) as executor:
-        results = list(tqdm(executor.map(lambda f: process_file(f, eslint_issues), files), total=len(files), desc="Processing files"))
+        results = list(
+            tqdm(
+                executor.map(lambda f: process_file(f, eslint_issues), files),
+                total=len(files),
+                desc="Processing files",
+            )
+        )
     files_processed = sum(1 for result in results if result)
     logger.info(f"Processed {files_processed} files")
     # Step 5: Re-run ESLint to verify fixes
@@ -691,6 +829,7 @@ def main():
         return 0
     logger.warning("\n⚠️ Frontend auto-fix completed with issues")
     return 1
+
 
 if __name__ == "__main__":
     exit(main())

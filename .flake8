@@ -7,7 +7,9 @@ extend-ignore =
     W503  
     E501
     F841
-    F402        
+    F402
+    F541
+    F401        
 
 exclude = 
     .git

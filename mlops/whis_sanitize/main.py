@@ -170,8 +170,7 @@ async def test_sanitization():
     Test endpoint with sample data.
     """
     test_data = {
-        "id": str(
-            uuid.uuid4()),
+        "id": str(uuid.uuid4()),
         "type": "qna",
         "content": "How do I deploy a Kubernetes pod? My email is test@example.com and phone is 555-123-4567.",
         "source": "test_input",
