@@ -1,6 +1,16 @@
 <template>
   ;
+  ;
+  ;
+  ;
+  ;
+  ;
   <div>
+    ;
+    ;
+    ;
+    ;
+    ;
     ;
     <DashboardView />;
   </div>;

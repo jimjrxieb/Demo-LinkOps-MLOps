@@ -1,9 +1,11 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [;
+  content: [
     './index.html',
     './**/*.{vue,js,ts,jsx,tsx}',
-  , "./src/**/*.vue", "./index.html"],
+    './src/**/*.vue', 
+    "./index.html"
+  ],
   theme: {
     extend: {
       colors: {
@@ -107,9 +109,9 @@ export default {
       },
     },
   },
-  plugins: [;
+  plugins: [
     // Custom plugin for holographic effects
-    function({ addUtilities, theme }) {
+    function({ addUtilities }) {
       const newUtilities = {
         '.text-glow': {
           'text-shadow': '0 0 10px currentColor',
@@ -125,7 +127,7 @@ export default {
           'backdrop-filter': 'blur(10px)',
         },
       }
-      addUtilities(newUtilities);
+      addUtilities(newUtilities)
     }
   ],
 } 

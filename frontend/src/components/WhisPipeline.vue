@@ -1,93 +1,110 @@
-<template>;
-  <div class='whis-pipeline'>;
-    <div class='pipeline-header'>;
-      <h2 class='pipeline-title'>Whis Pipeline Flow</h2>;
-      <p class='pipeline-subtitle'>Data Processing & Enhancement Workflow</p>;
-    </div>;
+<template>
+  <div class="whis-pipeline">
+    <div class="pipeline-header">
+      <h2 class="pipeline-title">
+        Whis Pipeline Flow
+      </h2>
+      <p class="pipeline-subtitle">
+        Data Processing & Enhancement Workflow
+      </p>
+    </div>
     
-    <div class='pipeline-container'>;
-      <div class='pipeline-steps'>;
-        <div;
-          v-for='(step, index) in pipelineData';
-          :key='step.id';
-          class='pipeline-step';
+    <div class="pipeline-container">
+      <div class="pipeline-steps">
+        <div
+          v-for="(step, index) in pipelineData"
+          :key="step.id"
+          class="pipeline-step"
           :class="{
             'active': index === currentStep,
             'completed': index < currentStep,
-            'pending': index > currentStep;
-          }";
-          @click='$emit('step-click', step)';
-        >;
-          <div class='step-icon'>{{ step.icon }}</div>;
-          <div class='step-content'>;
-            <h3 class='step-title'>{{ step.name }}</h3>;
-            <p class='step-description'>{{ step.description }}</p>;
-            <div class='step-status'>;
-              <span class="status-indicator" :class="getStepStatus(index)"></span>;
-              <span class='status-text'>{{ getStepStatusText(index) }}</span>;
-            </div>;
-          </div>;
+            'pending': index > currentStep
+          }"
+          @click="$emit('step-click', step)"
+        >
+          <div class="step-icon">
+            {{ step.icon }}
+          </div>
+          <div class="step-content">
+            <h3 class="step-title">
+              {{ step.name }}
+            </h3>
+            <p class="step-description">
+              {{ step.description }}
+            </p>
+            <div class="step-status">
+              <span
+                class="status-indicator"
+                :class="getStepStatus(index)"
+              />
+              <span class="status-text">{{ getStepStatusText(index) }}</span>
+            </div>
+          </div>
           
-          <!-- Connection Line -->;
-          <div v-if="index < pipelineData.length - 1" class="step-connector">;
-            <div class='connector-line'></div>;
-            <div class='connector-arrow'>→</div>;
-          </div>;
-        </div>;
-      </div>;
-    </div>;
+          <!-- Connection Line -->
+          <div
+            v-if="index < pipelineData.length - 1"
+            class="step-connector"
+          >
+            <div class="connector-line" />
+            <div class="connector-arrow">
+              →
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
     
-    <!-- Pipeline Progress -->;
-    <div class='pipeline-progress'>;
-      <div class='progress-bar'>;
-        <div;
-          class='progress-fill';
-          :style='{ width: progressPercentage + '%' }';
-        ></div>;
-      </div>;
-      <div class='progress-text'>;
-        Step {{ currentStep + 1 }} of {{ pipelineData.length }}
-        ({{ Math.round(progressPercentage) }}% complete);
-      </div>;
-    </div>;
-  </div>;
-</template>;
+    <!-- Pipeline Progress -->
+    <div class="pipeline-progress">
+      <div class="progress-bar">
+        <div
+          class="progress-fill"
+          :style="{ width: progressPercentage + '%' }"
+        />
+      </div>
+    </div>
+    <div class="progress-text">
+      Step {{ currentStep + 1 }} of {{ pipelineData.length }}
+      ({{ Math.round(progressPercentage) }}% complete)
+    </div>
+  </div>
+</template>
 
-<script>;
+<script>
 export default {
   name: 'WhisPipeline',
   props: {
     pipelineData: {
       type: Array,
-      required: true;
+      required: true
     },
     currentStep: {
-      type: Number, default: 0,
-      default: 0;
+      type: Number,
+      default: 0
     }
   },
   computed: {
     progressPercentage() {
-      return (this.currentStep / (this.pipelineData.length - 1)) * 100;
+      return (this.currentStep / (this.pipelineData.length - 1)) * 100
     }
   },
   methods: {
     getStepStatus(index) {
-      if (index < this.currentStep) return 'completed';
-      if (index === this.currentStep) return 'active';
-      return 'pending';
+      if (index < this.currentStep) return 'completed'
+      if (index === this.currentStep) return 'active'
+      return 'pending'
     },
-    
     getStepStatusText(index) {
-      if (index < this.currentStep) return 'Completed';
-      if (index === this.currentStep) return 'Processing';
-      return 'Pending';
+      if (index < this.currentStep) return 'Completed'
+      if (index === this.currentStep) return 'Processing'
+      return 'Pending'
     }
   }
 }
-</script>;
+</script>
 
-<style scoped>;
+<style scoped>
 .whis-pipeline {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid #00d4ff;
@@ -172,17 +189,12 @@ export default {
 .step-title {
   color: #00d4ff;
   margin: 0 0 0.5rem 0;
-  font-size: 1.3rem;
-  font-weight: bold;
-}
-
-.pipeline-step.completed .step-title {
-  color: #00ff00;
+  font-size: 1.2rem;
 }
 
 .step-description {
   color: #e0e0e0;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 1rem 0;
   font-size: 0.9rem;
   line-height: 1.4;
 }
@@ -198,31 +210,16 @@ export default {
   height: 12px;
   border-radius: 50%;
   background: #666;
-  transition: all 0.3s ease;
-}
-
-.status-indicator.completed {
-  background: #00ff00;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
 }
 
 .status-indicator.active {
   background: #00d4ff;
-  box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-  animation: pulse 2s infinite;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.6);
 }
 
-.status-indicator.pending {
-  background: #666;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+.status-indicator.completed {
+  background: #00ff00;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.6);
 }
 
 .status-text {
@@ -234,78 +231,59 @@ export default {
 
 .step-connector {
   position: absolute;
-  left: 50%;
-  top: 100%;
-  transform: translateX(-50%);
+  right: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   align-items: center;
-  z-index: 1;
+  gap: 0.25rem;
 }
 
 .connector-line {
   width: 2px;
-  height: 30px;
+  height: 40px;
   background: linear-gradient(to bottom, #00d4ff, transparent);
 }
 
 .connector-arrow {
   color: #00d4ff;
-  font-size: 1.5rem;
-  margin-top: -5px;
+  font-size: 1.2rem;
+  filter: drop-shadow(0 0 5px rgba(0, 212, 255, 0.6));
 }
 
 .pipeline-progress {
-  text-align: center;
+  margin-top: 2rem;
 }
 
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 1rem;
-  position: relative;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #00d4ff, #00ff88);
+  background: linear-gradient(90deg, #00d4ff, #0099cc);
   border-radius: 4px;
-  transition: width 0.5s ease;
-  position: relative;
-}
-
-.progress-fill::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-  animation: shimmer 2s infinite;
-}
-
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
+  transition: width 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 212, 255, 0.4);
 }
 
 .progress-text {
-  color: #888;
-  font-size: 0.9rem;
+  text-align: center;
+  color: #00d4ff;
+  font-weight: bold;
+  font-size: 1rem;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .whis-pipeline {
-    padding: 1rem;
-  }
-  
-  .pipeline-title {
-    font-size: 1.5rem;
+    padding: 1.5rem;
   }
   
   .pipeline-step {
@@ -314,12 +292,12 @@ export default {
     gap: 1rem;
   }
   
-  .step-icon {
-    font-size: 2rem;
-  }
-  
   .step-connector {
     display: none;
   }
+  
+  .pipeline-title {
+    font-size: 1.5rem;
+  }
 }
-</style>;
+</style>

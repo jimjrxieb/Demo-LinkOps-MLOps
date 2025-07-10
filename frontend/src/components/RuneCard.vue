@@ -1,35 +1,68 @@
-<template>;
-  <div class="rune-card" @click="$emit('click', rune)">;
-    <div class='rune-header'>;
-      <div class='rune-icon'>{{ getRuneIcon(rune.type) }}</div>;
-      <div class='rune-cost'>{{ rune.cost }} ⚡</div>;
-    </div>;
-    
-    <div class='rune-content'>;
-      <h3 class='rune-name'>{{ rune.name }}</h3>;
-      <p class='rune-description'>{{ rune.description }}</p>;
-      
-      <div class='rune-type'>;
-        <span class="type-badge" :class="rune.type">{{ rune.type }}</span>;
+<template>
+  ;
+  <div
+    class="rune-card"
+    @click="$emit('click', rune)"
+  >
+    ;
+    <div class="rune-header">
+      ;
+      <div class="rune-icon">
+        {{ getRuneIcon(rune.type) }}
+      </div>;
+      <div class="rune-cost">
+        {{ rune.cost }} ⚡
       </div>;
     </div>;
     
-    <div class='rune-footer'>;
-      <button class="activate-btn" @click.stop="activateRune">;
-        <span class='btn-icon'>⚡</span>;
+    <div class="rune-content">
+      ;
+      <h3 class="rune-name">
+        {{ rune.name }}
+      </h3>;
+      <p class="rune-description">
+        {{ rune.description }}
+      </p>;
+      
+      <div class="rune-type">
+        ;
+        <span
+          class="type-badge"
+          :class="rune.type"
+        >{{ rune.type }}</span>;
+      </div>;
+    </div>;
+    
+    <div class="rune-footer">
+      ;
+      <button
+        class="activate-btn"
+        @click.stop="activateRune"
+      >
+        ;
+        <span class="btn-icon">⚡</span>;
         Activate;
       </button>;
     </div>;
   </div>;
 </template>;
-
 <script>;
 export default {
   name: 'RuneCard',
   props: {
     rune: {
       type: Object,
-      required: true;
+      required: true
+    }
+  },
+  computed: {
+    typeClass() {
+      switch (this.rune.type) {
+        case 'data-processing': return 'rune-data-processing'
+        case 'security': return 'rune-security'
+        case 'optimization': return 'rune-optimization'
+        default: return ''
+      }
     }
   },
   methods: {
@@ -40,7 +73,7 @@ export default {
         'optimization': '⚡',
         'analysis': '🔍',
         'enhancement': '✨',
-        'default': '🔮';
+        'default': '🔮'
       }
       return icons[type] || icons.default;
     },
@@ -50,7 +83,6 @@ export default {
   }
 }
 </script>;
-
 <style scoped>;
 .rune-card {
   background: rgba(0, 0, 0, 0.6);

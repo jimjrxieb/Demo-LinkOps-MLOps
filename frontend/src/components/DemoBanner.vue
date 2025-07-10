@@ -1,57 +1,65 @@
-<template>;
-  <div v-if="isDemoMode" class="demo-banner">;
-    <div class='banner-content'>;
-      <div class='banner-icon'>🎭</div>;
-      <div class='banner-text'>;
-        <strong>Demo Mode Active</strong>;
-        <span class='banner-description'>;
-          You're viewing simulated data. No real changes will be made to the system.;
-        </span>;
-      </div>;
-      <button class="banner-close" @click="dismissBanner">;
-        <span class='close-icon'>×</span>;
-      </button>;
-    </div>;
+<template>
+  <div
+    v-if="isDemoMode"
+    class="demo-banner"
+  >
+    <div class="banner-content">
+      <div class="banner-icon">
+        🎭
+      </div>
+      <div class="banner-text">
+        <strong>Demo Mode Active</strong>
+        <span class="banner-description">
+          You're viewing simulated data. No real changes will be made to the system.
+        </span>
+      </div>
+      <button
+        class="banner-close"
+        @click="dismissBanner"
+      >
+        <span class="close-icon">×</span>
+      </button>
+    </div>
     
-    <!-- Animated border -->;
-    <div class='banner-border'></div>;
-  </div>;
-</template>;
+    <!-- Animated border -->
+    <div class="banner-border" />
+  </div>
+</template>
 
-<script>;
+<script>
 import { useMainStore } from '../store/index.js'
 
 export default {
   name: 'DemoBanner',
   data() {
     return {
-      isDismissed: false;
+      isDismissed: false
     }
   },
   computed: {
     isDemoMode() {
-      const store = useMainStore();
-      return store.authRole === 'demo' && !this.isDismissed;
-    }
-  },
-  methods: {
-    dismissBanner() {
-      this.isDismissed = true;
-      // Store dismissal in localStorage
-      localStorage.setItem('demo-banner-dismissed', 'true');
+      const store = useMainStore()
+      return store.authRole === 'demo' && !this.isDismissed
     }
   },
   mounted() {
     // Check if banner was previously dismissed
-    const dismissed = localStorage.getItem('demo-banner-dismissed');
+    const dismissed = localStorage.getItem('demo-banner-dismissed')
     if (dismissed === 'true') {
-      this.isDismissed = true;
+      this.isDismissed = true
+    }
+  },
+  methods: {
+    dismissBanner() {
+      this.isDismissed = true
+      // Store dismissal in localStorage
+      localStorage.setItem('demo-banner-dismissed', 'true')
     }
   }
 }
-</script>;
+</script>
 
-<style scoped>;
+<style scoped>
 .demo-banner {
   position: fixed;
   top: 0;
@@ -178,4 +186,4 @@ export default {
     font-size: 1.2rem;
   }
 }
-</style>;
+</style>

@@ -1,37 +1,88 @@
 <template>
   ;
+  ;
+  ;
+  ;
+  ;
   <div class="dashboard-container">
+    ;
+    ;
+    ;
+    ;
     ;
     <div class="dashboard-header">
       ;
+      ;
+      ;
+      ;
+      ;
       <h1 class="text-3xl font-bold text-blue-500">
-        LinkOps Dashboard
+        ;
+        ;
+        ;
+        ;
+        ;
+        LinkOps Dashboard;
       </h1>;
       <p class="text-gray-400">
-        MLOps Command Center
+        ;
+        ;
+        ;
+        ;
+        ;
+        MLOps Command Center;
       </p>;
     </div>;
     
     <div class="dashboard-grid">
       ;
+      ;
+      ;
+      ;
+      ;
       <div class="dashboard-card">
         ;
+        ;
+        ;
+        ;
+        ;
         <h3 class="text-xl font-semibold mb-4">
-          System Status
+          ;
+          ;
+          ;
+          ;
+          ;
+          System Status;
         </h3>;
         <div class="status-indicators">
           ;
+          ;
+          ;
+          ;
+          ;
           <div class="status-item">
+            ;
+            ;
+            ;
+            ;
             ;
             <span class="status-dot bg-green-500" />;
             <span>ML Pipeline: Online</span>;
           </div>;
           <div class="status-item">
             ;
+            ;
+            ;
+            ;
+            ;
             <span class="status-dot bg-green-500" />;
             <span>Data Processing: Active</span>;
           </div>;
           <div class="status-item">
+            ;
+            ;
+            ;
+            ;
             ;
             <span class="status-dot bg-yellow-500" />;
             <span>Model Training: In Progress</span>;
@@ -41,19 +92,47 @@
       
       <div class="dashboard-card">
         ;
+        ;
+        ;
+        ;
+        ;
         <h3 class="text-xl font-semibold mb-4">
-          Quick Actions
+          ;
+          ;
+          ;
+          ;
+          ;
+          Quick Actions;
         </h3>;
         <div class="action-buttons">
           ;
+          ;
+          ;
+          ;
+          ;
           <button class="action-btn">
-            Start Pipeline
+            ;
+            ;
+            ;
+            ;
+            ;
+            Start Pipeline;
           </button>;
           <button class="action-btn">
-            View Logs
+            ;
+            ;
+            ;
+            ;
+            ;
+            View Logs;
           </button>;
           <button class="action-btn">
-            System Health
+            ;
+            ;
+            ;
+            ;
+            ;
+            System Health;
           </button>;
         </div>;
       </div>;

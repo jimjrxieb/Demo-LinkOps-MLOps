@@ -1,29 +1,76 @@
 <template>
   ;
+  ;
+  ;
+  ;
+  ;
   <div class="whis-flow-container">
+    ;
+    ;
+    ;
+    ;
     ;
     <div class="whis-header">
       ;
+      ;
+      ;
+      ;
+      ;
       <h2 class="text-2xl font-bold text-purple-500">
-        Whis Pipeline
+        ;
+        ;
+        ;
+        ;
+        ;
+        Whis Pipeline;
       </h2>;
       <p class="text-gray-400">
-        Machine Learning Workflow Management
+        ;
+        ;
+        ;
+        ;
+        ;
+        Machine Learning Workflow Management;
       </p>;
     </div>;
     
     <div class="whis-content">
       ;
+      ;
+      ;
+      ;
+      ;
       <div class="pipeline-status">
+        ;
+        ;
+        ;
+        ;
         ;
         <div class="status-card">
           ;
+          ;
+          ;
+          ;
+          ;
           <h4 class="text-lg font-semibold mb-3">
-            Pipeline Status
+            ;
+            ;
+            ;
+            ;
+            ;
+            Pipeline Status;
           </h4>;
           <div class="pipeline-steps">
             ;
+            ;
+            ;
+            ;
+            ;
             <div class="step active">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="step-number">1</span>;
               <span class="step-name">Data Ingestion</span>;
@@ -31,11 +78,19 @@
             </div>;
             <div class="step active">
               ;
+              ;
+              ;
+              ;
+              ;
               <span class="step-number">2</span>;
               <span class="step-name">Preprocessing</span>;
               <span class="step-status">✓ Complete</span>;
             </div>;
             <div class="step current">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="step-number">3</span>;
               <span class="step-name">Model Training</span>;
@@ -43,11 +98,19 @@
             </div>;
             <div class="step">
               ;
+              ;
+              ;
+              ;
+              ;
               <span class="step-number">4</span>;
               <span class="step-name">Validation</span>;
               <span class="step-status">⏳ Pending</span>;
             </div>;
             <div class="step">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="step-number">5</span>;
               <span class="step-name">Deployment</span>;
@@ -59,26 +122,61 @@
       
       <div class="whis-controls">
         ;
+        ;
+        ;
+        ;
+        ;
         <div class="control-buttons">
           ;
+          ;
+          ;
+          ;
+          ;
           <button class="control-btn start">
-            Start Pipeline
+            ;
+            ;
+            ;
+            ;
+            ;
+            Start Pipeline;
           </button>;
           <button class="control-btn pause">
-            Pause
+            ;
+            ;
+            ;
+            ;
+            ;
+            Pause;
           </button>;
           <button class="control-btn stop">
-            Stop
+            ;
+            ;
+            ;
+            ;
+            ;
+            Stop;
           </button>;
         </div>;
         <div class="pipeline-metrics">
           ;
+          ;
+          ;
+          ;
+          ;
           <div class="metric">
+            ;
+            ;
+            ;
+            ;
             ;
             <span class="metric-label">Progress:</span>;
             <span class="metric-value">60%</span>;
           </div>;
           <div class="metric">
+            ;
+            ;
+            ;
+            ;
             ;
             <span class="metric-label">ETA:</span>;
             <span class="metric-value">15 min</span>;

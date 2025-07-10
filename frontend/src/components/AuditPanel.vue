@@ -1,29 +1,76 @@
 <template>
   ;
+  ;
+  ;
+  ;
+  ;
   <div class="audit-panel-container">
+    ;
+    ;
+    ;
+    ;
     ;
     <div class="audit-header">
       ;
+      ;
+      ;
+      ;
+      ;
       <h2 class="text-2xl font-bold text-red-500">
-        Security Audit Panel
+        ;
+        ;
+        ;
+        ;
+        ;
+        Security Audit Panel;
       </h2>;
       <p class="text-gray-400">
-        System Security & Compliance Monitoring
+        ;
+        ;
+        ;
+        ;
+        ;
+        System Security & Compliance Monitoring;
       </p>;
     </div>;
     
     <div class="audit-content">
       ;
+      ;
+      ;
+      ;
+      ;
       <div class="audit-grid">
+        ;
+        ;
+        ;
+        ;
         ;
         <div class="audit-card">
           ;
+          ;
+          ;
+          ;
+          ;
           <h4 class="text-lg font-semibold mb-3">
-            Security Status
+            ;
+            ;
+            ;
+            ;
+            ;
+            Security Status;
           </h4>;
           <div class="security-indicators">
             ;
+            ;
+            ;
+            ;
+            ;
             <div class="security-item">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="security-icon">🔒</span>;
               <span class="security-label">Authentication</span>;
@@ -31,17 +78,29 @@
             </div>;
             <div class="security-item">
               ;
+              ;
+              ;
+              ;
+              ;
               <span class="security-icon">🛡️</span>;
               <span class="security-label">Firewall</span>;
               <span class="security-status secure">Active</span>;
             </div>;
             <div class="security-item">
               ;
+              ;
+              ;
+              ;
+              ;
               <span class="security-icon">🔍</span>;
               <span class="security-label">Intrusion Detection</span>;
               <span class="security-status warning">Monitoring</span>;
             </div>;
             <div class="security-item">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="security-icon">📊</span>;
               <span class="security-label">Data Encryption</span>;
@@ -52,12 +111,29 @@
         
         <div class="audit-card">
           ;
+          ;
+          ;
+          ;
+          ;
           <h4 class="text-lg font-semibold mb-3">
-            Recent Alerts
+            ;
+            ;
+            ;
+            ;
+            ;
+            Recent Alerts;
           </h4>;
           <div class="alerts-list">
             ;
+            ;
+            ;
+            ;
+            ;
             <div class="alert-item info">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="alert-icon">ℹ️</span>;
               <span class="alert-message">System backup completed successfully</span>;
@@ -65,11 +141,19 @@
             </div>;
             <div class="alert-item warning">
               ;
+              ;
+              ;
+              ;
+              ;
               <span class="alert-icon">⚠️</span>;
               <span class="alert-message">Unusual login attempt detected</span>;
               <span class="alert-time">15 min ago</span>;
             </div>;
             <div class="alert-item success">
+              ;
+              ;
+              ;
+              ;
               ;
               <span class="alert-icon">✅</span>;
               <span class="alert-message">Security scan completed - no threats found</span>;
@@ -81,14 +165,33 @@
       
       <div class="audit-actions">
         ;
+        ;
+        ;
+        ;
+        ;
         <button class="audit-btn primary">
-          Run Security Scan
+          ;
+          ;
+          ;
+          ;
+          ;
+          Run Security Scan;
         </button>;
         <button class="audit-btn secondary">
-          View Audit Logs
+          ;
+          ;
+          ;
+          ;
+          ;
+          View Audit Logs;
         </button>;
         <button class="audit-btn secondary">
-          Export Report
+          ;
+          ;
+          ;
+          ;
+          ;
+          Export Report;
         </button>;
       </div>;
     </div>;

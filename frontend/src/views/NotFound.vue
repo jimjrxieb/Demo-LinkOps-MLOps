@@ -1,67 +1,58 @@
 <template>
-  ;
   <div class="not-found">
-    ;
     <div class="error-container">
-      ;
       <div class="error-code">
         404
-      </div>;
+      </div>
       <h1 class="error-title">
         Page Not Found
-      </h1>;
+      </h1>
       <p class="error-message">
-        ;
-        The page you're looking for doesn't exist in this dimension.;
-      </p>;
+        The page you're looking for doesn't exist in this dimension.
+      </p>
       <div class="error-actions">
-        ;
         <router-link
           to="/"
           class="btn primary"
         >
-          ;
-          <span class="btn-icon">🏠</span>;
-          Return to Dashboard;
-        </router-link>;
+          <span class="btn-icon">🏠</span>
+          Return to Dashboard
+        </router-link>
         <button
           class="btn secondary"
           @click="goBack"
         >
-          ;
-          <span class="btn-icon">⬅️</span>;
-          Go Back;
-        </button>;
-      </div>;
-    </div>;
+          <span class="btn-icon">⬅️</span>
+          Go Back
+        </button>
+      </div>
+    </div>
     
     <div class="error-graphic">
-      ;
       <div class="holo-cube">
-        ;
-        <div class="cube-face front" />;
-        <div class="cube-face back" />;
-        <div class="cube-face right" />;
-        <div class="cube-face left" />;
-        <div class="cube-face top" />;
-        <div class="cube-face bottom" />;
-      </div>;
-    </div>;
-  </div>;
-</template>;
+        <div class="cube-face front" />
+        <div class="cube-face back" />
+        <div class="cube-face right" />
+        <div class="cube-face left" />
+        <div class="cube-face top" />
+        <div class="cube-face bottom" />
+      </div>
+    </div>
+  </div>
+</template>
 
-<script>;
+<script>
 export default {
   name: 'NotFound',
   methods: {
     goBack() {
-      this.$router.go(-1);
+      this.$router.go(-1)
     }
   }
 }
-</script>;
+</script>
 
-<style scoped>;
+<style scoped>
 .not-found {
   display: flex;
   flex-direction: column;
@@ -220,33 +211,9 @@ export default {
   }
   
   .btn {
-    width: 200px;
+    width: 100%;
+    max-width: 300px;
     justify-content: center;
   }
-  
-  .holo-cube {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .cube-face {
-    width: 150px;
-    height: 150px;
-  }
-  
-  .cube-face.front,
-  .cube-face.back {
-    transform: translateZ(75px);
-  }
-  
-  .cube-face.right,
-  .cube-face.left {
-    transform: rotateY(90deg) translateZ(75px);
-  }
-  
-  .cube-face.top,
-  .cube-face.bottom {
-    transform: rotateX(90deg) translateZ(75px);
-  }
 }
-</style>;
+</style>

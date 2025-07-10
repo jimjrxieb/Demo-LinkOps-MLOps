@@ -1,125 +1,143 @@
-<template>;
-  <div class='audit-input'>;
-    <div class='input-section'>;
-      <label class='input-label'>Repository URL or Path</label>;
-      <div class='input-group'>;
-        <input;
-          v-model='repositoryUrl';
-          type='text';
-          placeholder='https://github.com/username/repo or /path/to/repo';
-          class='repo-input';
-          :disabled='loading';
-          @keyup.enter='submitAudit';
-        />;
-        <button;
-          class='submit-btn';
-          @click='submitAudit';
-          :disabled='loading || !repositoryUrl.trim()';
-        >;
-          <span v-if="loading" class="spinner"></span>;
-          <span v-else class='btn-icon'>🔍</span>;
+<template>
+  <div class="audit-input">
+    <div class="input-section">
+      <label class="input-label">Repository URL or Path</label>
+      <div class="input-group">
+        <input
+          v-model="repositoryUrl"
+          type="text"
+          placeholder="https://github.com/username/repo or /path/to/repo"
+          class="repo-input"
+          :disabled="loading"
+          @keyup.enter="submitAudit"
+        >
+        <button
+          class="submit-btn"
+          :disabled="loading || !repositoryUrl.trim()"
+          @click="submitAudit"
+        >
+          <span
+            v-if="loading"
+            class="spinner"
+          />
+          <span
+            v-else
+            class="btn-icon"
+          >🔍</span>
           {{ loading ? 'Scanning...' : 'Run Audit' }}
-        </button>;
-      </div>;
-    </div>;
+        </button>
+      </div>
+    </div>
     
-    <div class='options-section'>;
-      <h3 class='options-title'>Audit Options</h3>;
-      <div class='options-grid'>;
-        <div class='option-group'>;
-          <label class='option-label'>;
-            <input;
-              type='checkbox';
-              v-model='options.securityScan';
-              :disabled='loading';
-            />;
-            Security Scan;
-          </label>;
-          <p class='option-description'>Vulnerability and security analysis</p>;
-        </div>;
+    <div class="options-section">
+      <h3 class="options-title">
+        Audit Options
+      </h3>
+      <div class="options-grid">
+        <div class="option-group">
+          <label class="option-label">
+            <input
+              v-model="options.securityScan"
+              type="checkbox"
+              :disabled="loading"
+            >
+            Security Scan
+          </label>
+          <p class="option-description">
+            Vulnerability and security analysis
+          </p>
+        </div>
         
-        <div class='option-group'>;
-          <label class='option-label'>;
-            <input;
-              type='checkbox';
-              v-model='options.codeQuality';
-              :disabled='loading';
-            />;
-            Code Quality;
-          </label>;
-          <p class='option-description'>Linting and code style analysis</p>;
-        </div>;
+        <div class="option-group">
+          <label class="option-label">
+            <input
+              v-model="options.codeQuality"
+              type="checkbox"
+              :disabled="loading"
+            >
+            Code Quality
+          </label>
+          <p class="option-description">
+            Linting and code style analysis
+          </p>
+        </div>
         
-        <div class='option-group'>;
-          <label class='option-label'>;
-            <input;
-              type='checkbox';
-              v-model='options.dependencyScan';
-              :disabled='loading';
-            />;
-            Dependency Analysis;
-          </label>;
-          <p class='option-description'>Outdated and vulnerable dependencies</p>;
-        </div>;
+        <div class="option-group">
+          <label class="option-label">
+            <input
+              v-model="options.dependencyScan"
+              type="checkbox"
+              :disabled="loading"
+            >
+            Dependency Analysis
+          </label>
+          <p class="option-description">
+            Outdated and vulnerable dependencies
+          </p>
+        </div>
         
-        <div class='option-group'>;
-          <label class='option-label'>;
-            <input;
-              type='checkbox';
-              v-model='options.secretScan';
-              :disabled='loading';
-            />;
-            Secret Detection;
-          </label>;
-          <p class='option-description'>API keys and sensitive data detection</p>;
-        </div>;
-      </div>;
-    </div>;
+        <div class="option-group">
+          <label class="option-label">
+            <input
+              v-model="options.secretScan"
+              type="checkbox"
+              :disabled="loading"
+            >
+            Secret Detection
+          </label>
+          <p class="option-description">
+            API keys and sensitive data detection
+          </p>
+        </div>
+      </div>
+    </div>
     
-    <!-- Quick Templates -->;
-    <div class='templates-section'>;
-      <h3 class='templates-title'>Quick Templates</h3>;
-      <div class='template-buttons'>;
-        <button;
-          class='template-btn';
-          @click='loadTemplate('linkops')';
-          :disabled='loading';
-        >;
-          LinkOps Platform;
-        </button>;
-        <button;
-          class='template-btn';
-          @click='loadTemplate('frontend')';
-          :disabled='loading';
-        >;
-          Frontend UI;
-        </button>;
-        <button;
-          class='template-btn';
-          @click='loadTemplate('backend')';
-          :disabled='loading';
-        >;
-          Backend API;
-        </button>;
-        <button;
-          class='template-btn';
-          @click='loadTemplate('custom')';
-          :disabled='loading';
-        >;
-          Custom Path;
-        </button>;
-      </div>;
-    </div>;
-  </div>;
-</template>;
+    <!-- Quick Templates -->
+    <div class="templates-section">
+      <h3 class="templates-title">
+        Quick Templates
+      </h3>
+      <div class="template-buttons">
+        <button
+          class="template-btn"
+          :disabled="loading"
+          @click="loadTemplate('linkops')"
+        >
+          LinkOps Platform
+        </button>
+        <button
+          class="template-btn"
+          :disabled="loading"
+          @click="loadTemplate('frontend')"
+        >
+          Frontend UI
+        </button>
+        <button
+          class="template-btn"
+          :disabled="loading"
+          @click="loadTemplate('backend')"
+        >
+          Backend API
+        </button>
+        <button
+          class="template-btn"
+          :disabled="loading"
+          @click="loadTemplate('custom')"
+        >
+          Custom Path
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
 
-<script>;
+<script>
 export default {
   name: 'AuditInput',
   props: {
     loading: {
-      type: Boolean, default: false,
-      default: false;
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -129,42 +147,39 @@ export default {
         securityScan: true,
         codeQuality: true,
         dependencyScan: true,
-        secretScan: true;
+        secretScan: true
       }
     }
   },
   methods: {
     submitAudit() {
-      if (!this.repositoryUrl.trim() || this.loading) return;
+      if (!this.repositoryUrl.trim()) return
       
-      const auditConfig = {
-        repository: this.repositoryUrl.trim(),
+      this.$emit('submit', {
+        repositoryUrl: this.repositoryUrl.trim(),
         options: { ...this.options }
-      }
-      
-      this.$emit('submit', auditConfig);
+      })
     },
-    
     loadTemplate(type) {
       const templates = {
-        linkops: 'https://github.com/linkops/mlops-platform',
-        frontend: 'https://github.com/linkops/frontend-ui',
-        backend: 'https://github.com/linkops/backend-api',
-        custom: '/path/to/local/repository';
+        linkops: 'https://github.com/shadow-link-industries/linkops-platform',
+        frontend: '/home/jimjrxieb/shadow-link-industries/LinkOps-MLOps/frontend',
+        backend: '/home/jimjrxieb/shadow-link-industries/LinkOps-MLOps/backend',
+        custom: ''
       }
       
-      this.repositoryUrl = templates[type] || '';
+      this.repositoryUrl = templates[type] || ''
     }
   }
 }
-</script>;
+</script>
 
-<style scoped>;
+<style scoped>
 .audit-input {
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid #00d4ff;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 2rem;
   backdrop-filter: blur(10px);
 }
 
@@ -176,14 +191,14 @@ export default {
   display: block;
   color: #00d4ff;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   font-size: 1.1rem;
 }
 
 .input-group {
   display: flex;
   gap: 1rem;
-  align-items: stretch;
+  align-items: center;
 }
 
 .repo-input {
@@ -191,8 +206,9 @@ export default {
   background: rgba(0, 0, 0, 0.8);
   border: 1px solid #333;
   border-radius: 8px;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   color: #e0e0e0;
+  font-family: 'Orbitron', 'Courier New', monospace;
   font-size: 1rem;
   transition: all 0.3s ease;
 }
@@ -201,11 +217,6 @@ export default {
   outline: none;
   border-color: #00d4ff;
   box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-}
-
-.repo-input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
 }
 
 .repo-input::placeholder {
@@ -235,19 +246,15 @@ export default {
 }
 
 .submit-btn:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
   transform: none;
-}
-
-.btn-icon {
-  font-size: 1.1rem;
 }
 
 .spinner {
   width: 16px;
   height: 16px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid transparent;
   border-top: 2px solid white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -256,6 +263,10 @@ export default {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.btn-icon {
+  font-size: 1.1rem;
 }
 
 .options-section {
@@ -297,20 +308,15 @@ export default {
   margin-bottom: 0.5rem;
 }
 
-.option-label input[type='checkbox'] {
+.option-label input[type="checkbox"] {
   width: 18px;
   height: 18px;
   accent-color: #00d4ff;
 }
 
-.option-label:has(input:disabled) {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
 .option-description {
   color: #888;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   margin: 0;
   line-height: 1.4;
 }
@@ -333,19 +339,20 @@ export default {
 
 .template-btn {
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid #00d4ff;
-  color: #00d4ff;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-weight: bold;
+  border: 1px solid #333;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  color: #e0e0e0;
   cursor: pointer;
   transition: all 0.3s ease;
+  font-size: 0.9rem;
+  min-width: 120px;
 }
 
 .template-btn:hover:not(:disabled) {
-  background: rgba(0, 212, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(0, 212, 255, 0.3);
+  border-color: #00d4ff;
+  background: rgba(0, 212, 255, 0.1);
+  color: #00d4ff;
 }
 
 .template-btn:disabled {
@@ -356,15 +363,16 @@ export default {
 /* Responsive Design */
 @media (max-width: 768px) {
   .audit-input {
-    padding: 1rem;
+    padding: 1.5rem;
   }
   
   .input-group {
     flex-direction: column;
+    gap: 0.75rem;
   }
   
   .submit-btn {
-    min-width: auto;
+    width: 100%;
   }
   
   .options-grid {
@@ -376,7 +384,7 @@ export default {
   }
   
   .template-btn {
-    text-align: center;
+    width: 100%;
   }
 }
-</style>;
+</style>

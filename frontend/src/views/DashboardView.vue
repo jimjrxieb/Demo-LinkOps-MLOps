@@ -1,6 +1,16 @@
 <template>
   ;
+  ;
+  ;
+  ;
+  ;
+  ;
   <div class="p-6">
+    ;
+    ;
+    ;
+    ;
+    ;
     ;
     <Dashboard />;
     <FicknurySearch />;

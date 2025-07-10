@@ -1,98 +1,125 @@
-<template>;
-  <div class='dashboard'>;
-    <div class='dashboard-header'>;
-      <h1 class='page-title'>Dashboard</h1>;
-      <p class='page-subtitle'>MLOps Command Center Overview</p>;
-    </div>;
+<template>
+  <div class="dashboard">
+    <div class="dashboard-header">
+      <h1 class="page-title">
+        LinkOps Dashboard
+      </h1>
+      <p class="page-subtitle">
+        MLOps Platform Control Center
+      </p>
+    </div>
 
-    <!-- System Status Grid -->;
-    <div class='status-grid'>;
-      <div class='status-card system-status'>;
-        <div class='status-icon'>🟢</div>;
-        <div class='status-content'>;
-          <h3>System Status</h3>;
-          <p>All services operational</p>;
-        </div>;
-      </div>;
-      
-      <div class='status-card active-jobs'>;
-        <div class='status-icon'>⚡</div>;
-        <div class='status-content'>;
-          <h3>Active Jobs</h3>;
-          <p>{{ activeJobs }} running</p>;
-        </div>;
-      </div>;
-      
-      <div class='status-card completed-jobs'>;
-        <div class='status-icon'>✅</div>;
-        <div class='status-content'>;
-          <h3>Completed Today</h3>;
-          <p>{{ completedJobs }} jobs</p>;
-        </div>;
-      </div>;
-      
-      <div class='status-card error-count'>;
-        <div class='status-icon'>⚠️</div>;
-        <div class='status-content'>;
-          <h3>Errors</h3>;
-          <p>{{ errorCount }} issues</p>;
-        </div>;
-      </div>;
-    </div>;
+    <!-- Status Overview -->
+    <section class="dashboard-section">
+      <h2 class="section-title">
+        System Status
+      </h2>
+      <div class="status-grid">
+        <div class="status-card">
+          <div class="status-icon">
+            ⚡
+          </div>
+          <div class="status-content">
+            <h3>Active Jobs</h3>
+            <div class="status-value">
+              {{ activeJobs }}
+            </div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon">
+            ✅
+          </div>
+          <div class="status-content">
+            <h3>Completed</h3>
+            <div class="status-value">
+              {{ completedJobs }}
+            </div>
+          </div>
+        </div>
+        <div class="status-card">
+          <div class="status-icon">
+            ⚠️
+          </div>
+          <div class="status-content">
+            <h3>Errors</h3>
+            <div class="status-value error">
+              {{ errorCount }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <!-- Orbs Section -->;
-    <section class='dashboard-section'>;
-      <h2 class='section-title'>Active Orbs</h2>;
-      <div class='orbs-grid'>;
-        <OrbCard;
-          v-for='orb in activeOrbs';
-          :key='orb.id';
-          :orb='orb';
-          @click='selectOrb(orb)';
-        />;
-      </div>;
-    </section>;
+    <!-- Orbs Section -->
+    <section class="dashboard-section">
+      <h2 class="section-title">
+        Active Orbs
+      </h2>
+      <div class="orbs-grid">
+        <OrbCard
+          v-for="orb in activeOrbs"
+          :key="orb.id"
+          :orb="orb"
+          @click="selectOrb(orb)"
+        />
+      </div>
+    </section>
 
-    <!-- Runes Section -->;
-    <section class='dashboard-section'>;
-      <h2 class='section-title'>Available Runes</h2>;
-      <div class='runes-grid'>;
-        <RuneCard;
-          v-for='rune in availableRunes';
-          :key='rune.id';
-          :rune='rune';
-          @click='activateRune(rune)';
-        />;
-      </div>;
-    </section>;
+    <!-- Runes Section -->
+    <section class="dashboard-section">
+      <h2 class="section-title">
+        Available Runes
+      </h2>
+      <div class="runes-grid">
+        <RuneCard
+          v-for="rune in availableRunes"
+          :key="rune.id"
+          :rune="rune"
+          @click="activateRune(rune)"
+        />
+      </div>
+    </section>
 
-    <!-- Quick Actions -->;
-    <section class='dashboard-section'>;
-      <h2 class='section-title'>Quick Actions</h2>;
-      <div class='quick-actions'>;
-        <button class="action-btn primary" @click="startWhisPipeline">;
-          <span class='btn-icon'>⚡</span>;
-          Start Whis Pipeline;
-        </button>;
-        <button class="action-btn secondary" @click="runSecurityAudit">;
-          <span class='btn-icon'>🔍</span>;
-          Security Audit;
-        </button>;
-        <button class="action-btn secondary" @click="viewLogs">;
-          <span class='btn-icon'>📋</span>;
-          View Logs;
-        </button>;
-      </div>;
-    </section>;
+    <!-- Quick Actions -->
+    <section class="dashboard-section">
+      <h2 class="section-title">
+        Quick Actions
+      </h2>
+      <div class="quick-actions">
+        <button
+          class="action-btn primary"
+          @click="startWhisPipeline"
+        >
+          <span class="btn-icon">⚡</span>
+          Start Whis Pipeline
+        </button>
+        <button
+          class="action-btn secondary"
+          @click="runSecurityAudit"
+        >
+          <span class="btn-icon">🔍</span>
+          Security Audit
+        </button>
+        <button
+          class="action-btn secondary"
+          @click="viewLogs"
+        >
+          <span class="btn-icon">📋</span>
+          View Logs
+        </button>
+      </div>
+    </section>
 
-    <!-- Search Component -->;
-    <section class='dashboard-section'>;
-      <h2 class='section-title'>Find Orbs & Tasks</h2>;
-      <FicknurySearch @search='handleSearch' />;
-    </section>;
-  </div>;
-</template>;
-
+    <!-- Search Component -->
+    <section class="dashboard-section">
+      <h2 class="section-title">
+        Find Orbs & Tasks
+      </h2>
+      <FicknurySearch @search="handleSearch" />
+    </section>
+  </div>
+</template>
 <script>;
 import OrbCard from '../components/OrbCard.vue'
 import RuneCard from '../components/RuneCard.vue'
@@ -103,21 +130,21 @@ export default {
   components: {
     OrbCard,
     RuneCard,
-    FicknurySearch;
+    FicknurySearch
   },
   data() {
     return {
       activeJobs: 3,
       completedJobs: 12,
       errorCount: 0,
-      activeOrbs: [;
+      activeOrbs: [
         {
           id: 1,
           title: 'Data Pipeline Optimization',
           description: 'Optimize ML data processing pipeline for faster training',
           score: 85,
           status: 'active',
-          priority: 'high';
+          priority: 'high'
         },
         {
           id: 2,
@@ -125,7 +152,7 @@ export default {
           description: 'Deploy new ML model to production environment',
           score: 92,
           status: 'active',
-          priority: 'critical';
+          priority: 'critical'
         },
         {
           id: 3,
@@ -133,61 +160,56 @@ export default {
           description: 'Run comprehensive security audit on codebase',
           score: 78,
           status: 'pending',
-          priority: 'medium';
+          priority: 'medium'
         }
       ],
-      availableRunes: [;
+      availableRunes: [
         {
           id: 1,
           name: 'Whis Enhancement',
           description: 'Enhance data quality through Whis pipeline',
           type: 'data-processing',
-          cost: 100;
+          cost: 100
         },
         {
           id: 2,
           name: 'Security Audit',
           description: 'Comprehensive security and vulnerability scan',
           type: 'security',
-          cost: 50;
+          cost: 50
         },
         {
           id: 3,
           name: 'Performance Tuning',
           description: 'Optimize system performance and resource usage',
           type: 'optimization',
-          cost: 75;
+          cost: 75
         }
-      ];
+      ]
     }
   },
   methods: {
     selectOrb(orb) {
- // Removed console statement: console.log('Selected orb:', orb)
       // Navigate to orb details or open modal
     },
     activateRune(rune) {
- // Removed console statement: console.log('Activated rune:', rune)
       // Activate the rune and show effects
     },
     startWhisPipeline() {
-      this.$router.push('/whis');
+      this.$router.push('/whis')
     },
     runSecurityAudit() {
-      this.$router.push('/audit');
+      this.$router.push('/audit')
     },
     viewLogs() {
- // Removed console statement: console.log('Viewing logs...')
       // Open logs viewer
     },
     handleSearch(query) {
- // Removed console statement: console.log('Search query:', query)
       // Handle search functionality
     }
   }
 }
 </script>;
-
 <style scoped>;
 .dashboard {
   max-width: 1200px;

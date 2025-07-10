@@ -1,121 +1,157 @@
-<template>;
-  <div class='login-page'>;
-    <div class='login-container'>;
+<template>
+  ;
+  <div class="login-page">
+    ;
+    <div class="login-container">
+      ;
       <!-- Logo and Title -->;
-      <div class='login-header'>;
-        <div class='logo-container'>;
-          <h1 class='logo-text'>LinkOps</h1>;
-          <div class='logo-glow'></div>;
+      <div class="login-header">
+        ;
+        <div class="logo-container">
+          ;
+          <h1 class="logo-text">
+            LinkOps
+          </h1>;
+          <div class="logo-glow" />;
         </div>;
-        <h2 class='login-title'>MLOps Command Center</h2>;
-        <p class='login-subtitle'>Choose your access level</p>;
+        <h2 class="login-title">
+          MLOps Command Center
+        </h2>;
+        <p class="login-subtitle">
+          Choose your access level
+        </p>;
       </div>;
 
       <!-- Login Options -->;
-      <div class='login-options'>;
-        <div class="option-card demo" @click="loginAs('demo')">;
-          <div class='option-icon'>👤</div>;
-          <h3 class='option-title'>Demo Mode</h3>;
-          <p class='option-description'>;
+      <div class="login-options">
+        ;
+        <div
+          class="option-card demo"
+          @click="loginAs('demo')"
+        >
+          ;
+          <div class="option-icon">
+            👤
+          </div>;
+          <h3 class="option-title">
+            Demo Mode
+          </h3>;
+          <p class="option-description">
+            ;
             Explore the platform with simulated data and limited functionality;
           </p>;
-          <div class='option-features'>;
-            <span class='feature'>• View-only dashboard</span>;
-            <span class='feature'>• Simulated pipelines</span>;
-            <span class='feature'>• Mock audit results</span>;
+          <div class="option-features">
+            ;
+            <span class="feature">• View-only dashboard</span>;
+            <span class="feature">• Simulated pipelines</span>;
+            <span class="feature">• Mock audit results</span>;
           </div>;
-          <button class='login-btn demo-btn'>;
-            <span class='btn-icon'>🚀</span>;
+          <button class="login-btn demo-btn">
+            ;
+            <span class="btn-icon">🚀</span>;
             Enter Demo Mode;
           </button>;
         </div>;
 
-        <div class="option-card admin" @click="loginAs('admin')">;
-          <div class='option-icon'>⚡</div>;
-          <h3 class='option-title'>Admin Access</h3>;
-          <p class='option-description'>;
+        <div
+          class="option-card admin"
+          @click="loginAs('admin')"
+        >
+          ;
+          <div class="option-icon">
+            ⚡
+          </div>;
+          <h3 class="option-title">
+            Admin Access
+          </h3>;
+          <p class="option-description">
+            ;
             Full platform access with real data and administrative controls;
           </p>;
-          <div class='option-features'>;
-            <span class='feature'>• Full dashboard access</span>;
-            <span class='feature'>• Real pipeline management</span>;
-            <span class='feature'>• Live audit capabilities</span>;
+          <div class="option-features">
+            ;
+            <span class="feature">• Full dashboard access</span>;
+            <span class="feature">• Real pipeline management</span>;
+            <span class="feature">• Live audit capabilities</span>;
           </div>;
-          <button class='login-btn admin-btn'>;
-            <span class='btn-icon'>🔐</span>;
+          <button class="login-btn admin-btn">
+            ;
+            <span class="btn-icon">🔐</span>;
             Admin Login;
           </button>;
         </div>;
       </div>;
 
       <!-- Demo Notice -->;
-      <div class='demo-notice'>;
-        <div class='notice-icon'>💡</div>;
-        <p class='notice-text'>;
+      <div class="demo-notice">
+        ;
+        <div class="notice-icon">
+          💡
+        </div>;
+        <p class="notice-text">
+          ;
           <strong>Demo Mode:</strong> Perfect for exploring features without affecting production data.;
           All actions are simulated and no real changes are made.;
         </p>;
       </div>;
 
       <!-- Background Effects -->;
-      <div class='background-effects'>;
-        <div class='floating-orb orb-1'></div>;
-        <div class='floating-orb orb-2'></div>;
-        <div class='floating-orb orb-3'></div>;
+      <div class="background-effects">
+        ;
+        <div class="floating-orb orb-1" />;
+        <div class="floating-orb orb-2" />;
+        <div class="floating-orb orb-3" />;
       </div>;
     </div>;
   </div>;
 </template>;
-
-<script>;
+<script>
 import { useMainStore } from '../store/index.js'
 
 export default {
   name: 'Login',
   data() {
     return {
-      isLoading: false;
+      isLoading: false
     }
   },
   methods: {
     async loginAs(role) {
-      this.isLoading = true;
+      this.isLoading = true
       
       try {
-        const store = useMainStore();
-        
         // Simulate login process
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
+        const store = useMainStore()
         
         // Set authentication role
-        store.setAuthRole(role);
+        store.setAuthRole(role)
         
         // Add notification
         store.addNotification({
           type: 'success',
           message: `Welcome! You're now logged in as ${role === 'demo' ? 'Demo User' : 'Administrator'}`,
-          duration: 3000;
-        });
+          duration: 3000
+        })
         
         // Redirect to dashboard
-        this.$router.push('/');
+        this.$router.push('/')
         
       } catch (_error) {
- // Development logging: console.error('Login failed:', error)
-        const store = useMainStore();
+        const store = useMainStore()
         store.addNotification({
           type: 'error',
           message: 'Login failed. Please try again.',
-          duration: 5000;
-        });
+          duration: 5000
+        })
       } finally {
-        this.isLoading = false;
+        this.isLoading = false
       }
     }
   }
 }
 </script>;
-
 <style scoped>;
 .login-page {
   min-height: 100vh;
@@ -203,7 +239,7 @@ export default {
 }
 
 .option-card::before {
-  content: '';
+  content: '$2';
   position: absolute;
   top: 0;
   left: 0;
@@ -298,7 +334,7 @@ export default {
 }
 
 .login-btn::before {
-  content: '';
+  content: '$2';
   position: absolute;
   top: 0;
   left: -100%;
