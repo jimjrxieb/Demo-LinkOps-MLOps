@@ -15,7 +15,7 @@ spec:
     namespace: linkops
   project: default
   source:
-    repoURL: https://github.com/jimjrxieb/shadow-link-industries
+    repoURL: https://github.com/jimjrxieb/LinkOps-MLOps.git
     targetRevision: HEAD
     path: helm/linkops
     helm:
@@ -84,7 +84,7 @@ spec:
     namespace: linkops-dev
   project: default
   source:
-    repoURL: https://github.com/jimjrxieb/shadow-link-industries
+    repoURL: https://github.com/jimjrxieb/LinkOps-MLOps.git
     targetRevision: HEAD
     path: helm/linkops
     helm:
@@ -133,7 +133,7 @@ spec:
     namespace: linkops-staging
   project: default
   source:
-    repoURL: https://github.com/jimjrxieb/shadow-link-industries
+    repoURL: https://github.com/jimjrxieb/LinkOps-MLOps.git
     targetRevision: HEAD
     path: helm/linkops
     helm:
