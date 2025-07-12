@@ -172,9 +172,43 @@ async def generate_orb(request: OrbGenerationRequest):
     Generate a new Orb using Whis Logic and Grok API.
     """
     try:
-        # Simulate AI generation for demo
-        # In production, this would call Whis Logic and Grok API
+        # Check for Grok API key - demo fallback if not available
+        import os
 
+        grok_api_key = os.getenv("GROK_API_KEY", "")
+
+        # Demo fallback if no real API key is set
+        if not grok_api_key or grok_api_key in [
+            "your-grok-api-key-here",
+            "demo",
+            "test",
+            "",
+        ]:
+            # Return demo message instead of real AI generation
+            demo_orb = {
+                "id": len(DEMO_ORBS) + 1,
+                "title": f"Demo Response for: {request.task}",
+                "description": "This is a Grok-simulated response from the demo version. No real model was used.",
+                "category": "Demo",
+                "steps": [
+                    "This is a demo response - no real AI processing occurred",
+                    "In the full version, this would use Grok API for actual generation",
+                    "The demo version shows the interface without real AI capabilities",
+                    "Contact the team for access to the full platform with real AI integration",
+                ],
+                "createdAt": datetime.now().strftime("%Y-%m-%d"),
+                "matchScore": 0,
+                "demo_warning": True,
+            }
+
+            return OrbGenerationResponse(
+                orb=demo_orb,
+                generated_by="Demo Mode - No Real AI",
+                timestamp=datetime.now().isoformat(),
+            )
+
+        # TODO: In production, this would call Whis Logic and Grok API
+        # For now, simulate AI generation for demo
         # Extract keywords from task
         task_words = request.task.lower().split()
         keywords = [word for word in task_words if len(word) > 3]

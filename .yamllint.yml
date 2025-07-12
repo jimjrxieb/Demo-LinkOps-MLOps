@@ -10,7 +10,7 @@ rules:
   line-length:
     max: 140
   indentation:
-    spaces: 4
+    spaces: 2
     indent-sequences: true
   empty-lines:
     max: 1

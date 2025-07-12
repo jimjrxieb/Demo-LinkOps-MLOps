@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: linkops/whis-sanitize
+  repository: linksrobot/demo-whis-sanitize
   tag: "latest"
   pullPolicy: IfNotPresent
 

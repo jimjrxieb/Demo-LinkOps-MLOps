@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: linkops/whis-logic
+  repository: linksrobot/demo-whis-logic
   tag: "latest"
   pullPolicy: IfNotPresent
 

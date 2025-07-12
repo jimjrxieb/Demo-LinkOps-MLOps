@@ -1,143 +1,235 @@
-# 🚀 LinkOps MLOps Platform - Demo Version
+# DEMO-LinkOps - Simplified MLOps Platform
 
-A simplified demo version of the LinkOps MLOps platform focused on the core task processing workflow.
+A streamlined demo version of the LinkOps MLOps platform, focusing on core services with simplified deployment.
 
-## 🎯 **Demo Workflow**
+## 🚀 Quick Start
 
-This demo version allows users to:
+### Prerequisites
+- Docker and Docker Compose
+- Kubernetes cluster (for Helm deployment)
+- Docker Hub account (for image registry)
 
-1. **Input a task** - Submit a task description through the James GUI
-2. **Query Orb library** - Search existing best practices (Orbs)
-3. **Match found** → Display the matching Orb
-4. **No match** → Use Whis with Grok API to generate a new Orb
-5. **Approval** → Save approved Orbs to the demo library
-6. **Rejection** → Show "refinement not available in demo" message
-
-## 🏗️ **Simplified Architecture**
-
-### **Core Services (6 instead of 18)**
-
-- **Frontend** (Port 3000) - James GUI with task input and Orb display
-- **MLOps Platform** (Port 8000) - Main API orchestration
-- **Whis Data Input** (Port 8001) - Task input processing
-- **Whis Sanitize** (Port 8002) - Task cleaning and preparation
-- **Whis Logic** (Port 8005) - Orb library matching logic
-- **Ficknury Evaluator** (Port 8011) - Basic matching and evaluation
-- **PostgreSQL** (Port 5432) - Database for Orbs and tasks
-- **Redis** (Port 6379) - Caching and sessions
-
-### **Removed Components**
-
-- ❌ All shadow agents except Ficknury Evaluator
-- ❌ Whis Enhance, Whis Smithing, Whis Webscraper
-- ❌ Audit services and complex security scanning
-- ❌ Kafka, Zookeeper, and message queuing
-- ❌ Complex retry logic and background processors
-- ❌ Runes generation and autonomous execution
-- ❌ Agent enhancement and training loops
-
-## 🚀 **Quick Start**
-
-### Option 1: Docker Compose (Local Development)
-
+### Local Development
 ```bash
 # Clone and setup
+git clone <repository-url>
 cd DEMO-LinkOps
 
-# Build demo images (optional - uses demo- prefix to avoid conflicts)
-./build-demo-images.sh
+# Copy environment template
+cp env.template .env
 
-# Start the demo platform
+# Start services
+./start.sh
+```
+
+### Docker Compose
+```bash
+# Start all services
 docker-compose up -d
 
-# Access the platform
-# Frontend: http://localhost:3000
-# API: http://localhost:8000
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
 ```
 
-### Option 2: Kubernetes with Helm (Production Ready)
+## 🏗️ Architecture
+
+### Core Services
+- **whis-data-input** (Port 8001) - Data ingestion service
+- **whis-sanitize** (Port 8002) - Data cleaning and validation
+- **whis-logic** (Port 8003) - Business logic and AI processing
+- **ficknury-evaluator** (Port 8004) - Evaluation and scoring
+- **mlops-platform** (Port 8000) - Main API platform
+- **frontend** (Port 3000) - Vue.js web interface
+
+### Infrastructure
+- **PostgreSQL** (Port 5432) - Primary database
+- **Redis** (Port 6379) - Caching and sessions
+
+## 🐳 Docker Images
+
+### Demo Image Naming Convention
+All demo images use the `demo-` prefix and are pushed to Docker Hub under the `linksrobot` account:
+
+- `linksrobot/demo-whis-data-input:latest`
+- `linksrobot/demo-whis-sanitize:latest`
+- `linksrobot/demo-whis-logic:latest`
+- `linksrobot/demo-ficknury-evaluator:latest`
+- `linksrobot/demo-mlops-platform:latest`
+- `linksrobot/demo-frontend:latest`
+
+### Tagging and Pushing Images
+Use the provided script to tag and push demo images:
 
 ```bash
-# Prerequisites: Kubernetes cluster, Helm 3.x, kubectl
-cd DEMO-LinkOps
+# Tag images (dry run)
+./tag-and-push-demo-images.sh
 
-# Setup authentication (optional)
-export DOCKER_CRED='your-docker-hub-password'
-export GH_PAT='your-github-pat'
-./docker-login.sh
-./github-setup.sh
-
-# Build and push demo images to registry (optional)
-./build-demo-images.sh v0.1.0 true docker.io/linksrobot
-
-# Deploy with Helm
-./deploy-helm.sh
-
-# Access the platform
-# Frontend: http://demo.linkops.local (add to /etc/hosts)
-# API: Available via port-forward or ingress
+# Tag and push to Docker Hub
+./tag-and-push-demo-images.sh push
 ```
 
-For detailed Helm deployment instructions, see [helm/README.md](helm/README.md).
-
-## 🎨 **Demo Features**
-
-### **James GUI Tab**
-
-- **Task Input Field** - Submit task descriptions
-- **Orb Results** - Display matching or generated Orbs
-- **Approval Interface** - Accept or reject generated Orbs
-- **Demo Limitations** - Clear messaging about demo constraints
-
-### **Simplified API Endpoints**
-
-- `/api/task/submit` - Submit new tasks
-- `/api/orbs/search` - Search existing Orbs
-- `/api/orbs/generate` - Generate new Orbs with Whis
-- `/api/orbs/approve` - Approve and save Orbs
-- `/api/orbs/reject` - Handle rejections
-
-## 🛠️ **Technology Stack**
-
-- **Backend**: Python FastAPI (simplified)
-- **Frontend**: Vue 3 with James GUI focus
-- **Database**: PostgreSQL (Orbs storage)
-- **Cache**: Redis (session management)
-- **AI**: Grok API integration for Orb generation
-
-## 📁 **Project Structure**
-
-```
-DEMO-LinkOps/
-├── frontend/                    # Vue 3 frontend (James GUI)
-├── mlops/
-│   ├── mlops_platform/         # Main API orchestration
-│   ├── whis_data_input/        # Task input processing
-│   ├── whis_sanitize/          # Task cleaning
-│   └── whis_logic/             # Orb matching logic
-├── shadows/
-│   └── ficknury_evaluator/     # Basic evaluation
-├── docker-compose.yml          # Simplified orchestration
-├── env.template                # Environment variables
-└── README.md                   # This file
+**Note:** Make sure you're logged in to Docker Hub:
+```bash
+docker login -u linksrobot
 ```
 
-## 🎯 **Demo Limitations**
+## ☸️ Helm Deployment
 
-- **No Refinement Loop**: Rejected Orbs show demo limitation message
-- **No Agent Execution**: No autonomous task execution
-- **No Complex Pipelines**: Simplified processing workflow
-- **No Training**: No model training or enhancement
-- **No Runes**: No script generation or execution
+### Prerequisites
+- Kubernetes cluster
+- Helm 3.x
+- ArgoCD (optional, for GitOps)
 
-## 🔄 **Workflow Example**
+### Deploy with Helm
+```bash
+# Navigate to helm directory
+cd helm
 
-1. User submits: "How do I deploy a Kubernetes application?"
-2. System searches existing Orbs for matches
-3. If match found → Display existing Orb
-4. If no match → Whis generates new Orb using Grok API
-5. User reviews generated Orb
-6. If approved → Save to demo Orbs library
-7. If rejected → Show "refinement not available in demo"
+# Build dependencies
+cd demo-stack
+helm dependency build
 
-This demo version maintains the core concept while removing complexity for demonstration purposes.
+# Install the demo stack
+helm install demo-stack . --namespace demo-linkops --create-namespace
+
+# Upgrade existing deployment
+helm upgrade demo-stack . --namespace demo-linkops
+```
+
+### Helm Chart Structure
+```
+helm/
+├── demo-stack/           # Umbrella chart
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
+├── whis-data-input/      # Individual service charts
+├── whis-sanitize/
+├── whis-logic/
+└── frontend/
+```
+
+### Kubernetes Metadata Compliance
+All Helm templates use DNS-1123 compliant names with dashes instead of underscores:
+- ✅ `whis-data-input` (correct)
+- ❌ `whis_data_input` (incorrect)
+
+## 🔧 Configuration
+
+### Environment Variables
+Copy `env.template` to `.env` and configure:
+```bash
+# Database
+POSTGRES_PASSWORD=your_secure_password
+
+# API Keys
+GROK_API_KEY=your_grok_api_key
+```
+
+### Helm Values
+Customize deployment in `helm/demo-stack/values.yaml`:
+```yaml
+# Example: Scale services
+whis-logic:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 2Gi
+```
+
+## 🚀 CI/CD
+
+### GitHub Actions
+The demo platform includes automated CI/CD workflows:
+
+- **Build and Push**: `/.github/workflows/demo-build.yml`
+  - Builds demo images on push to main/demo branches
+  - Pushes to Docker Hub with demo- prefix
+  - Updates Helm values with registry information
+
+### ArgoCD Integration
+For GitOps deployment, use the provided ArgoCD Application manifest:
+```bash
+kubectl apply -f helm/argocd/Application.yaml
+```
+
+## 📊 Monitoring
+
+### Health Checks
+All services include health check endpoints:
+- `GET /health` - Service health status
+- `GET /ready` - Readiness probe
+
+### Logging
+Services use structured logging with configurable levels:
+```bash
+# Set log level
+LOG_LEVEL=DEBUG
+```
+
+## 🔒 Security
+
+### Secrets Management
+- Grok API key stored as Kubernetes secret
+- Database credentials managed via environment variables
+- Docker registry authentication via secrets
+
+### Network Security
+- Services communicate via internal network
+- External access through ingress controllers
+- Database and Redis not exposed externally
+
+## 🧪 Testing
+
+### Local Testing
+```bash
+# Run service tests
+cd mlops/whis_data_input && python -m pytest
+
+# Frontend tests
+cd frontend && npm test
+```
+
+### Integration Testing
+```bash
+# Test API endpoints
+curl http://localhost:8000/health
+curl http://localhost:8001/health
+```
+
+## 📝 Development
+
+### Adding New Services
+1. Create service directory in `mlops/`
+2. Add Dockerfile and requirements
+3. Create Helm chart in `helm/`
+4. Update umbrella chart dependencies
+5. Add to docker-compose.yml
+
+### Code Style
+- Python: Black, flake8
+- JavaScript/Vue: Prettier, ESLint
+- YAML: yamllint with 4-space indentation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Make changes with proper formatting
+4. Test locally
+5. Submit pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🆘 Support
+
+For issues and questions:
+- Check the logs: `docker-compose logs [service]`
+- Verify configuration: `helm template . --debug`
+- Review health endpoints: `curl http://localhost:[port]/health`

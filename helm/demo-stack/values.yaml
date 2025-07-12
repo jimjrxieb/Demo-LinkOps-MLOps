@@ -17,7 +17,7 @@ whis-data-input:
   autoscaling:
     enabled: false
   image:
-    repository: docker.io/linksrobot/demo-whis-data-input
+    repository: linksrobot/demo-whis-data-input
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
@@ -42,7 +42,7 @@ whis-sanitize:
   autoscaling:
     enabled: false
   image:
-    repository: docker.io/linksrobot/demo-whis-sanitize
+    repository: linksrobot/demo-whis-sanitize
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
@@ -67,7 +67,7 @@ whis-logic:
   autoscaling:
     enabled: false
   image:
-    repository: docker.io/linksrobot/demo-whis-logic
+    repository: linksrobot/demo-whis-logic
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
@@ -97,7 +97,7 @@ frontend:
   autoscaling:
     enabled: false
   image:
-    repository: docker.io/linksrobot/demo-frontend
+    repository: linksrobot/demo-frontend
     tag: "latest"
     pullPolicy: IfNotPresent
   service:

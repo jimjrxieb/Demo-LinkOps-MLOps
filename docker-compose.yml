@@ -1,119 +1,107 @@
 version: '3.8'
 
 networks:
-    linkops-network:
-        driver: bridge
+  linkops-network:
+    driver: bridge
 
 volumes:
-    postgres_data:
-    redis_data:
+  postgres_data:
+  redis_data:
 
 services:
-    whis-data-input:
-        build:
-            context: ./mlops/whis_data_input
-            dockerfile: Dockerfile
-        ports:
-            - "8001:8001"
-        environment:
-            - LOG_LEVEL=INFO
-            - SERVICE_PORT=8001
-        networks:
-            - linkops-network
+  whis-data-input:
+    image: linksrobot/demo-whis-data-input:latest
+    ports:
+      - "8001:8001"
+    environment:
+      - LOG_LEVEL=INFO
+      - SERVICE_PORT=8001
+    networks:
+      - linkops-network
 
-    whis-sanitize:
-        build:
-            context: ./mlops/whis_sanitize
-            dockerfile: Dockerfile
-        ports:
-            - "8002:8002"
-        environment:
-            - LOG_LEVEL=INFO
-            - SERVICE_PORT=8002
-        networks:
-            - linkops-network
+  whis-sanitize:
+    image: linksrobot/demo-whis-sanitize:latest
+    ports:
+      - "8002:8002"
+    environment:
+      - LOG_LEVEL=INFO
+      - SERVICE_PORT=8002
+    networks:
+      - linkops-network
 
-    whis-logic:
-        build:
-            context: ./mlops/whis_logic
-            dockerfile: Dockerfile
-        ports:
-            - "8003:8003"
-        environment:
-            - LOG_LEVEL=INFO
-            - SERVICE_PORT=8003
-            - GROK_API_KEY=${GROK_API_KEY}
-        networks:
-            - linkops-network
+  whis-logic:
+    image: linksrobot/demo-whis-logic:latest
+    ports:
+      - "8003:8003"
+    environment:
+      - LOG_LEVEL=INFO
+      - SERVICE_PORT=8003
+      - GROK_API_KEY=${GROK_API_KEY}
+    networks:
+      - linkops-network
 
-    ficknury-evaluator:
-        build:
-            context: ./shadows/ficknury_evaluator
-            dockerfile: Dockerfile
-        ports:
-            - "8004:8004"
-        environment:
-            - LOG_LEVEL=INFO
-            - SERVICE_PORT=8004
-        networks:
-            - linkops-network
+  ficknury-evaluator:
+    image: linksrobot/demo-ficknury-evaluator:latest
+    ports:
+      - "8004:8004"
+    environment:
+      - LOG_LEVEL=INFO
+      - SERVICE_PORT=8004
+    networks:
+      - linkops-network
 
-    mlops-platform:
-        build:
-            context: ./mlops/mlops_platform
-            dockerfile: Dockerfile
-        ports:
-            - "8000:8000"
-        environment:
-            - LOG_LEVEL=INFO
-            - SERVICE_PORT=8000
-            - GROK_API_KEY=${GROK_API_KEY}
-        networks:
-            - linkops-network
+  mlops-platform:
+    image: linksrobot/demo-mlops-platform:latest
+    ports:
+      - "8000:8000"
+    environment:
+      - LOG_LEVEL=INFO
+      - SERVICE_PORT=8000
+      - GROK_API_KEY=${GROK_API_KEY}
+    networks:
+      - linkops-network
 
-    frontend:
-        build:
-            context: ./frontend
-            dockerfile: Dockerfile
-        ports:
-            - "3000:3000"
-        environment:
-            - VITE_API_BASE_URL=http://localhost:8000
-        networks:
-            - linkops-network
-        depends_on:
-            - mlops-platform
+  frontend:
+    image: linksrobot/demo-frontend:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+    networks:
+      - linkops-network
+    depends_on:
+      - mlops-platform
 
-    db:
-        image: postgres:15-alpine
-        container_name: demo-linkops-postgres
-        ports:
-            - "5432:5432"
-        environment:
-            POSTGRES_DB: linkops
-            POSTGRES_USER: linkops
-            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_password}
-        volumes:
-            - postgres_data:/var/lib/postgresql/data
-        healthcheck:
-            test: ["CMD-SHELL", "pg_isready -U linkops"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
-        networks:
-            - linkops-network
+  db:
+    image: postgres:15-alpine
+    container_name: demo-linkops-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: linkops
+      POSTGRES_USER: linkops
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U linkops"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - linkops-network
 
-    redis:
-        image: redis:7-alpine
-        container_name: demo-linkops-redis
-        ports:
-            - "6379:6379"
-        volumes:
-            - redis_data:/data
-        healthcheck:
-            test: ["CMD", "redis-cli", "ping"]
-            interval: 30s
-            timeout: 10s
-            retries: 3
-        networks:
-            - linkops-network
+  redis:
+    image: redis:7-alpine
+    container_name: demo-linkops-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - linkops-network

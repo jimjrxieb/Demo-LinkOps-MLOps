@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: linkops/whis-data-input
+  repository: linksrobot/demo-whis-data-input
   tag: "latest"
   pullPolicy: IfNotPresent
 
