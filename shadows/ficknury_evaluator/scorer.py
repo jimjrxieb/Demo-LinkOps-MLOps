@@ -288,7 +288,7 @@ class TaskScorer:
 
         except requests.exceptions.RequestException:
             return 0.0  # Unavailable
-        except Exception as e:
+        except Exception:
             return 0.5  # Unknown status
 
     def _generate_recommendation(
