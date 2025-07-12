@@ -56,7 +56,7 @@ def extract_imports_regex(content: str) -> Tuple[List[str], List[str]]:
 def fix_e402_errors(file_path: Path) -> bool:
     """Fix E402 errors in a single file by moving imports to top"""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
