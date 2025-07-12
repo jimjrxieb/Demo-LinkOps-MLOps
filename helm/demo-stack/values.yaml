@@ -14,6 +14,8 @@ grokApiKey: "your-grok-api-key-here"
 # Whis Data Input Service
 whis_data_input:
   replicaCount: 1
+  autoscaling:
+    enabled: false
   image:
     repository: linkops/whis_data_input
     tag: "latest"
@@ -37,6 +39,8 @@ whis_data_input:
 # Whis Sanitize Service
 whis_sanitize:
   replicaCount: 1
+  autoscaling:
+    enabled: false
   image:
     repository: linkops/whis_sanitize
     tag: "latest"
@@ -60,6 +64,8 @@ whis_sanitize:
 # Whis Logic Service
 whis_logic:
   replicaCount: 1
+  autoscaling:
+    enabled: false
   image:
     repository: linkops/whis_logic
     tag: "latest"
@@ -88,6 +94,8 @@ whis_logic:
 # Frontend Service
 frontend:
   replicaCount: 1
+  autoscaling:
+    enabled: false
   image:
     repository: linkops/frontend
     tag: "latest"
