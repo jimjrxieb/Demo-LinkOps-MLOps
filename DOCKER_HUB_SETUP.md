@@ -71,6 +71,7 @@ In your GitHub repository settings, add:
 - `GH_PAT`: Your GitHub Personal Access Token (for repository access)
 
 **GH_PAT Permissions Required:**
+
 - `repo` (Full control of private repositories)
 - `workflow` (Update GitHub Action workflows)
 
@@ -89,16 +90,19 @@ https://hub.docker.com/r/linksrobot/demo-mlops-platform
 ## 🔍 Verification
 
 ### Check Local Images
+
 ```bash
 docker images | grep demo-
 ```
 
 ### Check Docker Hub Images
+
 ```bash
 docker pull docker.io/linksrobot/demo-whis-data-input:latest
 ```
 
 ### Test Helm Deployment
+
 ```bash
 cd helm/demo-stack
 helm template test-release . --dry-run
@@ -107,6 +111,7 @@ helm template test-release . --dry-run
 ## 🛠 Troubleshooting
 
 ### Authentication Issues
+
 ```bash
 # Re-login to Docker Hub
 docker logout
@@ -114,6 +119,7 @@ docker logout
 ```
 
 ### Image Pull Issues
+
 ```bash
 # Check if image exists
 docker pull docker.io/linksrobot/demo-whis-data-input:latest
@@ -123,6 +129,7 @@ docker pull docker.io/linksrobot/demo-whis-data-input:latest
 ```
 
 ### Helm Issues
+
 ```bash
 # Update dependencies
 cd helm/demo-stack
@@ -135,4 +142,4 @@ helm dependency update
 - All demo images are prefixed with `demo-` to avoid conflicts
 - Images are pushed to your Docker Hub account (`linksrobot`)
 - Helm values are automatically updated with registry URLs
-- GitHub Actions handles CI/CD automatically 
+- GitHub Actions handles CI/CD automatically

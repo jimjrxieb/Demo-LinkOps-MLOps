@@ -1,163 +1,119 @@
 version: '3.8'
 
 networks:
-linkops-network:
-    driver: bridge
+    linkops-network:
+        driver: bridge
 
 volumes:
-  postgres_data:
-  redis_data:
+    postgres_data:
+    redis_data:
 
 services:
-  ### 🗄️ POSTGRESQL
-db:
-    image: postgres:15-alpine
-    container_name: demo-linkops-postgres
-    ports:
-    - "5432:5432"
-    environment:
-    POSTGRES_DB: linkops
-    POSTGRES_USER: linkops
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_password}
-    volumes:
-    - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-    test: ["CMD-SHELL", "pg_isready -U linkops"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    networks:
-    - linkops-network
+    whis-data-input:
+        build:
+            context: ./mlops/whis_data_input
+            dockerfile: Dockerfile
+        ports:
+            - "8001:8001"
+        environment:
+            - LOG_LEVEL=INFO
+            - SERVICE_PORT=8001
+        networks:
+            - linkops-network
 
-  ### 🔴 REDIS (Caching & Session Store)
-  redis:
-    image: redis:7-alpine
-    container_name: demo-linkops-redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - linkops-network
+    whis-sanitize:
+        build:
+            context: ./mlops/whis_sanitize
+            dockerfile: Dockerfile
+        ports:
+            - "8002:8002"
+        environment:
+            - LOG_LEVEL=INFO
+            - SERVICE_PORT=8002
+        networks:
+            - linkops-network
 
-  ### 🔧 MLOPS PLATFORM (FastAPI)
-mlops_platform:
-    build:
-    context: ./mlops/mlops_platform
-    container_name: demo-linkops-mlops-platform
-    ports:
-    - "8000:8000"
-    volumes:
-    - ./mlops/mlops_platform:/app
-    environment:
-      - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-demo_password}@db:5432/linkops
-    - REDIS_URL=redis://redis:6379
-      - ENVIRONMENT=demo
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    depends_on:
-    - db
-    - redis
-    healthcheck:
-    test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-    interval: 30s
-    timeout: 10s
-    retries: 3
-    networks:
-    - linkops-network
+    whis-logic:
+        build:
+            context: ./mlops/whis_logic
+            dockerfile: Dockerfile
+        ports:
+            - "8003:8003"
+        environment:
+            - LOG_LEVEL=INFO
+            - SERVICE_PORT=8003
+            - GROK_API_KEY=${GROK_API_KEY}
+        networks:
+            - linkops-network
 
-  ### 🧠 FRONTEND (Vue Dev Server)
-frontend:
-    build:
-    context: ./frontend
-    container_name: demo-linkops-frontend
-    ports:
-    - "3000:3000"
-    volumes:
-    - ./frontend:/app
-    - /app/node_modules
-    environment:
-    - CHOKIDAR_USEPOLLING=true
-    - WATCHPACK_POLLING=true
-    - VITE_API_BASE_URL=http://localhost:8000
-    command: sh -c "npm install && npm run dev -- --host"
-    depends_on:
-    - mlops_platform
-    networks:
-    - linkops-network
+    ficknury-evaluator:
+        build:
+            context: ./shadows/ficknury_evaluator
+            dockerfile: Dockerfile
+        ports:
+            - "8004:8004"
+        environment:
+            - LOG_LEVEL=INFO
+            - SERVICE_PORT=8004
+        networks:
+            - linkops-network
 
-  ### 📥 WHIS DATA INPUT SERVICE
-whis_data_input:
-    build: ./mlops/whis_data_input
-    container_name: demo-linkops-whis-data-input
-    ports:
-    - "8001:8000"
-    volumes:
-    - ./mlops/whis_data_input:/app
-    environment:
-      - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-demo_password}@db:5432/linkops
-      - ENVIRONMENT=demo
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    depends_on:
-    - db
-    networks:
-    - linkops-network
+    mlops-platform:
+        build:
+            context: ./mlops/mlops_platform
+            dockerfile: Dockerfile
+        ports:
+            - "8000:8000"
+        environment:
+            - LOG_LEVEL=INFO
+            - SERVICE_PORT=8000
+            - GROK_API_KEY=${GROK_API_KEY}
+        networks:
+            - linkops-network
 
-  ### 🧹 WHIS SANITIZE SERVICE
-whis_sanitize:
-    build: ./mlops/whis_sanitize
-    container_name: demo-linkops-whis-sanitize
-    ports:
-    - "8002:8000"
-    volumes:
-    - ./mlops/whis_sanitize:/app
-    - ./data_lake:/app/data_lake
-    environment:
-      - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-demo_password}@db:5432/linkops
-      - ENVIRONMENT=demo
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    depends_on:
-    - db
-    networks:
-    - linkops-network
+    frontend:
+        build:
+            context: ./frontend
+            dockerfile: Dockerfile
+        ports:
+            - "3000:3000"
+        environment:
+            - VITE_API_BASE_URL=http://localhost:8000
+        networks:
+            - linkops-network
+        depends_on:
+            - mlops-platform
 
-  ### 🧠 WHIS LOGIC SERVICE
-whis_logic:
-    build: ./mlops/whis_logic
-    container_name: demo-linkops-whis-logic
-    ports:
-    - "8005:8000"
-    volumes:
-    - ./mlops/whis_logic:/app
-    - ./data_lake:/app/data_lake
-    environment:
-      - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-demo_password}@db:5432/linkops
-      - ENVIRONMENT=demo
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    depends_on:
-    - db
-    networks:
-    - linkops-network
+    db:
+        image: postgres:15-alpine
+        container_name: demo-linkops-postgres
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_DB: linkops
+            POSTGRES_USER: linkops
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_password}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U linkops"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+        networks:
+            - linkops-network
 
-  ### 🤖 FICKNURY EVALUATOR (Shadow Agent)
-ficknury_evaluator:
-    build: ./shadows/ficknury_evaluator
-    container_name: demo-linkops-ficknury-evaluator
-    ports:
-    - "8011:8000"
-    volumes:
-    - ./shadows/ficknury_evaluator:/app
-    environment:
-      - DATABASE_URL=postgresql://linkops:${POSTGRES_PASSWORD:-demo_password}@db:5432/linkops
-      - ENVIRONMENT=demo
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-    depends_on:
-    - db
-    networks:
-    - linkops-network
-
-
+    redis:
+        image: redis:7-alpine
+        container_name: demo-linkops-redis
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        healthcheck:
+            test: ["CMD", "redis-cli", "ping"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+        networks:
+            - linkops-network

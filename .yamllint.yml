@@ -1,5 +1,16 @@
 extends: default
+
 rules:
-  document-start: { present: true }
-  line-length: { max: 80 }
-  indentation: { spaces: 2 }
+  braces:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+  brackets:
+    min-spaces-inside: 0
+    max-spaces-inside: 0
+  line-length:
+    max: 140
+  indentation:
+    spaces: 4
+    indent-sequences: true
+  empty-lines:
+    max: 1
