@@ -166,16 +166,18 @@ class WhisSanitizer:
         try:
             json.loads(content)
             return "json"
-        except Exception:
-            pass
+        except Exception as e:
+            # Log parsing error but continue with other format detection
+            print(f"Warning: Could not parse as JSON: {e}")
 
         # Check for YAML
         if content.startswith("---") or ("\n" in content and ":" in content):
             try:
                 yaml.safe_load(content)
                 return "yaml"
-            except Exception:
-                pass
+            except Exception as e:
+                # Log parsing error but continue with other format detection
+                print(f"Warning: Could not parse as YAML: {e}")
 
         # Check for code
         if any(

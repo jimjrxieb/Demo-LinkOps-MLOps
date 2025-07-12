@@ -133,8 +133,9 @@ class StorageManager:
                     update_date = datetime.fromisoformat(updated_at)
                     if (datetime.now() - update_date).days <= 7:
                         stats["recent_updates"] += 1
-                except Exception:
-                    pass
+                except Exception as e:
+                    # Log parsing error but continue processing
+                    print(f"Warning: Could not parse date '{updated_at}' in {filename}: {e}")
 
         return stats
 

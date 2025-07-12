@@ -1,4 +1,4 @@
-name: LinkOps CI/CD
+name: LinkOps CI
 
 on:
   push:
@@ -11,8 +11,8 @@ env:
   NODE_VERSION: "20"
 
 permissions:
-  contents: write # For ArgoCD updates
-  security-events: write # For potential Trivy uploads
+  contents: write  # For ArgoCD updates
+  security-events: write  # For potential Trivy uploads
 
 jobs:
   lint-python:
@@ -112,7 +112,8 @@ jobs:
       - name: Check Prettier Formatting (YAML)
         run: |
           echo "🎨 Checking YAML formatting..."
-          prettier --check "helm/argocd/**/*.yaml" "helm/linkops/values.yaml" "helm/linkops/Chart.yaml" ".github/**/*.yml" || {
+          prettier --check "helm/argocd/**/*.yaml" "helm/linkops/values.yaml" "helm/linkops/Chart.yaml" \
+            ".github/**/*.yml" || {
             echo "❌ YAML formatting issues found"
             echo "⚠️ Continuing despite YAML formatting issues"
           }
@@ -154,24 +155,24 @@ jobs:
 
   trivy-scan:
     runs-on: ubuntu-latest
-    name: 🔍 Trivy Security Scan
+    name: "🔍 Trivy Security Scan"
     needs: [lint-python, lint-frontend, lint-yaml]
     if: always() && (needs.lint-python.result == 'success' || needs.lint-python.result == 'failure')
     steps:
-      - name: 📥 Checkout code
+      - name: "📥 Checkout code"
         uses: actions/checkout@v4
 
-      - name: 🐳 Scan Dockerfiles, IaC, and Code
+      - name: "🐳 Scan Dockerfiles, IaC, and Code"
         uses: aquasecurity/trivy-action@master
         with:
           scan-type: fs
           scan-ref: .
           format: table
-          exit-code: 0 # Continue on vulnerabilities for now
+          exit-code: 0  # Continue on vulnerabilities for now
           ignore-unfixed: true
           severity: CRITICAL,HIGH
 
-      - name: 📊 Generate Trivy Report
+      - name: "📊 Generate Trivy Report"
         run: |
           echo "📋 Trivy scan completed"
           echo "🔍 Scanned for:"
@@ -183,16 +184,16 @@ jobs:
 
   gitguardian-secrets-scan:
     runs-on: ubuntu-latest
-    name: 🛡 GitGuardian Secret Scan
+    name: "🛡 GitGuardian Secret Scan"
     needs: [lint-python, lint-frontend, lint-yaml]
     if: always() && github.event_name == 'push' && (needs.lint-python.result == 'success' || needs.lint-python.result == 'failure')
     steps:
-      - name: 📥 Checkout code
+      - name: "📥 Checkout code"
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Full history for better secret detection
+          fetch-depth: 0  # Full history for better secret detection
 
-      - name: 🛡 Scan with GitGuardian
+      - name: "🛡 Scan with GitGuardian"
         uses: GitGuardian/ggshield-action@v1.20.0
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
@@ -200,7 +201,7 @@ jobs:
           args: scan repo .
         continue-on-error: true
 
-      - name: 📊 GitGuardian Report Summary
+      - name: "📊 GitGuardian Report Summary"
         run: |
           echo "🛡️ GitGuardian secret scan completed"
           echo "🔍 Advanced secret detection performed"
@@ -209,11 +210,11 @@ jobs:
 
   security-summary:
     runs-on: ubuntu-latest
-    name: 📊 Security Scan Summary
+    name: "📊 Security Scan Summary"
     needs: [trivy-scan, gitguardian-secrets-scan]
     if: always() && (needs.trivy-scan.result == 'success' || needs.trivy-scan.result == 'failure')
     steps:
-      - name: 📋 Generate Security Summary
+      - name: "📋 Generate Security Summary"
         run: |
           echo "🔒 LinkOps Security Scan Summary"
           echo "=================================="
@@ -244,14 +245,12 @@ jobs:
     runs-on: ubuntu-latest
     name: Build + Push Docker Images
     needs:
-      [
-        lint-python,
-        lint-frontend,
-        lint-yaml,
-        trivy-scan,
-        gitguardian-secrets-scan,
-        security-summary,
-      ]
+      - lint-python
+      - lint-frontend
+      - lint-yaml
+      - trivy-scan
+      - gitguardian-secrets-scan
+      - security-summary
     if: always() && github.ref == 'refs/heads/main' && (needs.lint-python.result == 'success')
     steps:
       - uses: actions/checkout@v4

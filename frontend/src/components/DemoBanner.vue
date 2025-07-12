@@ -5,7 +5,8 @@
       <div class="banner-text">
         <strong>LinkOps Demo Platform</strong>
         <span class="banner-description">
-          This is the public LinkOps demo. Agent enhancement, refinement, and Runes are disabled. Only Orbs and fallback answers are shown.
+          This is the public LinkOps demo. Agent enhancement, refinement, and
+          Runes are disabled. Only Orbs and fallback answers are shown.
         </span>
       </div>
       <button class="banner-close" @click="dismissBanner">
@@ -97,7 +98,8 @@ export default {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
