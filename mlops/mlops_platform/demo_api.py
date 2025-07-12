@@ -244,7 +244,6 @@ async def generate_orb(request: OrbGenerationRequest):
         # For now, simulate AI generation for demo
         # Extract keywords from task
         task_words = request.task.lower().split()
-        keywords = [word for word in task_words if len(word) > 3]
 
         # Generate a mock Orb
         new_orb = {

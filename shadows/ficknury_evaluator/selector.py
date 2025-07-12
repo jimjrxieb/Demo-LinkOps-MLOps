@@ -4,7 +4,6 @@ Selects the best agent for a given task based on capabilities
 """
 
 import shlex
-from typing import Dict
 
 
 def sanitize_cmd(cmd):
@@ -33,7 +32,7 @@ def sanitize_cmd(cmd):
     return cmd
 
 
-def select_agent_for_task(task_description: str, capabilities: Dict):
+def select_agent_for_task(task_description: str, capabilities: dict):
     """Select the best agent for a given task based on capabilities"""
     desc = task_description.lower()
 

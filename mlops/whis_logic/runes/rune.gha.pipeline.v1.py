@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import os
 import shlex
-from typing import Dict
 
 import yaml
 
@@ -44,7 +43,7 @@ class GHAPipelineRune:
         self.service_name = service_name
         self.python_version = python_version
 
-    def generate_workflow(self) -> Dict:
+    def generate_workflow(self) -> dict:
         """Generate a complete GitHub Actions workflow."""
         return {
             "name": f"{self.service_name.title()} CI/CD",
