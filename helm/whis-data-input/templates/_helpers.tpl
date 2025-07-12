@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "whis_logic.name" -}}
+{{- define "whis-data-input.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "whis_logic.fullname" -}}
+{{- define "whis-data-input.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "whis_logic.chart" -}}
+{{- define "whis-data-input.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "whis_logic.labels" -}}
-helm.sh/chart: {{ include "whis_logic.chart" . }}
-{{ include "whis_logic.selectorLabels" . }}
+{{- define "whis-data-input.labels" -}}
+helm.sh/chart: {{ include "whis-data-input.chart" . }}
+{{ include "whis-data-input.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "whis_logic.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "whis_logic.name" . }}
+{{- define "whis-data-input.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "whis-data-input.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "whis_logic.serviceAccountName" -}}
+{{- define "whis-data-input.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "whis_logic.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "whis-data-input.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

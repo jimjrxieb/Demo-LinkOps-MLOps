@@ -25,11 +25,11 @@ spec:
       parameters:
       - name: global.imageTag
           value: "latest"
-      - name: whis_data_input.replicaCount
+      - name: whis-data-input.replicaCount
           value: "1"
-      - name: whis_sanitize.replicaCount
+      - name: whis-sanitize.replicaCount
           value: "1"
-      - name: whis_logic.replicaCount
+      - name: whis-logic.replicaCount
           value: "1"
       - name: frontend.replicaCount
           value: "1"

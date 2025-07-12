@@ -1,8 +1,8 @@
-# Default values for whis_data_input
+# Default values for whis-sanitize
 replicaCount: 1
 
 image:
-  repository: linkops/whis_data_input
+  repository: linkops/whis-sanitize
   tag: "latest"
   pullPolicy: IfNotPresent
 
@@ -23,7 +23,7 @@ securityContext: {}
 
 service:
   type: ClusterIP
-  port: 8001
+  port: 8002
 
 resources:
   limits:
@@ -37,7 +37,7 @@ env:
   - name: LOG_LEVEL
     value: "INFO"
   - name: SERVICE_PORT
-    value: "8001"
+    value: "8002"
 
 nodeSelector: {}
 

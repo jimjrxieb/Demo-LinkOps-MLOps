@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "whis_data_input.name" -}}
+{{- define "whis-sanitize.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "whis_data_input.fullname" -}}
+{{- define "whis-sanitize.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "whis_data_input.chart" -}}
+{{- define "whis-sanitize.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "whis_data_input.labels" -}}
-helm.sh/chart: {{ include "whis_data_input.chart" . }}
-{{ include "whis_data_input.selectorLabels" . }}
+{{- define "whis-sanitize.labels" -}}
+helm.sh/chart: {{ include "whis-sanitize.chart" . }}
+{{ include "whis-sanitize.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "whis_data_input.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "whis_data_input.name" . }}
+{{- define "whis-sanitize.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "whis_data_input.serviceAccountName" -}}
+{{- define "whis-sanitize.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "whis_data_input.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "whis-sanitize.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

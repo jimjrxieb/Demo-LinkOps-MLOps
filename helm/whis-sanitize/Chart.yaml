@@ -1,5 +1,5 @@
 apiVersion: v2
-name: whis_sanitize
+name: whis-sanitize
 description: Whis Sanitize Service for LinkOps Demo
 type: application
 version: 0.1.0

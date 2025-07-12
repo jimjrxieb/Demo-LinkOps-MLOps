@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "whis_sanitize.name" -}}
+{{- define "whis-logic.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "whis_sanitize.fullname" -}}
+{{- define "whis-logic.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "whis_sanitize.chart" -}}
+{{- define "whis-logic.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "whis_sanitize.labels" -}}
-helm.sh/chart: {{ include "whis_sanitize.chart" . }}
-{{ include "whis_sanitize.selectorLabels" . }}
+{{- define "whis-logic.labels" -}}
+helm.sh/chart: {{ include "whis-logic.chart" . }}
+{{ include "whis-logic.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "whis_sanitize.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "whis_sanitize.name" . }}
+{{- define "whis-logic.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "whis-logic.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "whis_sanitize.serviceAccountName" -}}
+{{- define "whis-logic.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "whis_sanitize.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "whis-logic.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

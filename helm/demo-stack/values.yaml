@@ -12,12 +12,12 @@ global:
 grokApiKey: "your-grok-api-key-here"
 
 # Whis Data Input Service
-whis_data_input:
+whis-data-input:
   replicaCount: 1
   autoscaling:
     enabled: false
   image:
-    repository: linkops/whis_data_input
+    repository: linkops/whis-data-input
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
@@ -37,12 +37,12 @@ whis_data_input:
       value: "8001"
 
 # Whis Sanitize Service
-whis_sanitize:
+whis-sanitize:
   replicaCount: 1
   autoscaling:
     enabled: false
   image:
-    repository: linkops/whis_sanitize
+    repository: linkops/whis-sanitize
     tag: "latest"
     pullPolicy: IfNotPresent
   service:
@@ -62,12 +62,12 @@ whis_sanitize:
       value: "8002"
 
 # Whis Logic Service
-whis_logic:
+whis-logic:
   replicaCount: 1
   autoscaling:
     enabled: false
   image:
-    repository: linkops/whis_logic
+    repository: linkops/whis-logic
     tag: "latest"
     pullPolicy: IfNotPresent
   service:

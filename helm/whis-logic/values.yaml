@@ -1,8 +1,8 @@
-# Default values for whis_logic
+# Default values for whis-logic
 replicaCount: 1
 
 image:
-  repository: linkops/whis_logic
+  repository: linkops/whis-logic
   tag: "latest"
   pullPolicy: IfNotPresent
 

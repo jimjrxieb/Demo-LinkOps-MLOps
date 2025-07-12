@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "whis_sanitize.fullname" . }}
+  name: {{ include "whis-logic.fullname" . }}
   labels:
-    {{- include "whis_sanitize.labels" . | nindent 4 }}
+    {{- include "whis-logic.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "whis_sanitize.selectorLabels" . | nindent 6 }}
+      {{- include "whis-logic.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "whis_sanitize.selectorLabels" . | nindent 8 }}
+        {{- include "whis-logic.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "whis_sanitize.serviceAccountName" . }}
+      serviceAccountName: {{ include "whis-logic.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

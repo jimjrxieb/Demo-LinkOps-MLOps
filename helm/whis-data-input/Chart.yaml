@@ -1,5 +1,5 @@
 apiVersion: v2
-name: whis_data_input
+name: whis-data-input
 description: Whis Data Input Service for LinkOps Demo
 type: application
 version: 0.1.0
