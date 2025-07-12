@@ -1,10 +1,19 @@
-    import shlex
+#!/usr/bin/env python3
 import os
-from typing import dict
+import shlex
+from typing import Dict
+
 import yaml
 
-def sanitize_cmd(cmd):
+"""
+GitHub Actions Pipeline Rune
+Generates CI/CD workflows for Python microservices
+"""
 
+
+
+
+def sanitize_cmd(cmd):
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)
     if not isinstance(cmd, list) or not cmd:
@@ -30,15 +39,6 @@ def sanitize_cmd(cmd):
     return cmd
 
 
-#!/usr/bin/env python3
-"""
-GitHub Actions Pipeline Rune
-Generates CI/CD workflows for Python microservices
-"""
-
-
-
-
 class GHAPipelineRune:
     """Generates GitHub Actions workflows for microservices."""
 
@@ -46,7 +46,7 @@ class GHAPipelineRune:
         self.service_name = service_name
         self.python_version = python_version
 
-    def generate_workflow(self) -> dict:
+    def generate_workflow(self) -> Dict:
         """Generate a complete GitHub Actions workflow."""
         return {
             "name": f"{self.service_name.title()} CI/CD",

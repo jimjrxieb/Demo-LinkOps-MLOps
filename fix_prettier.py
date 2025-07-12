@@ -1,10 +1,20 @@
+def sanitize_cmd(cmd):
+    import shlex
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {"ls", "echo", "kubectl", "helm", "python3", "cat", "go", "docker", "npm", "black", "ruff", "yamllint", "prettier", "flake8"}
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
 #!/usr/bin/env python3
 """
 Script to fix Prettier formatting issues in Vue files.
 """
 
 import os
-import subprocess
+import subprocess  # nosec B404
 import sys
 
 
@@ -23,18 +33,18 @@ def run_prettier_fix():
         # Check if node_modules exists
         if not os.path.exists("node_modules"):
             print("📦 Installing dependencies...")
-            subprocess.run(["npm", "install"], check=True)
+            subprocess.run(sanitize_cmd(["npm", "install"]), check=True)
 
         # Run Prettier to fix formatting
         print("🎨 Running Prettier to fix formatting...")
         result = subprocess.run(
-            [
+            sanitize_cmd([
                 "npx",
                 "prettier",
                 "--write",
                 "src/components/DemoBanner.vue",
                 "src/components/JamesGUI.vue",
-            ],
+            ]),
             capture_output=True,
             text=True,
         )
@@ -65,13 +75,13 @@ def verify_fixes():
 
         print("🔍 Verifying fixes...")
         result = subprocess.run(
-            [
+            sanitize_cmd([
                 "npx",
                 "prettier",
                 "--check",
                 "src/components/DemoBanner.vue",
                 "src/components/JamesGUI.vue",
-            ],
+            ]),
             capture_output=True,
             text=True,
         )

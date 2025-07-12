@@ -1,10 +1,15 @@
-    import shlex
+"""
+Whis Logic - Whis's internal ML model brain for embedding generation and similarity search.
+"""
+
+import shlex
 from datetime import datetime
-from typing import Any, dict, list
+from typing import Any, Dict, List
+
 import numpy as np
 
-def sanitize_cmd(cmd):
 
+def sanitize_cmd(cmd):
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)
     if not isinstance(cmd, list) or not cmd:
@@ -30,13 +35,6 @@ def sanitize_cmd(cmd):
     return cmd
 
 
-"""
-Whis Logic - Whis's internal ML model brain for embedding generation and similarity search.
-"""
-
-
-
-
 class WhisLogic:
     """Whis's internal ML model brain."""
 
@@ -46,7 +44,7 @@ class WhisLogic:
 
     def generate_embedding(
         self, content: str, content_type: str = "text"
-    ) -> list[float]:
+    ) -> List[float]:
         """
         Generate embedding for content.
 
@@ -72,7 +70,7 @@ class WhisLogic:
         return embedding
 
     def calculate_similarity(
-        self, embedding1: list[float], embedding2: list[float]
+        self, embedding1: List[float], embedding2: List[float]
     ) -> float:
         """
         Calculate cosine similarity between two embeddings.
@@ -95,20 +93,20 @@ class WhisLogic:
 
     def find_similar_content(
         self,
-        query_embedding: list[float],
-        content_embeddings: list[dict[str, Any]],
+        query_embedding: List[float],
+        content_embeddings: List[Dict[str, Any]],
         top_k: int = 5,
-    ) -> list[dict[str, Any]]:
+    ) -> List[Dict[str, Any]]:
         """
         Find similar content based on embeddings.
 
         Args:
             query_embedding: Query embedding
-            content_embeddings: list of content with embeddings
+            content_embeddings: List of content with embeddings
             top_k: Number of top results to return
 
         Returns:
-            list of similar content with similarity scores
+            List of similar content with similarity scores
         """
         similarities = []
 
@@ -133,8 +131,8 @@ class WhisLogic:
         return filtered_results[:top_k]
 
     def generate_recommendations(
-        self, user_context: dict[str, Any], available_assets: list[dict[str, Any]]
-    ) -> list[dict[str, Any]]:
+        self, user_context: Dict[str, Any], available_assets: List[Dict[str, Any]]
+    ) -> List[Dict[str, Any]]:
         """
         Generate recommendations based on user context.
 
@@ -143,7 +141,7 @@ class WhisLogic:
             available_assets: Available orbs and runes
 
         Returns:
-            list of recommended assets
+            List of recommended assets
         """
         # Generate embedding for user context
         context_text = self._extract_context_text(user_context)
@@ -176,7 +174,7 @@ class WhisLogic:
 
         return recommendations
 
-    def _extract_context_text(self, user_context: dict[str, Any]) -> str:
+    def _extract_context_text(self, user_context: Dict[str, Any]) -> str:
         """Extract text from user context for embedding generation."""
         context_parts = []
 
@@ -192,7 +190,7 @@ class WhisLogic:
 
         return " ".join(context_parts)
 
-    def _extract_asset_text(self, asset: dict[str, Any]) -> str:
+    def _extract_asset_text(self, asset: Dict[str, Any]) -> str:
         """Extract text from asset for embedding generation."""
         asset_parts = []
 
@@ -216,7 +214,7 @@ class WhisLogic:
         return " ".join(asset_parts)
 
     def _generate_recommendation_reason(
-        self, asset: dict[str, Any], user_context: dict[str, Any]
+        self, asset: Dict[str, Any], user_context: Dict[str, Any]
     ) -> str:
         """Generate human-readable reason for recommendation."""
         asset_type = asset.get("type", "unknown")
@@ -231,25 +229,25 @@ class WhisLogic:
 
 
 # Convenience functions for external use
-def generate_embedding(content: str, content_type: str = "text") -> list[float]:
+def generate_embedding(content: str, content_type: str = "text") -> List[float]:
     """Generate embedding for content."""
     logic = WhisLogic()
     return logic.generate_embedding(content, content_type)
 
 
 def find_similar_content(
-    query_embedding: list[float],
-    content_embeddings: list[dict[str, Any]],
+    query_embedding: List[float],
+    content_embeddings: List[Dict[str, Any]],
     top_k: int = 5,
-) -> list[dict[str, Any]]:
+) -> List[Dict[str, Any]]:
     """Find similar content based on embeddings."""
     logic = WhisLogic()
     return logic.find_similar_content(query_embedding, content_embeddings, top_k)
 
 
 def generate_recommendations(
-    user_context: dict[str, Any], available_assets: list[dict[str, Any]]
-) -> list[dict[str, Any]]:
+    user_context: Dict[str, Any], available_assets: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
     """Generate recommendations based on user context."""
     logic = WhisLogic()
     return logic.generate_recommendations(user_context, available_assets)

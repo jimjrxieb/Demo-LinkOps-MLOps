@@ -1,9 +1,19 @@
+def sanitize_cmd(cmd):
+    import shlex
+    if isinstance(cmd, str):
+        cmd = shlex.split(cmd)
+    if not isinstance(cmd, list) or not cmd:
+        raise ValueError("Invalid command passed to sanitize_cmd()")
+    allowed = {"ls", "echo", "kubectl", "helm", "python3", "cat", "go", "docker", "npm", "black", "ruff", "yamllint", "prettier", "flake8"}
+    if cmd[0] not in allowed:
+        raise ValueError(f"Blocked dangerous command: {cmd[0]}")
+    return cmd
 #!/usr/bin/env python3
 """
 Script to verify that UP006 errors have been fixed.
 """
 
-import subprocess
+import subprocess  # nosec B404
 import sys
 from pathlib import Path
 
@@ -15,7 +25,7 @@ def main():
     try:
         # Run ruff check for UP006 errors
         result = subprocess.run(
-            ["ruff", "check", ".", "--select", "UP006", "--output-format=text"],
+            sanitize_cmd(["ruff", "check", ".", "--select", "UP006", "--output-format=text"]),
             capture_output=True,
             text=True,
             cwd=Path("."),

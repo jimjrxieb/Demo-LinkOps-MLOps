@@ -19,27 +19,27 @@ def fix_subprocess_issues(file_path: Path) -> bool:
         changes_made = 0
 
         # Fix subprocess.run calls that need shell=False explicitly
-        # Pattern: subprocess.run([...], ...) -> subprocess.run([...], shell=False, ...)
+        # Pattern: subprocess.run(sanitize_cmd([...]), ...) -> subprocess.run(sanitize_cmd([...]), shell=False, ...)
         subprocess_patterns = [
-            # Pattern 1: subprocess.run([...], capture_output=True, ...)
+            # Pattern 1: subprocess.run(sanitize_cmd([...]), capture_output=True, ...)
             (
                 r"subprocess\.run\(\[([^\]]+)\],\s*capture_output=True",
-                r"subprocess.run([\1], shell=False, capture_output=True",
+                r"subprocess.run(sanitize_cmd([\1]), shell=False, capture_output=True",
             ),
-            # Pattern 2: subprocess.run([...], check=True, ...)
+            # Pattern 2: subprocess.run(sanitize_cmd([...]), check=True, ...)
             (
                 r"subprocess\.run\(\[([^\]]+)\],\s*check=True",
-                r"subprocess.run([\1], shell=False, check=True",
+                r"subprocess.run(sanitize_cmd([\1]), shell=False, check=True",
             ),
-            # Pattern 3: subprocess.run([...], timeout=..., ...)
+            # Pattern 3: subprocess.run(sanitize_cmd([...]), timeout=..., ...)
             (
                 r"subprocess\.run\(\[([^\]]+)\],\s*timeout=([^,]+)",
-                r"subprocess.run([\1], shell=False, timeout=\2",
+                r"subprocess.run(sanitize_cmd([\1]), shell=False, timeout=\2",
             ),
-            # Pattern 4: subprocess.run([...], text=True, ...)
+            # Pattern 4: subprocess.run(sanitize_cmd([...]), text=True, ...)
             (
                 r"subprocess\.run\(\[([^\]]+)\],\s*text=True",
-                r"subprocess.run([\1], shell=False, text=True",
+                r"subprocess.run(sanitize_cmd([\1]), shell=False, text=True",
             ),
         ]
 

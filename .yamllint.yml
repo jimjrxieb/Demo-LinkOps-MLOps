@@ -1,16 +1,18 @@
 extends: default
 
 rules:
-  braces:
+braces:
     min-spaces-inside: 0
     max-spaces-inside: 0
-  brackets:
+brackets:
     min-spaces-inside: 0
     max-spaces-inside: 0
-  line-length:
+line-length:
     max: 140
-  indentation:
+indentation:
     spaces: 2
     indent-sequences: true
-  empty-lines:
+empty-lines:
     max: 1
+
+

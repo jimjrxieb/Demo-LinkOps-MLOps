@@ -1,7 +1,13 @@
-    import shlex
+"""
+FickNury Evaluator - Agent Selector
+Selects the best agent for a given task based on capabilities
+"""
+
+import shlex
+from typing import Dict
+
 
 def sanitize_cmd(cmd):
-
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)
     if not isinstance(cmd, list) or not cmd:
@@ -27,7 +33,7 @@ def sanitize_cmd(cmd):
     return cmd
 
 
-def select_agent_for_task(task_description: str, capabilities: dict):
+def select_agent_for_task(task_description: str, capabilities: Dict):
     """Select the best agent for a given task based on capabilities"""
     desc = task_description.lower()
 
