@@ -7,7 +7,6 @@ import os
 import re
 
 
-
 def fix_yaml_file(file_path):
     """Fix YAML linting issues in a single file."""
     print(f"Fixing: {file_path}")
