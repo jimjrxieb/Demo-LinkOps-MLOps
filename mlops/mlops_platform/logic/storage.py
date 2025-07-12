@@ -135,7 +135,9 @@ class StorageManager:
                         stats["recent_updates"] += 1
                 except Exception as e:
                     # Log parsing error but continue processing
-                    print(f"Warning: Could not parse date '{updated_at}' in {filename}: {e}")
+                    print(
+                        f"Warning: Could not parse date '{updated_at}' in {filename}: {e}"
+                    )
 
         return stats
 

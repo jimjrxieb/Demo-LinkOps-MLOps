@@ -1,6 +1,7 @@
 import asyncio
 import json
 import os
+
 # Security: subprocess is used for system commands - ensure inputs are sanitized
 import subprocess
 import uuid
@@ -72,7 +73,9 @@ class RuneExecutor:
         if os.path.exists(build_script):
             try:
                 # Security: Explicitly set shell=False to prevent command injection
-                subprocess.run([build_script], shell=False, check=True, capture_output=True)
+                subprocess.run(
+                    [build_script], shell=False, check=True, capture_output=True
+                )
                 if os.path.exists("tools/agents/build/platform_agent"):
                     return "tools/agents/build/platform_agent"
             except subprocess.CalledProcessError:
