@@ -5,12 +5,14 @@ This document explains how to configure your local development environment to ma
 ## Python Configuration
 
 ### Tools Used
+
 - **Black**: Code formatting
 - **isort**: Import sorting
 - **Ruff**: Linting and import sorting
 - **Bandit**: Security scanning
 
 ### Configuration Files
+
 - `pyproject.toml`: Contains all Python tool configurations
 
 ### Local Commands
@@ -33,6 +35,7 @@ bandit -r mlops/ shadows/
 ```
 
 ### VS Code Extensions
+
 - Python
 - Black Formatter
 - isort
@@ -41,10 +44,12 @@ bandit -r mlops/ shadows/
 ## Frontend Configuration
 
 ### Tools Used
+
 - **ESLint**: JavaScript/TypeScript linting
 - **Prettier**: Code formatting
 
 ### Configuration Files
+
 - `.prettierrc`: Prettier configuration
 - `.eslintrc.json`: ESLint configuration
 - `package.json`: Scripts and dependencies
@@ -65,16 +70,19 @@ npm run lint
 ```
 
 ### VS Code Extensions
+
 - ESLint
 - Prettier - Code formatter
 
 ## YAML Configuration
 
 ### Tools Used
+
 - **yamllint**: YAML linting
 - **Prettier**: YAML formatting
 
 ### Configuration Files
+
 - `.yamllint.yml`: YAML linting rules
 
 ### Local Commands
@@ -124,6 +132,7 @@ repos:
 ```
 
 Install pre-commit:
+
 ```bash
 pip install pre-commit
 pre-commit install
@@ -132,6 +141,7 @@ pre-commit install
 ## IDE Integration
 
 ### VS Code Settings
+
 Add to `.vscode/settings.json`:
 
 ```json
@@ -162,6 +172,7 @@ Add to `.vscode/settings.json`:
 3. **YAML formatting issues**: Use the `.yamllint.yml` configuration for consistent formatting
 
 ### Version Compatibility
+
 - Python: 3.11+
 - Node.js: 20+
 - npm: 8+
@@ -169,9 +180,10 @@ Add to `.vscode/settings.json`:
 ## Pipeline Alignment
 
 These configurations ensure that:
+
 - Local formatting matches CI/CD pipeline expectations
 - Linting rules are consistent across environments
 - Security scanning can be performed locally
 - Import sorting follows the same rules as the pipeline
 
-The CI/CD pipeline uses the same tools and configurations, so code that passes local checks should pass the pipeline. 
+The CI/CD pipeline uses the same tools and configurations, so code that passes local checks should pass the pipeline.

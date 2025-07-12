@@ -46,9 +46,10 @@
 ## Service Communication Details
 
 ### 1. Data Collector → Sanitizer
+
 - **Endpoint**: `POST /api/collect`
 - **Environment Variable**: `SANITIZER_URL=http://sanitizer:8002/api/sanitize`
-- **Payload**: 
+- **Payload**:
   ```json
   {
     "input_type": "task|qna|info|image|fixlog|solution_entry",
@@ -57,9 +58,10 @@
   ```
 
 ### 2. Sanitizer → Whis
+
 - **Endpoint**: `POST /api/sanitize`
 - **Environment Variable**: `WHIS_URL=http://whis:8003/api/whis/train`
-- **Payload**: 
+- **Payload**:
   ```json
   {
     "input_type": "task|qna|info|image|fixlog|solution_entry",
@@ -68,8 +70,9 @@
   ```
 
 ### 3. Whis Training + Rune/Orb Generation
+
 - **Endpoint**: `POST /api/whis/train`
-- **Response (Match Found)**: 
+- **Response (Match Found)**:
   ```json
   {
     "status": "match_found",
@@ -81,7 +84,7 @@
     "message": "Existing pattern matched, ready for deployment"
   }
   ```
-- **Response (No Match)**: 
+- **Response (No Match)**:
   ```json
   {
     "status": "no_match",
@@ -92,7 +95,7 @@
     "message": "New pattern detected, requires manual review"
   }
   ```
-- **Response (Solution Entry)**: 
+- **Response (Solution Entry)**:
   ```json
   {
     "status": "rune_created",
@@ -107,6 +110,7 @@
   ```
 
 ### 4. FickNury Evaluation + Deployment
+
 - **Endpoint**: `POST /api/ficknury/evaluate`
 - **Payload**:
   ```json
@@ -141,12 +145,14 @@
 ## Solution Entry Pipeline
 
 ### Special Handling for Solution Entries
+
 - **Auto-Detection**: Data collector recognizes `solution_entry` type
 - **Enhanced Sanitization**: Special cleaning for solution paths and sensitive data
 - **Auto-Training**: Whis immediately creates runes without approval workflow
 - **Rune Creation**: Automatic rune generation for verified solutions
 
 ### Solution Entry Payload Example
+
 ```json
 {
   "input_type": "solution_entry",
@@ -167,34 +173,40 @@
 ## Legacy Support
 
 ### Kafka Integration (Backward Compatibility)
+
 - **Task Collection**: `POST /api/collect/task` → Kafka topic `raw-tasks`
 - **QnA Collection**: `POST /api/collect/qna` → Kafka topic `raw-qna`
 - **Info Collection**: `POST /api/collect/info` → Kafka topic `raw-info`
 
 ### Legacy Endpoints
+
 - **Whis**: `POST /api/whis/train-nightly` (batch processing)
 - **FickNury**: `POST /api/ficknury/evaluate-task` (simple evaluation)
 
 ## Error Handling
 
 ### Data Collector
+
 - Returns `sent_to_sanitizer: false` if sanitizer is unavailable
 - Includes error details in response
 - Special handling for solution entries
 
 ### Sanitizer
+
 - Returns `forwarded_to_whis: false` if whis is unavailable
 - Includes error details in response
 - Still saves sanitized data locally
 - Enhanced sanitization for solution paths
 
 ### Whis
+
 - Returns error status if processing fails
 - Logs detailed error information
 - Handles both match and no-match scenarios
 - Auto-training for solution entries
 
 ### FickNury
+
 - Returns deployment failure status if deployment fails
 - Handles approval workflow
 - Provides detailed scoring and status information
@@ -202,26 +214,31 @@
 ## Testing
 
 ### Run Complete Flow Test
+
 ```bash
 python test_data_collector_sanitizer_whis_flow.py
 ```
 
 ### Run Solution Entry Test
+
 ```bash
 python test_solution_entry_pipeline.py
 ```
 
 ### Run Whis → FickNury Flow Test
+
 ```bash
 python test_whis_ficknury_integration.py
 ```
 
 ### Run Individual Service Tests
+
 ```bash
 python test_sanitizer_whis_communication.py
 ```
 
 ### Test Solution Entry with Curl
+
 ```bash
 curl -X POST http://localhost:8001/api/collect \
   -H "Content-Type: application/json" \
@@ -244,6 +261,7 @@ curl -X POST http://localhost:8001/api/collect \
 ## Environment Variables
 
 ### Required for Service Communication
+
 ```bash
 # Data Collector → Sanitizer
 SANITIZER_URL=http://sanitizer:8002/api/sanitize
@@ -253,6 +271,7 @@ WHIS_URL=http://whis:8003/api/whis/train
 ```
 
 ### Docker Compose Configuration
+
 ```yaml
 data-collector:
   environment:
@@ -276,4 +295,4 @@ sanitizer:
 9. **Flexible Routing**: Easy to modify communication paths
 10. **Monitoring**: Clear visibility into data flow and failures
 11. **Automation Scoring**: FickNury evaluates automation feasibility
-12. **Agent Deployment**: Automatic deployment of appropriate agents 
+12. **Agent Deployment**: Automatic deployment of appropriate agents

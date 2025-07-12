@@ -26,10 +26,12 @@ Code Push → GitHub Actions → Docker Build → ArgoCD Sync → Kubernetes Dep
 ### 📦 **MLOps Platform Workflow** (`.github/workflows/mlops-platform.yml`)
 
 **Triggers:**
+
 - Push to `main` or `develop` branches
 - Changes in `mlops/mlops_platform/**` or `helm/mlops-platform/**`
 
 **Jobs:**
+
 1. **Lint** - Code quality checks (flake8, black, isort)
 2. **Test** - Unit and integration tests with coverage
 3. **Security Scan** - Trivy, Semgrep, GitGuardian scanning
@@ -41,10 +43,12 @@ Code Push → GitHub Actions → Docker Build → ArgoCD Sync → Kubernetes Dep
 ### 🎨 **Frontend Workflow** (`.github/workflows/frontend.yml`)
 
 **Triggers:**
+
 - Push to `main` or `develop` branches
 - Changes in `frontend/**` or `helm/frontend/**`
 
 **Jobs:**
+
 1. **Lint** - ESLint and Prettier checks
 2. **Test** - Unit and E2E tests
 3. **Security Scan** - Snyk and Trivy scanning
@@ -81,14 +85,14 @@ spec:
 
 ### 🎯 **Deployed Applications**
 
-| Application | Purpose | Status |
-|-------------|---------|--------|
+| Application          | Purpose                      | Status    |
+| -------------------- | ---------------------------- | --------- |
 | **linkops-platform** | Complete platform deployment | ✅ Active |
-| **mlops-platform** | Core MLOps service | ✅ Active |
-| **audit-assess** | Security and compliance | ✅ Active |
-| **frontend** | Vue.js user interface | ✅ Active |
-| **whis-data-input** | Data collection service | ✅ Active |
-| **whis-enhance** | Content enhancement | ✅ Active |
+| **mlops-platform**   | Core MLOps service           | ✅ Active |
+| **audit-assess**     | Security and compliance      | ✅ Active |
+| **frontend**         | Vue.js user interface        | ✅ Active |
+| **whis-data-input**  | Data collection service      | ✅ Active |
+| **whis-enhance**     | Content enhancement          | ✅ Active |
 
 ---
 
@@ -159,11 +163,11 @@ security-scan:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
       with:
-        scan-type: 'fs'
-        scan-ref: 'mlops/mlops_platform'
-        format: 'sarif'
-        output: 'trivy-results.sarif'
-    
+        scan-type: "fs"
+        scan-ref: "mlops/mlops_platform"
+        format: "sarif"
+        output: "trivy-results.sarif"
+
     # Semgrep SAST
     - name: Run Semgrep
       uses: returntocorp/semgrep-action@v1
@@ -172,7 +176,7 @@ security-scan:
           p/security-audit
           p/secrets
           p/owasp-top-ten
-    
+
     # GitGuardian secrets detection
     - name: GitGuardian scan
       uses: GitGuardian/gg-shield-action@main
@@ -265,12 +269,12 @@ spec:
   target:
     name: mlops-secrets
   data:
-  - secretKey: database-url
-    remoteRef:
-      key: mlops/database-url
-  - secretKey: api-key
-    remoteRef:
-      key: mlops/api-key
+    - secretKey: database-url
+      remoteRef:
+        key: mlops/database-url
+    - secretKey: api-key
+      remoteRef:
+        key: mlops/api-key
 ```
 
 ---
@@ -280,6 +284,7 @@ spec:
 ### 🔍 **Common Issues**
 
 1. **Build Failures**
+
    ```bash
    # Check build logs
    docker build -t test-image .
@@ -287,6 +292,7 @@ spec:
    ```
 
 2. **Deployment Failures**
+
    ```bash
    # Check pod status
    kubectl describe pod <pod-name> -n linkops
@@ -294,20 +300,22 @@ spec:
    ```
 
 3. **ArgoCD Sync Issues**
+
    ```bash
    # Check application status
    argocd app get linkops-platform
    argocd app logs linkops-platform
-   
+
    # Force sync
    argocd app sync linkops-platform --force
    ```
 
 4. **Image Pull Issues**
+
    ```bash
    # Check image availability
    docker pull ghcr.io/jimjrxieb/mlops-platform:latest
-   
+
    # Verify registry access
    kubectl get secrets -n linkops
    ```
@@ -397,4 +405,4 @@ Your LinkOps MLOps platform now has **complete deployment automation** with:
 - ✅ **Monitoring** - Health checks and observability
 - ✅ **Troubleshooting** - Complete debugging and recovery procedures
 
-**The platform is ready for production deployment with full automation! 🚀** 
+**The platform is ready for production deployment with full automation! 🚀**

@@ -14,11 +14,13 @@
   - `sanitized_data` (sanitized JSON output)
 
 **How to run:**
+
 ```bash
 docker-compose -f docker-compose.daytime.yml up -d
 ```
 
 **What happens:**
+
 - Accepts task inputs via `whis_data_input`
 - Passes them to `whis_sanitize`
 - Writes sanitized JSON into the shared volume or data lake
@@ -42,11 +44,13 @@ docker-compose -f docker-compose.daytime.yml up -d
   - `runes` (output)
 
 **How to run:**
+
 ```bash
 docker-compose -f docker-compose.nighttime.yml up -d
 ```
 
 **What happens:**
+
 - Reads sanitized files from shared volume (`/data/sanitized`)
 - Generates Orbs and Runes, stores to `orbs/`, `runes/`
 - `whis_enhance` reads those and updates agents (or queues deployments)
@@ -70,6 +74,7 @@ docker-compose -f docker-compose.daytime.yml up -d
 ---
 
 ## 🧠 Pro Tips
+
 - You can run both modes in parallel (on different ports/volumes) for advanced workflows.
 - Use `docker-compose down` to stop and clean up after each mode.
 - For production, consider using Docker secrets or Kubernetes secrets for even stronger security.
@@ -78,4 +83,4 @@ docker-compose -f docker-compose.daytime.yml up -d
 
 **This split gives you a fast, focused pipeline for both real-time data ingestion and nightly AI training.**
 
-**Switch modes as needed for performance, cost, and security!** 
+**Switch modes as needed for performance, cost, and security!**

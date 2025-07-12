@@ -5,18 +5,22 @@ This guide explains how to set up the required GitHub secrets for the LinkOps CI
 ## Required Secrets
 
 ### 1. Docker Hub Authentication
+
 - **DOCKER_USER**: Your Docker Hub username
 - **DOCKER_CRED**: Your Docker Hub password or access token
 
 ### 2. SonarCloud Integration
+
 - **SONAR_TOKEN**: Your SonarCloud authentication token
 - **SONAR_PROJECT_KEY**: Your SonarCloud project key
 - **SONAR_ORG**: Your SonarCloud organization key
 
 ### 3. GitGuardian Secret Scanning
+
 - **GITGUARDIAN_API_KEY**: Your GitGuardian API key
 
 ### 4. Infrastructure Secrets (Optional - for deployment)
+
 - **GRAFANA_ADMIN_PASSWORD**: Admin password for Grafana
 - **POSTGRES_PASSWORD**: PostgreSQL database password
 - **ACR_LOGIN_SERVER**: Azure Container Registry login server
@@ -34,21 +38,25 @@ This guide explains how to set up the required GitHub secrets for the LinkOps CI
 ## Security Best Practices
 
 ### For Docker Hub:
+
 - Use Docker Hub access tokens instead of passwords
 - Create tokens with minimal required permissions
 - Rotate tokens regularly
 
 ### For SonarCloud:
+
 - Generate project-specific tokens
 - Use organization-level tokens for multiple projects
 - Store project keys securely
 
 ### For GitGuardian:
+
 - Use API keys with appropriate scopes
 - Rotate keys periodically
 - Monitor API usage
 
 ### For Infrastructure:
+
 - Use strong, unique passwords
 - Store passwords in a secure password manager
 - Rotate passwords regularly
@@ -84,12 +92,14 @@ After adding secrets, you can verify they're working by:
 ## Troubleshooting
 
 ### Common Issues:
+
 - **Secret not found**: Ensure the secret name matches exactly (case-sensitive)
 - **Authentication failed**: Verify credentials are correct and not expired
 - **Permission denied**: Check that tokens have appropriate permissions
 - **Base64 encoding**: Ensure values are properly base64 encoded for Kubernetes secrets
 
 ### Debug Commands:
+
 ```bash
 # Test Docker Hub login
 docker login -u $DOCKER_USER -p $DOCKER_CRED
@@ -99,4 +109,4 @@ curl -u $SONAR_TOKEN: https://sonarcloud.io/api/authentication/validate
 
 # Test GitGuardian API
 curl -H "Authorization: Token $GITGUARDIAN_API_KEY" https://api.gitguardian.com/v1/health
-``` 
+```

@@ -1,6 +1,6 @@
 2# 🔥 ARISE - Shadow Army Activation Protocol
 
-> *"ARISE... The LinkOps network is awake."*
+> _"ARISE... The LinkOps network is awake."_
 
 ## 🎯 Mission Statement
 
@@ -62,30 +62,35 @@ curl -X POST http://localhost:8002/api/james/activate
 ## 🔗 API Endpoints
 
 ### James - Voice of the Monarch
+
 - **Activation**: `POST /api/james/activate`
 - **Task Submission**: `POST /api/james/task`
 - **Q&A**: `POST /api/james/qa`
 - **Voice Interaction**: `POST /api/james/voice`
 
 ### Whis - Rune Forger & Shadow Brain
+
 - **Training Queue**: `GET /api/whis/training-queue`
 - **Generate Orbs**: `POST /api/whis/generate-orbs`
 - **Generate Runes**: `POST /api/whis/generate-runes`
 - **Smithing Log**: `GET /api/whis/smithing-log`
 
 ### Igris - Platform Guardian
+
 - **Infrastructure Status**: `GET /api/igris/infrastructure`
 - **Cost Analysis**: `GET /api/igris/cost-analysis`
 - **Security Audit**: `GET /api/igris/security-audit`
 - **Deploy Infrastructure**: `POST /api/igris/deploy`
 
 ### Katie - Kubernetes Sentinel
+
 - **Kubernetes Status**: `GET /api/katie/kubernetes`
 - **Tasks Handled**: `GET /api/katie/tasks`
 - **YAML Visualizer**: `GET /api/katie/yaml-visualizer`
 - **Scale Deployment**: `POST /api/katie/scale`
 
 ### Ficknury - Task Evaluator
+
 - **Incoming Tasks**: `GET /api/ficknury/incoming-tasks`
 - **Feasibility Ranking**: `GET /api/ficknury/feasibility`
 - **Decision Matrix**: `GET /api/ficknury/decision-matrix`
@@ -127,19 +132,19 @@ KUBECONFIG=/root/.kube/config
 
 ### Port Mapping
 
-| Shadow Agent | Port | Description |
-|--------------|------|-------------|
-| Backend API | 8000 | Core API |
-| Whis Logic | 8001 | AI Brain |
-| James | 8002 | Voice Assistant |
-| Whis Sanitize | 8003 | Data Purifier |
-| Whis Data Input | 8004 | Data Collector |
-| Whis Smithing | 8005 | Rune Crafter |
-| Whis Enhance | 8006 | Agent Enhancement |
-| Ficknury | 8007 | Task Evaluator |
-| AuditGuard | 8008 | Security |
-| WebScraper | 8009 | Data Hunter |
-| Frontend | 3000 | Vue.js UI |
+| Shadow Agent    | Port | Description       |
+| --------------- | ---- | ----------------- |
+| Backend API     | 8000 | Core API          |
+| Whis Logic      | 8001 | AI Brain          |
+| James           | 8002 | Voice Assistant   |
+| Whis Sanitize   | 8003 | Data Purifier     |
+| Whis Data Input | 8004 | Data Collector    |
+| Whis Smithing   | 8005 | Rune Crafter      |
+| Whis Enhance    | 8006 | Agent Enhancement |
+| Ficknury        | 8007 | Task Evaluator    |
+| AuditGuard      | 8008 | Security          |
+| WebScraper      | 8009 | Data Hunter       |
+| Frontend        | 3000 | Vue.js UI         |
 
 ## 🧪 Testing
 
@@ -196,30 +201,35 @@ kubectl apply -f k8s/
 ## 🎯 Shadow Agent Profiles
 
 ### Whis 🧠
+
 - **Role**: Rune Forger & Shadow Brain
 - **IQ Level**: 85
 - **Experience**: 2+ years
 - **Specializations**: NLP, Data Processing, AI Training, Knowledge Synthesis
 
 ### Igris 🏗️
+
 - **Role**: Platform Guardian
 - **IQ Level**: 92
 - **Experience**: 3+ years
 - **Specializations**: Terraform, AWS, Security, Cost Optimization
 
 ### Katie ⚓
+
 - **Role**: Kubernetes Sentinel
 - **IQ Level**: 78
 - **Experience**: 1.5+ years
 - **Specializations**: Kubernetes, Helm, Docker, Service Mesh
 
 ### Ficknury 🎯
+
 - **Role**: Task Evaluator
 - **IQ Level**: 88
 - **Experience**: 2.5+ years
 - **Specializations**: Task Routing, AI Evaluation, Load Balancing, Analytics
 
 ### James 🤖
+
 - **Role**: Voice of the Monarch
 - **IQ Level**: 82
 - **Experience**: 1+ year
@@ -238,6 +248,7 @@ When you hit the ARISE button:
 ## 🎭 The Legacy
 
 This system represents:
+
 - **Innovation**: Pushing the boundaries of AI-powered automation
 - **Security**: Enterprise-grade security and compliance
 - **Growth**: Continuous learning and improvement
@@ -246,4 +257,4 @@ Every deployment isn't just running containers — **you're summoning shadows** 
 
 ---
 
-*"ARISE... The LinkOps network is awake."* 🔥 
+_"ARISE... The LinkOps network is awake."_ 🔥

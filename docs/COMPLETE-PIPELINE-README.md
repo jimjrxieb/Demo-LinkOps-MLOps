@@ -42,6 +42,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
 ## 🔧 Service Components
 
 ### 1. **FickNury Evaluator** (`ficknury_evaluator`)
+
 - **Port**: 8008
 - **Purpose**: Task evaluation and intelligent routing
 - **Key Files**: `task_router.py`, `main.py`
@@ -51,6 +52,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `GET /health` - Health check
 
 ### 2. **James Logic** (`james_logic`)
+
 - **Port**: 8002
 - **Purpose**: Manual task review and export
 - **Key Files**: `manual_task_export.py`, `main.py`
@@ -61,6 +63,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `GET /manual/training-stats` - Training statistics
 
 ### 3. **Whis Data Input** (`whis_data_input`)
+
 - **Port**: 8004
 - **Purpose**: Learning queue management and task ingestion
 - **Key Files**: `main.py`, `training_queue.csv`
@@ -70,6 +73,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `GET /health` - Health check
 
 ### 4. **Whis Sanitize** (`whis_sanitize`)
+
 - **Port**: 8003
 - **Purpose**: Task input sanitization and cleaning
 - **Key Files**: `main.py`
@@ -78,6 +82,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `GET /health` - Health check
 
 ### 5. **Whis Smithing** (`whis_smithing`)
+
 - **Port**: 8005
 - **Purpose**: ORB and RUNE generation from training data
 - **Key Files**: `main.py`, `orbs.json`, `runes.json`
@@ -89,6 +94,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `GET /runes` - Get all RUNEs
 
 ### 6. **Whis Enhance** (`whis_enhance`)
+
 - **Port**: 8006
 - **Purpose**: Agent enhancement using ORBs and RUNEs
 - **Key Files**: `main.py`, `enhancement_records.json`
@@ -101,12 +107,14 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
 ## 📊 Data Structures
 
 ### Training Queue CSV
+
 ```csv
 task_id,title,description,tools_used,commands,solution_summary,status,tags,confidence,agent,created_at,completed_at
 TASK-001,Deploy Helm Chart,Deploy app using Helm,helm kubectl,helm install myapp,Successfully deployed,completed,kubernetes,0.95,katie_logic,2024-01-15T10:30:00,2024-01-15T11:15:00
 ```
 
 ### ORB (Orbital Knowledge Base)
+
 ```json
 {
   "orb_id": "orb-kubernetes-20240115",
@@ -128,6 +136,7 @@ TASK-001,Deploy Helm Chart,Deploy app using Helm,helm kubectl,helm install myapp
 ```
 
 ### RUNE (Runnable Action Pattern)
+
 ```json
 {
   "rune_id": "rune-orb-kubernetes-20240115",
@@ -154,6 +163,7 @@ TASK-001,Deploy Helm Chart,Deploy app using Helm,helm kubectl,helm install myapp
 ## 🚀 Complete Workflow
 
 ### 1. **Task Submission**
+
 ```python
 import requests
 
@@ -171,11 +181,13 @@ evaluation = response.json()
 ```
 
 ### 2. **Task Routing**
+
 - **High Confidence (≥0.95)**: Direct agent assignment
 - **Medium Confidence (≥0.7)**: Whis learning queue
 - **Low Confidence (<0.7)**: Manual review via James
 
 ### 3. **Learning Pipeline**
+
 ```python
 # Manual task completion
 solution = {
@@ -191,6 +203,7 @@ requests.post("http://localhost:8002/manual/complete-task", json=solution)
 ```
 
 ### 4. **Knowledge Generation**
+
 ```python
 # Generate ORBs and RUNEs
 response = requests.post("http://localhost:8005/process-training-queue")
@@ -199,6 +212,7 @@ print(f"Generated {result['orbs_generated']} ORBs and {result['runes_generated']
 ```
 
 ### 5. **Agent Enhancement**
+
 ```python
 enhancement_request = {
     "agent_id": "katie_logic",
@@ -215,11 +229,13 @@ enhancement = response.json()["enhancement"]
 ## 🧪 Testing
 
 ### Run Complete Test Suite
+
 ```bash
 python test_complete_pipeline.py
 ```
 
 This will test:
+
 - ✅ Service health checks
 - ✅ Task submission and routing
 - ✅ Manual task processing
@@ -230,6 +246,7 @@ This will test:
 - ✅ Capability matrix generation
 
 ### Individual Service Tests
+
 ```bash
 # Test task routing
 curl -X POST http://localhost:8008/evaluate \
@@ -253,6 +270,7 @@ curl -X POST http://localhost:8006/enhance-agent \
 ## 📈 Monitoring & Metrics
 
 ### Key Metrics
+
 - **Task Processing Rate**: Tasks per minute
 - **Confidence Distribution**: High/Medium/Low confidence ratios
 - **Learning Efficiency**: ORBs/RUNEs generated per day
@@ -260,6 +278,7 @@ curl -X POST http://localhost:8006/enhance-agent \
 - **Success Rates**: Task completion rates by agent
 
 ### Health Checks
+
 ```bash
 # Check all services
 for service in ficknury james whis_data whis_sanitize whis_smithing whis_enhance; do
@@ -268,6 +287,7 @@ done
 ```
 
 ### Training Statistics
+
 ```bash
 curl http://localhost:8002/manual/training-stats
 ```
@@ -275,21 +295,25 @@ curl http://localhost:8002/manual/training-stats
 ## 🔮 Advanced Features
 
 ### 1. **Machine Learning Integration**
+
 - Train models on completed tasks
 - Predict confidence scores
 - Suggest optimal agents
 
 ### 2. **Advanced Routing**
+
 - Load balancing across agents
 - Priority-based queuing
 - SLA monitoring
 
 ### 3. **Analytics Dashboard**
+
 - Real-time metrics
 - Performance trends
 - Learning progress
 
 ### 4. **Automated Deployment**
+
 - Confidence threshold triggers
 - Automatic agent scaling
 - Self-healing capabilities
@@ -297,11 +321,13 @@ curl http://localhost:8002/manual/training-stats
 ## 🛠️ Deployment
 
 ### Docker Compose
+
 ```bash
 docker-compose up -d
 ```
 
 ### Kubernetes (Helm)
+
 ```bash
 # Install all services
 helmfile apply
@@ -313,6 +339,7 @@ helm install whis-enhance ./helm/whis_enhance --namespace linkops
 ```
 
 ### Environment Variables
+
 ```bash
 # Required
 POSTGRES_PASSWORD=your_password
@@ -328,6 +355,7 @@ OPENAI_API_KEY=sk-dummy
 ## 📚 API Documentation
 
 ### Swagger UI
+
 - FickNury: http://localhost:8008/docs
 - James: http://localhost:8002/docs
 - Whis Data: http://localhost:8004/docs
@@ -358,4 +386,4 @@ The pipeline continuously improves through:
 
 **Built with ❤️ by Shadow Link Industries**
 
-*The LinkOps Complete Learning Pipeline represents the future of intelligent automation, where systems learn, adapt, and improve continuously.* 
+_The LinkOps Complete Learning Pipeline represents the future of intelligent automation, where systems learn, adapt, and improve continuously._

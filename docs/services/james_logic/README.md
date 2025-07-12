@@ -5,6 +5,7 @@ James is your personal J.A.R.V.I.S. for LinkOps, providing a calm, powerful voic
 ## 🧠 **James' Role & Capabilities**
 
 ### **Core Identity**
+
 - **Role**: AI Executive Assistant with access to all LinkOps services
 - **Tone**: Calm, direct, powerful — Giancarlo Esposito style
 - **Voice I/O**: Accepts voice input and responds with synthesized speech
@@ -13,6 +14,7 @@ James is your personal J.A.R.V.I.S. for LinkOps, providing a calm, powerful voic
 - **Fallback**: Integrates with Open Interpreter when needed
 
 ### **Key Features**
+
 - 🗣️ **Voice Interface**: Natural voice conversation
 - 🖼️ **Image Analysis**: Screenshot and image description
 - 📡 **System Monitoring**: Real-time status across all services
@@ -42,25 +44,28 @@ shadows/james/
 ## 🚀 **API Endpoints**
 
 ### **Core Endpoints**
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/health` | GET | Health check and capabilities |
-| `/api/chat` | POST | Text conversation |
-| `/api/actions` | POST | System actions |
-| `/api/explain` | POST | Explanations |
+
+| Endpoint       | Method | Purpose                       |
+| -------------- | ------ | ----------------------------- |
+| `/health`      | GET    | Health check and capabilities |
+| `/api/chat`    | POST   | Text conversation             |
+| `/api/actions` | POST   | System actions                |
+| `/api/explain` | POST   | Explanations                  |
 
 ### **Voice & Vision Endpoints**
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/api/voice/speak` | POST | Text-to-speech generation |
-| `/api/voice/listen` | POST | Speech-to-text processing |
-| `/api/voice/conversation` | POST | Full voice conversation |
-| `/api/describe_image` | POST | Image analysis & description |
-| `/api/voice/audio/{filename}` | GET | Audio file retrieval |
+
+| Endpoint                      | Method | Purpose                      |
+| ----------------------------- | ------ | ---------------------------- |
+| `/api/voice/speak`            | POST   | Text-to-speech generation    |
+| `/api/voice/listen`           | POST   | Speech-to-text processing    |
+| `/api/voice/conversation`     | POST   | Full voice conversation      |
+| `/api/describe_image`         | POST   | Image analysis & description |
+| `/api/voice/audio/{filename}` | GET    | Audio file retrieval         |
 
 ### **Example Usage**
 
 #### **Voice Conversation**
+
 ```bash
 # Start voice conversation
 curl -X POST http://james:8000/api/voice/conversation \
@@ -76,6 +81,7 @@ curl -X POST http://james:8000/api/voice/speak \
 ```
 
 #### **Image Analysis**
+
 ```bash
 # Analyze screenshot
 curl -X POST http://james:8000/api/describe_image \
@@ -83,6 +89,7 @@ curl -X POST http://james:8000/api/describe_image \
 ```
 
 #### **Text Conversation**
+
 ```bash
 # Chat with James
 curl -X POST http://james:8000/api/chat \
@@ -96,18 +103,21 @@ curl -X POST http://james:8000/api/chat \
 ## 🎭 **James' Personality**
 
 ### **Voice Characteristics**
+
 - **Tone**: Calm, measured, authoritative
 - **Pace**: Deliberate and clear
 - **Style**: Professional elegance
 - **Inspiration**: Giancarlo Esposito's commanding presence
 
 ### **Response Patterns**
+
 - **Acknowledgment**: "I understand", "Indeed", "Let me clarify"
 - **Authority**: "I can confirm", "The data indicates", "I've analyzed"
 - **Guidance**: "Allow me to explain", "I should mention"
 - **Confidence**: "The situation is under control", "I can resolve this"
 
 ### **Persona Prompt**
+
 ```
 You are James, the LinkOps Executive Assistant.
 Your demeanor is calm, elegant, and exact. Think Giancarlo Esposito's voice.
@@ -121,12 +131,14 @@ Fallback only when logic is unclear.
 ## 🛠️ **Development**
 
 ### **Prerequisites**
+
 - Python 3.11+
 - Tesseract OCR
 - PortAudio
 - FFmpeg
 
 ### **Local Development**
+
 ```bash
 # Install system dependencies
 sudo apt-get install tesseract-ocr tesseract-ocr-eng portaudio19-dev ffmpeg
@@ -139,6 +151,7 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 ### **Docker Development**
+
 ```bash
 # Build image
 docker build -t james:dev .
@@ -150,7 +163,9 @@ docker run -p 8000:8000 james:dev
 ## 🎨 **Frontend Integration**
 
 ### **Summon James Component**
+
 The frontend includes a "Summon James" floating action button that provides:
+
 - 🎤 **Voice Input**: Microphone recording and processing
 - 🔊 **Voice Output**: Text-to-speech playback
 - 🖼️ **Image Upload**: Screenshot analysis
@@ -158,33 +173,36 @@ The frontend includes a "Summon James" floating action button that provides:
 - 📊 **Real-time Status**: System monitoring
 
 ### **Usage**
+
 ```vue
 <template>
   <SummonJames />
 </template>
 
 <script>
-import SummonJames from '@/components/SummonJames.vue'
+import SummonJames from "@/components/SummonJames.vue";
 
 export default {
   components: {
-    SummonJames
-  }
-}
+    SummonJames,
+  },
+};
 </script>
 ```
 
 ## 🔧 **Configuration**
 
 ### **Environment Variables**
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOG_LEVEL` | Logging level | `INFO` |
-| `VOICE_LANGUAGE` | Speech language | `en` |
-| `VOICE_TLD` | TTS service | `com` |
-| `OCR_LANGUAGE` | OCR language | `eng` |
+
+| Variable         | Description     | Default |
+| ---------------- | --------------- | ------- |
+| `LOG_LEVEL`      | Logging level   | `INFO`  |
+| `VOICE_LANGUAGE` | Speech language | `en`    |
+| `VOICE_TLD`      | TTS service     | `com`   |
+| `OCR_LANGUAGE`   | OCR language    | `eng`   |
 
 ### **Voice Settings**
+
 ```python
 JAMES_VOICE_CONFIG = {
     "language": "en",
@@ -197,6 +215,7 @@ JAMES_VOICE_CONFIG = {
 ## 🧪 **Testing**
 
 ### **Test Coverage**
+
 - ✅ Voice input/output processing
 - ✅ Image analysis and OCR
 - ✅ Text conversation handling
@@ -204,6 +223,7 @@ JAMES_VOICE_CONFIG = {
 - ✅ Personality consistency
 
 ### **Test Execution**
+
 ```bash
 # Run all tests
 pytest tests/ -v
@@ -217,6 +237,7 @@ pytest tests/test_personality.py -v
 ## 🚀 **Deployment**
 
 ### **Kubernetes Deployment**
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -227,16 +248,17 @@ spec:
   template:
     spec:
       containers:
-      - name: james
-        image: ghcr.io/shadow-link-industries/james:latest
-        ports:
-        - containerPort: 8000
-        env:
-        - name: LOG_LEVEL
-          value: "INFO"
+        - name: james
+          image: ghcr.io/shadow-link-industries/james:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: LOG_LEVEL
+              value: "INFO"
 ```
 
 ### **Health Checks**
+
 - **Liveness**: `/health` endpoint
 - **Readiness**: Service availability
 - **Voice**: Audio processing capability
@@ -245,6 +267,7 @@ spec:
 ## 🔗 **Integration Points**
 
 ### **LinkOps Services**
+
 - **Whis**: Training and model management
 - **Igris**: Infrastructure and platform engineering
 - **Katie**: Data processing and analysis
@@ -252,6 +275,7 @@ spec:
 - **FickNury**: Task orchestration
 
 ### **External Services**
+
 - **Open Interpreter**: Fallback AI processing
 - **Google Speech Recognition**: Voice transcription
 - **gTTS**: Text-to-speech generation
@@ -260,6 +284,7 @@ spec:
 ## 📊 **Monitoring**
 
 ### **Metrics**
+
 - Voice processing accuracy
 - Image analysis success rate
 - Response time and latency
@@ -267,6 +292,7 @@ spec:
 - System integration status
 
 ### **Logging**
+
 - Conversation transcripts
 - Error tracking and debugging
 - Performance monitoring
@@ -275,12 +301,14 @@ spec:
 ## 🔒 **Security**
 
 ### **Voice Security**
+
 - Audio data encryption
 - Secure speech processing
 - Privacy-compliant storage
 - Access control and authentication
 
 ### **Image Security**
+
 - Secure image processing
 - OCR data protection
 - Privacy-preserving analysis
@@ -289,6 +317,7 @@ spec:
 ## 🎯 **Future Enhancements**
 
 ### **Planned Features**
+
 - 🔄 **Multi-language Support**: International voice processing
 - 🧠 **Advanced AI**: Enhanced conversation capabilities
 - 📱 **Mobile Integration**: Native mobile app support
@@ -296,6 +325,7 @@ spec:
 - 🔗 **API Gateway**: Centralized service communication
 
 ### **Advanced Capabilities**
+
 - **Emotion Recognition**: Voice emotion analysis
 - **Context Awareness**: Conversation memory
 - **Predictive Responses**: AI-powered suggestions
@@ -307,4 +337,4 @@ spec:
 
 James is now fully equipped with voice, vision, and intelligence to serve as your LinkOps Executive Assistant. With his calm, powerful presence, he provides the perfect interface to your entire AI stack.
 
-**"I understand. The system is ready for your commands."** 🚀 
+**"I understand. The system is ready for your commands."** 🚀

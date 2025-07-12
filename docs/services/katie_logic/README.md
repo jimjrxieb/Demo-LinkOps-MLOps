@@ -5,6 +5,7 @@ Katie is the intelligent Kubernetes AI agent and cluster guardian for the LinkOp
 ## 🚀 Features
 
 ### Core Capabilities
+
 - **Resource Description**: Detailed analysis of pods, deployments, services, and namespaces
 - **Intelligent Scaling**: Smart scaling operations with recommendations
 - **Log Analysis**: Advanced log search, error pattern analysis, and summaries
@@ -14,6 +15,7 @@ Katie is the intelligent Kubernetes AI agent and cluster guardian for the LinkOp
 - **K8GPT Integration**: AI-powered error analysis and insights
 
 ### SRE & Security
+
 - **CKA/CKS Certified**: Kubernetes best practices embedded
 - **Security Hardened**: Non-root containers, read-only filesystems
 - **RBAC Integration**: Proper Kubernetes permissions
@@ -83,11 +85,13 @@ uvicorn main:app --host 0.0.0.0 --port 8008 --reload
 ## 🔌 API Endpoints
 
 ### Health Check
+
 ```bash
 GET /health
 ```
 
 ### Execute Operations
+
 ```bash
 POST /execute
 {
@@ -100,6 +104,7 @@ POST /execute
 ```
 
 ### Resource Description
+
 ```bash
 GET /describe/pod/{namespace}/{pod_name}
 GET /describe/deployment/{namespace}/{deployment_name}
@@ -109,6 +114,7 @@ GET /describe/pods/{namespace}
 ```
 
 ### Scaling Operations
+
 ```bash
 POST /scale/deployment/{namespace}/{deployment_name}?replicas=3
 POST /scale/statefulset/{namespace}/{statefulset_name}?replicas=5
@@ -116,6 +122,7 @@ POST /scale/autoscale/{namespace}/{deployment_name}?min_replicas=2&max_replicas=
 ```
 
 ### Log Analysis
+
 ```bash
 GET /logs/pod/{namespace}/{pod_name}?tail_lines=100
 GET /logs/deployment/{namespace}/{deployment_name}
@@ -125,6 +132,7 @@ GET /logs/summary/{namespace}
 ```
 
 ### Resource Patching
+
 ```bash
 POST /patch/deployment/{namespace}/{deployment_name}
 {
@@ -142,6 +150,7 @@ POST /patch/deployment/{namespace}/{deployment_name}
 ```
 
 ### Manifest Operations
+
 ```bash
 POST /apply/manifest
 {
@@ -152,6 +161,7 @@ POST /apply/manifest
 ```
 
 ### Rollback Operations
+
 ```bash
 POST /rollback/deployment/{namespace}/{deployment_name}?revision=2
 ```
@@ -160,15 +170,16 @@ POST /rollback/deployment/{namespace}/{deployment_name}?revision=2
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `LOG_LEVEL` | `INFO` | Logging level |
-| `K8GPT_ENABLED` | `true` | Enable K8GPT integration |
-| `K8GPT_API_URL` | `https://api.k8gpt.ai/v1/analyze` | K8GPT API endpoint |
+| Variable        | Default                           | Description              |
+| --------------- | --------------------------------- | ------------------------ |
+| `LOG_LEVEL`     | `INFO`                            | Logging level            |
+| `K8GPT_ENABLED` | `true`                            | Enable K8GPT integration |
+| `K8GPT_API_URL` | `https://api.k8gpt.ai/v1/analyze` | K8GPT API endpoint       |
 
 ### Kubernetes RBAC
 
 Katie requires the following permissions:
+
 - Pod operations (get, list, watch, create, update, patch, delete)
 - Deployment operations (including scale and rollback)
 - Service operations
@@ -196,17 +207,20 @@ pytest --cov=. tests/
 ## 📊 Monitoring
 
 ### Health Checks
+
 - **Liveness Probe**: `/health` endpoint
 - **Readiness Probe**: `/health` endpoint
 - **Startup Probe**: Not configured (FastAPI handles startup)
 
 ### Metrics
+
 - Request latency
 - Error rates
 - Kubernetes operation success rates
 - K8GPT integration metrics
 
 ### Logging
+
 - Structured JSON logging
 - Kubernetes operation audit trails
 - Error analysis and insights
@@ -214,17 +228,20 @@ pytest --cov=. tests/
 ## 🔒 Security
 
 ### Container Security
+
 - Non-root user (UID 1000)
 - Read-only root filesystem
 - Dropped capabilities
 - No privilege escalation
 
 ### Network Security
+
 - ClusterIP service type
 - Ingress with TLS termination
 - Network policies (if configured)
 
 ### RBAC Security
+
 - Least privilege principle
 - Service account with specific permissions
 - Cluster role binding for operations
@@ -232,16 +249,19 @@ pytest --cov=. tests/
 ## 🚀 Production Deployment
 
 ### High Availability
+
 - Multiple replicas (default: 2)
 - Pod anti-affinity rules
 - Horizontal Pod Autoscaler
 
 ### Resource Management
+
 - CPU: 200m request, 500m limit
 - Memory: 256Mi request, 512Mi limit
 - Storage: No persistent storage required
 
 ### Backup & Recovery
+
 - No persistent data to backup
 - Configuration in GitOps manifests
 - State stored in Kubernetes API
@@ -267,4 +287,4 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Katie** - Your Kubernetes AI Agent & Cluster Guardian 🛡️ 
+**Katie** - Your Kubernetes AI Agent & Cluster Guardian 🛡️

@@ -9,6 +9,7 @@ This document provides a comprehensive checklist for implementing security scann
 ✅ **Goal:** Implement comprehensive container and filesystem security scanning.
 
 ### Trivy Implementation Checklist
+
 - [ ] **Container Scanning** - Scan Docker images for vulnerabilities
 - [ ] **Filesystem Scanning** - Scan application code and dependencies
 - [ ] **Infrastructure Scanning** - Scan IaC files (Terraform, CloudFormation)
@@ -17,18 +18,19 @@ This document provides a comprehensive checklist for implementing security scann
 - [ ] **SBOM Generation** - Software Bill of Materials
 
 ### Implementation
+
 ```yaml
 # Trivy security scanning
 security-scan:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v4
-    
+
     # Install Trivy
     - name: Install Trivy
       run: |
         curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin v0.45.0
-    
+
     # Scan filesystem for vulnerabilities
     - name: Run Trivy vulnerability scanner
       run: |
@@ -37,7 +39,7 @@ security-scan:
           --output trivy-fs-results.sarif \
           --severity HIGH,CRITICAL \
           .
-    
+
     # Scan container images
     - name: Scan Docker image
       run: |
@@ -46,7 +48,7 @@ security-scan:
           --output trivy-image-results.sarif \
           --severity HIGH,CRITICAL \
           ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
-    
+
     # Scan for secrets
     - name: Scan for secrets
       run: |
@@ -55,12 +57,12 @@ security-scan:
           --format sarif \
           --output trivy-secrets-results.sarif \
           .
-    
+
     # Generate SBOM
     - name: Generate SBOM
       run: |
         trivy fs --format cyclonedx --output sbom.json .
-    
+
     # Upload results
     - name: Upload Trivy scan results to GitHub Security tab
       uses: github/codeql-action/upload-sarif@v3
@@ -76,6 +78,7 @@ security-scan:
 ✅ **Goal:** Detect and prevent secrets from being committed to repositories.
 
 ### GitGuardian Implementation Checklist
+
 - [ ] **Pre-commit Hooks** - Block commits with secrets
 - [ ] **Repository Scanning** - Scan entire repository history
 - [ ] **Real-time Monitoring** - Monitor new commits and PRs
@@ -84,6 +87,7 @@ security-scan:
 - [ ] **Integration** - CI/CD pipeline integration
 
 ### Implementation
+
 ```yaml
 # GitGuardian secret detection
 secret-scan:
@@ -91,8 +95,8 @@ secret-scan:
   steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Full history for scanning
-    
+        fetch-depth: 0 # Full history for scanning
+
     # GitGuardian scan
     - name: GitGuardian scan
       uses: GitGuardian/gg-shield-action@main
@@ -101,14 +105,14 @@ secret-scan:
         GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
       with:
         args: --exit-zero
-    
+
     # Pre-commit hook setup
     - name: Setup pre-commit hooks
       run: |
         pip install pre-commit
         pre-commit install --hook-type pre-commit
         pre-commit install --hook-type commit-msg
-    
+
     # Run pre-commit checks
     - name: Run pre-commit checks
       run: |
@@ -116,6 +120,7 @@ secret-scan:
 ```
 
 ### Pre-commit Configuration
+
 ```yaml
 # .pre-commit-config.yaml
 repos:
@@ -124,7 +129,7 @@ repos:
     hooks:
       - id: ggshield
         args: [--exit-zero]
-  
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.4.0
     hooks:
@@ -141,6 +146,7 @@ repos:
 ✅ **Goal:** Monitor and manage dependency vulnerabilities across all languages.
 
 ### Snyk Implementation Checklist
+
 - [ ] **Python Dependencies** - Scan requirements.txt and Pipfile
 - [ ] **Node.js Dependencies** - Scan package.json and yarn.lock
 - [ ] **Go Dependencies** - Scan go.mod and go.sum
@@ -149,13 +155,14 @@ repos:
 - [ ] **License Compliance** - Check license compliance
 
 ### Implementation
+
 ```yaml
 # Snyk security scanning
 snyk-scan:
   runs-on: ubuntu-latest
   steps:
     - uses: actions/checkout@v4
-    
+
     # Python dependency scanning
     - name: Run Snyk to check for vulnerabilities in Python
       uses: snyk/actions/python@master
@@ -163,7 +170,7 @@ snyk-scan:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --severity-threshold=high --fail-on=high
-    
+
     # Node.js dependency scanning
     - name: Run Snyk to check for vulnerabilities in Node.js
       uses: snyk/actions/node@master
@@ -171,7 +178,7 @@ snyk-scan:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --severity-threshold=high --fail-on=high
-    
+
     # Go dependency scanning
     - name: Run Snyk to check for vulnerabilities in Go
       uses: snyk/actions/golang@master
@@ -179,7 +186,7 @@ snyk-scan:
         SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
       with:
         args: --severity-threshold=high --fail-on=high
-    
+
     # Container scanning
     - name: Run Snyk to check for vulnerabilities in container
       uses: snyk/actions/docker@master
@@ -188,7 +195,7 @@ snyk-scan:
       with:
         image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
         args: --severity-threshold=high --fail-on=high
-    
+
     # Infrastructure scanning
     - name: Run Snyk to check for vulnerabilities in infrastructure
       uses: snyk/actions/iac@master
@@ -205,6 +212,7 @@ snyk-scan:
 ✅ **Goal:** Implement security best practices for Kubernetes and cloud infrastructure.
 
 ### Infrastructure Security Checklist
+
 - [ ] **Pod Security Policies** - Enforce security policies
 - [ ] **Network Policies** - Control pod-to-pod communication
 - [ ] **RBAC Configuration** - Least privilege access
@@ -213,6 +221,7 @@ snyk-scan:
 - [ ] **Audit Logging** - Comprehensive audit trails
 
 ### Implementation
+
 ```yaml
 # Pod Security Policy
 apiVersion: policy/v1beta1
@@ -225,26 +234,26 @@ spec:
   requiredDropCapabilities:
     - ALL
   volumes:
-    - 'configMap'
-    - 'emptyDir'
-    - 'projected'
-    - 'secret'
-    - 'downwardAPI'
-    - 'persistentVolumeClaim'
+    - "configMap"
+    - "emptyDir"
+    - "projected"
+    - "secret"
+    - "downwardAPI"
+    - "persistentVolumeClaim"
   hostNetwork: false
   hostIPC: false
   hostPID: false
   runAsUser:
-    rule: 'MustRunAsNonRoot'
+    rule: "MustRunAsNonRoot"
   seLinux:
-    rule: 'RunAsAny'
+    rule: "RunAsAny"
   supplementalGroups:
-    rule: 'MustRunAs'
+    rule: "MustRunAs"
     ranges:
       - min: 1
         max: 65535
   fsGroup:
-    rule: 'MustRunAs'
+    rule: "MustRunAs"
     ranges:
       - min: 1
         max: 65535
@@ -260,8 +269,8 @@ metadata:
 spec:
   podSelector: {}
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress: []
   egress: []
 
@@ -283,12 +292,12 @@ metadata:
   name: mlops-platform-role
   namespace: mlops
 rules:
-- apiGroups: [""]
-  resources: ["pods", "services", "configmaps"]
-  verbs: ["get", "list", "watch"]
-- apiGroups: ["apps"]
-  resources: ["deployments"]
-  verbs: ["get", "list", "watch", "update"]
+  - apiGroups: [""]
+    resources: ["pods", "services", "configmaps"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "update"]
 ```
 
 ---
@@ -298,6 +307,7 @@ rules:
 ✅ **Goal:** Implement secure secrets management and rotation.
 
 ### Secrets Management Checklist
+
 - [ ] **External Secrets Operator** - Sync secrets from external sources
 - [ ] **Sealed Secrets** - Encrypt secrets in Git
 - [ ] **Vault Integration** - HashiCorp Vault for secret storage
@@ -306,6 +316,7 @@ rules:
 - [ ] **Audit Trail** - Track secret access and changes
 
 ### Implementation
+
 ```yaml
 # External Secrets Operator
 apiVersion: external-secrets.io/v1beta1
@@ -341,12 +352,12 @@ spec:
     name: mlops-secrets
     type: Opaque
   data:
-  - secretKey: database-url
-    remoteRef:
-      key: mlops/database-url
-  - secretKey: api-key
-    remoteRef:
-      key: mlops/api-key
+    - secretKey: database-url
+      remoteRef:
+        key: mlops/database-url
+    - secretKey: api-key
+      remoteRef:
+        key: mlops/api-key
 ```
 
 ---
@@ -356,6 +367,7 @@ spec:
 ✅ **Goal:** Implement comprehensive security monitoring and alerting.
 
 ### Security Monitoring Checklist
+
 - [ ] **Falco** - Runtime security monitoring
 - [ ] **OPA Gatekeeper** - Policy enforcement
 - [ ] **Security Hub** - Centralized security findings
@@ -364,6 +376,7 @@ spec:
 - [ ] **Incident Response** - Automated incident response
 
 ### Implementation
+
 ```yaml
 # Falco security monitoring
 apiVersion: v1
@@ -376,15 +389,15 @@ data:
     rules_file:
       - /etc/falco/falco_rules.yaml
       - /etc/falco/k8s_audit_rules.yaml
-    
+
     # Enable Kubernetes audit events
     k8s_audit_endpoint: 0.0.0.0:9765
-    
+
     # Output to syslog
     syslog_output:
       enabled: true
       program: "falco"
-    
+
     # Output to webhook
     http_output:
       enabled: true
@@ -417,25 +430,30 @@ spec:
 ## 🔧 LinkOps MLOps Platform Security Implementation
 
 ### Current Security Status
+
 ✅ **Container Security**
+
 - Trivy scanning in CI/CD pipeline
 - Multi-stage builds with security best practices
 - Non-root user containers
 - Minimal base images
 
 ✅ **Secret Management**
+
 - GitGuardian integration for secret detection
 - External secrets operator for secure secret storage
 - Automated secret rotation
 - RBAC for secret access control
 
 ✅ **Infrastructure Security**
+
 - Pod security policies enforced
 - Network policies for microservice communication
 - TLS encryption for all communications
 - Comprehensive audit logging
 
 ✅ **Dependency Security**
+
 - Snyk integration for vulnerability scanning
 - Automated dependency updates
 - License compliance checking
@@ -463,6 +481,7 @@ kubectl get events --field-selector reason=PolicyViolation
 ```
 
 ### Security Dashboard
+
 ```bash
 # Access security dashboards
 kubectl port-forward svc/security-hub 8080:8080
@@ -471,7 +490,8 @@ kubectl port-forward svc/vault-ui 8082:8200
 ```
 
 ### Next Steps
+
 - [ ] Implement zero-trust networking
 - [ ] Add runtime security monitoring
 - [ ] Configure advanced threat detection
-- [ ] Implement compliance automation 
+- [ ] Implement compliance automation

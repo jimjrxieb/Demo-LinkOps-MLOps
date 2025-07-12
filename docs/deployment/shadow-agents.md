@@ -21,12 +21,14 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 ## Available Shadow Agents
 
 ### 🏗️ Igris Logic
+
 - **Role**: Platform Engineering Agent
 - **Capabilities**: Infrastructure Analysis, Security Assessment, OpenDevin Integration
 - **Helm Chart**: `igris_logic`
 - **Port**: 8000
 
 ### 🛡️ Katie Logic
+
 - **Role**: Kubernetes AI Agent & Cluster Guardian
 - **Capabilities**: Cluster Management, Resource Scaling, Log Analysis, K8GPT Integration
 - **Helm Chart**: `katie_logic`
@@ -34,6 +36,7 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 - **Special**: Requires kubeconfig access
 
 ### 🧠 Whis Logic
+
 - **Role**: Intelligence Processing & Analysis Agent
 - **Capabilities**: Data Processing, Intelligence Analysis, Pattern Recognition
 - **Helm Chart**: `whis_logic`
@@ -41,6 +44,7 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 - **Special**: Persistent storage for intelligence data
 
 ### 🎯 James Logic
+
 - **Role**: Personal AI Assistant & Executive Agent
 - **Capabilities**: Voice Interaction, Image Processing, Executive Assistance
 - **Helm Chart**: `james_logic`
@@ -50,6 +54,7 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 ## Prerequisites
 
 ### 1. Kubernetes Cluster
+
 ```bash
 # Verify cluster access
 kubectl cluster-info
@@ -57,6 +62,7 @@ kubectl get nodes
 ```
 
 ### 2. ArgoCD Installation
+
 ```bash
 # Install ArgoCD
 kubectl create namespace argocd
@@ -67,6 +73,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ```
 
 ### 3. Required Secrets
+
 ```bash
 # Create OpenAI secret
 kubectl create secret generic openai-secret \
@@ -84,12 +91,14 @@ kubectl create secret generic katie-kubeconfig \
 ### Method 1: Using FickNury Deploy (Recommended)
 
 #### 1. Deploy FickNury Deploy Service
+
 ```bash
 # Deploy the deployment service
 kubectl apply -f shadows/ficknury_deploy/k8s/
 ```
 
 #### 2. Deploy Agents via API
+
 ```bash
 # Deploy Igris Logic
 curl -X POST http://ficknury-deploy:8000/deploy/agent \
@@ -145,6 +154,7 @@ curl -X POST http://ficknury-deploy:8000/deploy/agent \
 ```
 
 #### 3. Check Deployment Status
+
 ```bash
 # List all deployed agents
 curl http://ficknury-deploy:8000/deploy/agents
@@ -156,6 +166,7 @@ curl http://ficknury-deploy:8000/deploy/agent/igris/status
 ### Method 2: Direct ArgoCD Application
 
 #### 1. Apply ArgoCD Applications
+
 ```bash
 # Apply all agent applications
 kubectl apply -f LinkOps-Manifests/shadows/
@@ -168,6 +179,7 @@ kubectl apply -f LinkOps-Manifests/shadows/james_logic.yaml
 ```
 
 #### 2. Monitor in ArgoCD UI
+
 ```bash
 # Port forward ArgoCD UI
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -180,12 +192,14 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 ### Method 3: Helm Direct Deployment
 
 #### 1. Add Helm Repository
+
 ```bash
 helm repo add linkops https://github.com/shadow-link-industries/LinkOps-Helm.git
 helm repo update
 ```
 
 #### 2. Deploy Agents
+
 ```bash
 # Create namespace
 kubectl create namespace linkops
@@ -220,6 +234,7 @@ helm install james-logic linkops/james_logic \
 ### Environment Variables
 
 #### Common Variables
+
 - `LOG_LEVEL`: Logging level (INFO, DEBUG, WARNING, ERROR)
 - `OPENAI_MODEL`: OpenAI model to use (gpt-4, gpt-3.5-turbo)
 - `OPENAI_API_KEY`: OpenAI API key (from secret)
@@ -227,15 +242,18 @@ helm install james-logic linkops/james_logic \
 #### Agent-Specific Variables
 
 **Katie Logic:**
+
 - `K8GPT_ENABLED`: Enable K8GPT integration (true/false)
 - `K8GPT_API_URL`: K8GPT API endpoint
 
 **Whis Logic:**
+
 - `PROCESSING_MODE`: Processing mode (intelligence, analysis)
 - `BATCH_SIZE`: Batch processing size
 - `MAX_CONCURRENT_REQUESTS`: Maximum concurrent requests
 
 **James Logic:**
+
 - `VOICE_ENABLED`: Enable voice capabilities (true/false)
 - `IMAGE_PROCESSING_ENABLED`: Enable image processing (true/false)
 - `ASSISTANT_PERSONALITY`: Assistant personality (calm_powerful)
@@ -243,6 +261,7 @@ helm install james-logic linkops/james_logic \
 ### Resource Configuration
 
 #### Default Resources
+
 ```yaml
 resources:
   limits:
@@ -254,6 +273,7 @@ resources:
 ```
 
 #### Whis Logic (Higher Resources)
+
 ```yaml
 resources:
   limits:
@@ -267,6 +287,7 @@ resources:
 ### Persistence
 
 #### Whis Logic Data Persistence
+
 ```yaml
 persistence:
   enabled: true
@@ -278,6 +299,7 @@ persistence:
 ## Monitoring & Troubleshooting
 
 ### Check Agent Status
+
 ```bash
 # Check all deployments
 kubectl get deployments -n linkops
@@ -293,6 +315,7 @@ kubectl get applications -n argocd
 ```
 
 ### View Logs
+
 ```bash
 # View agent logs
 kubectl logs -f deployment/igris-logic -n linkops
@@ -302,6 +325,7 @@ kubectl logs -f deployment/james-logic -n linkops
 ```
 
 ### Health Checks
+
 ```bash
 # Check agent health endpoints
 curl http://igris-logic:8000/health
@@ -313,6 +337,7 @@ curl http://james-logic:8000/health
 ### Common Issues
 
 #### 1. Image Pull Errors
+
 ```bash
 # Check image availability
 docker pull ghcr.io/shadow-link-industries/igris_logic:latest
@@ -322,6 +347,7 @@ kubectl get secrets -n linkops
 ```
 
 #### 2. Resource Constraints
+
 ```bash
 # Check resource usage
 kubectl top pods -n linkops
@@ -332,6 +358,7 @@ kubectl patch deployment igris-logic -n linkops \
 ```
 
 #### 3. ArgoCD Sync Issues
+
 ```bash
 # Check ArgoCD application status
 kubectl describe application igris-logic -n argocd
@@ -344,6 +371,7 @@ kubectl patch application igris-logic -n argocd \
 ## Scaling & High Availability
 
 ### Horizontal Pod Autoscaling
+
 ```yaml
 autoscaling:
   enabled: true
@@ -354,29 +382,32 @@ autoscaling:
 ```
 
 ### Multi-Node Deployment
+
 ```yaml
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
-    - weight: 100
-      podAffinityTerm:
-        labelSelector:
-          matchExpressions:
-          - key: app
-            operator: In
-            values:
-            - igris-logic
-        topologyKey: kubernetes.io/hostname
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - igris-logic
+          topologyKey: kubernetes.io/hostname
 ```
 
 ## Security
 
 ### RBAC Configuration
+
 - Each agent has its own ServiceAccount
 - Katie Logic has cluster-wide permissions for Kubernetes management
 - Other agents have namespace-scoped permissions
 
 ### Network Policies
+
 ```yaml
 # Example network policy for Igris Logic
 apiVersion: networking.k8s.io/v1
@@ -389,21 +420,22 @@ spec:
     matchLabels:
       app: igris-logic
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - namespaceSelector:
-        matchLabels:
-          name: linkops
-    ports:
-    - protocol: TCP
-      port: 8000
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              name: linkops
+      ports:
+        - protocol: TCP
+          port: 8000
 ```
 
 ## Backup & Recovery
 
 ### Backup Agent Configurations
+
 ```bash
 # Export agent registry
 curl http://ficknury-deploy:8000/registry/export?format=yaml > agent_registry_backup.yaml
@@ -413,6 +445,7 @@ kubectl get applications -n argocd -o yaml > argocd_apps_backup.yaml
 ```
 
 ### Restore Agents
+
 ```bash
 # Restore ArgoCD applications
 kubectl apply -f argocd_apps_backup.yaml
@@ -432,7 +465,8 @@ kubectl apply -f agent_registry_backup.yaml
 ## Support
 
 For issues and questions:
+
 - Check the troubleshooting section above
 - Review agent-specific documentation
 - Open an issue in the LinkOps repository
-- Contact the Shadow Link Industries team 
+- Contact the Shadow Link Industries team

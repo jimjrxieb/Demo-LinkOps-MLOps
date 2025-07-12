@@ -5,6 +5,7 @@ The MLOps Platform is your centralized personal memory and automation engine for
 ## 🚀 Quick Start
 
 ### Local Development
+
 ```bash
 cd mlops/mlops_platform
 pip install -r requirements.txt
@@ -12,6 +13,7 @@ uvicorn main:app --reload
 ```
 
 ### Docker
+
 ```bash
 docker build -t mlops-platform .
 docker run -p 8000:8000 mlops-platform
@@ -20,11 +22,13 @@ docker run -p 8000:8000 mlops-platform
 ## 📊 API Endpoints
 
 ### Core Endpoints
+
 - `GET /` - Welcome message
 - `GET /docs` - Interactive API documentation (Swagger UI)
 - `GET /redoc` - Alternative API documentation
 
 ### Task Management
+
 - `GET /tasks/` - List all tasks
 - `POST /tasks/` - Create a new task
 - `GET /tasks/{task_id}` - Get specific task
@@ -33,6 +37,7 @@ docker run -p 8000:8000 mlops-platform
 - `GET /tasks/stats/summary` - Task statistics
 
 ### Script Management
+
 - `GET /scripts/` - List all scripts
 - `POST /scripts/` - Create a new script
 - `GET /scripts/{script_id}` - Get specific script
@@ -43,6 +48,7 @@ docker run -p 8000:8000 mlops-platform
 - `GET /scripts/stats/popular` - Most popular scripts
 
 ### Workflow Management
+
 - `GET /workflows/` - List all workflows
 - `POST /workflows/` - Create a new workflow
 - `GET /workflows/{workflow_id}` - Get specific workflow
@@ -53,6 +59,7 @@ docker run -p 8000:8000 mlops-platform
 - `GET /workflows/stats/execution` - Workflow execution statistics
 
 ### Orb Management
+
 - `GET /orbs/` - List all orbs
 - `POST /orbs/` - Create a new orb
 - `GET /orbs/{orb_id}` - Get specific orb
@@ -65,6 +72,7 @@ docker run -p 8000:8000 mlops-platform
 - `GET /orbs/stats/highest_rated` - Highest rated orbs
 
 ### Rune Management
+
 - `GET /runes/` - List all runes
 - `POST /runes/` - Create a new rune
 - `GET /runes/{rune_id}` - Get specific rune
@@ -77,6 +85,7 @@ docker run -p 8000:8000 mlops-platform
 - `GET /runes/stats/most_used` - Most used runes
 
 ### Digest Management
+
 - `GET /digest/` - List all digest entries
 - `POST /digest/` - Create a new digest entry
 - `GET /digest/{entry_id}` - Get specific digest entry
@@ -105,6 +114,7 @@ data/
 ## 🔧 Usage Examples
 
 ### Create a Task
+
 ```bash
 curl -X POST "http://localhost:8000/tasks/" \
   -H "Content-Type: application/json" \
@@ -118,6 +128,7 @@ curl -X POST "http://localhost:8000/tasks/" \
 ```
 
 ### Create a Script
+
 ```bash
 curl -X POST "http://localhost:8000/scripts/" \
   -H "Content-Type: application/json" \
@@ -132,6 +143,7 @@ curl -X POST "http://localhost:8000/scripts/" \
 ```
 
 ### Create a Workflow
+
 ```bash
 curl -X POST "http://localhost:8000/workflows/" \
   -H "Content-Type: application/json" \
@@ -159,6 +171,7 @@ curl -X POST "http://localhost:8000/workflows/" \
 ```
 
 ### Create a Daily Digest
+
 ```bash
 curl -X POST "http://localhost:8000/digest/" \
   -H "Content-Type: application/json" \
@@ -177,6 +190,7 @@ curl -X POST "http://localhost:8000/digest/" \
 ## 🎯 Features
 
 ### Task Management
+
 - **Categories**: MLOps, Kubernetes, Infrastructure, Audit
 - **Priorities**: Low, Medium, High, Critical
 - **Status Tracking**: Pending, In Progress, Completed, Blocked
@@ -184,6 +198,7 @@ curl -X POST "http://localhost:8000/digest/" \
 - **Statistics**: Summary statistics and trends
 
 ### Script Management
+
 - **Languages**: Bash, Python, YAML, JSON, etc.
 - **Categories**: CLI, Infrastructure, Kubernetes, Security, Automation
 - **Templates**: Pre-built templates for common tasks
@@ -191,6 +206,7 @@ curl -X POST "http://localhost:8000/digest/" \
 - **Dependencies**: Track script dependencies
 
 ### Workflow Management
+
 - **Multi-step Workflows**: Complex automation sequences
 - **Triggers**: Manual, Webhook, Schedule, Event
 - **Step Types**: Script, API Call, Manual, Decision
@@ -198,6 +214,7 @@ curl -X POST "http://localhost:8000/digest/" \
 - **Templates**: Pre-built workflow templates
 
 ### Orb Management
+
 - **Best Practices**: Reusable workflow templates
 - **Versioning**: Track orb versions
 - **Rating System**: Community ratings and feedback
@@ -205,6 +222,7 @@ curl -X POST "http://localhost:8000/digest/" \
 - **Templates**: Pre-built orb templates
 
 ### Rune Management
+
 - **Code Templates**: Reusable code snippets
 - **Success Tracking**: Track rune success rates
 - **Feedback System**: Collect user feedback
@@ -212,6 +230,7 @@ curl -X POST "http://localhost:8000/digest/" \
 - **Templates**: Pre-built rune templates
 
 ### Digest Management
+
 - **Daily Logs**: Track daily activities and progress
 - **Productivity Insights**: Analyze productivity patterns
 - **Mood Tracking**: Correlate mood with productivity
@@ -221,6 +240,7 @@ curl -X POST "http://localhost:8000/digest/" \
 ## 🔗 Integration
 
 ### With LinkOps Platform
+
 The MLOps Platform integrates seamlessly with the broader LinkOps ecosystem:
 
 - **Whis Pipeline**: Feed training data to Whis for continuous learning
@@ -229,6 +249,7 @@ The MLOps Platform integrates seamlessly with the broader LinkOps ecosystem:
 - **Docker Compose**: Easy local development and testing
 
 ### External Tools
+
 - **GitHub Actions**: Use orbs and runes in CI/CD pipelines
 - **Kubernetes**: Deploy workflows and scripts
 - **Monitoring**: Track execution metrics and performance
@@ -237,7 +258,9 @@ The MLOps Platform integrates seamlessly with the broader LinkOps ecosystem:
 ## 🚀 Deployment
 
 ### Docker Compose
+
 Add to your docker-compose.yml:
+
 ```yaml
 mlops_platform:
   build: ./mlops/mlops_platform
@@ -250,9 +273,11 @@ mlops_platform:
 ```
 
 ### Kubernetes
+
 Use the provided Helm chart in `helm/mlops_platform/`.
 
 ### Environment Variables
+
 - `DATABASE_URL` - Database connection string (optional)
 - `LOG_LEVEL` - Logging level (default: INFO)
 - `DATA_DIR` - Data directory path (default: ./data)
@@ -260,11 +285,13 @@ Use the provided Helm chart in `helm/mlops_platform/`.
 ## 📈 Monitoring
 
 ### Health Check
+
 ```bash
 curl http://localhost:8000/
 ```
 
 ### Statistics
+
 ```bash
 # Task statistics
 curl http://localhost:8000/tasks/stats/summary
@@ -292,4 +319,4 @@ curl http://localhost:8000/digest/insights/productivity
 
 ---
 
-**MLOps Platform** - Your Personal Memory & Automation Engine! 🧠⚡ 
+**MLOps Platform** - Your Personal Memory & Automation Engine! 🧠⚡

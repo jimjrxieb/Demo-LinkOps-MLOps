@@ -15,4 +15,4 @@ The `executor.py` module writes execution logs to this directory.
 
 ## Permissions
 
-The directory is owned by the non-root `app` user in the container for security. 
+The directory is owned by the non-root `app` user in the container for security.

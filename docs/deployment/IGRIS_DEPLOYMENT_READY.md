@@ -9,6 +9,7 @@ Igris has been successfully modularized and is now fully deployment-ready with c
 ## 🏗️ **Architecture Overview**
 
 ### **Modular Design**
+
 ```
 shadows/igris/
 ├── main.py              # FastAPI application & routing
@@ -23,6 +24,7 @@ shadows/igris/
 ```
 
 ### **Key Capabilities**
+
 - ✅ **Infrastructure as Code**: Terraform automation
 - ✅ **DevSecOps Practices**: Security-first deployment
 - ✅ **Multi-Cloud Support**: AWS, Azure, GCP, Kubernetes
@@ -35,6 +37,7 @@ shadows/igris/
 ## 🚀 **Deployment Infrastructure**
 
 ### **1. CI/CD Pipeline** (`.github/workflows/igris.yml`)
+
 - ✅ **Testing**: Unit tests, linting, coverage reporting
 - ✅ **Security**: Trivy vulnerability scanning
 - ✅ **Building**: Multi-platform Docker images (AMD64/ARM64)
@@ -42,12 +45,14 @@ shadows/igris/
 - ✅ **Registry**: GitHub Container Registry integration
 
 ### **2. Kubernetes Manifests** (`LinkOps-Manifests/shadows/igris/`)
+
 - ✅ **Deployment**: Production-ready with health checks
 - ✅ **Service**: ClusterIP with proper port mapping
 - ✅ **Ingress**: TLS-enabled with cert-manager
 - ✅ **Security**: Non-root execution, read-only filesystem
 
 ### **3. Helm Chart** (`helm/igris/`)
+
 - ✅ **Templates**: Deployment, Service, Ingress, HPA, ConfigMap
 - ✅ **Values**: Configurable parameters for all environments
 - ✅ **Security**: Pod security contexts, RBAC integration
@@ -58,15 +63,17 @@ shadows/igris/
 ## 🔧 **API Endpoints**
 
 ### **Core Endpoints**
-| Endpoint | Method | Purpose |
-|----------|--------|---------|
-| `/health` | GET | Health check and capabilities |
-| `/execute` | POST | Platform engineering task execution |
-| `/opendevin/automate` | POST | OpenDevin AI automation |
-| `/api/enhance` | POST | Whis agent enhancement |
-| `/capabilities` | GET | Current service capabilities |
+
+| Endpoint              | Method | Purpose                             |
+| --------------------- | ------ | ----------------------------------- |
+| `/health`             | GET    | Health check and capabilities       |
+| `/execute`            | POST   | Platform engineering task execution |
+| `/opendevin/automate` | POST   | OpenDevin AI automation             |
+| `/api/enhance`        | POST   | Whis agent enhancement              |
+| `/capabilities`       | GET    | Current service capabilities        |
 
 ### **Example Usage**
+
 ```bash
 # Health check
 curl http://igris:8000/health
@@ -97,18 +104,21 @@ curl -X POST http://igris:8000/api/enhance \
 ## 🛡️ **Security Features**
 
 ### **Container Security**
+
 - ✅ Non-root user execution
 - ✅ Read-only filesystem
 - ✅ Security context enforcement
 - ✅ Vulnerability scanning (Trivy)
 
 ### **Network Security**
+
 - ✅ TLS encryption (cert-manager)
 - ✅ Network policies
 - ✅ RBAC integration
 - ✅ Service mesh ready
 
 ### **Platform Security**
+
 - ✅ Pod security policies
 - ✅ Security scanning integration
 - ✅ Compliance frameworks
@@ -119,17 +129,20 @@ curl -X POST http://igris:8000/api/enhance \
 ## 📊 **Monitoring & Observability**
 
 ### **Health Checks**
+
 - ✅ Liveness probe: `/health` endpoint
 - ✅ Readiness probe: Service availability
 - ✅ Startup probe: Initial health validation
 
 ### **Metrics**
+
 - ✅ Request/response times
 - ✅ Error rates and status codes
 - ✅ Platform-specific metrics
 - ✅ Security scan results
 
 ### **Logging**
+
 - ✅ Structured logging
 - ✅ Environment-based log levels
 - ✅ Security event logging
@@ -140,6 +153,7 @@ curl -X POST http://igris:8000/api/enhance \
 ## 🔄 **GitOps Integration**
 
 ### **ArgoCD Ready**
+
 ```yaml
 # ArgoCD Application
 apiVersion: argoproj.io/v1alpha1
@@ -163,6 +177,7 @@ spec:
 ```
 
 ### **Helm Deployment**
+
 ```bash
 # Install Igris
 helm install igris ./helm/igris \
@@ -181,12 +196,14 @@ helm upgrade igris ./helm/igris \
 ## 🧪 **Testing**
 
 ### **Test Coverage**
+
 - ✅ **Unit Tests**: All modules covered
 - ✅ **Integration Tests**: API endpoint testing
 - ✅ **Security Tests**: Vulnerability scanning
 - ✅ **Performance Tests**: Load testing ready
 
 ### **Test Execution**
+
 ```bash
 # Run all tests
 cd shadows/igris
@@ -202,12 +219,14 @@ pytest tests/test_igris.py::TestExecuteEndpoint -v
 ## 📈 **Scaling & Performance**
 
 ### **Horizontal Scaling**
+
 - ✅ **HPA**: CPU/Memory-based autoscaling
 - ✅ **Replicas**: Configurable replica count
 - ✅ **Resources**: Resource limits and requests
 - ✅ **Load Balancing**: Service mesh ready
 
 ### **Performance Optimization**
+
 - ✅ **Caching**: Docker layer caching
 - ✅ **Multi-platform**: AMD64/ARM64 support
 - ✅ **Resource Management**: Efficient resource usage
@@ -218,16 +237,19 @@ pytest tests/test_igris.py::TestExecuteEndpoint -v
 ## 🔗 **Integration Points**
 
 ### **Whis Integration**
+
 - ✅ **Enhancement API**: Receive new Orbs and Runes
 - ✅ **Capability Updates**: Dynamic capability expansion
 - ✅ **Training Integration**: Continuous learning
 
 ### **OpenDevin Integration**
+
 - ✅ **AI Automation**: Intelligent task automation
 - ✅ **Code Generation**: Infrastructure code generation
 - ✅ **Insights**: AI-powered recommendations
 
 ### **Platform Integrations**
+
 - ✅ **Kubernetes**: Native K8s integration
 - ✅ **AWS**: CloudFormation, EKS, IAM
 - ✅ **Azure**: ARM templates, AKS, RBAC
@@ -238,18 +260,21 @@ pytest tests/test_igris.py::TestExecuteEndpoint -v
 ## 🎯 **Next Steps**
 
 ### **Immediate Actions**
+
 1. ✅ **Deploy to Staging**: Test in staging environment
 2. ✅ **Security Validation**: Run security scans
 3. ✅ **Performance Testing**: Load test the service
 4. ✅ **Integration Testing**: Test with other services
 
 ### **Production Deployment**
+
 1. ✅ **ArgoCD Setup**: Configure GitOps deployment
 2. ✅ **Monitoring Setup**: Configure Prometheus/Grafana
 3. ✅ **Alerting Setup**: Configure alerting rules
 4. ✅ **Backup Strategy**: Implement backup procedures
 
 ### **Future Enhancements**
+
 - 🔄 **Service Mesh**: Istio/Linkerd integration
 - 🔄 **Advanced Monitoring**: Distributed tracing
 - 🔄 **Machine Learning**: ML-powered optimization
@@ -259,24 +284,25 @@ pytest tests/test_igris.py::TestExecuteEndpoint -v
 
 ## 📋 **Deployment Checklist**
 
-| Item | Status | Notes |
-|------|--------|-------|
-| ✅ Modular Architecture | Complete | Clean separation of concerns |
-| ✅ CI/CD Pipeline | Complete | GitHub Actions with security scanning |
-| ✅ Kubernetes Manifests | Complete | Production-ready configurations |
-| ✅ Helm Chart | Complete | Configurable deployment |
-| ✅ Security Scanning | Complete | Trivy integration |
-| ✅ Testing Suite | Complete | Comprehensive test coverage |
-| ✅ Documentation | Complete | API docs and deployment guides |
-| ✅ GitOps Ready | Complete | ArgoCD compatible |
-| ✅ Monitoring | Complete | Health checks and metrics |
-| ✅ Scaling | Complete | HPA and resource management |
+| Item                    | Status   | Notes                                 |
+| ----------------------- | -------- | ------------------------------------- |
+| ✅ Modular Architecture | Complete | Clean separation of concerns          |
+| ✅ CI/CD Pipeline       | Complete | GitHub Actions with security scanning |
+| ✅ Kubernetes Manifests | Complete | Production-ready configurations       |
+| ✅ Helm Chart           | Complete | Configurable deployment               |
+| ✅ Security Scanning    | Complete | Trivy integration                     |
+| ✅ Testing Suite        | Complete | Comprehensive test coverage           |
+| ✅ Documentation        | Complete | API docs and deployment guides        |
+| ✅ GitOps Ready         | Complete | ArgoCD compatible                     |
+| ✅ Monitoring           | Complete | Health checks and metrics             |
+| ✅ Scaling              | Complete | HPA and resource management           |
 
 ---
 
 ## 🎉 **Ready for Production!**
 
 Igris is now fully deployment-ready with:
+
 - **Production-grade architecture**
 - **Comprehensive security**
 - **GitOps integration**
@@ -284,4 +310,4 @@ Igris is now fully deployment-ready with:
 - **Complete monitoring**
 - **Extensive testing**
 
-**Deploy with confidence!** 🚀 
+**Deploy with confidence!** 🚀

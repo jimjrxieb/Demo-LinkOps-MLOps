@@ -9,6 +9,7 @@ This document provides a practical checklist for converting any project (monolit
 ✅ **Goal:** Wrap your app in a Helm chart to enable parameterized, repeatable K8s deployment.
 
 ### Required Files
+
 ```
 helm/<project-name>/
 ├── Chart.yaml
@@ -22,6 +23,7 @@ helm/<project-name>/
 ```
 
 ### Checklist
+
 - [ ] `Chart.yaml` has name, version, description
 - [ ] `values.yaml` defines image, tag, port, replicas, env
 - [ ] `deployment.yaml` uses `values.*` (no hardcoding)
@@ -37,6 +39,7 @@ helm/<project-name>/
 ✅ **Goal:** Make your Helm chart or K8s manifests declarative + ArgoCD-managed.
 
 ### Checklist
+
 - [ ] Project in Git repo
 - [ ] ArgoCD `Application.yaml` exists:
   ```yaml
@@ -74,6 +77,7 @@ helm/<project-name>/
 ✅ **Goal:** All infrastructure + config lives in Git, synced by ArgoCD or Flux.
 
 ### Checklist
+
 - [ ] No manual deployments — all infra is in Git
 - [ ] Changes flow through PRs + code review
 - [ ] CI ensures lint/test of manifests or Helm charts
@@ -97,16 +101,18 @@ kubectl apply -f Application.yaml
 
 ## 📌 Related References
 
-* [Helm Docs](https://helm.sh/docs/)
-* [ArgoCD Docs](https://argo-cd.readthedocs.io/en/stable/)
-* [GitOps Principles](https://www.gitops.tech/)
+- [Helm Docs](https://helm.sh/docs/)
+- [ArgoCD Docs](https://argo-cd.readthedocs.io/en/stable/)
+- [GitOps Principles](https://www.gitops.tech/)
 
 ---
 
 ## 🔥 LinkOps MLOps Platform Implementation
 
 ### Current Status
+
 ✅ **Helm Charts Created**
+
 - `helm/mlops-platform/` - Core MLOps platform
 - `helm/audit-assess/` - Audit assessment service
 - `helm/whis-data-input/` - Data input service
@@ -114,11 +120,13 @@ kubectl apply -f Application.yaml
 - `helm/linkops-full/` - Complete platform deployment
 
 ✅ **ArgoCD Ready**
+
 - Application manifests in `helm/argocd/`
 - Automated sync policies configured
 - Self-healing enabled
 
 ✅ **GitOps Workflow**
+
 - All infrastructure in Git
 - CI/CD pipeline with security scanning
 - Automated deployment via ArgoCD
@@ -139,6 +147,7 @@ argocd app sync mlops-platform
 ```
 
 ### Next Steps
+
 - [ ] **`docs/CHECKLIST-K8S-NETWORKING.md`** → Service types, ingress, RBAC, PVC
 - [ ] **`docs/CHECKLIST-CI-CD.md`** → GitHub Actions, linting, security scanning
-- [ ] **`docs/CHECKLIST-SECURITY.md`** → Trivy, GitGuardian, Snyk integration 
+- [ ] **`docs/CHECKLIST-SECURITY.md`** → Trivy, GitGuardian, Snyk integration

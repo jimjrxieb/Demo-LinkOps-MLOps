@@ -22,6 +22,7 @@ shadows/igris/
 ## 🚀 Features
 
 ### Core Capabilities
+
 - **Infrastructure as Code**: Terraform automation and configuration
 - **DevSecOps Practices**: Security-first infrastructure deployment
 - **Multi-Cloud Support**: AWS, Azure, GCP, and Kubernetes
@@ -32,12 +33,15 @@ shadows/igris/
 ### API Endpoints
 
 #### `/health`
+
 Health check endpoint returning service status and capabilities.
 
 #### `/execute`
+
 Main task execution endpoint for platform engineering tasks.
 
 **Request:**
+
 ```json
 {
   "task_id": "task-001",
@@ -48,6 +52,7 @@ Main task execution endpoint for platform engineering tasks.
 ```
 
 **Response:**
+
 ```json
 {
   "agent": "igris",
@@ -75,17 +80,21 @@ Main task execution endpoint for platform engineering tasks.
 ```
 
 #### `/opendevin/automate`
+
 OpenDevin integration for intelligent automation.
 
 #### `/api/enhance`
+
 Whis integration endpoint for agent enhancement with new Orbs and Runes.
 
 #### `/capabilities`
+
 Returns current service capabilities and specializations.
 
 ## 🛠️ Development
 
 ### Prerequisites
+
 - Python 3.11+
 - Docker
 - Kubernetes (for deployment)
@@ -93,22 +102,26 @@ Returns current service capabilities and specializations.
 ### Local Development
 
 1. **Clone and setup:**
+
 ```bash
 cd shadows/igris
 pip install -r requirements.txt
 ```
 
 2. **Run locally:**
+
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 3. **Run tests:**
+
 ```bash
 pytest tests/ -v
 ```
 
 4. **Lint code:**
+
 ```bash
 black .
 flake8 . --max-line-length=88 --extend-ignore=E203
@@ -129,11 +142,13 @@ docker run -p 8000:8000 igris:dev
 ### Kubernetes Deployment
 
 1. **Apply manifests:**
+
 ```bash
 kubectl apply -f LinkOps-Manifests/shadows/igris/
 ```
 
 2. **Verify deployment:**
+
 ```bash
 kubectl get pods -l app=igris
 kubectl get svc igris-service
@@ -141,9 +156,9 @@ kubectl get svc igris-service
 
 ### Environment Variables
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `LOG_LEVEL` | Logging level | `INFO` |
+| Variable      | Description      | Default      |
+| ------------- | ---------------- | ------------ |
+| `LOG_LEVEL`   | Logging level    | `INFO`       |
 | `ENVIRONMENT` | Environment name | `production` |
 
 ## 🔧 Configuration
@@ -169,6 +184,7 @@ Igris supports multiple platforms with specialized handling:
 ## 🤝 Integration
 
 ### Whis Integration
+
 Igris can be enhanced by Whis with new capabilities:
 
 ```bash
@@ -183,6 +199,7 @@ curl -X POST http://igris:8000/api/enhance \
 ```
 
 ### OpenDevin Integration
+
 Leverage AI for intelligent automation:
 
 ```bash
@@ -197,11 +214,13 @@ curl -X POST http://igris:8000/opendevin/automate \
 ## 📊 Monitoring
 
 ### Health Checks
+
 - Endpoint: `/health`
 - Kubernetes probes configured
 - Docker healthcheck enabled
 
 ### Metrics
+
 - Request/response times
 - Error rates
 - Platform-specific metrics
@@ -225,4 +244,4 @@ Part of the Shadow Link Industries platform engineering suite.
 2. Add tests for new features
 3. Update documentation
 4. Ensure security best practices
-5. Run linting and tests before PR 
+5. Run linting and tests before PR

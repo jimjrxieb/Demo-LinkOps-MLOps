@@ -16,7 +16,11 @@
           rows="4"
         ></textarea>
         <div class="input-actions">
-          <button @click="submitTask" :disabled="!taskInput.trim() || processing" class="btn-primary">
+          <button
+            @click="submitTask"
+            :disabled="!taskInput.trim() || processing"
+            class="btn-primary"
+          >
             <span v-if="processing" class="loading-spinner"></span>
             {{ processing ? 'Processing...' : 'Submit Task' }}
           </button>
@@ -28,12 +32,19 @@
     <!-- Results Section -->
     <div v-if="currentResult" class="results-section">
       <h3 class="section-title">📊 Processing Results</h3>
-      
+
       <!-- Search Results -->
       <div v-if="currentResult.searchResults" class="result-card">
         <h4>🔍 Orb Library Search</h4>
-        <div v-if="currentResult.searchResults.length > 0" class="search-results">
-          <div v-for="(orb, index) in currentResult.searchResults" :key="index" class="orb-item">
+        <div
+          v-if="currentResult.searchResults.length > 0"
+          class="search-results"
+        >
+          <div
+            v-for="(orb, index) in currentResult.searchResults"
+            :key="index"
+            class="orb-item"
+          >
             <h5>{{ orb.title }}</h5>
             <p>{{ orb.description }}</p>
             <div class="orb-meta">
@@ -56,7 +67,10 @@
           <div class="orb-content">
             <h6>Best Practice Steps:</h6>
             <ol>
-              <li v-for="(step, index) in currentResult.generatedOrb.steps" :key="index">
+              <li
+                v-for="(step, index) in currentResult.generatedOrb.steps"
+                :key="index"
+              >
                 {{ step }}
               </li>
             </ol>
@@ -66,10 +80,12 @@
             <span class="meta-tag">AI Model: Grok API</span>
           </div>
         </div>
-        
+
         <!-- Approval Actions -->
         <div class="approval-actions">
-          <button @click="approveOrb" class="btn-success">✅ Approve & Save</button>
+          <button @click="approveOrb" class="btn-success">
+            ✅ Approve & Save
+          </button>
           <button @click="rejectOrb" class="btn-danger">❌ Reject</button>
         </div>
       </div>
@@ -78,11 +94,13 @@
       <div v-if="showRejectionMessage" class="result-card rejection-message">
         <h4>⚠️ Demo Limitation</h4>
         <p>
-          <strong>The demo version doesn't support refinement.</strong> In the full version, 
-          the task would have been sent back through the learning loop with additional 
-          input and feedback for improvement.
+          <strong>The demo version doesn't support refinement.</strong> In the
+          full version, the task would have been sent back through the learning
+          loop with additional input and feedback for improvement.
         </p>
-        <button @click="showRejectionMessage = false" class="btn-secondary">Dismiss</button>
+        <button @click="showRejectionMessage = false" class="btn-secondary">
+          Dismiss
+        </button>
       </div>
     </div>
 
@@ -129,52 +147,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
-const taskInput = ref('')
-const processing = ref(false)
-const currentResult = ref(null)
-const showRejectionMessage = ref(false)
-const recentOrbs = ref([])
+const taskInput = ref('');
+const processing = ref(false);
+const currentResult = ref(null);
+const showRejectionMessage = ref(false);
+const recentOrbs = ref([]);
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000'
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 const submitTask = async () => {
-  if (!taskInput.value.trim() || processing.value) return
+  if (!taskInput.value.trim() || processing.value) return;
 
-  processing.value = true
-  currentResult.value = null
-  showRejectionMessage.value = false
+  processing.value = true;
+  currentResult.value = null;
+  showRejectionMessage.value = false;
 
   try {
     // Step 1: Submit task
     const taskResponse = await axios.post(`${API_BASE}/api/task/submit`, {
-      task: taskInput.value.trim()
-    })
+      task: taskInput.value.trim(),
+    });
 
     // Step 2: Search for existing Orbs
     const searchResponse = await axios.post(`${API_BASE}/api/orbs/search`, {
-      query: taskInput.value.trim()
-    })
+      query: taskInput.value.trim(),
+    });
 
     // Step 3: If no matches, generate new Orb
-    let generatedOrb = null
+    let generatedOrb = null;
     if (searchResponse.data.results.length === 0) {
-      const generateResponse = await axios.post(`${API_BASE}/api/orbs/generate`, {
-        task: taskInput.value.trim()
-      })
-      generatedOrb = generateResponse.data.orb
+      const generateResponse = await axios.post(
+        `${API_BASE}/api/orbs/generate`,
+        {
+          task: taskInput.value.trim(),
+        }
+      );
+      generatedOrb = generateResponse.data.orb;
     }
 
     currentResult.value = {
       task: taskInput.value.trim(),
       searchResults: searchResponse.data.results,
-      generatedOrb: generatedOrb
-    }
-
+      generatedOrb: generatedOrb,
+    };
   } catch (error) {
-    console.error('Error processing task:', error)
+    console.error('Error processing task:', error);
     // Fallback for demo - create mock result
     currentResult.value = {
       task: taskInput.value.trim(),
@@ -187,90 +207,90 @@ const submitTask = async () => {
           'Identify key components and dependencies',
           'Follow industry best practices',
           'Implement with proper error handling',
-          'Test and validate the solution'
-        ]
-      }
-    }
+          'Test and validate the solution',
+        ],
+      },
+    };
   } finally {
-    processing.value = false
+    processing.value = false;
   }
-}
+};
 
 const approveOrb = async () => {
-  if (!currentResult.value?.generatedOrb) return
+  if (!currentResult.value?.generatedOrb) return;
 
   try {
     await axios.post(`${API_BASE}/api/orbs/approve`, {
-      orb: currentResult.value.generatedOrb
-    })
+      orb: currentResult.value.generatedOrb,
+    });
 
     // Add to recent Orbs
     recentOrbs.value.unshift({
       id: Date.now(),
       ...currentResult.value.generatedOrb,
       category: 'Generated',
-      createdAt: new Date().toLocaleDateString()
-    })
+      createdAt: new Date().toLocaleDateString(),
+    });
 
     // Clear current result
-    currentResult.value = null
-    taskInput.value = ''
-
+    currentResult.value = null;
+    taskInput.value = '';
   } catch (error) {
-    console.error('Error approving Orb:', error)
+    console.error('Error approving Orb:', error);
     // For demo, just add to local list
     recentOrbs.value.unshift({
       id: Date.now(),
       ...currentResult.value.generatedOrb,
       category: 'Generated',
-      createdAt: new Date().toLocaleDateString()
-    })
-    currentResult.value = null
-    taskInput.value = ''
+      createdAt: new Date().toLocaleDateString(),
+    });
+    currentResult.value = null;
+    taskInput.value = '';
   }
-}
+};
 
 const rejectOrb = () => {
-  showRejectionMessage.value = true
-  currentResult.value = null
-  taskInput.value = ''
-}
+  showRejectionMessage.value = true;
+  currentResult.value = null;
+  taskInput.value = '';
+};
 
 const clearTask = () => {
-  taskInput.value = ''
-  currentResult.value = null
-  showRejectionMessage.value = false
-}
+  taskInput.value = '';
+  currentResult.value = null;
+  showRejectionMessage.value = false;
+};
 
 const loadRecentOrbs = async () => {
   try {
-    const response = await axios.get(`${API_BASE}/api/orbs/recent`)
-    recentOrbs.value = response.data.orbs
+    const response = await axios.get(`${API_BASE}/api/orbs/recent`);
+    recentOrbs.value = response.data.orbs;
   } catch (error) {
-    console.error('Error loading recent Orbs:', error)
+    console.error('Error loading recent Orbs:', error);
     // Mock data for demo
     recentOrbs.value = [
       {
         id: 1,
         title: 'Kubernetes Deployment Best Practices',
-        description: 'Standard practices for deploying applications to Kubernetes clusters.',
+        description:
+          'Standard practices for deploying applications to Kubernetes clusters.',
         category: 'DevOps',
-        createdAt: '2024-01-15'
+        createdAt: '2024-01-15',
       },
       {
         id: 2,
         title: 'API Security Guidelines',
         description: 'Security best practices for RESTful API development.',
         category: 'Security',
-        createdAt: '2024-01-14'
-      }
-    ]
+        createdAt: '2024-01-14',
+      },
+    ];
   }
-}
+};
 
 onMounted(() => {
-  loadRecentOrbs()
-})
+  loadRecentOrbs();
+});
 </script>
 
 <style scoped>
@@ -342,7 +362,10 @@ onMounted(() => {
   gap: 1rem;
 }
 
-.btn-primary, .btn-secondary, .btn-success, .btn-danger {
+.btn-primary,
+.btn-secondary,
+.btn-success,
+.btn-danger {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;
@@ -406,7 +429,9 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .results-section {
@@ -578,21 +603,21 @@ onMounted(() => {
   .james-gui {
     padding: 1rem;
   }
-  
+
   .input-actions {
     flex-direction: column;
   }
-  
+
   .approval-actions {
     flex-direction: column;
   }
-  
+
   .orbs-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }
 }
-</style> 
+</style>

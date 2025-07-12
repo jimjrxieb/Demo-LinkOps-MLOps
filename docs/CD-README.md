@@ -6,10 +6,10 @@ This project demonstrates a flexible Continuous Deployment strategy using **two 
 
 ## 🧭 Overview
 
-| Environment | Cluster | CD Method | Purpose |
-|-------------|---------|-----------|---------|
-| `demo`      | `linkops-demo-aks`      | GitHub Actions (Direct Helm Deploy) | Fast, live CI/CD for demos or interviews |
-| `personal`  | `linkops-personal-aks`  | ArgoCD (GitOps Pull-Based)          | Full production-style GitOps platform |
+| Environment | Cluster                | CD Method                           | Purpose                                  |
+| ----------- | ---------------------- | ----------------------------------- | ---------------------------------------- |
+| `demo`      | `linkops-demo-aks`     | GitHub Actions (Direct Helm Deploy) | Fast, live CI/CD for demos or interviews |
+| `personal`  | `linkops-personal-aks` | ArgoCD (GitOps Pull-Based)          | Full production-style GitOps platform    |
 
 ---
 
@@ -31,17 +31,17 @@ name: Deploy to AKS
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'shadows/**'
-      - 'helm/**'
-      - '.github/workflows/deploy-aks.yml'
+      - "shadows/**"
+      - "helm/**"
+      - ".github/workflows/deploy-aks.yml"
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy to'
+        description: "Environment to deploy to"
         required: true
-        default: 'demo'
+        default: "demo"
         type: choice
         options:
           - demo
@@ -152,11 +152,11 @@ LinkOps-Manifests/
 
 ## 🔀 Switching Between Clusters
 
-| Task | Action |
-|------|--------|
-| Use demo | `cd demo/terraform && terraform apply` |
-| Use personal | `cd personal/terraform && terraform apply` |
-| Update kubeconfig | `az aks get-credentials --resource-group <rg> --name <cluster>` |
+| Task                 | Action                                                             |
+| -------------------- | ------------------------------------------------------------------ |
+| Use demo             | `cd demo/terraform && terraform apply`                             |
+| Use personal         | `cd personal/terraform && terraform apply`                         |
+| Update kubeconfig    | `az aks get-credentials --resource-group <rg> --name <cluster>`    |
 | Switch ArgoCD target | Change `destination.server` or repo branch in Application manifest |
 
 ### Quick Commands
@@ -192,15 +192,16 @@ This dual-CD setup shows you can:
 
 ## 🛠️ Repo Roles
 
-| Repo | Purpose | CD Method |
-|------|---------|-----------|
-| **LinkOps-Arise** | Infrastructure: Terraform, AKS, monitoring, ArgoCD | Terraform |
-| **LinkOps-MLOps** | App code, Helm charts, GitHub Actions | GitHub Actions |
-| **LinkOps-Manifests** | GitOps-managed K8s manifests and Helm values for ArgoCD | ArgoCD |
+| Repo                  | Purpose                                                 | CD Method      |
+| --------------------- | ------------------------------------------------------- | -------------- |
+| **LinkOps-Arise**     | Infrastructure: Terraform, AKS, monitoring, ArgoCD      | Terraform      |
+| **LinkOps-MLOps**     | App code, Helm charts, GitHub Actions                   | GitHub Actions |
+| **LinkOps-Manifests** | GitOps-managed K8s manifests and Helm values for ArgoCD | ArgoCD         |
 
 ### Repository Responsibilities
 
 #### LinkOps-Arise (Infrastructure)
+
 - AKS cluster provisioning
 - ArgoCD installation and configuration
 - Monitoring stack (Prometheus, Grafana)
@@ -208,6 +209,7 @@ This dual-CD setup shows you can:
 - Terraform state management
 
 #### LinkOps-MLOps (Application)
+
 - Microservice code
 - Docker image builds
 - Helm chart definitions
@@ -215,6 +217,7 @@ This dual-CD setup shows you can:
 - Security scanning and testing
 
 #### LinkOps-Manifests (GitOps)
+
 - Kubernetes manifests
 - Helm values for different environments
 - ArgoCD application definitions
@@ -253,11 +256,13 @@ graph LR
 ## 🔐 Security & Authentication
 
 ### GitHub Actions (Demo)
+
 - **OIDC Authentication**: Secure Azure authentication without secrets
 - **Service Principal**: Minimal required permissions
 - **Container Registry**: GitHub Container Registry with proper access controls
 
 ### ArgoCD (Personal)
+
 - **Git-based**: All changes tracked in version control
 - **RBAC**: Role-based access control for ArgoCD users
 - **Secrets Management**: Kubernetes secrets or external secret managers
@@ -265,6 +270,7 @@ graph LR
 ### Required Secrets
 
 #### GitHub Repository Secrets
+
 ```bash
 AZURE_CLIENT_ID=your-service-principal-client-id
 AZURE_TENANT_ID=your-azure-tenant-id
@@ -274,6 +280,7 @@ SONAR_TOKEN=your-sonarcloud-token
 ```
 
 #### Azure Service Principal Permissions
+
 ```bash
 # AKS Cluster User Role for both clusters
 az role assignment create \
@@ -292,11 +299,13 @@ az role assignment create \
 ## 📊 Monitoring & Observability
 
 ### Demo Environment
+
 - **GitHub Actions**: Built-in workflow monitoring
 - **Azure Monitor**: AKS cluster metrics
 - **Application Logs**: kubectl logs and Azure Log Analytics
 
 ### Personal Environment
+
 - **ArgoCD UI**: Application sync status and health
 - **Prometheus/Grafana**: Full monitoring stack
 - **Git History**: All changes tracked in manifests repo
@@ -320,6 +329,7 @@ argocd app sync linkops-app
 ## 🚀 Getting Started
 
 ### 1. Setup Infrastructure
+
 ```bash
 # Deploy demo environment
 cd LinkOps-Arise/demo/terraform
@@ -331,6 +341,7 @@ terraform init && terraform apply
 ```
 
 ### 2. Configure GitHub Actions
+
 ```bash
 # Run setup script
 cd LinkOps-MLOps
@@ -338,6 +349,7 @@ cd LinkOps-MLOps
 ```
 
 ### 3. Setup ArgoCD
+
 ```bash
 # Access ArgoCD UI
 kubectl port-forward svc/argocd-server -n argocd 8080:443
@@ -347,6 +359,7 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ```
 
 ### 4. Create ArgoCD Application
+
 ```bash
 # Apply application definition
 kubectl apply -f LinkOps-Manifests/argocd/applications/linkops-app.yaml
@@ -369,18 +382,21 @@ kubectl apply -f LinkOps-Manifests/argocd/applications/linkops-app.yaml
 ## 🎯 Benefits
 
 ### For Interviews
+
 - **Demonstrates GitOps knowledge** with ArgoCD
 - **Shows CI/CD expertise** with GitHub Actions
 - **Proves infrastructure skills** with Terraform
 - **Exhibits security awareness** with OIDC and RBAC
 
 ### For Production
+
 - **Scalable architecture** from demo to enterprise
 - **Security best practices** implemented
 - **Monitoring and observability** built-in
 - **Disaster recovery** with separate environments
 
 ### For Learning
+
 - **Hands-on experience** with multiple CD patterns
 - **Real-world scenarios** with actual cloud resources
 - **Best practices** from industry standards
@@ -388,4 +404,4 @@ kubectl apply -f LinkOps-Manifests/argocd/applications/linkops-app.yaml
 
 ---
 
-This dual-CD strategy provides a comprehensive demonstration of modern deployment practices, from simple CI/CD to enterprise GitOps, making it perfect for both learning and showcasing skills in interviews or production environments. 
+This dual-CD strategy provides a comprehensive demonstration of modern deployment practices, from simple CI/CD to enterprise GitOps, making it perfect for both learning and showcasing skills in interviews or production environments.

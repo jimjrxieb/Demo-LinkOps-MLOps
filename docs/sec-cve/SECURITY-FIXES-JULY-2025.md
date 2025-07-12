@@ -1,11 +1,13 @@
 # Security Fixes Summary - July 2025
 
 ## Overview
+
 This document summarizes the security vulnerabilities that were identified and fixed across the LinkOps MLOps platform.
 
 ## Fixed Vulnerabilities
 
 ### 1. h11 HTTP Request Smuggling (CVE-2023-4863)
+
 - **Score**: 679 (High)
 - **Affected Package**: httpx@0.24.1
 - **Fixed Version**: httpx>=0.27.0
@@ -13,6 +15,7 @@ This document summarizes the security vulnerabilities that were identified and f
 - **Impact**: HTTP request smuggling vulnerability that could allow attackers to bypass security controls
 
 ### 2. zipp Infinite Loop (CVE-2025-6556)
+
 - **Score**: 666 (High)
 - **Affected Package**: zipp (via pydantic@2.5.3)
 - **Fixed Version**: zipp>=3.19.1
@@ -20,6 +23,7 @@ This document summarizes the security vulnerabilities that were identified and f
 - **Impact**: Infinite loop vulnerability that could cause denial of service
 
 ### 3. anyio Race Condition
+
 - **Score**: 629 (High)
 - **Affected Package**: anyio (via httpx@0.24.1)
 - **Fixed Version**: anyio>=4.4.0
@@ -27,6 +31,7 @@ This document summarizes the security vulnerabilities that were identified and f
 - **Impact**: Race condition vulnerability that could lead to data corruption
 
 ### 4. pydantic Security Updates
+
 - **Affected Package**: pydantic@2.5.0
 - **Fixed Version**: pydantic>=2.7.1
 - **Status**: ✅ FIXED
@@ -37,6 +42,7 @@ This document summarizes the security vulnerabilities that were identified and f
 The following services had their requirements.txt files updated:
 
 ### Backend Services
+
 - ✅ `backend/requirements.txt`
 - ✅ `shadows/james_logic/requirements.txt`
 - ✅ `shadows/igris_logic/requirements.txt`
@@ -56,14 +62,17 @@ The following services had their requirements.txt files updated:
 ## Changes Made
 
 ### 1. Updated httpx
+
 - Changed from `httpx==0.25.2` to `httpx>=0.27.0`
 - Added `httpx>=0.27.0` to services that didn't have it
 
 ### 2. Updated pydantic
+
 - Changed from `pydantic==2.5.0` to `pydantic>=2.7.1`
 - Updated `pydantic>=2.0.0` to `pydantic>=2.7.1` in katie_logic
 
 ### 3. Added Security Fixes
+
 - Added `zipp>=3.19.1` to all requirements files
 - Added `anyio>=4.4.0` to all requirements files
 
@@ -72,11 +81,13 @@ The following services had their requirements.txt files updated:
 A verification script was created at `scripts/security_fix_verification.py` to ensure all security fixes are properly applied.
 
 ### Running Verification
+
 ```bash
 python3 scripts/security_fix_verification.py
 ```
 
 ### Expected Output
+
 ```
 🎉 All security vulnerabilities have been fixed!
 ```
@@ -106,4 +117,4 @@ python3 scripts/security_fix_verification.py
 ---
 
 **Last Updated**: July 2025
-**Status**: All vulnerabilities fixed and verified 
+**Status**: All vulnerabilities fixed and verified

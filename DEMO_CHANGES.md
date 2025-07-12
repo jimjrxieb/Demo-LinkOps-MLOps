@@ -5,6 +5,7 @@ This document outlines the changes made to create the simplified demo version of
 ## 🗑️ **Removed Components**
 
 ### **Services Removed (12 out of 18)**
+
 - ❌ **whis_smithing** - Orbs & Runes generation (complex logic)
 - ❌ **whis_enhance** - AI-powered content improvement
 - ❌ **whis_webscraper** - Intelligence harvesting
@@ -20,6 +21,7 @@ This document outlines the changes made to create the simplified demo version of
 - ❌ **devops_engineer** - CI/CD workflows
 
 ### **Infrastructure Removed**
+
 - ❌ **Kafka** - Message queuing system
 - ❌ **Zookeeper** - Kafka coordination
 - ❌ **Complex retry logic** - Background task processors
@@ -28,6 +30,7 @@ This document outlines the changes made to create the simplified demo version of
 - ❌ **Training loops** - Model enhancement
 
 ### **Frontend Components Removed**
+
 - ❌ **WhisFlow** - Complex pipeline visualization
 - ❌ **AuditPanel** - Security scanning interface
 - ❌ **FicknurySearch** - Advanced search (simplified)
@@ -36,6 +39,7 @@ This document outlines the changes made to create the simplified demo version of
 - ❌ **WhisPipeline** - Pipeline visualization
 
 ### **API Endpoints Removed**
+
 - ❌ `/scripts/*` - Script management
 - ❌ `/workflows/*` - Workflow orchestration
 - ❌ `/runes/*` - Rune generation and execution
@@ -46,6 +50,7 @@ This document outlines the changes made to create the simplified demo version of
 ## ✅ **Kept Components**
 
 ### **Core Services (6 out of 18)**
+
 - ✅ **frontend** - James GUI focus
 - ✅ **mlops_platform** - Simplified API orchestration
 - ✅ **whis_data_input** - Task input processing
@@ -56,11 +61,13 @@ This document outlines the changes made to create the simplified demo version of
 - ✅ **redis** - Caching
 
 ### **Frontend Components Kept**
+
 - ✅ **JamesGUI** - New simplified task interface
 - ✅ **DashboardView** - Simplified to show only James GUI
 - ✅ **Basic styling** - Holo theme maintained
 
 ### **API Endpoints Kept**
+
 - ✅ `/api/task/submit` - Task submission
 - ✅ `/api/orbs/search` - Orb library search
 - ✅ `/api/orbs/generate` - Orb generation
@@ -85,6 +92,7 @@ The demo version focuses on a single, clear workflow:
 ### **To Restore Full Functionality:**
 
 1. **Uncomment in docker-compose.yml:**
+
    ```yaml
    # Uncomment these services:
    # - whis_smithing
@@ -103,6 +111,7 @@ The demo version focuses on a single, clear workflow:
    ```
 
 2. **Add back infrastructure:**
+
    ```yaml
    # Add these services:
    # - zookeeper
@@ -110,6 +119,7 @@ The demo version focuses on a single, clear workflow:
    ```
 
 3. **Restore frontend components:**
+
    ```javascript
    // Uncomment in DashboardView.vue:
    // import FicknurySearch from '../components/FicknurySearch.vue';
@@ -118,6 +128,7 @@ The demo version focuses on a single, clear workflow:
    ```
 
 4. **Restore API routers:**
+
    ```python
    # Uncomment in main.py:
    # app.include_router(scripts.router, prefix="/scripts", tags=["Scripts"])
@@ -148,4 +159,4 @@ cd DEMO-LinkOps
 ./start-demo.sh
 ```
 
-Access at http://localhost:3000 
+Access at http://localhost:3000

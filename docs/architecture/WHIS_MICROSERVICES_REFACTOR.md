@@ -7,10 +7,12 @@ Successfully refactored the LinkOps-MLOps monorepo into a fully microservice-nat
 ## ✅ **Completed Changes**
 
 ### **1. Service Renaming**
+
 - `shadows/data_collector/` → `shadows/whis_data_input/`
 - `shadows/sanitizer/` → `shadows/whis_sanitize/`
 
 ### **2. New Whis Microservices Created**
+
 - `shadows/whis_smithing/` - Rune/orb generation, merging, recurrence
 - `shadows/whis_enhance/` - Agent training, updates, approvals
 
@@ -53,6 +55,7 @@ LinkOps-MLOps/shadows/
 ## 🐳 **Docker Compose Configuration**
 
 ### **Port Assignments**
+
 - `whis_data_input`: 8001
 - `whis_sanitize`: 8002
 - `whis`: 8003 (legacy)
@@ -66,6 +69,7 @@ LinkOps-MLOps/shadows/
 - `scraperdash`: 8011
 
 ### **Service Dependencies**
+
 ```
 whis_data_input → whis_sanitize → whis_smithing → whis_enhance
 ```
@@ -73,10 +77,12 @@ whis_data_input → whis_sanitize → whis_smithing → whis_enhance
 ## 🔧 **Updated Files**
 
 ### **Configuration Files**
+
 - ✅ `docker-compose.yml` - Clean, updated with new services
 - ✅ `.github/workflows/ci.yml` - Added new services to matrix
 
 ### **Reference Files**
+
 - ✅ `tools/health_check.py` - Updated service URLs
 - ✅ `test_data_collector_sanitizer_whis_flow.py` - Updated test flow
 - ✅ `shadows/whis_data_input/routes/collect.py` - Updated sanitizer URL
@@ -84,24 +90,28 @@ whis_data_input → whis_sanitize → whis_smithing → whis_enhance
 ## 🚀 **Service Responsibilities**
 
 ### **whis_data_input** (formerly data_collector)
+
 - Handles GUI/API task input
 - Processes: fix logs, screenshots, Q&A, info dump
 - Input validation and preprocessing
 - Forwards data to whis_sanitize
 
 ### **whis_sanitize** (formerly sanitizer)
+
 - Handles redaction and placeholder replacement
 - Processes sensitive data sanitization
 - Maintains `data_lake/` folder for sanitized JSONs
 - Forwards data to whis_smithing
 
 ### **whis_smithing** (new)
+
 - **Rune Generation**: Creates new runes from input data
 - **Rune Merging**: Combines multiple runes into enhanced runes
 - **Recurrence Detection**: Identifies patterns in rune data
 - Forwards data to whis_enhance
 
 ### **whis_enhance** (new)
+
 - **Agent Training**: Trains Whis agent with new data
 - **Agent Updates**: Applies enhancements to existing agents
 - **Approval System**: Manages enhancement approvals
@@ -109,18 +119,21 @@ whis_data_input → whis_sanitize → whis_smithing → whis_enhance
 ## 🧪 **Testing**
 
 ### **Test the Complete Flow**
+
 ```bash
 cd LinkOps-MLOps
 python test_data_collector_sanitizer_whis_flow.py
 ```
 
 ### **Health Check**
+
 ```bash
 cd LinkOps-MLOps
 python tools/health_check.py
 ```
 
 ### **Docker Compose**
+
 ```bash
 cd LinkOps-MLOps
 docker-compose up -d
@@ -150,4 +163,4 @@ docker-compose up -d
 
 The refactoring is **100% complete**! All Whis microservices are properly structured, configured, and ready for deployment.
 
-**Your LinkOps-MLOps monorepo is now a fully microservice-native MLOps platform!** 🎯 
+**Your LinkOps-MLOps monorepo is now a fully microservice-native MLOps platform!** 🎯

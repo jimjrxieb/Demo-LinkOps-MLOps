@@ -3,4 +3,5 @@
 This is the whis_logic microservice in the LinkOps MLOps platform.
 
 ## Responsibilities
-- Serve Orbs and Runes to downstream agents and provide ML logic APIs. 
+
+- Serve Orbs and Runes to downstream agents and provide ML logic APIs.

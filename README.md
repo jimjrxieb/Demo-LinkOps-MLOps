@@ -16,6 +16,7 @@ This demo version allows users to:
 ## 🏗️ **Simplified Architecture**
 
 ### **Core Services (6 instead of 18)**
+
 - **Frontend** (Port 3000) - James GUI with task input and Orb display
 - **MLOps Platform** (Port 8000) - Main API orchestration
 - **Whis Data Input** (Port 8001) - Task input processing
@@ -26,6 +27,7 @@ This demo version allows users to:
 - **Redis** (Port 6379) - Caching and sessions
 
 ### **Removed Components**
+
 - ❌ All shadow agents except Ficknury Evaluator
 - ❌ Whis Enhance, Whis Smithing, Whis Webscraper
 - ❌ Audit services and complex security scanning
@@ -42,6 +44,9 @@ This demo version allows users to:
 # Clone and setup
 cd DEMO-LinkOps
 
+# Build demo images (optional - uses demo- prefix to avoid conflicts)
+./build-demo-images.sh
+
 # Start the demo platform
 docker-compose up -d
 
@@ -56,6 +61,15 @@ docker-compose up -d
 # Prerequisites: Kubernetes cluster, Helm 3.x, kubectl
 cd DEMO-LinkOps
 
+# Setup authentication (optional)
+export DOCKER_CRED='your-docker-hub-password'
+export GH_PAT='your-github-pat'
+./docker-login.sh
+./github-setup.sh
+
+# Build and push demo images to registry (optional)
+./build-demo-images.sh v0.1.0 true docker.io/linksrobot
+
 # Deploy with Helm
 ./deploy-helm.sh
 
@@ -69,12 +83,14 @@ For detailed Helm deployment instructions, see [helm/README.md](helm/README.md).
 ## 🎨 **Demo Features**
 
 ### **James GUI Tab**
+
 - **Task Input Field** - Submit task descriptions
 - **Orb Results** - Display matching or generated Orbs
 - **Approval Interface** - Accept or reject generated Orbs
 - **Demo Limitations** - Clear messaging about demo constraints
 
 ### **Simplified API Endpoints**
+
 - `/api/task/submit` - Submit new tasks
 - `/api/orbs/search` - Search existing Orbs
 - `/api/orbs/generate` - Generate new Orbs with Whis

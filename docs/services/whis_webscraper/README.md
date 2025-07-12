@@ -49,11 +49,13 @@ docker run -p 8009:8009 whis-webscraper
 ## 🔌 **API Endpoints**
 
 ### Health Check
+
 ```bash
 GET /health
 ```
 
 ### Complete Intelligence Scraping
+
 ```bash
 POST /scrape/intelligence
 {
@@ -65,33 +67,39 @@ POST /scrape/intelligence
 ```
 
 ### Web Sources Only
+
 ```bash
 POST /scrape/web_sources?hours_back=24&send_to_sanitize=true
 ```
 
 ### Agent Logs Only
+
 ```bash
 POST /scrape/agent_logs?hours_back=24&send_to_sanitize=true
 ```
 
 ### Individual Sources
+
 ```bash
 GET /scrape/blogs?hours_back=24&send_to_sanitize=true
 GET /scrape/github_trending?send_to_sanitize=true
 ```
 
 ### Reloop Findings
+
 ```bash
 GET /reloop/{task_id}?send_to_sanitize=true
 ```
 
 ### Sanitize Integration
+
 ```bash
 GET /sanitize/health
 GET /sanitize/stats
 ```
 
 ### Capabilities
+
 ```bash
 GET /capabilities
 ```
@@ -99,6 +107,7 @@ GET /capabilities
 ## 📊 **Supported Sources**
 
 ### Web Sources
+
 - **Kubernetes Blog**: Latest K8s best practices
 - **Terraform Blog**: Infrastructure as Code guides
 - **DevOps Weekly**: Industry trends and tools
@@ -106,12 +115,14 @@ GET /capabilities
 - **Helm Blog**: Package management updates
 
 ### GitHub Trending
+
 - **Kubernetes**: K8s-related repositories
 - **Terraform**: Infrastructure tools
 - **Helm**: Package management
 - **MLOps**: Machine learning operations
 
 ### Agent Logs
+
 - **Katie**: Kubernetes operations patterns
 - **Igris**: Infrastructure analysis insights
 - **James**: AI assistant interactions
@@ -122,19 +133,19 @@ GET /capabilities
 
 ### Environment Variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `SANITIZE_SERVICE_URL` | `http://whis_sanitize:8003` | Whis sanitize service URL |
-| `LOGS_BASE_PATH` | `/app/logs` | Base path for agent logs |
-| `SCRAPE_INTERVAL` | `3600` | Auto-scrape interval (seconds) |
+| Variable               | Default                     | Description                    |
+| ---------------------- | --------------------------- | ------------------------------ |
+| `SANITIZE_SERVICE_URL` | `http://whis_sanitize:8003` | Whis sanitize service URL      |
+| `LOGS_BASE_PATH`       | `/app/logs`                 | Base path for agent logs       |
+| `SCRAPE_INTERVAL`      | `3600`                      | Auto-scrape interval (seconds) |
 
 ### Scraping Parameters
 
-| Parameter | Default | Description |
-|-----------|---------|-------------|
-| `hours_back` | `24` | How far back to scrape |
-| `send_to_sanitize` | `true` | Auto-send to sanitize |
-| `auto_process` | `true` | Auto-process in sanitize |
+| Parameter          | Default | Description              |
+| ------------------ | ------- | ------------------------ |
+| `hours_back`       | `24`    | How far back to scrape   |
+| `send_to_sanitize` | `true`  | Auto-send to sanitize    |
+| `auto_process`     | `true`  | Auto-process in sanitize |
 
 ## 🧪 **Testing**
 
@@ -154,6 +165,7 @@ pytest --cov=. tests/
 ## 🔄 **Integration with Whis Ecosystem**
 
 ### Data Flow
+
 1. **Scrape**: Gather intelligence from multiple sources
 2. **Format**: Standardize data for Whis processing
 3. **Send**: Push to `whis_sanitize` for cleaning
@@ -161,6 +173,7 @@ pytest --cov=. tests/
 5. **Reloop**: Re-feed specific findings as needed
 
 ### Whis Sanitize Integration
+
 ```python
 # Example: Send scraped data to sanitize
 sanitize_sender = WhisSanitizeSender()
@@ -168,6 +181,7 @@ results = sanitize_sender.send_batch_to_sanitize(scraped_data)
 ```
 
 ### Training Queue Integration
+
 - Automatically adds scraped content to Whis training queue
 - Maintains data lineage and source tracking
 - Supports priority-based processing
@@ -175,17 +189,20 @@ results = sanitize_sender.send_batch_to_sanitize(scraped_data)
 ## 📈 **Monitoring & Observability**
 
 ### Health Checks
+
 - **Service Health**: `/health` endpoint
 - **Sanitize Health**: `/sanitize/health` endpoint
 - **Integration Status**: Continuous monitoring
 
 ### Metrics
+
 - Scraping success rates
 - Source-specific metrics
 - Sanitize integration metrics
 - Training queue integration
 
 ### Logging
+
 - Structured JSON logging
 - Source tracking and lineage
 - Error analysis and insights
@@ -193,16 +210,19 @@ results = sanitize_sender.send_batch_to_sanitize(scraped_data)
 ## 🔒 **Security**
 
 ### Web Scraping
+
 - Respectful rate limiting
 - User-Agent identification
 - Error handling and retries
 
 ### Data Privacy
+
 - No sensitive data collection
 - Public sources only
 - Secure transmission to sanitize
 
 ### Container Security
+
 - Non-root user execution
 - Minimal attack surface
 - Regular security updates
@@ -210,6 +230,7 @@ results = sanitize_sender.send_batch_to_sanitize(scraped_data)
 ## 🚀 **Production Deployment**
 
 ### Docker Compose
+
 ```yaml
 whis_webscraper:
   build: ./shadows/whis_webscraper
@@ -222,6 +243,7 @@ whis_webscraper:
 ```
 
 ### Kubernetes
+
 ```yaml
 apiVersion: apps/v1
 kind: Deployment
@@ -232,21 +254,23 @@ spec:
   template:
     spec:
       containers:
-      - name: whis-webscraper
-        image: whis-webscraper:latest
-        ports:
-        - containerPort: 8009
+        - name: whis-webscraper
+          image: whis-webscraper:latest
+          ports:
+            - containerPort: 8009
 ```
 
 ## 🔄 **Auto-Scraping Schedule**
 
 ### Recommended Schedule
+
 - **Web Sources**: Every 6 hours
-- **GitHub Trending**: Every 12 hours  
+- **GitHub Trending**: Every 12 hours
 - **Agent Logs**: Every hour
 - **Full Intelligence**: Daily
 
 ### Cron Job Example
+
 ```bash
 # Daily full intelligence gathering
 0 2 * * * curl -X POST http://whis-webscraper:8009/scrape/intelligence
@@ -275,4 +299,4 @@ MIT License - see LICENSE file for details
 
 ---
 
-**Whis WebScraper** - Your Intelligence Harvester for Whis Training 🕷️✨ 
+**Whis WebScraper** - Your Intelligence Harvester for Whis Training 🕷️✨

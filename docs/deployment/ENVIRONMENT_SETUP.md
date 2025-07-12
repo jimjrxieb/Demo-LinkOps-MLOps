@@ -7,6 +7,7 @@ This guide explains how to set up environment variables securely for the LinkOps
 ## 📋 **Required Environment Variables**
 
 ### **1. Database Configuration**
+
 ```bash
 # PostgreSQL
 POSTGRES_PASSWORD=your_secure_password_here
@@ -19,18 +20,21 @@ PGADMIN_PASSWORD=your_secure_pgadmin_password
 ```
 
 ### **2. API Keys**
+
 ```bash
 # OpenAI API Key
 OPENAI_API_KEY=sk-your-openai-api-key-here
 ```
 
 ### **3. Security Keys**
+
 ```bash
 # Application Secret Key (generate a secure random key)
 SECRET_KEY=your_secure_secret_key_here
 ```
 
 ### **4. Azure Configuration**
+
 ```bash
 # Azure Service Principal
 AZURE_CLIENT_ID=your-azure-client-id
@@ -49,12 +53,14 @@ AZURE_AKS_RESOURCE_GROUP=your-aks-resource-group
 ## 🚀 **Setup Instructions**
 
 ### **Step 1: Copy Environment Template**
+
 ```bash
 # Copy the template to create your .env file
 cp .env.template .env
 ```
 
 ### **Step 2: Update Environment Variables**
+
 Edit the `.env` file and replace all placeholder values with your actual credentials:
 
 ```bash
@@ -70,6 +76,7 @@ AZURE_CLIENT_SECRET=your-actual-azure-client-secret
 ```
 
 ### **Step 3: Verify Configuration**
+
 ```bash
 # Check that all placeholders are replaced
 grep -E "\$\{" .env
@@ -79,21 +86,25 @@ grep -E "\$\{" .env
 ## 🔒 **Security Best Practices**
 
 ### **1. Never Commit .env Files**
+
 - ✅ `.env` is already in `.gitignore`
 - ✅ `.env.backup` is already in `.gitignore`
 - ❌ Never commit actual credentials to git
 
 ### **2. Use Strong Passwords**
+
 - Use at least 16 characters
 - Include uppercase, lowercase, numbers, and symbols
 - Avoid common patterns or dictionary words
 
 ### **3. Rotate Credentials Regularly**
+
 - Change passwords every 90 days
 - Rotate API keys quarterly
 - Monitor for unauthorized access
 
 ### **4. Environment-Specific Configuration**
+
 ```bash
 # Development
 .env.development
@@ -108,12 +119,14 @@ grep -E "\$\{" .env
 ## 🐳 **Docker Environment Variables**
 
 ### **Local Development**
+
 ```bash
 # Use .env file
 docker-compose up -d
 ```
 
 ### **Production Deployment**
+
 ```bash
 # Set environment variables directly
 export POSTGRES_PASSWORD=your_production_password
@@ -122,6 +135,7 @@ docker-compose -f docker-compose.prod.yml up -d
 ```
 
 ### **Kubernetes Secrets**
+
 ```yaml
 # Create Kubernetes secrets for production
 apiVersion: v1
@@ -140,15 +154,17 @@ data:
 ### **Common Issues**
 
 1. **Environment Variables Not Loading**
+
    ```bash
    # Check if .env file exists
    ls -la .env
-   
+
    # Verify file permissions
    chmod 600 .env
    ```
 
 2. **Database Connection Issues**
+
    ```bash
    # Test database connection
    docker-compose exec postgres psql -U linkops -d linkops
@@ -162,6 +178,7 @@ data:
    ```
 
 ### **Validation Script**
+
 ```bash
 #!/bin/bash
 # validate_env.sh
@@ -201,4 +218,4 @@ echo "🎯 Environment validation complete!"
 3. Run `docker-compose up -d`
 4. Verify all services are healthy with `python tools/health_check.py`
 
-**Your LinkOps-MLOps environment is now securely configured!** 🔐 
+**Your LinkOps-MLOps environment is now securely configured!** 🔐

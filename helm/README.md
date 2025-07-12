@@ -221,6 +221,7 @@ The `argocd/Application.yaml` file provides an ArgoCD Application manifest for G
 To deploy via ArgoCD:
 
 1. Apply the Application manifest:
+
    ```bash
    kubectl apply -f helm/argocd/Application.yaml
    ```
@@ -257,4 +258,4 @@ kubectl get events -n linkops-demo --sort-by='.lastTimestamp'
 
 - [Helm Documentation](https://helm.sh/docs/)
 - [Kubernetes Documentation](https://kubernetes.io/docs/)
-- [ArgoCD Documentation](https://argo-cd.readthedocs.io/) 
+- [ArgoCD Documentation](https://argo-cd.readthedocs.io/)

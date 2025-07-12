@@ -12,6 +12,7 @@ The Whis Training System provides two main training modes for the LinkOps Core A
 ### Core Components
 
 #### 1. `core/whis_nightly.py`
+
 - **Purpose**: Batch processing engine for nightly training
 - **Functions**:
   - `train_whis_nightly()`: Processes all logs from today
@@ -19,6 +20,7 @@ The Whis Training System provides two main training modes for the LinkOps Core A
   - `get_orb_by_agent()`: Maps agents to their appropriate static orbs
 
 #### 2. `core/api/whis.py`
+
 - **Purpose**: API endpoints for Whis training operations
 - **Endpoints**:
   - `POST /api/whis/train`: Manual training
@@ -29,6 +31,7 @@ The Whis Training System provides two main training modes for the LinkOps Core A
   - `GET /api/whis/queue`: Queue summary
 
 #### 3. `core/gui/templates/whis_training.html`
+
 - **Purpose**: Web interface for training operations
 - **Features**:
   - Three main action buttons
@@ -40,12 +43,12 @@ The Whis Training System provides two main training modes for the LinkOps Core A
 
 The system automatically assigns training content to the appropriate static orbs:
 
-| Agent | Static Orb |
-|-------|------------|
-| `whis` | AI/ML Engineering Best Practices |
-| `katie` | Kubernetes & CKS Best Practices |
+| Agent   | Static Orb                          |
+| ------- | ----------------------------------- |
+| `whis`  | AI/ML Engineering Best Practices    |
+| `katie` | Kubernetes & CKS Best Practices     |
 | `igris` | DevSecOps & Platform Best Practices |
-| `james` | General Ops Knowledge |
+| `james` | General Ops Knowledge               |
 
 ## Training Workflows
 
@@ -62,6 +65,7 @@ The system automatically assigns training content to the appropriate static orbs
    - Returns confirmation with rune ID
 
 **API Endpoint**: `POST /api/whis/train`
+
 ```json
 {
   "task_id": "ml/optimizer/update",
@@ -84,14 +88,18 @@ The system automatically assigns training content to the appropriate static orbs
 **API Endpoint**: `POST /api/whis/train-nightly`
 
 **Sample Response**:
+
 ```json
 {
   "status": "trained",
   "tasks_processed": 7,
   "runes_created": 5,
-  "orbs_updated": ["AI/ML Engineering Best Practices", "Kubernetes & CKS Best Practices"],
+  "orbs_updated": [
+    "AI/ML Engineering Best Practices",
+    "Kubernetes & CKS Best Practices"
+  ],
   "repeated_tasks": [
-    {"agent": "whis", "task_id": "ml/optimizer/update", "count": 3}
+    { "agent": "whis", "task_id": "ml/optimizer/update", "count": 3 }
   ],
   "timestamp": "2025-06-21T04:48:19.531646"
 }
@@ -100,16 +108,19 @@ The system automatically assigns training content to the appropriate static orbs
 ## Key Features
 
 ### Intelligent Rune Management
+
 - **Duplicate Detection**: Checks for existing runes before creating new ones
 - **Version Control**: Increments version numbers for updated runes
 - **Content Merging**: Appends new information to existing runes
 
 ### Training Signal Strength
+
 - **Task Counter**: Tracks how many times each task appears
 - **Repeated Tasks**: Identifies patterns for stronger training signals
 - **Agent Distribution**: Shows which agents are most active
 
 ### Real-time Statistics
+
 - **Daily Logs**: Count of logs processed today
 - **Agent Breakdown**: Activity by agent
 - **Orb Rune Counts**: Total runes in each orb
@@ -118,17 +129,20 @@ The system automatically assigns training content to the appropriate static orbs
 ## Web Interface
 
 ### Main Dashboard
+
 - **Three Action Buttons**:
   - 🎓 Train Now (Green)
   - 🌙 Night Training (Purple)
   - 📊 Training Stats (Blue)
 
 ### Manual Training Form
+
 - **Task ID Input**: Structured identifier for the training
 - **Content Textarea**: Multi-line training content
 - **Submit/Cancel**: Form controls with validation
 
 ### Status Display
+
 - **Real-time Updates**: Shows training progress and results
 - **Error Handling**: Displays errors with clear messaging
 - **Auto-hide**: Status messages disappear after 5 seconds
@@ -136,6 +150,7 @@ The system automatically assigns training content to the appropriate static orbs
 ## API Reference
 
 ### Manual Training
+
 ```http
 POST /api/whis/train
 Content-Type: application/json
@@ -148,21 +163,25 @@ Content-Type: application/json
 ```
 
 ### Night Training
+
 ```http
 POST /api/whis/train-nightly
 ```
 
 ### Training Statistics
+
 ```http
 GET /api/whis/training-stats
 ```
 
 ### Whis Statistics
+
 ```http
 GET /api/whis/stats
 ```
 
 ### Daily Digest
+
 ```http
 GET /api/whis/digest
 ```
@@ -176,6 +195,7 @@ python3 test_whis_training.py
 ```
 
 This will test:
+
 - Manual training endpoint
 - Nightly training endpoint
 - Training statistics
@@ -185,6 +205,7 @@ This will test:
 ## Usage Examples
 
 ### Frontend JavaScript
+
 ```javascript
 // Manual training
 fetch("/api/whis/train", {
@@ -193,17 +214,18 @@ fetch("/api/whis/train", {
   body: JSON.stringify({
     task_id: "ml/optimizer/update",
     content: "Training content...",
-    source: "manual"
-  })
+    source: "manual",
+  }),
 });
 
 // Night training
 fetch("/api/whis/train-nightly", {
-  method: "POST"
+  method: "POST",
 });
 ```
 
 ### Command Line
+
 ```bash
 # Manual training
 curl -X POST http://localhost:8000/api/whis/train \
@@ -238,4 +260,4 @@ curl http://localhost:8000/api/whis/training-stats
 
 **Status**: ✅ Fully Implemented and Tested  
 **Last Updated**: 2025-06-21  
-**Version**: 1.0.0 
+**Version**: 1.0.0

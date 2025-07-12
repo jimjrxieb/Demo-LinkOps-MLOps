@@ -9,12 +9,14 @@ This document provides a comprehensive checklist for implementing Kubernetes net
 ✅ **Goal:** Properly expose applications with appropriate service types and networking.
 
 ### Service Types Checklist
+
 - [ ] **ClusterIP** - Internal service communication
 - [ ] **NodePort** - External access via node ports
 - [ ] **LoadBalancer** - Cloud provider load balancer
 - [ ] **ExternalName** - DNS-based service discovery
 
 ### Implementation
+
 ```yaml
 # ClusterIP (internal)
 apiVersion: v1
@@ -50,6 +52,7 @@ spec:
 ✅ **Goal:** Configure ingress for external access with SSL termination and routing.
 
 ### Ingress Checklist
+
 - [ ] Ingress controller installed (nginx, traefik, etc.)
 - [ ] SSL certificates configured
 - [ ] Host-based routing rules
@@ -58,6 +61,7 @@ spec:
 - [ ] CORS headers set
 
 ### Implementation
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -68,20 +72,20 @@ metadata:
     nginx.ingress.kubernetes.io/rate-limit: "100"
 spec:
   tls:
-  - hosts:
-    - mlops.example.com
-    secretName: mlops-tls
+    - hosts:
+        - mlops.example.com
+      secretName: mlops-tls
   rules:
-  - host: mlops.example.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: mlops-platform
-            port:
-              number: 8000
+    - host: mlops.example.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: mlops-platform
+                port:
+                  number: 8000
 ```
 
 ---
@@ -91,6 +95,7 @@ spec:
 ✅ **Goal:** Implement proper role-based access control and security policies.
 
 ### RBAC Checklist
+
 - [ ] Service accounts created for each application
 - [ ] Roles defined with minimal required permissions
 - [ ] Role bindings configured
@@ -99,6 +104,7 @@ spec:
 - [ ] Security contexts set
 
 ### Implementation
+
 ```yaml
 # Service Account
 apiVersion: v1
@@ -115,9 +121,9 @@ metadata:
   name: mlops-platform-role
   namespace: mlops
 rules:
-- apiGroups: [""]
-  resources: ["pods", "services"]
-  verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods", "services"]
+    verbs: ["get", "list", "watch"]
 
 ---
 # Role Binding
@@ -127,9 +133,9 @@ metadata:
   name: mlops-platform-rolebinding
   namespace: mlops
 subjects:
-- kind: ServiceAccount
-  name: mlops-platform-sa
-  namespace: mlops
+  - kind: ServiceAccount
+    name: mlops-platform-sa
+    namespace: mlops
 roleRef:
   kind: Role
   name: mlops-platform-role
@@ -143,6 +149,7 @@ roleRef:
 ✅ **Goal:** Configure persistent storage for applications that need data persistence.
 
 ### PVC Checklist
+
 - [ ] Storage class defined
 - [ ] PVC created with appropriate size
 - [ ] PVC mounted in deployment
@@ -150,6 +157,7 @@ roleRef:
 - [ ] Storage monitoring configured
 
 ### Implementation
+
 ```yaml
 # Storage Class
 apiVersion: storage.k8s.io/v1
@@ -187,15 +195,15 @@ spec:
     spec:
       serviceAccountName: mlops-platform-sa
       containers:
-      - name: mlops-platform
-        image: mlops-platform:latest
-        volumeMounts:
-        - name: data-volume
-          mountPath: /app/data
+        - name: mlops-platform
+          image: mlops-platform:latest
+          volumeMounts:
+            - name: data-volume
+              mountPath: /app/data
       volumes:
-      - name: data-volume
-        persistentVolumeClaim:
-          claimName: mlops-data
+        - name: data-volume
+          persistentVolumeClaim:
+            claimName: mlops-data
 ```
 
 ---
@@ -205,6 +213,7 @@ spec:
 ✅ **Goal:** Implement network policies for microservice communication control.
 
 ### Network Policy Checklist
+
 - [ ] Default deny all traffic
 - [ ] Allow specific pod-to-pod communication
 - [ ] Allow ingress traffic to services
@@ -212,6 +221,7 @@ spec:
 - [ ] Monitor policy violations
 
 ### Implementation
+
 ```yaml
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -223,30 +233,30 @@ spec:
     matchLabels:
       app: mlops-platform
   policyTypes:
-  - Ingress
-  - Egress
+    - Ingress
+    - Egress
   ingress:
-  - from:
-    - podSelector:
-        matchLabels:
-          app: frontend
-    ports:
-    - protocol: TCP
-      port: 8000
+    - from:
+        - podSelector:
+            matchLabels:
+              app: frontend
+      ports:
+        - protocol: TCP
+          port: 8000
   egress:
-  - to:
-    - podSelector:
-        matchLabels:
-          app: database
-    ports:
-    - protocol: TCP
-      port: 5432
-  - to: []
-    ports:
-    - protocol: TCP
-      port: 443
-    - protocol: TCP
-      port: 80
+    - to:
+        - podSelector:
+            matchLabels:
+              app: database
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to: []
+      ports:
+        - protocol: TCP
+          port: 443
+        - protocol: TCP
+          port: 80
 ```
 
 ---
@@ -256,12 +266,14 @@ spec:
 ✅ **Goal:** Configure proper service discovery and DNS resolution.
 
 ### Service Discovery Checklist
+
 - [ ] CoreDNS configured properly
 - [ ] Service names resolve correctly
 - [ ] External DNS integration (if needed)
 - [ ] Service mesh considerations (Istio, Linkerd)
 
 ### Implementation
+
 ```yaml
 # Headless Service for StatefulSets
 apiVersion: v1
@@ -271,7 +283,7 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - port: 5432
+    - port: 5432
   selector:
     app: database
 ```
@@ -283,6 +295,7 @@ spec:
 ✅ **Goal:** Implement comprehensive monitoring and observability.
 
 ### Monitoring Checklist
+
 - [ ] Prometheus metrics exposed
 - [ ] Grafana dashboards configured
 - [ ] Alerting rules defined
@@ -291,6 +304,7 @@ spec:
 - [ ] Health checks implemented
 
 ### Implementation
+
 ```yaml
 # Service with metrics port
 apiVersion: v1
@@ -303,12 +317,12 @@ metadata:
     prometheus.io/path: "/metrics"
 spec:
   ports:
-  - name: http
-    port: 8000
-    targetPort: 8000
-  - name: metrics
-    port: 8000
-    targetPort: 8000
+    - name: http
+      port: 8000
+      targetPort: 8000
+    - name: metrics
+      port: 8000
+      targetPort: 8000
   selector:
     app: mlops-platform
 ```
@@ -318,7 +332,9 @@ spec:
 ## 🔧 LinkOps MLOps Platform Implementation
 
 ### Current Networking Status
+
 ✅ **Services Configured**
+
 - MLOps Platform (ClusterIP + LoadBalancer)
 - Audit Assess (ClusterIP)
 - Whis Data Input (ClusterIP)
@@ -326,11 +342,13 @@ spec:
 - Frontend (LoadBalancer)
 
 ✅ **Ingress Configured**
+
 - SSL termination with Let's Encrypt
 - Host-based routing for services
 - Rate limiting and CORS headers
 
 ✅ **RBAC Implemented**
+
 - Service accounts for each component
 - Minimal required permissions
 - Network policies for security
@@ -353,7 +371,8 @@ kubectl exec -it <pod> -- nslookup mlops-platform
 ```
 
 ### Next Steps
+
 - [ ] Implement service mesh (Istio/Linkerd)
 - [ ] Add distributed tracing
 - [ ] Configure advanced monitoring
-- [ ] Implement backup strategies 
+- [ ] Implement backup strategies

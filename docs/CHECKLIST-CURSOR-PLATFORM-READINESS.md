@@ -6,15 +6,16 @@ This checklist ensures all microservices, workflows, and Helm charts are properl
 
 ## 🧠 1. Microservice Routing + Folder Health
 
-| Item | Description | Done? |
-|------|-------------|-------|
-| ✅ `main.py` exists per service | Has a working FastAPI/Flask/CLI entrypoint |
-| ✅ `Dockerfile` exists and builds locally | `docker build .` completes successfully |
-| ✅ `requirements.txt` exists | Matches imported libraries |
-| ✅ Routes folder is clean | All `@app.get`, `@app.post` handlers present |
-| ✅ Ports are not hardcoded | Use `os.getenv("PORT", default)` logic |
+| Item                                      | Description                                  | Done? |
+| ----------------------------------------- | -------------------------------------------- | ----- |
+| ✅ `main.py` exists per service           | Has a working FastAPI/Flask/CLI entrypoint   |
+| ✅ `Dockerfile` exists and builds locally | `docker build .` completes successfully      |
+| ✅ `requirements.txt` exists              | Matches imported libraries                   |
+| ✅ Routes folder is clean                 | All `@app.get`, `@app.post` handlers present |
+| ✅ Ports are not hardcoded                | Use `os.getenv("PORT", default)` logic       |
 
 ### Service Status
+
 - ✅ **mlops_platform** - FastAPI with task/orb/rune management
 - ✅ **audit_assess** - FastAPI with repository scanning
 - ✅ **whis_data_input** - FastAPI with data collection
@@ -25,24 +26,25 @@ This checklist ensures all microservices, workflows, and Helm charts are properl
 
 ## 🔁 2. GitHub Actions Workflows
 
-| Item | Description | Done? |
-|------|-------------|-------|
-| ✅ `.github/workflows/*.yml` exists per service | Lint → test → docker build → push |
-| ✅ `paths:` or `paths-ignore:` is correct | Workflow only runs when its service changes |
-| ✅ Docker image tagged properly | e.g. `ghcr.io/jimjrxieb/service-name:latest` |
-| ✅ Helm chart updated after successful push | `helm package` or `argocd app sync` triggered |
+| Item                                            | Description                                   | Done? |
+| ----------------------------------------------- | --------------------------------------------- | ----- |
+| ✅ `.github/workflows/*.yml` exists per service | Lint → test → docker build → push             |
+| ✅ `paths:` or `paths-ignore:` is correct       | Workflow only runs when its service changes   |
+| ✅ Docker image tagged properly                 | e.g. `ghcr.io/jimjrxieb/service-name:latest`  |
+| ✅ Helm chart updated after successful push     | `helm package` or `argocd app sync` triggered |
 
 ### Workflow Status
+
 ```yaml
 # .github/workflows/mlops-platform.yml
 name: MLOps Platform CI/CD
 on:
   push:
     branches: [main]
-    paths: ['mlops/mlops_platform/**']
+    paths: ["mlops/mlops_platform/**"]
   pull_request:
     branches: [main]
-    paths: ['mlops/mlops_platform/**']
+    paths: ["mlops/mlops_platform/**"]
 
 jobs:
   test:
@@ -70,16 +72,17 @@ jobs:
 
 ## ⚙️ 3. Helm Chart Readiness (Per Service)
 
-| Item | Description | Done? |
-|------|-------------|-------|
-| ✅ `Chart.yaml` exists | With version, name, description |
-| ✅ `values.yaml` has image.repo and image.tag | Not hardcoded |
+| Item                                                           | Description                     | Done? |
+| -------------------------------------------------------------- | ------------------------------- | ----- |
+| ✅ `Chart.yaml` exists                                         | With version, name, description |
+| ✅ `values.yaml` has image.repo and image.tag                  | Not hardcoded                   |
 | ✅ `deployment.yaml` uses `values.image.repo` and `values.env` |
-| ✅ `service.yaml` exposes correct port |
-| ✅ Optional: ingress.yaml, rbac.yaml, pvc.yaml added |
-| ✅ Helm chart passes lint | `helm lint ./helm/service` |
+| ✅ `service.yaml` exposes correct port                         |
+| ✅ Optional: ingress.yaml, rbac.yaml, pvc.yaml added           |
+| ✅ Helm chart passes lint                                      | `helm lint ./helm/service`      |
 
 ### Helm Charts Status
+
 ```
 helm/
 ├── mlops-platform/
@@ -97,6 +100,7 @@ helm/
 ```
 
 ### Chart Validation
+
 ```bash
 # Validate all charts
 helm lint ./helm/mlops-platform
@@ -111,15 +115,16 @@ helm lint ./helm/linkops-full
 
 ## 🧰 4. ArgoCD GitOps Readiness
 
-| Item | Description | Done? |
-|------|-------------|-------|
-| ✅ ArgoCD `Application.yaml` exists | Points to correct repo, chart, revision |
-| ✅ Chart in `linkops-manifests/apps/service-name/` | With values.yaml per environment |
+| Item                                                     | Description                             | Done? |
+| -------------------------------------------------------- | --------------------------------------- | ----- |
+| ✅ ArgoCD `Application.yaml` exists                      | Points to correct repo, chart, revision |
+| ✅ Chart in `linkops-manifests/apps/service-name/`       | With values.yaml per environment        |
 | ✅ `syncPolicy` is automated with `prune` and `selfHeal` |
-| ✅ Optional: `CreateNamespace=true` in syncOptions |
-| ✅ ArgoCD app deploys cleanly via CLI or UI |
+| ✅ Optional: `CreateNamespace=true` in syncOptions       |
+| ✅ ArgoCD app deploys cleanly via CLI or UI              |
 
 ### ArgoCD Application Example
+
 ```yaml
 # helm/argocd/Application.yaml
 apiVersion: argoproj.io/v1alpha1
@@ -151,15 +156,16 @@ spec:
 
 ## ☁️ 5. AKS Cluster Readiness
 
-| Item | Description | Done? |
-|------|-------------|-------|
-| ✅ AKS cluster is deployed via Terraform or ARM |
-| ✅ ArgoCD is installed via Helm in `argocd` namespace |
+| Item                                                               | Description | Done? |
+| ------------------------------------------------------------------ | ----------- | ----- |
+| ✅ AKS cluster is deployed via Terraform or ARM                    |
+| ✅ ArgoCD is installed via Helm in `argocd` namespace              |
 | ✅ `kubectl get nodes` + `kubectl get pods -A` shows healthy state |
 | ✅ Docker images are pulled from registry (public or private auth) |
-| ✅ Cluster has secrets / service accounts set (if needed) |
+| ✅ Cluster has secrets / service accounts set (if needed)          |
 
 ### AKS Deployment Commands
+
 ```bash
 # Deploy AKS cluster
 az aks create \
@@ -193,13 +199,15 @@ helm upgrade --install platform-core ./helm/linkops-full \
 ```
 
 ### ✅ Validate that `linkops-full` includes:
+
 - ✅ **mlops_platform** - Core task management service
-- ✅ **whis_* services** - Data input and enhancement services
+- ✅ **whis\_\* services** - Data input and enhancement services
 - ✅ **audit_assess + audit_migrate** - Security and compliance services
 - ✅ **frontend** - Vue.js user interface
 - ✅ **platform_agent** - Go CLI agent for command execution
 
 ### Complete Platform Deployment
+
 ```bash
 # Deploy complete platform
 helm upgrade --install linkops-full ./helm/linkops-full \
@@ -221,14 +229,15 @@ kubectl get ingress -n linkops
 
 ## 🧪 7. Lint + Local Test Coverage
 
-| Item | Description | Done? |
-|------|-------------|-------|
-| ✅ `flake8` or `black` linting integrated |
-| ✅ `test_*.py` coverage in `tests/` |
+| Item                                                       | Description | Done? |
+| ---------------------------------------------------------- | ----------- | ----- |
+| ✅ `flake8` or `black` linting integrated                  |
+| ✅ `test_*.py` coverage in `tests/`                        |
 | ✅ `docker-compose -f docker-compose.yml up` works locally |
-| ✅ `frontend` loads GUI + shows working agent tabs |
+| ✅ `frontend` loads GUI + shows working agent tabs         |
 
 ### Local Testing Commands
+
 ```bash
 # Run linting
 flake8 mlops/mlops_platform/
@@ -251,21 +260,22 @@ node test_frontend_integration.js
 
 ## ✅ Final Pass (Cursor Summary Bot)
 
-| ✅ Check | Description | Status |
-|----------|-------------|--------|
-| Helm packages exist and lint clean | All charts pass `helm lint` | ✅ |
-| Workflows correctly scoped and tagged | GitHub Actions trigger on correct paths | ✅ |
-| API routes match frontend calls | Frontend can call all backend APIs | ✅ |
-| All services build into Docker | `docker build` succeeds for all services | ✅ |
-| AKS deployment works via Helm or ArgoCD | Both deployment methods tested | ✅ |
-| ArgoCD sync or manual install tested | GitOps workflow verified | ✅ |
-| Agent tabs load in GUI and call API | Frontend components functional | ✅ |
+| ✅ Check                                | Description                              | Status |
+| --------------------------------------- | ---------------------------------------- | ------ |
+| Helm packages exist and lint clean      | All charts pass `helm lint`              | ✅     |
+| Workflows correctly scoped and tagged   | GitHub Actions trigger on correct paths  | ✅     |
+| API routes match frontend calls         | Frontend can call all backend APIs       | ✅     |
+| All services build into Docker          | `docker build` succeeds for all services | ✅     |
+| AKS deployment works via Helm or ArgoCD | Both deployment methods tested           | ✅     |
+| ArgoCD sync or manual install tested    | GitOps workflow verified                 | ✅     |
+| Agent tabs load in GUI and call API     | Frontend components functional           | ✅     |
 
 ---
 
 ## 🚀 Quick Deployment Commands
 
 ### Option 1: ArgoCD (GitOps)
+
 ```bash
 # Apply ArgoCD application
 kubectl apply -f helm/argocd/Application.yaml
@@ -276,6 +286,7 @@ argocd app get linkops-platform
 ```
 
 ### Option 2: Manual Helm
+
 ```bash
 # Deploy with Helm
 helm upgrade --install linkops-full ./helm/linkops-full \
@@ -288,6 +299,7 @@ kubectl port-forward svc/frontend 3000:80
 ```
 
 ### Option 3: Docker Compose (Local)
+
 ```bash
 # Local development
 docker-compose up -d
@@ -299,6 +311,7 @@ cd frontend && npm run dev
 ## 📊 Platform Health Check
 
 ### Service Endpoints
+
 - ✅ **MLOps Platform**: http://localhost:8000/health
 - ✅ **Audit Assess**: http://localhost:8003/health
 - ✅ **Whis Data Input**: http://localhost:8004/health
@@ -306,12 +319,14 @@ cd frontend && npm run dev
 - ✅ **Frontend**: http://localhost:3000
 
 ### API Documentation
+
 - ✅ **MLOps Platform**: http://localhost:8000/docs
 - ✅ **Audit Assess**: http://localhost:8003/docs
 - ✅ **Whis Data Input**: http://localhost:8004/docs
 - ✅ **Whis Enhance**: http://localhost:8006/docs
 
 ### Monitoring
+
 - ✅ **Health Checks**: All services respond to `/health`
 - ✅ **Logging**: Comprehensive logging across all services
 - ✅ **Metrics**: Prometheus metrics exposed
@@ -322,10 +337,11 @@ cd frontend && npm run dev
 ## 🎉 Platform Status: **READY FOR PRODUCTION**
 
 Your LinkOps MLOps platform is now **100% ready** for:
+
 - ✅ **AKS Deployment** via Helm or ArgoCD
 - ✅ **Enterprise Demos** with full functionality
 - ✅ **Production Use** with security and monitoring
 - ✅ **Technical Reviews** with comprehensive documentation
 - ✅ **Customer Showcases** with professional UI/UX
 
-**All microservices are wired, tested, and ready for deployment! 🚀** 
+**All microservices are wired, tested, and ready for deployment! 🚀**
