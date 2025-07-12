@@ -62,7 +62,7 @@ jobs:
           type=ref,event=branch
           type=ref,event=pr
           type=sha,prefix={{branch}}-
-          type=raw,value=${{ github.event.inputs.tag || 'latest' }},enable={{is_default}}
+          type=raw,value=${{ github.event.inputs.tag || 'latest' }},enable=true
 
     - name: Build and push Whis Data Input
       uses: docker/build-push-action@v5
