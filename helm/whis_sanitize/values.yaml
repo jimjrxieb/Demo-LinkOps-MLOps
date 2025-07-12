@@ -1,0 +1,46 @@
+# Default values for whis_sanitize
+replicaCount: 1
+
+image:
+  repository: linkops/whis_sanitize
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+service:
+  type: ClusterIP
+  port: 8002
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+env:
+  - name: LOG_LEVEL
+    value: "INFO"
+  - name: SERVICE_PORT
+    value: "8002"
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

@@ -1,0 +1,117 @@
+# Demo Stack Values
+# This file contains the default values for the demo-stack chart
+
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+  storageClass: ""
+  nameOverride: ""
+  fullnameOverride: ""
+
+# Grok API Key for the demo
+grokApiKey: "your-grok-api-key-here"
+
+# Whis Data Input Service
+whis_data_input:
+  replicaCount: 1
+  image:
+    repository: linkops/whis_data_input
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8001
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  env:
+    - name: LOG_LEVEL
+      value: "INFO"
+    - name: SERVICE_PORT
+      value: "8001"
+
+# Whis Sanitize Service
+whis_sanitize:
+  replicaCount: 1
+  image:
+    repository: linkops/whis_sanitize
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8002
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  env:
+    - name: LOG_LEVEL
+      value: "INFO"
+    - name: SERVICE_PORT
+      value: "8002"
+
+# Whis Logic Service
+whis_logic:
+  replicaCount: 1
+  image:
+    repository: linkops/whis_logic
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8003
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 200m
+      memory: 256Mi
+  env:
+    - name: LOG_LEVEL
+      value: "INFO"
+    - name: SERVICE_PORT
+      value: "8003"
+    - name: GROK_API_KEY
+      valueFrom:
+        secretKeyRef:
+          name: grok-api-secret
+          key: api-key
+
+# Frontend Service
+frontend:
+  replicaCount: 1
+  image:
+    repository: linkops/frontend
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+  ingress:
+    enabled: true
+    className: "nginx"
+    annotations:
+      nginx.ingress.kubernetes.io/rewrite-target: /
+    hosts:
+      - host: demo.linkops.local
+        paths:
+          - path: /
+            pathType: Prefix
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  env:
+    - name: VITE_API_BASE_URL
+      value: "http://mlops-platform:8000"

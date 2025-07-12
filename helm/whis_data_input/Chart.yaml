@@ -1,0 +1,6 @@
+apiVersion: v2
+name: whis_data_input
+description: Whis Data Input Service for LinkOps Demo
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

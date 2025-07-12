@@ -36,6 +36,8 @@ This demo version allows users to:
 
 ## 🚀 **Quick Start**
 
+### Option 1: Docker Compose (Local Development)
+
 ```bash
 # Clone and setup
 cd DEMO-LinkOps
@@ -47,6 +49,22 @@ docker-compose up -d
 # Frontend: http://localhost:3000
 # API: http://localhost:8000
 ```
+
+### Option 2: Kubernetes with Helm (Production Ready)
+
+```bash
+# Prerequisites: Kubernetes cluster, Helm 3.x, kubectl
+cd DEMO-LinkOps
+
+# Deploy with Helm
+./deploy-helm.sh
+
+# Access the platform
+# Frontend: http://demo.linkops.local (add to /etc/hosts)
+# API: Available via port-forward or ingress
+```
+
+For detailed Helm deployment instructions, see [helm/README.md](helm/README.md).
 
 ## 🎨 **Demo Features**
 
