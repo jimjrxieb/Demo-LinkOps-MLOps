@@ -7,7 +7,7 @@ import subprocess
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 from pydantic import BaseModel
@@ -17,13 +17,13 @@ router = APIRouter(prefix="/rune", tags=["rune-executor"])
 
 # Models
 class RuneExecutionRequest(BaseModel):
-    commands: List[str]
+    commands: list[str]
     name: str
     description: Optional[str] = "API-generated rune"
     timeout_seconds: Optional[int] = 300
     stop_on_failure: Optional[bool] = True
-    allowed_commands: Optional[List[str]] = None
-    denied_commands: Optional[List[str]] = None
+    allowed_commands: Optional[list[str]] = None
+    denied_commands: Optional[list[str]] = None
 
 
 class RuneExecutionResponse(BaseModel):
@@ -39,7 +39,7 @@ class RuneStatus(BaseModel):
     progress: int
     total_commands: int
     completed_commands: int
-    results: Optional[List[Dict[str, Any]]] = None
+    results: Optional[list[dict[str, Any]]] = None
     error: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime] = None
@@ -127,7 +127,7 @@ class RuneExecutor:
             results = []
 
             if os.path.exists(results_file):
-                with open(results_file, "r") as f:
+                with open(results_file) as f:
                     results = json.load(f)
 
             # Update status
@@ -177,7 +177,7 @@ async def execute_rune(
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to create rune file: {str(e)}"
-        )
+        ) from e
 
     # Initialize status
     execution_status[execution_id] = RuneStatus(
@@ -211,7 +211,7 @@ async def get_execution_status(execution_id: str):
 
 @router.get("/list")
 async def list_executions():
-    """List all rune executions"""
+    """list all rune executions"""
     return {
         "executions": [
             {
@@ -270,7 +270,7 @@ async def execute_simple_command(command: str):
         results = []
 
         if os.path.exists(results_file):
-            with open(results_file, "r") as f:
+            with open(results_file) as f:
                 results = json.load(f)
 
         # Clean up
@@ -288,7 +288,7 @@ async def execute_simple_command(command: str):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Command execution failed: {str(e)}"
-        )
+        ) from e
 
 
 @router.get("/health")

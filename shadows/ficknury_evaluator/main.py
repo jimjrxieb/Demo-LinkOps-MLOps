@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import dict, list
 
 
 def sanitize_cmd(cmd):
@@ -44,10 +44,10 @@ class TaskItem(BaseModel):
 
 
 class EvaluationResponse(BaseModel):
-    automatable: List[str]
-    non_automatable: List[str]
-    score_map: Dict[str, float]
-    suggestions: Dict[str, str]
+    automatable: list[str]
+    non_automatable: list[str]
+    score_map: dict[str, float]
+    suggestions: dict[str, str]
 
 
 @app.post("/api/evaluate", response_model=EvaluationResponse)
@@ -91,7 +91,7 @@ async def evaluate_single_task(task: Task) -> TaskEvaluation:
 
 
 @app.get("/health")
-def health() -> Dict[str, str]:
+def health() -> dict[str, str]:
     return {"status": "healthy", "service": "ficknury-evaluator"}
 
 

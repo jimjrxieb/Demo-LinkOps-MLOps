@@ -56,7 +56,7 @@ def ensure_chart_yaml(chart_path: Path):
         chart_file.write_text(yaml.dump(default_chart, sort_keys=False))
         return
 
-    with open(chart_file, "r", encoding="utf-8") as f:
+    with open(chart_file, encoding="utf-8") as f:
         content = yaml.safe_load(f)
 
     modified = False

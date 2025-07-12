@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any, dict, list
 
 
 def sanitize_cmd(cmd):
@@ -65,14 +65,14 @@ class EmbeddingRequest(BaseModel):
 
 
 class SimilarityRequest(BaseModel):
-    query_embedding: List[float]
-    content_embeddings: List[Dict[str, Any]]
+    query_embedding: list[float]
+    content_embeddings: list[dict[str, Any]]
     top_k: int = 5
 
 
 class RecommendationRequest(BaseModel):
-    user_context: Dict[str, Any]
-    available_assets: List[Dict[str, Any]]
+    user_context: dict[str, Any]
+    available_assets: list[dict[str, Any]]
 
 
 @app.get("/")
@@ -111,8 +111,8 @@ async def create_embedding(request: EmbeddingRequest):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Embedding generation failed: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process request: {str(e)}"
+        ) from e
 
 
 @app.post("/similarity")
@@ -133,8 +133,8 @@ async def find_similar(request: SimilarityRequest):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Similarity search failed: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process request: {str(e)}"
+        ) from e
 
 
 @app.post("/recommendations")
@@ -155,8 +155,8 @@ async def get_recommendations(request: RecommendationRequest):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Recommendation generation failed: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process request: {str(e)}"
+        ) from e
 
 
 @app.get("/stats")

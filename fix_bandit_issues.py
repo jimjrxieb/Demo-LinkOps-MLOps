@@ -4,17 +4,15 @@ Script to fix Bandit security issues in the LinkOps codebase.
 Addresses B603, B110, and B404 issues.
 """
 
-import os
 import re
-import shutil
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
 
 def fix_subprocess_issues(file_path: Path) -> bool:
     """Fix B603: subprocess_without_shell_equals_true issues"""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
@@ -94,7 +92,7 @@ def sanitize_cmd(cmd):
 def fix_try_except_pass(file_path: Path) -> bool:
     """Fix B110: try_except_pass issues by adding proper error handling"""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content
@@ -137,7 +135,7 @@ def fix_try_except_pass(file_path: Path) -> bool:
 def fix_subprocess_imports(file_path: Path) -> bool:
     """Fix B404: subprocess import issues by adding security comments"""
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
 
         original_content = content

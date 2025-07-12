@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional, list
 
 
 def sanitize_cmd(cmd):
@@ -41,14 +41,14 @@ class QnAInput(BaseModel):
     question: str
     answer: str
     context: Optional[str] = None
-    tags: List[str] = []
+    tags: list[str] = []
     source: str = "manual_input"
     confidence: Optional[float] = None
     domain: Optional[str] = None
 
 
 class QnABatch(BaseModel):
-    qna_pairs: List[QnAInput]
+    qna_pairs: list[QnAInput]
     batch_metadata: Optional[dict] = None
 
 
@@ -86,7 +86,9 @@ async def submit_qna(qna: QnAInput):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process Q&A: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to process Q&A: {str(e)}"
+        ) from e
 
 
 @router.post("/qna/batch")
@@ -134,8 +136,8 @@ async def submit_qna_batch(batch: QnABatch):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to process Q&A batch: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process Q&A: {str(e)}"
+        ) from e
 
 
 @router.get("/qna/{qna_id}")
@@ -155,7 +157,7 @@ async def list_qna(
     source: Optional[str] = None,
 ):
     """
-    List Q&A pairs with optional filtering.
+    list Q&A pairs with optional filtering.
     """
     # TODO: Implement listing from storage with filters
     raise HTTPException(status_code=501, detail="Not implemented yet")

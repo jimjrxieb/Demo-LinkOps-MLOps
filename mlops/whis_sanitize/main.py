@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 
 def sanitize_cmd(cmd):
@@ -56,17 +56,17 @@ sanitizer = WhisSanitizer()
 
 
 class SanitizeRequest(BaseModel):
-    data: Dict[str, Any]
+    data: dict[str, Any]
 
 
 class BatchSanitizeRequest(BaseModel):
-    data_list: List[Dict[str, Any]]
+    data_list: list[dict[str, Any]]
 
 
 class SanitizeResponse(BaseModel):
     message: str
     processing_id: str
-    sanitized_data: Dict[str, Any]
+    sanitized_data: dict[str, Any]
 
 
 @app.get("/")
@@ -103,7 +103,9 @@ async def sanitize_data(request: SanitizeRequest):
         )
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Sanitization failed: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Sanitization failed: {str(e)}"
+        ) from e
 
 
 @app.post("/sanitize/batch")
@@ -135,11 +137,11 @@ async def sanitize_batch(request: BatchSanitizeRequest):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Batch sanitization failed: {str(e)}"
-        )
+        ) from e
 
 
 @app.post("/sanitize/stream")
-async def sanitize_stream(data: Dict[str, Any]):
+async def sanitize_stream(data: dict[str, Any]):
     """
     Stream sanitization for real-time processing.
     """
@@ -171,7 +173,7 @@ async def list_sanitizations(
     limit: int = 100, offset: int = 0, status: Optional[str] = None
 ):
     """
-    List sanitization results with optional filtering.
+    list sanitization results with optional filtering.
     """
     # TODO: Implement listing from storage
     raise HTTPException(status_code=501, detail="Not implemented yet")

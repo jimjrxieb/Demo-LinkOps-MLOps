@@ -1,14 +1,13 @@
-"""
-Whis Sanitizer - Cleans, structures, and tags data like a pro data scientist.
-"""
-
 import json
 import re
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
-
+from typing import Any, Optional, dict, list
 import yaml
+
+"""
+Whis Sanitizer - Cleans, structures, and tags data like a pro data scientist.
+"""
 
 
 class WhisSanitizer:
@@ -53,7 +52,7 @@ class WhisSanitizer:
             "infrastructure": ["terraform", "ansible", "cloud", "aws", "azure", "gcp"],
         }
 
-    def sanitize_data(self, raw_data: Dict[str, Any]) -> Dict[str, Any]:
+    def sanitize_data(self, raw_data: dict[str, Any]) -> dict[str, Any]:
         """
         Main sanitization pipeline.
 
@@ -211,7 +210,7 @@ class WhisSanitizer:
         content = re.sub(r"\n\s*\n", "\n\n", content)
         return content.strip()
 
-    def _generate_auto_tags(self, content: str, data_type: str) -> List[str]:
+    def _generate_auto_tags(self, content: str, data_type: str) -> list[str]:
         """Generate automatic tags based on content analysis."""
         tags = [data_type]
         content_lower = content.lower()
@@ -242,7 +241,7 @@ class WhisSanitizer:
 
         return list(set(tags))
 
-    def _structure_data(self, content: str, data_type: str) -> Dict[str, Any]:
+    def _structure_data(self, content: str, data_type: str) -> dict[str, Any]:
         """Structure the data for downstream processing."""
         structured = {
             "raw_content": content,
@@ -262,7 +261,7 @@ class WhisSanitizer:
 
         return structured
 
-    def _extract_entities(self, content: str) -> List[str]:
+    def _extract_entities(self, content: str) -> list[str]:
         """Extract key entities from content."""
         # Simple entity extraction (can be enhanced with NLP)
         entities = []
@@ -284,7 +283,7 @@ class WhisSanitizer:
 
         return list(set(entities))
 
-    def _extract_key_phrases(self, content: str) -> List[str]:
+    def _extract_key_phrases(self, content: str) -> list[str]:
         """Extract key phrases from content."""
         # Simple key phrase extraction
         phrases = []
@@ -318,7 +317,7 @@ class WhisSanitizer:
 
         return min(complexity, 1.0)
 
-    def _structure_qna(self, content: str) -> Dict[str, Any]:
+    def _structure_qna(self, content: str) -> dict[str, Any]:
         """Structure Q&A data."""
         return {
             "qa_type": "question_answer",
@@ -329,7 +328,7 @@ class WhisSanitizer:
             ),
         }
 
-    def _structure_transcript(self, content: str) -> Dict[str, Any]:
+    def _structure_transcript(self, content: str) -> dict[str, Any]:
         """Structure transcript data."""
         return {
             "transcript_type": "video_transcript",
@@ -340,7 +339,7 @@ class WhisSanitizer:
             "paragraph_count": len(content.split("\n\n")),
         }
 
-    def _structure_info_dump(self, content: str) -> Dict[str, Any]:
+    def _structure_info_dump(self, content: str) -> dict[str, Any]:
         """Structure info dump data."""
         return {
             "dump_type": "information_dump",
@@ -350,8 +349,8 @@ class WhisSanitizer:
         }
 
     def _generate_metadata(
-        self, raw_data: Dict[str, Any], processing_id: str
-    ) -> Dict[str, Any]:
+        self, raw_data: dict[str, Any], processing_id: str
+    ) -> dict[str, Any]:
         """Generate processing metadata."""
         return {
             "processing_id": processing_id,
@@ -365,13 +364,13 @@ class WhisSanitizer:
 
 
 # Convenience functions for external use
-def sanitize_input(raw_data: Dict[str, Any]) -> Dict[str, Any]:
+def sanitize_input(raw_data: dict[str, Any]) -> dict[str, Any]:
     """Convenience function for sanitizing input data."""
     sanitizer = WhisSanitizer()
     return sanitizer.sanitize_data(raw_data)
 
 
-def batch_sanitize(raw_data_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def batch_sanitize(raw_data_list: list[dict[str, Any]]) -> list[dict[str, Any]]:
     """Sanitize multiple inputs in batch."""
     sanitizer = WhisSanitizer()
     return [sanitizer.sanitize_data(data) for data in raw_data_list]

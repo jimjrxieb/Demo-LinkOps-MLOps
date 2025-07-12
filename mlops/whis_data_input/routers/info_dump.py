@@ -2,7 +2,7 @@ import json
 import logging
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 logger = logging.getLogger(__name__)
 
@@ -45,15 +45,15 @@ class InfoDump(BaseModel):
     content: str
     title: Optional[str] = None
     source: Optional[str] = None
-    tags: List[str] = []
+    tags: list[str] = []
     format_hint: Optional[str] = None  # json, yaml, text, code, etc.
     context: Optional[str] = None
     priority: Optional[str] = "medium"  # low, medium, high, critical
 
 
 class InfoDumpBatch(BaseModel):
-    dumps: List[InfoDump]
-    batch_metadata: Optional[Dict[str, Any]] = None
+    dumps: list[InfoDump]
+    batch_metadata: Optional[dict[str, Any]] = None
 
 
 @router.post("/dump")
@@ -102,7 +102,7 @@ async def submit_info_dump(dump: InfoDump):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to process info dump: {str(e)}"
-        )
+        ) from e
 
 
 @router.post("/dump/batch")
@@ -158,11 +158,11 @@ async def submit_info_dump_batch(batch: InfoDumpBatch):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to process batch: {str(e)}"
-        )
+        ) from e
 
 
 @router.post("/dump/structured")
-async def submit_structured_dump(data: Dict[str, Any] = Body(...)):
+async def submit_structured_dump(data: dict[str, Any] = Body(...)):
     """
     Submit structured data dump (JSON, YAML, etc.).
     """
@@ -204,7 +204,7 @@ async def submit_structured_dump(data: Dict[str, Any] = Body(...)):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to process structured dump: {str(e)}"
-        )
+        ) from e
 
 
 def _detect_format(content: str) -> str:
@@ -236,7 +236,7 @@ def _detect_format(content: str) -> str:
     return "text"
 
 
-def _generate_auto_tags(content: str, format_hint: str) -> List[str]:
+def _generate_auto_tags(content: str, format_hint: str) -> list[str]:
     """
     Generate automatic tags based on content and format.
     """
@@ -288,7 +288,7 @@ async def list_info_dumps(
     source: Optional[str] = None,
 ):
     """
-    List info dumps with optional filtering.
+    list info dumps with optional filtering.
     """
     # TODO: Implement listing from storage
     raise HTTPException(status_code=501, detail="Not implemented yet")

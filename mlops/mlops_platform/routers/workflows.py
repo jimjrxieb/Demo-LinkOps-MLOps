@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 
 def sanitize_cmd(cmd):
@@ -42,8 +42,8 @@ class WorkflowStep(BaseModel):
     name: str
     description: str
     action: str  # script, api_call, manual, decision
-    parameters: Dict[str, Any] = {}
-    dependencies: List[str] = []
+    parameters: dict[str, Any] = {}
+    dependencies: list[str] = []
     timeout: Optional[int] = None
 
 
@@ -52,9 +52,9 @@ class Workflow(BaseModel):
     name: str
     description: str
     category: str  # ci_cd, deployment, testing, monitoring, security
-    steps: List[WorkflowStep]
-    triggers: List[str] = []  # manual, webhook, schedule, event
-    tags: List[str] = []
+    steps: list[WorkflowStep]
+    triggers: list[str] = []  # manual, webhook, schedule, event
+    tags: list[str] = []
     created_at: Optional[str] = None
     updated_at: Optional[str] = None
     execution_count: int = 0
@@ -73,7 +73,7 @@ def load_workflows():
     workflows_file = get_workflows_file()
     if os.path.exists(workflows_file):
         try:
-            with open(workflows_file, "r") as f:
+            with open(workflows_file) as f:
                 return json.load(f)
         except Exception:
             return []
@@ -104,7 +104,7 @@ async def create_workflow(workflow: Workflow):
     return workflow
 
 
-@router.get("/", response_model=List[Workflow])
+@router.get("/", response_model=list[Workflow])
 async def get_workflows(category: Optional[str] = None, tag: Optional[str] = None):
     """Get all workflows with optional filtering."""
     workflows = load_workflows()

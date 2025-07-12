@@ -1,7 +1,7 @@
 import base64
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 
 def sanitize_cmd(cmd):
@@ -43,14 +43,14 @@ class ImageTextResult(BaseModel):
     extracted_text: str
     confidence: float
     language: Optional[str] = None
-    regions: List[Dict[str, Any]] = []
-    metadata: Dict[str, Any]
+    regions: list[dict[str, Any]] = []
+    metadata: dict[str, Any]
 
 
 class ImageTextRequest(BaseModel):
     image_data: str  # Base64 encoded image
     language_hint: Optional[str] = None
-    tags: List[str] = []
+    tags: list[str] = []
 
 
 @router.post("/extract-text")
@@ -121,7 +121,9 @@ async def extract_text_from_image(
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to extract text: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to extract text: {str(e)}"
+        ) from e
 
 
 @router.post("/extract-text/base64")
@@ -177,11 +179,13 @@ async def extract_text_from_base64(request: ImageTextRequest):
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to extract text: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to extract text: {str(e)}"
+        ) from e
 
 
 @router.post("/extract-text/batch")
-async def extract_text_batch(files: List[UploadFile] = File(...)):
+async def extract_text_batch(files: list[UploadFile] = File(...)):
     """
     Extract text from multiple images in batch.
     """
@@ -220,7 +224,7 @@ async def extract_text_batch(files: List[UploadFile] = File(...)):
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Failed to process batch: {str(e)}"
-        )
+        ) from e
 
 
 @router.get("/extract-text/{image_id}")
@@ -237,7 +241,7 @@ async def list_extractions(
     limit: int = 50, offset: int = 0, min_confidence: Optional[float] = None
 ):
     """
-    List all text extractions with optional filtering.
+    list all text extractions with optional filtering.
     """
     # TODO: Implement listing from storage
     raise HTTPException(status_code=501, detail="Not implemented yet")

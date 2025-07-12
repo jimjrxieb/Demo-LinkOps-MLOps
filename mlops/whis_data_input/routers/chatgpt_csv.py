@@ -2,7 +2,7 @@ import csv
 import io
 import uuid
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional, list
 
 
 def sanitize_cmd(cmd):
@@ -124,10 +124,12 @@ async def upload_chatgpt_csv(
         }
 
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to process CSV: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Failed to process CSV: {str(e)}"
+        ) from e
 
 
-def _extract_messages(row: dict) -> List[dict]:
+def _extract_messages(row: dict) -> list[dict]:
     """
     Extract conversation messages from CSV row.
     """
@@ -205,7 +207,7 @@ async def get_csv_processing_result(file_id: str):
 @router.get("/csv")
 async def list_csv_uploads(limit: int = 50, offset: int = 0):
     """
-    List all CSV uploads.
+    list all CSV uploads.
     """
     # TODO: Implement listing from storage
     raise HTTPException(status_code=501, detail="Not implemented yet")

@@ -88,7 +88,7 @@ def load_config():
         "patterns": ["*.vue", "*.js", "*.ts", "*.jsx"],
     }
     if config_file.exists():
-        with open(config_file, "r", encoding="utf-8") as f:
+        with open(config_file, encoding="utf-8") as f:
             logger.info(f"Loaded config from {config_file}")
             return json.load(f)
     logger.info("Using default config")
@@ -299,7 +299,7 @@ def fix_vite_config_syntax(file_path):
     """Fix common Vite config syntax errors"""
     logger.info(f"Checking Vite config syntax in {file_path}")
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
         changes_made = 0
         # Fix duplicate defineConfig imports
@@ -357,7 +357,7 @@ def fix_package_json_scripts(file_path):
     """Fix missing scripts in package.json"""
     logger.info(f"Checking package.json scripts in {file_path}")
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             data = json.load(f)
         changes_made = 0
         if "scripts" in data:
@@ -386,7 +386,7 @@ def fix_eslint_config(file_path):
     """Fix ESLint configuration issues"""
     logger.info(f"Checking ESLint config in {file_path}")
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
         changes_made = 0
         if "extends" in content and "vue/essential" not in content:
@@ -687,14 +687,14 @@ def process_file(
     """Process a single file and apply fixes"""
     cache = {}
     if cache_file.exists():
-        with open(cache_file, "r", encoding="utf-8") as f:
+        with open(cache_file, encoding="utf-8") as f:
             cache = json.load(f)
     current_hash = get_file_hash(file_path)
     if str(file_path) in cache and cache[str(file_path)] == current_hash:
         logger.info(f"Skipping unchanged file: {file_path}")
         return False
     try:
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             content = f.read()
         original_content = content
         changes_made = 0

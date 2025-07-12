@@ -1,5 +1,10 @@
-def sanitize_cmd(cmd):
     import shlex
+import logging
+from pathlib import Path
+from typing import Any, Optional, dict, list
+import requests
+
+def sanitize_cmd(cmd):
 
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)
@@ -31,11 +36,7 @@ FickNury Evaluator - Task Scorer
 Evaluates tasks against logic source capabilities and selects appropriate agents
 """
 
-import logging
-from pathlib import Path
-from typing import Any, Dict, List, Optional
 
-import requests
 
 logger = logging.getLogger(__name__)
 
@@ -97,7 +98,7 @@ class TaskScorer:
             },
         }
 
-    def score_task(self, task: Dict[str, Any]) -> Dict[str, Any]:
+    def score_task(self, task: dict[str, Any]) -> dict[str, Any]:
         """
         Score a task against all logic sources
 
@@ -186,7 +187,7 @@ class TaskScorer:
             return {"error": str(e), "task_id": task.get("task_id"), "scores": []}
 
     def _calculate_capability_score(
-        self, requirements: List[str], capabilities: List[str]
+        self, requirements: list[str], capabilities: list[str]
     ) -> float:
         """Calculate how well logic source capabilities match task requirements"""
         if not requirements:
@@ -272,7 +273,7 @@ class TaskScorer:
 
         return priority_mappings.get(task_priority, {}).get(logic_source, 0.5)
 
-    def _check_logic_source_availability(self, config: Dict[str, Any]) -> float:
+    def _check_logic_source_availability(self, config: dict[str, Any]) -> float:
         """Check if logic source is available and healthy"""
         try:
             health_url = f"{config['endpoint']}{config['health_endpoint']}"
@@ -293,8 +294,8 @@ class TaskScorer:
             return 0.5  # Unknown status
 
     def _generate_recommendation(
-        self, scores: List[Dict[str, Any]], task: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, scores: list[dict[str, Any]], task: dict[str, Any]
+    ) -> dict[str, Any]:
         """Generate recommendation based on scoring results"""
         if not scores:
             return {
@@ -347,12 +348,12 @@ class TaskScorer:
 
     def get_logic_source_capabilities(
         self, logic_source: str
-    ) -> Optional[Dict[str, Any]]:
+    ) -> Optional[dict[str, Any]]:
         """Get capabilities of a specific logic source"""
         return self.logic_sources.get(logic_source)
 
-    def list_logic_sources(self) -> List[Dict[str, Any]]:
-        """List all available logic sources"""
+    def list_logic_sources(self) -> list[dict[str, Any]]:
+        """list all available logic sources"""
         return [
             {
                 "logic_source": source,
@@ -364,7 +365,7 @@ class TaskScorer:
             for source, config in self.logic_sources.items()
         ]
 
-    def validate_task_requirements(self, requirements: List[str]) -> Dict[str, Any]:
+    def validate_task_requirements(self, requirements: list[str]) -> dict[str, Any]:
         """Validate task requirements against available capabilities"""
         all_capabilities = []
         for config in self.logic_sources.values():

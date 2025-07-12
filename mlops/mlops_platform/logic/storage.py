@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, dict, list
 
 """
 Storage Helper - JSON read/write operations for mlops_platform
@@ -19,7 +19,7 @@ class StorageManager:
         """Get the full path for a data file."""
         return self.data_dir / f"{filename}.json"
 
-    def read_json(self, filename: str) -> List[Dict]:
+    def read_json(self, filename: str) -> list[dict]:
         """Read data from a JSON file."""
         file_path = self._get_file_path(filename)
 
@@ -27,14 +27,14 @@ class StorageManager:
             return []
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 data = json.load(f)
                 return data if isinstance(data, list) else []
         except Exception as e:
             print(f"Error reading {file_path}: {e}")
             return []
 
-    def write_json(self, filename: str, data: List[Dict]) -> bool:
+    def write_json(self, filename: str, data: list[dict]) -> bool:
         """Write data to a JSON file."""
         file_path = self._get_file_path(filename)
 
@@ -46,13 +46,13 @@ class StorageManager:
             print(f"Error writing {file_path}: {e}")
             return False
 
-    def append_json(self, filename: str, item: Dict) -> bool:
+    def append_json(self, filename: str, item: dict) -> bool:
         """Append a single item to a JSON file."""
         data = self.read_json(filename)
         data.append(item)
         return self.write_json(filename, data)
 
-    def update_json(self, filename: str, item_id: str, updates: Dict) -> bool:
+    def update_json(self, filename: str, item_id: str, updates: dict) -> bool:
         """Update a specific item in a JSON file."""
         data = self.read_json(filename)
 
@@ -75,7 +75,7 @@ class StorageManager:
 
         return False
 
-    def find_json(self, filename: str, **filters) -> List[Dict]:
+    def find_json(self, filename: str, **filters) -> list[dict]:
         """Find items in a JSON file that match the given filters."""
         data = self.read_json(filename)
 
@@ -94,7 +94,7 @@ class StorageManager:
 
         return filtered_data
 
-    def get_json_stats(self, filename: str) -> Dict[str, Any]:
+    def get_json_stats(self, filename: str) -> dict[str, Any]:
         """Get statistics for a JSON file."""
         data = self.read_json(filename)
 

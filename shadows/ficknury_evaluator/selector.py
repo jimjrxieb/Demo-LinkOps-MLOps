@@ -1,5 +1,6 @@
-def sanitize_cmd(cmd):
     import shlex
+
+def sanitize_cmd(cmd):
 
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)

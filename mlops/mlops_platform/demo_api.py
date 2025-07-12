@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -76,7 +76,7 @@ class OrbSearchRequest(BaseModel):
 
 
 class OrbSearchResponse(BaseModel):
-    results: List[Dict[str, Any]]
+    results: list[dict[str, Any]]
     total: int
     query: str
 
@@ -86,13 +86,13 @@ class OrbGenerationRequest(BaseModel):
 
 
 class OrbGenerationResponse(BaseModel):
-    orb: Dict[str, Any]
+    orb: dict[str, Any]
     generated_by: str
     timestamp: str
 
 
 class OrbApprovalRequest(BaseModel):
-    orb: Dict[str, Any]
+    orb: dict[str, Any]
 
 
 class OrbApprovalResponse(BaseModel):
@@ -126,7 +126,9 @@ async def submit_task(request: TaskRequest):
             timestamp=datetime.now().isoformat(),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error submitting task: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error submitting task: {str(e)}"
+        ) from e
 
 
 @router.post("/orbs/search", response_model=OrbSearchResponse)
@@ -163,7 +165,9 @@ async def search_orbs(request: OrbSearchRequest):
             results=results, total=len(results), query=request.query
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error searching Orbs: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error searching Orbs: {str(e)}"
+        ) from e
 
 
 @router.post("/orbs/generate", response_model=OrbGenerationResponse)
@@ -239,7 +243,9 @@ async def generate_orb(request: OrbGenerationRequest):
             timestamp=datetime.now().isoformat(),
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error generating Orb: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error generating Orb: {str(e)}"
+        ) from e
 
 
 @router.post("/orbs/approve", response_model=OrbApprovalResponse)
@@ -270,7 +276,9 @@ async def approve_orb(request: OrbApprovalRequest):
             message="Orb successfully approved and saved to library",
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error approving Orb: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error approving Orb: {str(e)}"
+        ) from e
 
 
 @router.post("/orbs/reject", response_model=OrbRejectionResponse)
@@ -284,7 +292,9 @@ async def reject_orb(request: OrbRejectionRequest):
             message="The demo version doesn't support refinement. In the full version, the task would have been sent back through the learning loop with additional input and feedback.",
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error rejecting Orb: {str(e)}")
+        raise HTTPException(
+            status_code=500, detail=f"Error rejecting Orb: {str(e)}"
+        ) from e
 
 
 @router.get("/orbs/recent")
@@ -300,7 +310,7 @@ async def get_recent_orbs():
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Error fetching recent Orbs: {str(e)}"
-        )
+        ) from e
 
 
 @router.get("/health")

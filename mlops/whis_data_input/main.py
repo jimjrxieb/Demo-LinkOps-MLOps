@@ -75,7 +75,7 @@ async def health_check():
 
 @app.get("/api/endpoints")
 async def list_endpoints():
-    """List all available endpoints."""
+    """list all available endpoints."""
     return {
         "endpoints": {
             "qna": {

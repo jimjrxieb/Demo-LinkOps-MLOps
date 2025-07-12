@@ -1,7 +1,7 @@
 import re
 import uuid
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional, dict, list
 
 
 def sanitize_cmd(cmd):
@@ -42,7 +42,7 @@ class YouTubeRequest(BaseModel):
     url: str
     language: Optional[str] = "en"
     include_timestamps: bool = True
-    tags: List[str] = []
+    tags: list[str] = []
 
 
 class YouTubeTranscript(BaseModel):
@@ -50,8 +50,8 @@ class YouTubeTranscript(BaseModel):
     title: str
     duration: Optional[str] = None
     language: str
-    transcript: List[Dict[str, Any]]
-    metadata: Dict[str, Any]
+    transcript: list[dict[str, Any]]
+    metadata: dict[str, Any]
 
 
 @router.post("/youtube/transcript")
@@ -112,12 +112,12 @@ async def download_youtube_transcript(request: YouTubeRequest):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to download transcript: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process YouTube video: {str(e)}"
+        ) from e
 
 
 @router.post("/youtube/transcript/batch")
-async def download_youtube_transcripts_batch(urls: List[str]):
+async def download_youtube_transcripts_batch(urls: list[str]):
     """
     Download transcripts from multiple YouTube videos.
     """
@@ -164,8 +164,8 @@ async def download_youtube_transcripts_batch(urls: List[str]):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to process batch: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process YouTube video: {str(e)}"
+        ) from e
 
 
 @router.get("/youtube/transcript/{video_id}")
@@ -182,7 +182,7 @@ async def list_youtube_transcripts(
     limit: int = 50, offset: int = 0, language: Optional[str] = None
 ):
     """
-    List all YouTube transcripts with optional filtering.
+    list all YouTube transcripts with optional filtering.
     """
     # TODO: Implement listing from storage
     raise HTTPException(status_code=501, detail="Not implemented yet")
@@ -220,8 +220,8 @@ async def get_youtube_metadata(url: str):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to extract metadata: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process YouTube video: {str(e)}"
+        ) from e
 
 
 def _extract_video_id(url: str) -> Optional[str]:
@@ -261,5 +261,5 @@ async def process_youtube_playlist(playlist_url: str):
 
     except Exception as e:
         raise HTTPException(
-            status_code=500, detail=f"Failed to process playlist: {str(e)}"
-        )
+            status_code=500, detail=f"Failed to process YouTube video: {str(e)}"
+        ) from e
