@@ -11,8 +11,6 @@ Generates CI/CD workflows for Python microservices
 """
 
 
-
-
 def sanitize_cmd(cmd):
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)
