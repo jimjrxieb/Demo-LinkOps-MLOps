@@ -70,10 +70,9 @@ ignore = [
     "B008",  # do not perform function calls in argument defaults
     "C901",  # too complex
 ]
-per-file-ignores = [
-    {file = "__init__.py", codes = ["F401"]},
-    {file = "tests/**/*", codes = ["B011"]}
-]
+per-file-ignores = {
+    "__init__.py": ["F401"]
+}
 
 [tool.mypy]
 python_version = "3.9"
