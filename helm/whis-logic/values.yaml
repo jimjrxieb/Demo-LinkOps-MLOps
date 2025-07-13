@@ -41,15 +41,10 @@ resources:
     memory: 256Mi
 
 env:
-  - name: LOG_LEVEL
-    value: "INFO"
-  - name: SERVICE_PORT
-    value: "8003"
-  - name: GROK_API_KEY
-    valueFrom:
-      secretKeyRef:
-        name: grok-api-secret
-        key: api-key
+  LOG_LEVEL: "INFO"
+  SERVICE_PORT: "8003"
+  GROK_SECRET_NAME: "grok-api-secret"
+  GROK_SECRET_KEY: "api-key"
 
 nodeSelector: {}
 

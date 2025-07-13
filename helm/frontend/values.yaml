@@ -52,8 +52,7 @@ resources:
     memory: 128Mi
 
 env:
-  - name: VITE_API_BASE_URL
-    value: "http://mlops-platform:8000"
+  apiBaseUrl: "http://mlops-platform:8000"
 
 nodeSelector: {}
 

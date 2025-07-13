@@ -1,60 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{include "whis-logic.fullname" .}}
+  name: {{ include "whis-logic.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "whis-logic.labels" . | nindent 4}}
+    app.kubernetes.io/name: {{ include "whis-logic.name" . }}
+    helm.sh/chart: {{ include "whis-logic.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    argocd.argoproj.io/tracking-id: {{ .Release.Name }}:apps/Deployment:{{ .Release.Namespace }}/{{ include "whis-logic.fullname" . }}
 spec:
-  {{- if not .Values.autoscaling.enabled}}
-  replicas: {{.Values.replicaCount}}
-  {{- end}}
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "whis-logic.name" . }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-  progressDeadlineSeconds: 600
-  revisionHistoryLimit: 3
-  selector:
-    matchLabels:
-      {{- include "whis-logic.selectorLabels" . | nindent 6}}
   template:
     metadata:
-      {{- with .Values.podAnnotations}}
-      annotations:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
       labels:
-        {{- include "whis-logic.selectorLabels" . | nindent 8}}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "whis-logic.name" . }}
     spec:
-      {{- with .Values.imagePullSecrets}}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
-      serviceAccountName: {{include "whis-logic.serviceAccountName" .}}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8}}
       containers:
-        - name: {{.Chart.Name}}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12}}
-          image: "{{.Values.image.repository}}:{{.Values.image.tag | default .Chart.AppVersion}}"
-          imagePullPolicy: {{.Values.image.pullPolicy}}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: LOG_LEVEL
+              value: {{ .Values.env.LOG_LEVEL | quote }}
+            - name: SERVICE_PORT
+              value: {{ .Values.env.SERVICE_PORT | quote }}
+            - name: GROK_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.GROK_SECRET_NAME }}
+                  key: {{ .Values.env.GROK_SECRET_KEY }}
           ports:
             - name: http
-              containerPort: {{.Values.service.port}}
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
-          env:
-            {{- range .Values.env}}
-            - name: {{.name}}
-              {{- if .value}}
-              value: {{.value | quote}}
-              {{- end}}
-              {{- if .valueFrom}}
-              valueFrom:
-                {{- toYaml .valueFrom | nindent 16}}
-              {{- end}}
-            {{- end}}
           livenessProbe:
             httpGet:
               path: /health
@@ -68,16 +60,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
-            {{- toYaml .Values.resources | nindent 12}}
-      {{- with .Values.nodeSelector}}
-      nodeSelector:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
-      {{- with .Values.affinity}}
-      affinity:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
-      {{- with .Values.tolerations}}
-      tolerations:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext: {}
+      securityContext: {}
+      serviceAccountName: {{ include "whis-logic.serviceAccountName" . }}

@@ -1,60 +1,47 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{include "whis-sanitize.fullname" .}}
+  name: {{ include "whis-sanitize.fullname" . }}
+  namespace: {{ .Release.Namespace }}
   labels:
-    {{- include "whis-sanitize.labels" . | nindent 4}}
+    app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
+    helm.sh/chart: {{ include "whis-sanitize.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    argocd.argoproj.io/tracking-id: {{ .Release.Name }}:apps/Deployment:{{ .Release.Namespace }}/{{ include "whis-sanitize.fullname" . }}
 spec:
-  {{- if not .Values.autoscaling.enabled}}
-  replicas: {{.Values.replicaCount}}
-  {{- end}}
+  replicas: {{ .Values.replicaCount }}
+  revisionHistoryLimit: 3
+  progressDeadlineSeconds: 600
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
   strategy:
     type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
-  progressDeadlineSeconds: 600
-  revisionHistoryLimit: 3
-  selector:
-    matchLabels:
-      {{- include "whis-sanitize.selectorLabels" . | nindent 6}}
   template:
     metadata:
-      {{- with .Values.podAnnotations}}
-      annotations:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
       labels:
-        {{- include "whis-sanitize.selectorLabels" . | nindent 8}}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
     spec:
-      {{- with .Values.imagePullSecrets}}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
-      serviceAccountName: {{include "whis-sanitize.serviceAccountName" .}}
-      securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8}}
       containers:
-        - name: {{.Chart.Name}}
-          securityContext:
-            {{- toYaml .Values.securityContext | nindent 12}}
-          image: "{{.Values.image.repository}}:{{.Values.image.tag | default .Chart.AppVersion}}"
-          imagePullPolicy: {{.Values.image.pullPolicy}}
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: LOG_LEVEL
+              value: {{ .Values.env.LOG_LEVEL | quote }}
+            - name: SERVICE_PORT
+              value: {{ .Values.env.SERVICE_PORT | quote }}
           ports:
             - name: http
-              containerPort: {{.Values.service.port}}
+              containerPort: {{ .Values.service.port }}
               protocol: TCP
-          env:
-            {{- range .Values.env}}
-            - name: {{.name}}
-              {{- if .value}}
-              value: {{.value | quote}}
-              {{- end}}
-              {{- if .valueFrom}}
-              valueFrom:
-                {{- toYaml .valueFrom | nindent 16}}
-              {{- end}}
-            {{- end}}
           livenessProbe:
             httpGet:
               path: /health
@@ -68,16 +55,7 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
-            {{- toYaml .Values.resources | nindent 12}}
-      {{- with .Values.nodeSelector}}
-      nodeSelector:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
-      {{- with .Values.affinity}}
-      affinity:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
-      {{- with .Values.tolerations}}
-      tolerations:
-        {{- toYaml . | nindent 8}}
-      {{- end}}
+            {{- toYaml .Values.resources | nindent 12 }}
+          securityContext: {}
+      securityContext: {}
+      serviceAccountName: {{ include "whis-sanitize.serviceAccountName" . }}
