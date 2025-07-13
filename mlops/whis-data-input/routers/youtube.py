@@ -103,7 +103,7 @@ async def download_youtube_transcript(request: YouTubeRequest):
             },
         }
 
-        # TODO: Send to whis_sanitize service
+        # TODO: Send to whis-sanitize service
         return {
             "message": "YouTube transcript downloaded successfully",
             "video_id": video_id,

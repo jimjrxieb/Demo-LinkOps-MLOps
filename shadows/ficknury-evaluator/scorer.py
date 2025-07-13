@@ -57,7 +57,7 @@ class TaskScorer:
                 "endpoint": "http://igris_logic:8009",
                 "health_endpoint": "/health",
             },
-            "katie_logic": {
+            "katie-logic": {
                 "name": "Katie Logic",
                 "description": "Kubernetes operations logic source",
                 "capabilities": [
@@ -67,7 +67,7 @@ class TaskScorer:
                     "log_analysis",
                     "k8gpt_integration",
                 ],
-                "endpoint": "http://katie_logic:8008",
+                "endpoint": "http://katie-logic:8008",
                 "health_endpoint": "/health",
             },
             "james_logic": {
@@ -82,7 +82,7 @@ class TaskScorer:
                 "endpoint": "http://james_logic:8006",
                 "health_endpoint": "/health",
             },
-            "whis_logic": {
+            "whis-logic": {
                 "name": "Whis Logic",
                 "description": "ML training and enhancement logic source",
                 "capabilities": [
@@ -91,7 +91,7 @@ class TaskScorer:
                     "agent_enhancement",
                     "training_management",
                 ],
-                "endpoint": "http://whis_logic:8003",
+                "endpoint": "http://whis-logic:8003",
                 "health_endpoint": "/health",
             },
         }
@@ -211,17 +211,17 @@ class TaskScorer:
         """Calculate score based on task type and logic source specialization"""
         type_mappings = {
             "infrastructure": ["igris_logic"],
-            "kubernetes": ["katie_logic"],
+            "kubernetes": ["katie-logic"],
             "assistant": ["james_logic"],
-            "ml_training": ["whis_logic"],
+            "ml_training": ["whis-logic"],
             "security": ["igris_logic"],
             "platform": ["igris_logic"],
             "voice": ["james_logic"],
             "image": ["james_logic"],
-            "enhancement": ["whis_logic"],
-            "deployment": ["katie_logic"],
-            "scaling": ["katie_logic"],
-            "analysis": ["igris_logic", "katie_logic"],
+            "enhancement": ["whis-logic"],
+            "deployment": ["katie-logic"],
+            "scaling": ["katie-logic"],
+            "analysis": ["igris_logic", "katie-logic"],
         }
 
         task_type_lower = task_type.lower()
@@ -244,28 +244,28 @@ class TaskScorer:
         """Calculate score based on task priority and logic source priority handling"""
         priority_mappings = {
             "critical": {
-                "whis_logic": 1.0,  # Whis handles critical ML tasks
-                "katie_logic": 0.9,  # Katie handles critical K8s issues
+                "whis-logic": 1.0,  # Whis handles critical ML tasks
+                "katie-logic": 0.9,  # Katie handles critical K8s issues
                 "igris_logic": 0.8,  # Igris handles critical infrastructure
                 "james_logic": 0.7,  # James handles critical assistance
             },
             "high": {
-                "katie_logic": 1.0,  # Katie excels at high-priority K8s ops
+                "katie-logic": 1.0,  # Katie excels at high-priority K8s ops
                 "igris_logic": 0.9,  # Igris handles high-priority infrastructure
-                "whis_logic": 0.8,  # Whis handles high-priority training
+                "whis-logic": 0.8,  # Whis handles high-priority training
                 "james_logic": 0.7,  # James handles high-priority assistance
             },
             "medium": {
                 "james_logic": 1.0,  # James handles medium-priority tasks well
                 "igris_logic": 0.9,  # Igris handles medium infrastructure
-                "katie_logic": 0.8,  # Katie handles medium K8s tasks
-                "whis_logic": 0.7,  # Whis handles medium training
+                "katie-logic": 0.8,  # Katie handles medium K8s tasks
+                "whis-logic": 0.7,  # Whis handles medium training
             },
             "low": {
                 "james_logic": 1.0,  # James handles low-priority tasks
-                "whis_logic": 0.9,  # Whis can handle low-priority training
+                "whis-logic": 0.9,  # Whis can handle low-priority training
                 "igris_logic": 0.8,  # Igris handles low infrastructure
-                "katie_logic": 0.7,  # Katie handles low K8s tasks
+                "katie-logic": 0.7,  # Katie handles low K8s tasks
             },
         }
 

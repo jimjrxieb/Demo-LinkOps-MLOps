@@ -38,9 +38,9 @@ depends_on:
 
 **Fixed:** Removed all references to deleted services:
 
-- ❌ `james_logic` (deleted)
-- ❌ `igris_logic` (deleted)
-- ❌ `katie_logic` (deleted)
+- ❌ `james-logic` (deleted)
+- ❌ `igris-logic` (deleted)
+- ❌ `katie-logic` (deleted)
 - ❌ `backend` service (replaced with `mlops_platform`)
 
 ### ❌ **Problem 4: Missing Networks**
@@ -94,10 +94,10 @@ sleep 30
 docker-compose up -d mlops_platform
 
 # Start all MLOps services
-docker-compose up -d whis_data_input whis_sanitize whis_smithing whis_enhance whis_logic whis_webscraper audit_assess audit_migrate mlops_utils
+docker-compose up -d whis-data-input whis-sanitize whis-smithing whis-enhance whis-logic whis-webscraper audit-assess audit-migrate mlops-utils
 
 # Start Shadow Agents
-docker-compose up -d jimmie_logic ficknury_evaluator audit_logic auditguard_logic kubernetes_specialist ml_data_scientist platform_engineer devops_engineer
+docker-compose up -d jimmie_logic ficknury-evaluator audit_logic auditguard_logic kubernetes_specialist ml_data_scientist platform_engineer devops_engineer
 
 # Start Frontend
 docker-compose up -d frontend
@@ -117,20 +117,20 @@ docker-compose up -d frontend
 ### **MLOps Services:**
 
 - `mlops_platform` (Main API) - Port 8000
-- `whis_data_input` - Port 8001
-- `whis_sanitize` - Port 8002
-- `whis_smithing` - Port 8003
-- `whis_enhance` - Port 8004
-- `whis_logic` - Port 8005
-- `whis_webscraper` - Port 8006
-- `audit_assess` - Port 8007
-- `audit_migrate` - Port 8008
-- `mlops_utils` - Port 8009
+- `whis-data-input` - Port 8001
+- `whis-sanitize` - Port 8002
+- `whis-smithing` - Port 8003
+- `whis-enhance` - Port 8004
+- `whis-logic` - Port 8005
+- `whis-webscraper` - Port 8006
+- `audit-assess` - Port 8007
+- `audit-migrate` - Port 8008
+- `mlops-utils` - Port 8009
 
 ### **Shadow Agents:**
 
 - `jimmie_logic` - Port 8010
-- `ficknury_evaluator` - Port 8011
+- `ficknury-evaluator` - Port 8011
 - `audit_logic` - Port 8012
 - `auditguard_logic` - Port 8013
 - `kubernetes_specialist` - Port 8014
@@ -168,7 +168,7 @@ docker-compose logs -f mlops_platform
 docker-compose logs -f
 
 # Restart a service
-docker-compose restart whis_smithing
+docker-compose restart whis-smithing
 
 # Stop all services
 docker-compose down
@@ -180,7 +180,7 @@ docker-compose down -v
 docker-compose up -d --build mlops_platform
 
 # Scale a service
-docker-compose up -d --scale whis_data_input=2
+docker-compose up -d --scale whis-data-input=2
 ```
 
 ---

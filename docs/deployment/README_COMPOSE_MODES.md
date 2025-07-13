@@ -7,8 +7,8 @@
 - **Purpose:** Run only the pipeline up to data collection and sanitation.
 - **Services:**
   - `db` (PostgreSQL)
-  - `whis_data_input` (task input, GUI/API)
-  - `whis_sanitize` (sanitization, redaction)
+  - `whis-data-input` (task input, GUI/API)
+  - `whis-sanitize` (sanitization, redaction)
 - **Volumes:**
   - `pgdata` (database)
   - `sanitized_data` (sanitized JSON output)
@@ -21,8 +21,8 @@ docker-compose -f docker-compose.daytime.yml up -d
 
 **What happens:**
 
-- Accepts task inputs via `whis_data_input`
-- Passes them to `whis_sanitize`
+- Accepts task inputs via `whis-data-input`
+- Passes them to `whis-sanitize`
 - Writes sanitized JSON into the shared volume or data lake
 - Database is shared and preloaded
 

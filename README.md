@@ -115,7 +115,7 @@ helm/
 ### Kubernetes Metadata Compliance
 All Helm templates use DNS-1123 compliant names with dashes instead of underscores:
 - ✅ `whis-data-input` (correct)
-- ❌ `whis_data_input` (incorrect)
+- ❌ `whis-data-input` (incorrect)
 
 ## 🔧 Configuration
 
@@ -188,7 +188,7 @@ LOG_LEVEL=DEBUG
 ### Local Testing
 ```bash
 # Run service tests
-cd mlops/whis_data_input && python -m pytest
+cd mlops/whis-data-input && python -m pytest
 
 # Frontend tests
 cd frontend && npm test

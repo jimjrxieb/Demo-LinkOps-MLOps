@@ -62,7 +62,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `GET /manual/pending-tasks` - List pending tasks
   - `GET /manual/training-stats` - Training statistics
 
-### 3. **Whis Data Input** (`whis_data_input`)
+### 3. **Whis Data Input** (`whis-data-input`)
 
 - **Port**: 8004
 - **Purpose**: Learning queue management and task ingestion
@@ -72,7 +72,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
   - `POST /learn` - Add tasks to learning queue
   - `GET /health` - Health check
 
-### 4. **Whis Sanitize** (`whis_sanitize`)
+### 4. **Whis Sanitize** (`whis-sanitize`)
 
 - **Port**: 8003
 - **Purpose**: Task input sanitization and cleaning
@@ -110,7 +110,7 @@ The LinkOps Complete Learning Pipeline is a sophisticated AI-powered task routin
 
 ```csv
 task_id,title,description,tools_used,commands,solution_summary,status,tags,confidence,agent,created_at,completed_at
-TASK-001,Deploy Helm Chart,Deploy app using Helm,helm kubectl,helm install myapp,Successfully deployed,completed,kubernetes,0.95,katie_logic,2024-01-15T10:30:00,2024-01-15T11:15:00
+TASK-001,Deploy Helm Chart,Deploy app using Helm,helm kubectl,helm install myapp,Successfully deployed,completed,kubernetes,0.95,katie-logic,2024-01-15T10:30:00,2024-01-15T11:15:00
 ```
 
 ### ORB (Orbital Knowledge Base)
@@ -215,7 +215,7 @@ print(f"Generated {result['orbs_generated']} ORBs and {result['runes_generated']
 
 ```python
 enhancement_request = {
-    "agent_id": "katie_logic",
+    "agent_id": "katie-logic",
     "agent_type": "kubernetes",
     "current_capabilities": ["helm_deploy"],
     "target_improvements": ["security", "monitoring"],
@@ -264,7 +264,7 @@ curl -X POST http://localhost:8005/generate-orbs
 # Test agent enhancement
 curl -X POST http://localhost:8006/enhance-agent \
   -H "Content-Type: application/json" \
-  -d '{"agent_id":"katie_logic","agent_type":"kubernetes","current_capabilities":[],"target_improvements":["security"]}'
+  -d '{"agent_id":"katie-logic","agent_type":"kubernetes","current_capabilities":[],"target_improvements":["security"]}'
 ```
 
 ## 📈 Monitoring & Metrics
@@ -281,7 +281,7 @@ curl -X POST http://localhost:8006/enhance-agent \
 
 ```bash
 # Check all services
-for service in ficknury james whis_data whis_sanitize whis_smithing whis_enhance; do
+for service in ficknury james whis_data whis-sanitize whis_smithing whis_enhance; do
   curl http://localhost:800$(echo $service | grep -o '[0-9]')/health
 done
 ```
@@ -333,7 +333,7 @@ docker-compose up -d
 helmfile apply
 
 # Or install individually
-helm install whis-logic ./helm/whis_logic --namespace linkops
+helm install whis-logic ./helm/whis-logic --namespace linkops
 helm install whis-smithing ./helm/whis_smithing --namespace linkops
 helm install whis-enhance ./helm/whis_enhance --namespace linkops
 ```

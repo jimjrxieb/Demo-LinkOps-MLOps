@@ -16,16 +16,16 @@ Your agents aren't backend code — they're **summoned shadows**:
 
 ```
 shadows/
-├── whis_logic/          # 🧠 Rune Forger & Shadow Brain
+├── whis-logic/          # 🧠 Rune Forger & Shadow Brain
 ├── igris_logic/         # 🏗️ Platform Guardian
-├── katie_logic/         # ⚓ Kubernetes Sentinel
+├── katie-logic/         # ⚓ Kubernetes Sentinel
 ├── ficknury_deploy/     # 🎯 Task Evaluator
 ├── james_logic/         # 🤖 Voice of the Monarch
-├── whis_smithing/       # ⚒️ Rune Crafter
+├── whis-smithing/       # ⚒️ Rune Crafter
 ├── whis_enhance/        # 🚀 Agent Enhancement
-├── whis_data_input/     # 📊 Information Gatherer
-├── whis_sanitize/       # 🧹 Data Purifier
-├── whis_webscraper/     # 🕷️ Data Hunter
+├── whis-data-input/     # 📊 Information Gatherer
+├── whis-sanitize/       # 🧹 Data Purifier
+├── whis-webscraper/     # 🕷️ Data Hunter
 └── auditguard/          # 🛡️ Compliance Warden
 ```
 
@@ -43,9 +43,9 @@ docker-compose up -d
 
 # Or summon individual shadows
 docker-compose up james_logic
-docker-compose up whis_logic
+docker-compose up whis-logic
 docker-compose up igris_logic
-docker-compose up katie_logic
+docker-compose up katie-logic
 docker-compose up ficknury_deploy
 ```
 
@@ -169,7 +169,7 @@ pytest tests/
 
 # Test specific shadow
 pytest tests/test_james_logic.py
-pytest tests/test_whis_logic.py
+pytest tests/test_whis-logic.py
 pytest tests/test_igris_logic.py
 ```
 

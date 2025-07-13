@@ -1,6 +1,6 @@
-# whis_data_input
+# whis-data-input
 
-This is the whis_data_input microservice in the LinkOps MLOps platform.
+This is the whis-data-input microservice in the LinkOps MLOps platform.
 
 ## Responsibilities
 

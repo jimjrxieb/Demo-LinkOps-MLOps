@@ -116,7 +116,7 @@ async def upload_chatgpt_csv(
             },
         )
 
-        # TODO: Send processed conversations to whis_sanitize service
+        # TODO: Send processed conversations to whis-sanitize service
         return {
             "message": "CSV uploaded and processed successfully",
             "result": result,

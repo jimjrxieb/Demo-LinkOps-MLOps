@@ -26,13 +26,13 @@
    - `helm/demo-stack/values.yaml` contains only core service configurations
 
 ### Removed Services (Already Clean):
-- ❌ `whis_smithing` - Not present
+- ❌ `whis-smithing` - Not present
 - ❌ `whis_enhance` - Not present  
-- ❌ `whis_webscraper` - Not present
+- ❌ `whis-webscraper` - Not present
 - ❌ `ficknury_deploy` - Not present
 - ❌ `auditguard` - Not present
 - ❌ `igris_logic` - Not present
-- ❌ `katie_logic` - Not present
+- ❌ `katie-logic` - Not present
 - ❌ `james_logic` - Not present
 
 ### Core Services (Kept):

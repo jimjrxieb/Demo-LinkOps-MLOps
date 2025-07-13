@@ -72,7 +72,7 @@ class SanitizeResponse(BaseModel):
 @app.get("/")
 async def root():
     return {
-        "service": "whis_sanitize",
+        "service": "whis-sanitize",
         "status": "healthy",
         "version": "1.0.0",
         "description": "Cleans, structures, and tags data like a pro data scientist",
@@ -83,7 +83,7 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
-        "service": "whis_sanitize",
+        "service": "whis-sanitize",
         "timestamp": datetime.utcnow().isoformat(),
     }
 
@@ -185,7 +185,7 @@ async def get_sanitization_stats():
     Get sanitization service statistics.
     """
     return {
-        "service": "whis_sanitize",
+        "service": "whis-sanitize",
         "total_processed": 0,  # TODO: Implement actual stats
         "success_rate": 0.0,
         "average_processing_time": 0.0,

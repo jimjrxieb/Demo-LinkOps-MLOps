@@ -87,7 +87,7 @@ class WhisSanitizer:
         Main sanitization pipeline.
 
         Args:
-            raw_data: Raw input data from whis_data_input
+            raw_data: Raw input data from whis-data-input
 
         Returns:
             Sanitized and structured data
@@ -286,8 +286,8 @@ class WhisSanitizer:
             structured.update(self._structure_qna(content))
         elif data_type == "youtube_transcript":
             structured.update(self._structure_transcript(content))
-        elif data_type == "info_dump":
-            structured.update(self._structure_info_dump(content))
+        elif data_type == "info-dump":
+            structured.update(self._structure_info-dump(content))
 
         return structured
 
@@ -369,7 +369,7 @@ class WhisSanitizer:
             "paragraph_count": len(content.split("\n\n")),
         }
 
-    def _structure_info_dump(self, content: str) -> dict[str, Any]:
+    def _structure_info-dump(self, content: str) -> dict[str, Any]:
         """Structure info dump data."""
         return {
             "dump_type": "information_dump",
@@ -385,7 +385,7 @@ class WhisSanitizer:
         return {
             "processing_id": processing_id,
             "original_timestamp": raw_data.get("timestamp"),
-            "source_service": "whis_sanitize",
+            "source_service": "whis-sanitize",
             "processing_version": "1.0.0",
             "sanitization_rules_applied": list(self.pii_patterns.keys()),
             "format_detection_used": True,

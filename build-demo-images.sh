@@ -33,17 +33,17 @@ echo -e "${YELLOW}🔨 Building demo images with tag: ${IMAGE_TAG}${NC}"
 
 # Whis Data Input
 echo -e "${BLUE}📦 Building demo-whis-data-input...${NC}"
-docker build -t demo-whis-data-input:${IMAGE_TAG} ./mlops/whis_data_input/
+docker build -t demo-whis-data-input:${IMAGE_TAG} ./mlops/whis-data-input/
 echo -e "${GREEN}✅ Built demo-whis-data-input:${IMAGE_TAG}${NC}"
 
 # Whis Sanitize
 echo -e "${BLUE}📦 Building demo-whis-sanitize...${NC}"
-docker build -t demo-whis-sanitize:${IMAGE_TAG} ./mlops/whis_sanitize/
+docker build -t demo-whis-sanitize:${IMAGE_TAG} ./mlops/whis-sanitize/
 echo -e "${GREEN}✅ Built demo-whis-sanitize:${IMAGE_TAG}${NC}"
 
 # Whis Logic
 echo -e "${BLUE}📦 Building demo-whis-logic...${NC}"
-docker build -t demo-whis-logic:${IMAGE_TAG} ./mlops/whis_logic/
+docker build -t demo-whis-logic:${IMAGE_TAG} ./mlops/whis-logic/
 echo -e "${GREEN}✅ Built demo-whis-logic:${IMAGE_TAG}${NC}"
 
 # Frontend

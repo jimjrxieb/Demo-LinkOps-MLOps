@@ -8,32 +8,32 @@ Successfully refactored the LinkOps-MLOps monorepo into a fully microservice-nat
 
 ### **1. Service Renaming**
 
-- `shadows/data_collector/` → `shadows/whis_data_input/`
-- `shadows/sanitizer/` → `shadows/whis_sanitize/`
+- `shadows/data_collector/` → `shadows/whis-data-input/`
+- `shadows/sanitizer/` → `shadows/whis-sanitize/`
 
 ### **2. New Whis Microservices Created**
 
-- `shadows/whis_smithing/` - Rune/orb generation, merging, recurrence
+- `shadows/whis-smithing/` - Rune/orb generation, merging, recurrence
 - `shadows/whis_enhance/` - Agent training, updates, approvals
 
 ### **3. Service Architecture**
 
 ```
 LinkOps-MLOps/shadows/
-├── whis_data_input/     # 📥 Data collection (GUI/API input)
+├── whis-data-input/     # 📥 Data collection (GUI/API input)
 │   ├── main.py          # FastAPI app
 │   ├── requirements.txt # Dependencies
 │   ├── Dockerfile       # Container config
 │   └── routes/          # API endpoints
 │
-├── whis_sanitize/       # 🧹 Data sanitization & redaction
+├── whis-sanitize/       # 🧹 Data sanitization & redaction
 │   ├── main.py          # FastAPI app
 │   ├── requirements.txt # Dependencies
 │   ├── Dockerfile       # Container config
 │   ├── data_lake/       # Sanitized data storage
 │   └── routes/          # API endpoints
 │
-├── whis_smithing/       # 🔨 Rune/orb generation & merging
+├── whis-smithing/       # 🔨 Rune/orb generation & merging
 │   ├── main.py          # FastAPI app
 │   ├── requirements.txt # Dependencies
 │   ├── Dockerfile       # Container config
@@ -56,10 +56,10 @@ LinkOps-MLOps/shadows/
 
 ### **Port Assignments**
 
-- `whis_data_input`: 8001
-- `whis_sanitize`: 8002
+- `whis-data-input`: 8001
+- `whis-sanitize`: 8002
 - `whis`: 8003 (legacy)
-- `whis_smithing`: 8004
+- `whis-smithing`: 8004
 - `whis_enhance`: 8005
 - `james`: 8006
 - `auditguard`: 8007
@@ -71,7 +71,7 @@ LinkOps-MLOps/shadows/
 ### **Service Dependencies**
 
 ```
-whis_data_input → whis_sanitize → whis_smithing → whis_enhance
+whis-data-input → whis-sanitize → whis-smithing → whis_enhance
 ```
 
 ## 🔧 **Updated Files**
@@ -85,25 +85,25 @@ whis_data_input → whis_sanitize → whis_smithing → whis_enhance
 
 - ✅ `tools/health_check.py` - Updated service URLs
 - ✅ `test_data_collector_sanitizer_whis_flow.py` - Updated test flow
-- ✅ `shadows/whis_data_input/routes/collect.py` - Updated sanitizer URL
+- ✅ `shadows/whis-data-input/routes/collect.py` - Updated sanitizer URL
 
 ## 🚀 **Service Responsibilities**
 
-### **whis_data_input** (formerly data_collector)
+### **whis-data-input** (formerly data_collector)
 
 - Handles GUI/API task input
 - Processes: fix logs, screenshots, Q&A, info dump
 - Input validation and preprocessing
-- Forwards data to whis_sanitize
+- Forwards data to whis-sanitize
 
-### **whis_sanitize** (formerly sanitizer)
+### **whis-sanitize** (formerly sanitizer)
 
 - Handles redaction and placeholder replacement
 - Processes sensitive data sanitization
 - Maintains `data_lake/` folder for sanitized JSONs
-- Forwards data to whis_smithing
+- Forwards data to whis-smithing
 
-### **whis_smithing** (new)
+### **whis-smithing** (new)
 
 - **Rune Generation**: Creates new runes from input data
 - **Rune Merging**: Combines multiple runes into enhanced runes
@@ -142,9 +142,9 @@ docker-compose up -d
 ## 🔄 **Data Flow**
 
 ```
-1. User Input → whis_data_input (8001)
-2. Data Collection → whis_sanitize (8002)
-3. Sanitization → whis_smithing (8004)
+1. User Input → whis-data-input (8001)
+2. Data Collection → whis-sanitize (8002)
+3. Sanitization → whis-smithing (8004)
 4. Rune Generation → whis_enhance (8005)
 5. Agent Training → Complete
 ```

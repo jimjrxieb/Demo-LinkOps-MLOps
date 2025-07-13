@@ -31,8 +31,8 @@ Welcome to the comprehensive documentation for the LinkOps MLOps Platform. This 
 
 #### **Core AI Agents**
 
-- **[Whis WebScraper](shadows/whis_webscraper/README.md)** - Intelligence harvester for Whis training
-- **[Katie Logic](shadows/katie_logic/README.md)** - Kubernetes AI agent and cluster guardian
+- **[Whis WebScraper](shadows/whis-webscraper/README.md)** - Intelligence harvester for Whis training
+- **[Katie Logic](shadows/katie-logic/README.md)** - Kubernetes AI agent and cluster guardian
 - **[James Logic](shadows/james_logic/README.md)** - Personal AI assistant and executive aid
 - **[Igris Logic](shadows/igris_logic/README.md)** - Platform engineering and infrastructure analysis
 
@@ -65,7 +65,7 @@ Welcome to the comprehensive documentation for the LinkOps MLOps Platform. This 
 ### **For Platform Engineers**
 
 1. Read [Igris Deployment Guide](deployment/IGRIS_DEPLOYMENT_READY.md)
-2. Review [Katie Logic Documentation](shadows/katie_logic/README.md)
+2. Review [Katie Logic Documentation](shadows/katie-logic/README.md)
 3. Check [Architecture Details](architecture/)
 
 ## 🔍 **Documentation Search**
@@ -74,13 +74,13 @@ Welcome to the comprehensive documentation for the LinkOps MLOps Platform. This 
 
 - **Architecture**: [Data Flow](architecture/DATA_FLOW_DIAGRAM.md), [Training System](architecture/WHIS_TRAINING_SYSTEM.md)
 - **Deployment**: [Setup](deployment/ENVIRONMENT_SETUP.md), [CI/CD](deployment/CI-CD-SETUP.md)
-- **Services**: [Whis](shadows/whis_webscraper/README.md), [Katie](shadows/katie_logic/README.md), [James](shadows/james_logic/README.md)
+- **Services**: [Whis](shadows/whis-webscraper/README.md), [Katie](shadows/katie-logic/README.md), [James](shadows/james_logic/README.md)
 - **Development**: [Frontend](development/README.md), [Database](development/README.md)
 
 ### **By Service**
 
-- **Whis Ecosystem**: [WebScraper](shadows/whis_webscraper/README.md), [Training](architecture/WHIS_TRAINING_SYSTEM.md)
-- **Kubernetes**: [Katie Logic](shadows/katie_logic/README.md)
+- **Whis Ecosystem**: [WebScraper](shadows/whis-webscraper/README.md), [Training](architecture/WHIS_TRAINING_SYSTEM.md)
+- **Kubernetes**: [Katie Logic](shadows/katie-logic/README.md)
 - **Platform Engineering**: [Igris Logic](shadows/igris_logic/README.md)
 - **AI Assistant**: [James Logic](shadows/james_logic/README.md)
 

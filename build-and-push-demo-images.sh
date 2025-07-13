@@ -24,10 +24,10 @@ fi
 # List of services to build
 services=(
     "frontend"
-    "mlops/whis_data_input"
-    "mlops/whis_sanitize" 
-    "mlops/whis_logic"
-    "shadows/ficknury_evaluator"
+    "mlops/whis-data-input"
+    "mlops/whis-sanitize" 
+    "mlops/whis-logic"
+    "shadows/ficknury-evaluator"
 )
 
 success_count=0

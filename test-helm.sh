@@ -24,7 +24,7 @@ fi
 echo -e "${GREEN}✅ Helm is installed${NC}"
 
 # Test individual charts
-CHARTS=("whis_data_input" "whis_sanitize" "whis_logic" "frontend")
+CHARTS=("whis-data-input" "whis-sanitize" "whis-logic" "frontend")
 
 for chart in "${CHARTS[@]}"; do
     echo -e "${YELLOW}🔍 Testing chart: ${chart}${NC}"

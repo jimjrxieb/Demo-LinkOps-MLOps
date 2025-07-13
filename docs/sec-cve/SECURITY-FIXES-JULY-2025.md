@@ -46,12 +46,12 @@ The following services had their requirements.txt files updated:
 - ✅ `backend/requirements.txt`
 - ✅ `shadows/james_logic/requirements.txt`
 - ✅ `shadows/igris_logic/requirements.txt`
-- ✅ `shadows/katie_logic/requirements.txt`
-- ✅ `shadows/whis_logic/requirements.txt`
-- ✅ `shadows/whis_sanitize/requirements.txt`
-- ✅ `shadows/whis_data_input/requirements.txt`
-- ✅ `shadows/whis_webscraper/requirements.txt`
-- ✅ `shadows/whis_smithing/requirements.txt`
+- ✅ `shadows/katie-logic/requirements.txt`
+- ✅ `shadows/whis-logic/requirements.txt`
+- ✅ `shadows/whis-sanitize/requirements.txt`
+- ✅ `shadows/whis-data-input/requirements.txt`
+- ✅ `shadows/whis-webscraper/requirements.txt`
+- ✅ `shadows/whis-smithing/requirements.txt`
 - ✅ `shadows/whis_enhance/requirements.txt`
 - ✅ `shadows/audit_assess/requirements.txt`
 - ✅ `shadows/audit_logic/requirements.txt`
@@ -69,7 +69,7 @@ The following services had their requirements.txt files updated:
 ### 2. Updated pydantic
 
 - Changed from `pydantic==2.5.0` to `pydantic>=2.7.1`
-- Updated `pydantic>=2.0.0` to `pydantic>=2.7.1` in katie_logic
+- Updated `pydantic>=2.0.0` to `pydantic>=2.7.1` in katie-logic
 
 ### 3. Added Security Fixes
 

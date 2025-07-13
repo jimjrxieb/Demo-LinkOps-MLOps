@@ -34,10 +34,10 @@ tag_and_push() {
 }
 
 # Tag and push all services
-tag_and_push "whis_data_input" "whis-data-input" "8001"
-tag_and_push "whis_sanitize" "whis-sanitize" "8002"
-tag_and_push "whis_logic" "whis-logic" "8003"
-tag_and_push "ficknury_evaluator" "ficknury-evaluator" "8004"
+tag_and_push "whis-data-input" "whis-data-input" "8001"
+tag_and_push "whis-sanitize" "whis-sanitize" "8002"
+tag_and_push "whis-logic" "whis-logic" "8003"
+tag_and_push "ficknury-evaluator" "ficknury-evaluator" "8004"
 tag_and_push "mlops_platform" "mlops-platform" "8000"
 tag_and_push "frontend" "frontend" "3000"
 

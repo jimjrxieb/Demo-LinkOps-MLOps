@@ -142,10 +142,10 @@ deploy_all_agents() {
     deploy_agent "igris" "igris_logic" "ghcr.io/shadow-link-industries/igris_logic"
     
     # Deploy Katie Logic
-    deploy_agent "katie" "katie_logic" "ghcr.io/shadow-link-industries/katie_logic"
+    deploy_agent "katie" "katie-logic" "ghcr.io/shadow-link-industries/katie-logic"
     
     # Deploy Whis Logic
-    deploy_agent "whis" "whis_logic" "ghcr.io/shadow-link-industries/whis_logic"
+    deploy_agent "whis" "whis-logic" "ghcr.io/shadow-link-industries/whis-logic"
     
     # Deploy James Logic
     deploy_agent "james" "james_logic" "ghcr.io/shadow-link-industries/james_logic"

@@ -1,6 +1,6 @@
-# whis_logic
+# whis-logic
 
-This is the whis_logic microservice in the LinkOps MLOps platform.
+This is the whis-logic microservice in the LinkOps MLOps platform.
 
 ## Responsibilities
 

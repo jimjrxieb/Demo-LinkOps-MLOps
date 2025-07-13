@@ -115,5 +115,5 @@ class GHAPipelineRune:
 
 # Example usage
 if __name__ == "__main__":
-    rune = GHAPipelineRune("whis_data_input")
+    rune = GHAPipelineRune("whis-data-input")
     rune.save_workflow()

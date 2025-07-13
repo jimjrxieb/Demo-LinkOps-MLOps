@@ -13,15 +13,15 @@ helm/
 │   │   ├── _helpers.tpl
 │   │   └── secret.yaml
 │   └── charts/              # Auto-generated dependencies
-├── whis_data_input/         # Individual service chart
+├── whis-data-input/         # Individual service chart
 │   ├── Chart.yaml
 │   ├── values.yaml
 │   └── templates/
-├── whis_sanitize/           # Individual service chart
+├── whis-sanitize/           # Individual service chart
 │   ├── Chart.yaml
 │   ├── values.yaml
 │   └── templates/
-├── whis_logic/              # Individual service chart
+├── whis-logic/              # Individual service chart
 │   ├── Chart.yaml
 │   ├── values.yaml
 │   └── templates/
@@ -48,20 +48,20 @@ First, build and push your Docker images:
 
 ```bash
 # Build images
-docker build -t linkops/whis_data_input:latest ./mlops/whis_data_input/
-docker build -t linkops/whis_sanitize:latest ./mlops/whis_sanitize/
-docker build -t linkops/whis_logic:latest ./mlops/whis_logic/
+docker build -t linkops/whis-data-input:latest ./mlops/whis-data-input/
+docker build -t linkops/whis-sanitize:latest ./mlops/whis-sanitize/
+docker build -t linkops/whis-logic:latest ./mlops/whis-logic/
 docker build -t linkops/frontend:latest ./frontend/
 
 # Push to your registry (replace with your registry)
-docker tag linkops/whis_data_input:latest your-registry/linkops/whis_data_input:latest
-docker tag linkops/whis_sanitize:latest your-registry/linkops/whis_sanitize:latest
-docker tag linkops/whis_logic:latest your-registry/linkops/whis_logic:latest
+docker tag linkops/whis-data-input:latest your-registry/linkops/whis-data-input:latest
+docker tag linkops/whis-sanitize:latest your-registry/linkops/whis-sanitize:latest
+docker tag linkops/whis-logic:latest your-registry/linkops/whis-logic:latest
 docker tag linkops/frontend:latest your-registry/linkops/frontend:latest
 
-docker push your-registry/linkops/whis_data_input:latest
-docker push your-registry/linkops/whis_sanitize:latest
-docker push your-registry/linkops/whis_logic:latest
+docker push your-registry/linkops/whis-data-input:latest
+docker push your-registry/linkops/whis-sanitize:latest
+docker push your-registry/linkops/whis-logic:latest
 docker push your-registry/linkops/frontend:latest
 ```
 
@@ -70,19 +70,19 @@ docker push your-registry/linkops/frontend:latest
 Update the image repositories in `demo-stack/values.yaml`:
 
 ```yaml
-whis_data_input:
+whis-data-input:
   image:
-    repository: your-registry/linkops/whis_data_input
+    repository: your-registry/linkops/whis-data-input
     tag: "latest"
 
-whis_sanitize:
+whis-sanitize:
   image:
-    repository: your-registry/linkops/whis_sanitize
+    repository: your-registry/linkops/whis-sanitize
     tag: "latest"
 
-whis_logic:
+whis-logic:
   image:
-    repository: your-registry/linkops/whis_logic
+    repository: your-registry/linkops/whis-logic
     tag: "latest"
 
 frontend:
@@ -130,7 +130,7 @@ helm upgrade --install linkops-demo ./helm/demo-stack \
 Each service can be configured via environment variables in the respective `values.yaml`:
 
 ```yaml
-whis_logic:
+whis-logic:
   env:
     - name: LOG_LEVEL
       value: "DEBUG"
@@ -189,7 +189,7 @@ kubectl get ingress -n linkops-demo
 kubectl logs -n linkops-demo -f deployment/linkops-demo-frontend
 
 # Whis Logic logs
-kubectl logs -n linkops-demo -f deployment/linkops-demo-whis_logic
+kubectl logs -n linkops-demo -f deployment/linkops-demo-whis-logic
 
 # All service logs
 kubectl logs -n linkops-demo -l app.kubernetes.io/part-of=linkops-demo
@@ -202,7 +202,7 @@ kubectl logs -n linkops-demo -l app.kubernetes.io/part-of=linkops-demo
 kubectl port-forward -n linkops-demo svc/linkops-demo-frontend 3000:3000
 
 # Whis Logic
-kubectl port-forward -n linkops-demo svc/linkops-demo-whis_logic 8003:8003
+kubectl port-forward -n linkops-demo svc/linkops-demo-whis-logic 8003:8003
 ```
 
 ## 🗑️ Cleanup

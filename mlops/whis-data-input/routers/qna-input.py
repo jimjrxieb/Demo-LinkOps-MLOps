@@ -76,7 +76,7 @@ async def submit_qna(qna: QnAInput):
             "status": "pending_processing",
         }
 
-        # TODO: Send to whis_sanitize service
+        # TODO: Send to whis-sanitize service
         # For now, just return the structured data
         print("QnA input processed.")
         return {
@@ -126,7 +126,7 @@ async def submit_qna_batch(batch: QnABatch):
             batch_data["qna_pairs"].append(qna_data)
             processed_count += 1
 
-        # TODO: Send batch to whis_sanitize service
+        # TODO: Send batch to whis-sanitize service
         return {
             "message": "Batch submitted successfully",
             "batch_id": batch_id,

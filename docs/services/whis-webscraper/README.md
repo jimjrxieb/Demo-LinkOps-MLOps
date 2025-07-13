@@ -1,6 +1,6 @@
 # Whis WebScraper - Intelligence Harvester
 
-Whis WebScraper is the dedicated intelligence harvester for the Whis training ecosystem. It scrapes external sources and agent logs, then sends the data to `whis_sanitize` for processing and training queue integration.
+Whis WebScraper is the dedicated intelligence harvester for the Whis training ecosystem. It scrapes external sources and agent logs, then sends the data to `whis-sanitize` for processing and training queue integration.
 
 ## 🎯 **Purpose**
 
@@ -15,14 +15,14 @@ Whis WebScraper serves as Whis's personal research spider, continuously gatherin
 
 ```
 External Sources ↴
-whis_webscraper/
+whis-webscraper/
 ├── scrape_sources.py      # Web scraping (blogs, GitHub, docs)
 ├── scrape_agent_logs.py   # Agent log intelligence
 ├── send_to_sanitize.py    # Whis sanitize integration
 └── main.py               # FastAPI application
 
 Data Flow:
-Web/Logs → WebScraper → Format → whis_sanitize → Training Queue
+Web/Logs → WebScraper → Format → whis-sanitize → Training Queue
 ```
 
 ## 🚀 **Quick Start**
@@ -31,7 +31,7 @@ Web/Logs → WebScraper → Format → whis_sanitize → Training Queue
 
 ```bash
 # Clone and setup
-cd LinkOps-MLOps/shadows/whis_webscraper
+cd LinkOps-MLOps/shadows/whis-webscraper
 pip install -r requirements.txt
 
 # Run locally
@@ -135,7 +135,7 @@ GET /capabilities
 
 | Variable               | Default                     | Description                    |
 | ---------------------- | --------------------------- | ------------------------------ |
-| `SANITIZE_SERVICE_URL` | `http://whis_sanitize:8003` | Whis sanitize service URL      |
+| `SANITIZE_SERVICE_URL` | `http://whis-sanitize:8003` | Whis sanitize service URL      |
 | `LOGS_BASE_PATH`       | `/app/logs`                 | Base path for agent logs       |
 | `SCRAPE_INTERVAL`      | `3600`                      | Auto-scrape interval (seconds) |
 
@@ -154,9 +154,9 @@ GET /capabilities
 pytest tests/
 
 # Run specific test categories
-pytest tests/test_whis_webscraper.py::TestIntelligenceScraping
-pytest tests/test_whis_webscraper.py::TestWebSourcesScraping
-pytest tests/test_whis_webscraper.py::TestAgentLogScraping
+pytest tests/test_whis-webscraper.py::TestIntelligenceScraping
+pytest tests/test_whis-webscraper.py::TestWebSourcesScraping
+pytest tests/test_whis-webscraper.py::TestAgentLogScraping
 
 # Run with coverage
 pytest --cov=. tests/
@@ -168,7 +168,7 @@ pytest --cov=. tests/
 
 1. **Scrape**: Gather intelligence from multiple sources
 2. **Format**: Standardize data for Whis processing
-3. **Send**: Push to `whis_sanitize` for cleaning
+3. **Send**: Push to `whis-sanitize` for cleaning
 4. **Queue**: Auto-add to Whis training queue
 5. **Reloop**: Re-feed specific findings as needed
 
@@ -232,12 +232,12 @@ results = sanitize_sender.send_batch_to_sanitize(scraped_data)
 ### Docker Compose
 
 ```yaml
-whis_webscraper:
-  build: ./shadows/whis_webscraper
+whis-webscraper:
+  build: ./shadows/whis-webscraper
   ports:
     - "8009:8009"
   environment:
-    - SANITIZE_SERVICE_URL=http://whis_sanitize:8003
+    - SANITIZE_SERVICE_URL=http://whis-sanitize:8003
   volumes:
     - ./logs:/app/logs
 ```

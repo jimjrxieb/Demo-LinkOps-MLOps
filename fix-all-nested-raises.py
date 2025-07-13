@@ -75,14 +75,14 @@ def main():
 
     # List of files that need fixing
     files_to_fix = [
-        "mlops/mlops_platform/routers/rune_executor.py",
-        "mlops/whis_logic/main.py",
-        "mlops/whis_data_input/routers/youtube.py",
-        "mlops/whis_data_input/routers/qna_input.py",
-        "mlops/whis_sanitize/main.py",
-        "mlops/whis_data_input/routers/chatgpt_csv.py",
-        "mlops/whis_data_input/routers/image_text.py",
-        "mlops/whis_data_input/routers/info_dump.py",
+        "mlops/mlops_platform/routers/rune-executor.py",
+        "mlops/whis-logic/main.py",
+        "mlops/whis-data-input/routers/youtube.py",
+        "mlops/whis-data-input/routers/qna-input.py",
+        "mlops/whis-sanitize/main.py",
+        "mlops/whis-data-input/routers/chatgpt-csv.py",
+        "mlops/whis-data-input/routers/image-text.py",
+        "mlops/whis-data-input/routers/info-dump.py",
     ]
 
     fixed_files = 0

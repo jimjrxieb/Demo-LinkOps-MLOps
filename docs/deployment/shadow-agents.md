@@ -12,7 +12,7 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 
 ### Components
 
-- **Logic Sources**: `igris_logic`, `katie_logic`, `whis_logic`, `james_logic`
+- **Logic Sources**: `igris_logic`, `katie-logic`, `whis-logic`, `james_logic`
 - **Agent Registry**: Maps logic sources to agent configurations
 - **Agent Launcher**: Deploys agents using Helm and ArgoCD
 - **Helm Charts**: Kubernetes manifests for each agent
@@ -31,7 +31,7 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 
 - **Role**: Kubernetes AI Agent & Cluster Guardian
 - **Capabilities**: Cluster Management, Resource Scaling, Log Analysis, K8GPT Integration
-- **Helm Chart**: `katie_logic`
+- **Helm Chart**: `katie-logic`
 - **Port**: 8000
 - **Special**: Requires kubeconfig access
 
@@ -39,7 +39,7 @@ Logic Sources → Agent Registry → Agent Launcher → Helm Charts → ArgoCD �
 
 - **Role**: Intelligence Processing & Analysis Agent
 - **Capabilities**: Data Processing, Intelligence Analysis, Pattern Recognition
-- **Helm Chart**: `whis_logic`
+- **Helm Chart**: `whis-logic`
 - **Port**: 8000
 - **Special**: Persistent storage for intelligence data
 
@@ -117,7 +117,7 @@ curl -X POST http://ficknury-deploy:8000/deploy/agent \
 curl -X POST http://ficknury-deploy:8000/deploy/agent \
   -H "Content-Type: application/json" \
   -d '{
-    "logic_source": "katie_logic",
+    "logic_source": "katie-logic",
     "deployment_config": {
       "env": {
         "LOG_LEVEL": "INFO",
@@ -130,7 +130,7 @@ curl -X POST http://ficknury-deploy:8000/deploy/agent \
 curl -X POST http://ficknury-deploy:8000/deploy/agent \
   -H "Content-Type: application/json" \
   -d '{
-    "logic_source": "whis_logic",
+    "logic_source": "whis-logic",
     "deployment_config": {
       "env": {
         "LOG_LEVEL": "INFO",
@@ -173,8 +173,8 @@ kubectl apply -f LinkOps-Manifests/shadows/
 
 # Or apply individually
 kubectl apply -f LinkOps-Manifests/shadows/igris_logic.yaml
-kubectl apply -f LinkOps-Manifests/shadows/katie_logic.yaml
-kubectl apply -f LinkOps-Manifests/shadows/whis_logic.yaml
+kubectl apply -f LinkOps-Manifests/shadows/katie-logic.yaml
+kubectl apply -f LinkOps-Manifests/shadows/whis-logic.yaml
 kubectl apply -f LinkOps-Manifests/shadows/james_logic.yaml
 ```
 
@@ -211,15 +211,15 @@ helm install igris-logic linkops/igris_logic \
   --set image.tag=latest
 
 # Deploy Katie Logic
-helm install katie-logic linkops/katie_logic \
+helm install katie-logic linkops/katie-logic \
   --namespace linkops \
-  --set image.repository=ghcr.io/shadow-link-industries/katie_logic \
+  --set image.repository=ghcr.io/shadow-link-industries/katie-logic \
   --set image.tag=latest
 
 # Deploy Whis Logic
-helm install whis-logic linkops/whis_logic \
+helm install whis-logic linkops/whis-logic \
   --namespace linkops \
-  --set image.repository=ghcr.io/shadow-link-industries/whis_logic \
+  --set image.repository=ghcr.io/shadow-link-industries/whis-logic \
   --set image.tag=latest
 
 # Deploy James Logic

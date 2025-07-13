@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import chatgpt_csv, image_text, info_dump, qna_input, youtube
+from routers import chatgpt_csv, image_text, info-dump, qna_input, youtube
 
 
 def sanitize_cmd(cmd):
@@ -50,14 +50,14 @@ app.add_middleware(
 app.include_router(qna_input.router, prefix="/api/qna", tags=["Q&A Input"])
 app.include_router(chatgpt_csv.router, prefix="/api/csv", tags=["ChatGPT CSV"])
 app.include_router(image_text.router, prefix="/api/image", tags=["Image Text"])
-app.include_router(info_dump.router, prefix="/api/dump", tags=["Info Dump"])
+app.include_router(info-dump.router, prefix="/api/dump", tags=["Info Dump"])
 app.include_router(youtube.router, prefix="/api/youtube", tags=["YouTube"])
 
 
 @app.get("/")
 async def root():
     return {
-        "service": "whis_data_input",
+        "service": "whis-data-input",
         "status": "healthy",
         "version": "1.0.0",
         "description": "Entry point for all user and external data into the Whis pipeline",
@@ -68,7 +68,7 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
-        "service": "whis_data_input",
+        "service": "whis-data-input",
         "timestamp": "2024-01-01T00:00:00Z",
     }
 

@@ -8,7 +8,7 @@ This document outlines the changes made to create the simplified demo version of
 
 - ❌ **whis_smithing** - Orbs & Runes generation (complex logic)
 - ❌ **whis_enhance** - AI-powered content improvement
-- ❌ **whis_webscraper** - Intelligence harvesting
+- ❌ **whis-webscraper** - Intelligence harvesting
 - ❌ **audit_assess** - Security scanning
 - ❌ **audit_migrate** - Migration execution
 - ❌ **mlops_utils** - Shared utilities
@@ -53,9 +53,9 @@ This document outlines the changes made to create the simplified demo version of
 
 - ✅ **frontend** - James GUI focus
 - ✅ **mlops_platform** - Simplified API orchestration
-- ✅ **whis_data_input** - Task input processing
-- ✅ **whis_sanitize** - Task cleaning
-- ✅ **whis_logic** - Orb matching logic
+- ✅ **whis-data-input** - Task input processing
+- ✅ **whis-sanitize** - Task cleaning
+- ✅ **whis-logic** - Orb matching logic
 - ✅ **ficknury_evaluator** - Basic evaluation
 - ✅ **postgresql** - Database
 - ✅ **redis** - Caching
@@ -97,7 +97,7 @@ The demo version focuses on a single, clear workflow:
    # Uncomment these services:
    # - whis_smithing
    # - whis_enhance
-   # - whis_webscraper
+   # - whis-webscraper
    # - audit_assess
    # - audit_migrate
    # - mlops_utils

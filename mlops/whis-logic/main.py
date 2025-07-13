@@ -78,7 +78,7 @@ class RecommendationRequest(BaseModel):
 @app.get("/")
 async def root():
     return {
-        "service": "whis_logic",
+        "service": "whis-logic",
         "status": "healthy",
         "version": "1.0.0",
         "description": "Whis's internal ML model brain for embedding generation and similarity search",
@@ -89,7 +89,7 @@ async def root():
 async def health_check():
     return {
         "status": "healthy",
-        "service": "whis_logic",
+        "service": "whis-logic",
         "timestamp": datetime.utcnow().isoformat(),
     }
 
@@ -165,7 +165,7 @@ async def get_logic_stats():
     Get logic service statistics.
     """
     return {
-        "service": "whis_logic",
+        "service": "whis-logic",
         "embeddings_generated": len(logic_engine.embeddings_cache),
         "similarity_threshold": logic_engine.similarity_threshold,
         "supported_content_types": ["text", "code", "yaml", "json"],

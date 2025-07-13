@@ -68,9 +68,9 @@ In July 2025, the LinkOps MLOps platform successfully addressed **4 critical sec
 ```
 ✅ backend/requirements.txt
 ✅ shadows/james_logic/requirements.txt
-✅ shadows/whis_data_input/requirements.txt
-✅ shadows/katie_logic/requirements.txt
-✅ shadows/whis_webscraper/requirements.txt
+✅ shadows/whis-data-input/requirements.txt
+✅ shadows/katie-logic/requirements.txt
+✅ shadows/whis-webscraper/requirements.txt
 ✅ shadows/audit_migrate/requirements.txt
 ```
 

@@ -18,7 +18,7 @@ This checklist ensures all microservices, workflows, and Helm charts are properl
 
 - ✅ **mlops_platform** - FastAPI with task/orb/rune management
 - ✅ **audit_assess** - FastAPI with repository scanning
-- ✅ **whis_data_input** - FastAPI with data collection
+- ✅ **whis-data-input** - FastAPI with data collection
 - ✅ **whis_enhance** - FastAPI with content enhancement
 - ✅ **frontend** - Vue.js 3 with Tailwind CSS
 

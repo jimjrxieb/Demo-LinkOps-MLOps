@@ -113,7 +113,7 @@ async def extract_text_from_image(
             "metadata": result.metadata,
         }
 
-        # TODO: Send to whis_sanitize service
+        # TODO: Send to whis-sanitize service
         return {
             "message": "Text extracted successfully",
             "result": result,

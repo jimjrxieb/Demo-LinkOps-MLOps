@@ -179,7 +179,7 @@ def determine_agent_and_status(task: Task, confidence: float) -> tuple[str, str,
             keyword in task.description.lower()
             for keyword in ["helm", "kubernetes", "k8s", "deployment"]
         ):
-            return "katie_logic", "assigned", "High confidence Kubernetes/Helm task"
+            return "katie-logic", "assigned", "High confidence Kubernetes/Helm task"
         elif any(
             keyword in task.description.lower()
             for keyword in ["aws", "azure", "gcp", "cloud", "infrastructure"]
@@ -195,19 +195,19 @@ def determine_agent_and_status(task: Task, confidence: float) -> tuple[str, str,
         ):
             return "audit_logic", "assigned", "High confidence security/audit task"
         else:
-            return "whis_logic", "assigned", "High confidence general task"
+            return "whis-logic", "assigned", "High confidence general task"
 
     elif confidence >= 0.7:
         # Send to Whis for learning and processing
         return (
-            "whis_logic",
+            "whis-logic",
             "learning",
             "Medium confidence - sending to Whis for processing",
         )
 
     elif confidence >= 0.4:
         # Send to data input for training
-        return "whis_data_input", "training", "Low confidence - queued for training"
+        return "whis-data-input", "training", "Low confidence - queued for training"
 
     else:
         # Manual intervention required
@@ -233,21 +233,21 @@ async def route_task(task: Task, evaluation: TaskEvaluation):
     }
 
     # Route based on agent
-    if evaluation.agent == "whis_logic":
+    if evaluation.agent == "whis-logic":
         response = requests.post(
-            "http://whis_logic:8000/process_task", json=task_data, timeout=30
+            "http://whis-logic:8000/process_task", json=task_data, timeout=30
         )
-    elif evaluation.agent == "whis_data_input":
+    elif evaluation.agent == "whis-data-input":
         response = requests.post(
-            "http://whis_data_input:8000/learn", json=task_data, timeout=30
+            "http://whis-data-input:8000/learn", json=task_data, timeout=30
         )
     elif evaluation.agent == "james_logic":
         response = requests.post(
             "http://james_logic:8000/manual-review", json=task_data, timeout=30
         )
-    elif evaluation.agent == "katie_logic":
+    elif evaluation.agent == "katie-logic":
         response = requests.post(
-            "http://katie_logic:8000/kubernetes-task", json=task_data, timeout=30
+            "http://katie-logic:8000/kubernetes-task", json=task_data, timeout=30
         )
     elif evaluation.agent == "igris_logic":
         response = requests.post(
