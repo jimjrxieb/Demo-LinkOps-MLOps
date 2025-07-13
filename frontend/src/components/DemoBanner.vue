@@ -32,7 +32,7 @@ export default {
   computed: {
     isDemoMode() {
       const store = useMainStore();
-      return store.authRole === 'demo' && !this.isDismissed;
+      return store.isAuthenticated === false && !this.isDismissed;
     },
   },
   mounted() {

@@ -128,25 +128,18 @@ export default {
 
         const store = useMainStore();
 
-        // Set authentication role
-        store.setAuthRole(role);
+        // Set authentication status
+        store.setAuthenticationStatus(true);
+        store.setUser(role === 'demo' ? 'Demo User' : 'Administrator');
 
         // Add notification
-        store.addNotification({
-          type: 'success',
-          message: `Welcome! You're now logged in as ${role === 'demo' ? 'Demo User' : 'Administrator'}`,
-          duration: 3000,
-        });
+        store.addNotification(`Welcome! You're now logged in as ${role === 'demo' ? 'Demo User' : 'Administrator'}`, 'success');
 
         // Redirect to dashboard
         this.$router.push('/');
       } catch {
         const store = useMainStore();
-        store.addNotification({
-          type: 'error',
-          message: 'Login failed. Please try again.',
-          duration: 5000,
-        });
+        store.addNotification('Login failed. Please try again.', 'error');
       } finally {
         this.isLoading = false;
       }
