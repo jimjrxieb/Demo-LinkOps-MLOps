@@ -14,7 +14,7 @@ spec:
       maxSurge: 25%
       maxUnavailable: 25%
   progressDeadlineSeconds: 600
-  revisionHistoryLimit: 10
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
       {{- include "frontend.selectorLabels" . | nindent 6}}
