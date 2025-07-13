@@ -1,0 +1,8 @@
+apiVersion: v2
+name: whis-sanitize
+description: Whis Sanitize Service for LinkOps Demo
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+
+
