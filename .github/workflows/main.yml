@@ -282,7 +282,7 @@ jobs:
           find . -name Dockerfile -type f 2>/dev/null || echo "No Dockerfiles found"
           echo ""
           echo "Expected Docker build targets:"
-          for dir in mlops/* shadows/* 2>/dev/null; do
+          for dir in mlops/* shadows/*; do
             if [[ -d "$dir" ]]; then
               if [[ -f "$dir/Dockerfile" ]]; then
                 echo "✅ $dir (has Dockerfile)"
