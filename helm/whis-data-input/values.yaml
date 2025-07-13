@@ -41,10 +41,8 @@ resources:
     memory: 128Mi
 
 env:
-  - name: LOG_LEVEL
-    value: "INFO"
-  - name: SERVICE_PORT
-    value: "8001"
+  LOG_LEVEL: "INFO"
+  SERVICE_PORT: "8001"
 
 nodeSelector: {}
 
