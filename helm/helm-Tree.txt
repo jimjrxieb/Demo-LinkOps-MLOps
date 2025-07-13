@@ -1,0 +1,52 @@
+.
+├── README.md
+├── argocd
+│   └── Application.yaml
+├── demo-stack
+│   ├── Chart.lock
+│   ├── Chart.yaml
+│   ├── charts
+│   │   ├── frontend-0.1.0.tgz
+│   │   ├── whis-data-input-0.1.0.tgz
+│   │   ├── whis-logic-0.1.0.tgz
+│   │   └── whis-sanitize-0.1.0.tgz
+│   ├── templates
+│   │   ├── _helpers.tpl
+│   │   └── secret.yaml
+│   └── values.yaml
+├── frontend
+│   ├── Chart.yaml
+│   ├── templates
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── ingress.yaml
+│   │   ├── service.yaml
+│   │   └── serviceaccount.yaml
+│   └── values.yaml
+├── helm-Tree.txt
+├── whis-data-input
+│   ├── Chart.yaml
+│   ├── templates
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── serviceaccount.yaml
+│   └── values.yaml
+├── whis-logic
+│   ├── Chart.yaml
+│   ├── templates
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── service.yaml
+│   │   └── serviceaccount.yaml
+│   └── values.yaml
+└── whis-sanitize
+    ├── Chart.yaml
+    ├── templates
+    │   ├── _helpers.tpl
+    │   ├── deployment.yaml
+    │   ├── service.yaml
+    │   └── serviceaccount.yaml
+    └── values.yaml
+
+12 directories, 37 files

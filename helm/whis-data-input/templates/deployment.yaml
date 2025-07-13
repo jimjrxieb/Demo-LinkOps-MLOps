@@ -8,6 +8,13 @@ spec:
   {{- if not .Values.autoscaling.enabled}}
   replicas: {{.Values.replicaCount}}
   {{- end}}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+  progressDeadlineSeconds: 600
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       {{- include "whis-data-input.selectorLabels" . | nindent 6}}
