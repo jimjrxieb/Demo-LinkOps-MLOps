@@ -272,6 +272,9 @@ jobs:
           echo "Directory contents:"
           ls -la
           echo ""
+          echo "frontend/ directory contents:"
+          ls -la frontend/ || echo "frontend/ directory not found"
+          echo ""
           echo "mlops/ directory contents:"
           ls -la mlops/ || echo "mlops/ directory not found"
           echo ""
@@ -282,7 +285,7 @@ jobs:
           find . -name Dockerfile -type f 2>/dev/null || echo "No Dockerfiles found"
           echo ""
           echo "Expected Docker build targets:"
-          for dir in mlops/* shadows/*; do
+          for dir in frontend mlops/* shadows/*; do
             if [[ -d "$dir" ]]; then
               if [[ -f "$dir/Dockerfile" ]]; then
                 echo "✅ $dir (has Dockerfile)"
@@ -323,7 +326,7 @@ jobs:
           echo "🔍 Scanning for services with Dockerfiles..."
           
           # First, let's see what we're working with
-          for dir in mlops/* shadows/*; do
+          for dir in frontend mlops/* shadows/*; do
             if [[ -d "$dir" ]]; then
               name=$(basename $dir)
               if [[ -f "$dir/Dockerfile" ]]; then
@@ -349,10 +352,10 @@ jobs:
           fi
           
           # Now build each service
-          for dir in mlops/* shadows/*; do
+          for dir in frontend mlops/* shadows/*; do
             if [[ -d "$dir" ]] && [[ -f "$dir/Dockerfile" ]]; then
               name=$(basename $dir)
-              image_name="linksrobot/$name:latest"
+              image_name="linksrobot/demo-$name:latest"
               
               echo ""
               echo "🔨 Building service: $name"
