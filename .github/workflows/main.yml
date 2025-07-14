@@ -249,7 +249,7 @@ jobs:
 
   docker-build-push:
     runs-on: ubuntu-latest
-    name: "Build + Push Docker Images"
+    name: "Build + Push Demo Docker Images"
     needs:
       [
         lint-python,
@@ -265,33 +265,25 @@ jobs:
 
       - uses: docker/setup-buildx-action@v3
 
-      - name: Debug - List all Dockerfiles
+      - name: Debug - List Demo Services
         run: |
-          echo "🔍 Searching for Dockerfiles..."
+          echo "🔍 Demo Services Check..."
           echo "Current directory: $(pwd)"
-          echo "Directory contents:"
-          ls -la
           echo ""
-          echo "frontend/ directory contents:"
-          ls -la frontend/ || echo "frontend/ directory not found"
+          echo "Demo services to build:"
+          echo "✅ frontend/ (Vue.js frontend)"
+          echo "✅ mlops/mlops-platform/ (Main API orchestration)"
+          echo "✅ mlops/whis-data-input/ (Data input service)"
+          echo "✅ mlops/whis-sanitize/ (Data sanitization service)"
+          echo "✅ mlops/whis-logic/ (ML logic service)"
+          echo "✅ shadows/ficknury-evaluator/ (Task evaluation service)"
           echo ""
-          echo "mlops/ directory contents:"
-          ls -la mlops/ || echo "mlops/ directory not found"
-          echo ""
-          echo "shadows/ directory contents:"
-          ls -la shadows/ || echo "shadows/ directory not found"
-          echo ""
-          echo "All Dockerfiles found:"
-          find . -name Dockerfile -type f 2>/dev/null || echo "No Dockerfiles found"
-          echo ""
-          echo "Expected Docker build targets:"
-          for dir in frontend mlops/* shadows/*; do
-            if [[ -d "$dir" ]]; then
-              if [[ -f "$dir/Dockerfile" ]]; then
-                echo "✅ $dir (has Dockerfile)"
-              else
-                echo "❌ $dir (missing Dockerfile)"
-              fi
+          echo "Checking Dockerfiles exist:"
+          for service in frontend mlops/mlops-platform mlops/whis-data-input mlops/whis-sanitize mlops/whis-logic shadows/ficknury-evaluator; do
+            if [[ -f "$service/Dockerfile" ]]; then
+              echo "✅ $service/Dockerfile exists"
+            else
+              echo "❌ $service/Dockerfile missing"
             fi
           done
 
@@ -315,115 +307,76 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_CRED }}
 
-      - name: Build + Push all services
+      # Build and push each demo service
+      - name: Build + Push Frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: true
+          tags: linksrobot/demo-frontend:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build + Push MLOps Platform
+        uses: docker/build-push-action@v4
+        with:
+          context: ./mlops/mlops-platform
+          push: true
+          tags: linksrobot/demo-mlops-platform:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build + Push Whis Data Input
+        uses: docker/build-push-action@v4
+        with:
+          context: ./mlops/whis-data-input
+          push: true
+          tags: linksrobot/demo-whis-data-input:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build + Push Whis Sanitize
+        uses: docker/build-push-action@v4
+        with:
+          context: ./mlops/whis-sanitize
+          push: true
+          tags: linksrobot/demo-whis-sanitize:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build + Push Whis Logic
+        uses: docker/build-push-action@v4
+        with:
+          context: ./mlops/whis-logic
+          push: true
+          tags: linksrobot/demo-whis-logic:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build + Push Ficknury Evaluator
+        uses: docker/build-push-action@v4
+        with:
+          context: ./shadows/ficknury-evaluator
+          push: true
+          tags: linksrobot/demo-ficknury-evaluator:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Summary
         run: |
-          success_count=0
-          total_count=0
-          failed_services=()
-          skipped_services=()
-
-          echo "🏗️ Starting Docker build and push..."
-          echo "🔍 Scanning for services with Dockerfiles..."
-          
-          # First, let's see what we're working with
-          for dir in frontend mlops/* shadows/*; do
-            if [[ -d "$dir" ]]; then
-              name=$(basename $dir)
-              if [[ -f "$dir/Dockerfile" ]]; then
-                echo "📦 Found service: $name (in $dir)"
-                total_count=$((total_count + 1))
-              else
-                echo "⏭️ Skipping $name (no Dockerfile in $dir)"
-                skipped_services+=("$name")
-              fi
-            fi
-          done
-          
+          echo "🎉 Demo Docker Build Complete!"
+          echo "=================================="
           echo ""
-          echo "📊 Build Summary:"
-          echo "Total services found: $total_count"
-          echo "Services to skip: ${#skipped_services[@]}"
+          echo "✅ Successfully built and pushed:"
+          echo "  - linksrobot/demo-frontend:latest"
+          echo "  - linksrobot/demo-mlops-platform:latest"
+          echo "  - linksrobot/demo-whis-data-input:latest"
+          echo "  - linksrobot/demo-whis-sanitize:latest"
+          echo "  - linksrobot/demo-whis-logic:latest"
+          echo "  - linksrobot/demo-ficknury-evaluator:latest"
           echo ""
-          
-          if [[ $total_count -eq 0 ]]; then
-            echo "❌ No services with Dockerfiles found!"
-            echo "Skipped services: ${skipped_services[*]}"
-            exit 1
-          fi
-          
-          # Now build each service
-          for dir in frontend mlops/* shadows/*; do
-            if [[ -d "$dir" ]] && [[ -f "$dir/Dockerfile" ]]; then
-              name=$(basename $dir)
-              image_name="linksrobot/demo-$name:latest"
-              
-              echo ""
-              echo "🔨 Building service: $name"
-              echo "📁 Directory: $dir"
-              echo "🐳 Image: $image_name"
-              echo "📋 Dockerfile contents:"
-              head -5 "$dir/Dockerfile"
-              echo "..."
-              
-              # Check if requirements.txt exists
-              if [[ -f "$dir/requirements.txt" ]]; then
-                echo "✅ requirements.txt found"
-              else
-                echo "⚠️ No requirements.txt found"
-              fi
-              
-              # Check if main.py exists
-              if [[ -f "$dir/main.py" ]]; then
-                echo "✅ main.py found"
-              else
-                echo "⚠️ No main.py found"
-              fi
-              
-              echo "🚀 Starting build..."
-              if docker build -t "$image_name" "$dir" --progress=plain --no-cache; then
-                echo "✅ Build successful for $name"
-                echo "🚀 Starting push..."
-                if docker push "$image_name"; then
-                  echo "✅ Push successful for $name"
-                  success_count=$((success_count + 1))
-                else
-                  echo "❌ Push failed for $name"
-                  failed_services+=("$name")
-                fi
-              else
-                echo "❌ Build failed for $name"
-                failed_services+=("$name")
-              fi
-            fi
-          done
-
-          echo ""
-          echo "📊 Final Build and Push Summary:"
-          echo "✅ Successful: $success_count/$total_count services"
-          echo "❌ Failed: ${#failed_services[@]} services"
-          echo "⏭️ Skipped: ${#skipped_services[@]} services"
-          
-          if [[ ${#failed_services[@]} -gt 0 ]]; then
-            echo "Failed services:"
-            for service in "${failed_services[@]}"; do
-              echo "  - $service"
-            done
-          fi
-          
-          if [[ ${#skipped_services[@]} -gt 0 ]]; then
-            echo "Skipped services (no Dockerfile):"
-            for service in "${skipped_services[@]}"; do
-              echo "  - $service"
-            done
-          fi
-
-          if [[ $success_count -gt 0 ]] && [[ $((success_count * 10)) -ge $((total_count * 7)) ]]; then
-            echo "✅ Build pipeline successful (≥70% services deployed)"
-          else
-            echo "❌ Build pipeline failed (insufficient successful deployments)"
-            echo "Success rate: $((success_count * 100 / total_count))%"
-            exit 1
-          fi
+          echo "🚀 Ready for deployment on Azure VM!"
+          echo "Run: docker-compose pull && docker-compose up -d"
 
   update-argocd:
     runs-on: ubuntu-latest
