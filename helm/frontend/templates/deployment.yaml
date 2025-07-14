@@ -1,53 +1,52 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "frontend.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{ include "frontend.name" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/version: {{ .Chart.AppVersion }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
-    helm.sh/chart: {{ include "frontend.chart" . }}
   annotations:
-    argocd.argoproj.io/tracking-id: {{ .Release.Name }}:apps/Deployment:{{ .Release.Namespace }}/{{ include "frontend.fullname" . }}
+    argocd.argoproj.io/tracking-id: linkops:apps/Deployment:linkops-demo/linkops-frontend
+  labels:
+    app.kubernetes.io/instance: linkops
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: frontend
+    app.kubernetes.io/version: 1.0.0
+    helm.sh/chart: frontend-0.1.0
+  name: linkops-frontend
+  namespace: linkops-demo
 spec:
-  replicas: {{ .Values.replicaCount }}
-  revisionHistoryLimit: 3
   progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "frontend.name" . }}
-      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/instance: linkops
+      app.kubernetes.io/name: frontend
   strategy:
-    type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "frontend.name" . }}
-        app.kubernetes.io/instance: {{ .Release.Name }}
+        app.kubernetes.io/instance: linkops
+        app.kubernetes.io/name: frontend
     spec:
-      serviceAccountName: {{ include "frontend.serviceAccountName" . }}
       containers:
-        - name: frontend
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
+        - env:
             - name: VITE_API_BASE_URL
-              value: {{ .Values.env.apiBaseUrl | quote }}
-          ports:
-            - name: http
-              containerPort: 3000
-              protocol: TCP
+              value: http://mlops-platform:8000
+          image: linksrobot/demo-frontend:latest
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /
               port: http
             initialDelaySeconds: 30
             periodSeconds: 10
+          name: frontend
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
           readinessProbe:
             httpGet:
               path: /
@@ -55,9 +54,12 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
-            requests:
-              cpu: {{ .Values.resources.requests.cpu }}
-              memory: {{ .Values.resources.requests.memory }}
             limits:
-              cpu: {{ .Values.resources.limits.cpu }}
-              memory: {{ .Values.resources.limits.memory }}
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
+          securityContext: {}
+      securityContext: {}
+      serviceAccountName: linkops-frontend

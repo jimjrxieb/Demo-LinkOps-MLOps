@@ -1,53 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "whis-sanitize.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
-    helm.sh/chart: {{ include "whis-sanitize.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
-    argocd.argoproj.io/tracking-id: {{ .Release.Name }}:apps/Deployment:{{ .Release.Namespace }}/{{ include "whis-sanitize.fullname" . }}
+    argocd.argoproj.io/tracking-id: linkops:apps/Deployment:linkops-demo/linkops-whis-sanitize
+  labels:
+    app.kubernetes.io/instance: linkops
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: whis-sanitize
+    app.kubernetes.io/version: 1.0.0
+    helm.sh/chart: whis-sanitize-0.1.0
+  name: linkops-whis-sanitize
+  namespace: linkops-demo
 spec:
-  replicas: {{ .Values.replicaCount }}
-  revisionHistoryLimit: 3
   progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
+      app.kubernetes.io/instance: linkops
+      app.kubernetes.io/name: whis-sanitize
   strategy:
-    type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/name: {{ include "whis-sanitize.name" . }}
+        app.kubernetes.io/instance: linkops
+        app.kubernetes.io/name: whis-sanitize
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
+        - env:
             - name: LOG_LEVEL
-              value: {{ .Values.env.LOG_LEVEL | quote }}
+              value: INFO
             - name: SERVICE_PORT
-              value: {{ .Values.env.SERVICE_PORT | quote }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+              value: '8002'
+          image: linksrobot/demo-whis-sanitize:latest
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /health
               port: http
             initialDelaySeconds: 30
             periodSeconds: 10
+          name: whis-sanitize
+          ports:
+            - containerPort: 8002
+              name: http
+              protocol: TCP
           readinessProbe:
             httpGet:
               path: /health
@@ -55,7 +56,12 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            limits:
+              cpu: 500m
+              memory: 512Mi
+            requests:
+              cpu: 100m
+              memory: 128Mi
           securityContext: {}
       securityContext: {}
-      serviceAccountName: {{ include "whis-sanitize.serviceAccountName" . }}
+      serviceAccountName: linkops-whis-sanitize

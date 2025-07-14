@@ -1,7 +1,7 @@
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Any, dict, list
+from typing import Any
 
 
 def sanitize_cmd(cmd):

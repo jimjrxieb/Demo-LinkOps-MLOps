@@ -23,8 +23,17 @@ RUN npm run build
 FROM nginx:alpine
 
 COPY --from=builder /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf.template /etc/nginx/conf.d/default.conf.template
+
+# Set default environment variables
+ENV API_HOST=mlops-platform
+ENV API_PORT=8000
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"] 
+# Use a startup script to substitute environment variables
+RUN apk add --no-cache bash
+COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+ENTRYPOINT ["/docker-entrypoint.sh"] 

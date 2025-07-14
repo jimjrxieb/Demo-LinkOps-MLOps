@@ -1,60 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "whis-logic.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app.kubernetes.io/name: {{ include "whis-logic.name" . }}
-    helm.sh/chart: {{ include "whis-logic.chart" . }}
-    app.kubernetes.io/instance: {{ .Release.Name }}
-    app.kubernetes.io/managed-by: {{ .Release.Service }}
   annotations:
-    argocd.argoproj.io/tracking-id: {{ .Release.Name }}:apps/Deployment:{{ .Release.Namespace }}/{{ include "whis-logic.fullname" . }}
+    argocd.argoproj.io/tracking-id: linkops:apps/Deployment:linkops-demo/linkops-whis-logic
+  labels:
+    app.kubernetes.io/instance: linkops
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: whis-logic
+    app.kubernetes.io/version: 1.0.0
+    helm.sh/chart: whis-logic-0.1.0
+  name: linkops-whis-logic
+  namespace: linkops-demo
 spec:
-  replicas: {{ .Values.replicaCount }}
-  revisionHistoryLimit: 3
   progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app.kubernetes.io/instance: {{ .Release.Name }}
-      app.kubernetes.io/name: {{ include "whis-logic.name" . }}
+      app.kubernetes.io/instance: linkops
+      app.kubernetes.io/name: whis-logic
   strategy:
-    type: RollingUpdate
     rollingUpdate:
       maxSurge: 25%
       maxUnavailable: 25%
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        app.kubernetes.io/instance: {{ .Release.Name }}
-        app.kubernetes.io/name: {{ include "whis-logic.name" . }}
+        app.kubernetes.io/instance: linkops
+        app.kubernetes.io/name: whis-logic
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          env:
+        - env:
             - name: LOG_LEVEL
-              value: {{ .Values.env.LOG_LEVEL | quote }}
+              value: INFO
             - name: SERVICE_PORT
-              value: {{ .Values.env.SERVICE_PORT | quote }}
-            {{- if .Values.grokApiKeyEnv.enabled }}
-            - name: GROK_API_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.grokApiKeyEnv.secretName }}
-                  key: {{ .Values.grokApiKeyEnv.secretKey }}
-            {{- end }}
-          ports:
-            - name: http
-              containerPort: {{ .Values.service.port }}
-              protocol: TCP
+              value: '8003'
+          image: linksrobot/demo-whis-logic:latest
+          imagePullPolicy: IfNotPresent
           livenessProbe:
             httpGet:
               path: /health
               port: http
             initialDelaySeconds: 30
             periodSeconds: 10
+          name: whis-logic
+          ports:
+            - containerPort: 8003
+              name: http
+              protocol: TCP
           readinessProbe:
             httpGet:
               path: /health
@@ -62,7 +56,12 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 5
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 200m
+              memory: 256Mi
           securityContext: {}
       securityContext: {}
-      serviceAccountName: {{ include "whis-logic.serviceAccountName" . }}
+      serviceAccountName: linkops-whis-logic

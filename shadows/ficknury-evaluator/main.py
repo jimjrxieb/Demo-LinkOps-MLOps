@@ -1,9 +1,7 @@
-from typing import dict, list
+import shlex
 
 
 def sanitize_cmd(cmd):
-    import shlex
-
     if isinstance(cmd, str):
         cmd = shlex.split(cmd)
     if not isinstance(cmd, list) or not cmd:

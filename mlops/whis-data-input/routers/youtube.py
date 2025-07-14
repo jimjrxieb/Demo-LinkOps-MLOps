@@ -1,7 +1,7 @@
 import re
 import uuid
 from datetime import datetime
-from typing import Any, Optional, dict, list
+from typing import Any, Optional
 
 
 def sanitize_cmd(cmd):

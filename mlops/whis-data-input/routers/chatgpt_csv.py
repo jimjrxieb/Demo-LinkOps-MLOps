@@ -2,7 +2,7 @@ import csv
 import io
 import uuid
 from datetime import datetime
-from typing import Optional, list
+from typing import Optional
 
 
 def sanitize_cmd(cmd):

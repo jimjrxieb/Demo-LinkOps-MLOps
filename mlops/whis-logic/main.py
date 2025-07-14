@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, dict, list
+from typing import Any
 
 
 def sanitize_cmd(cmd):
