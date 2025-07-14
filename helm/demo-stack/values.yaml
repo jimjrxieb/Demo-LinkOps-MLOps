@@ -9,7 +9,7 @@ global:
   fullnameOverride: ""
 
 # Grok API Key for the demo
-grokApiKey: "your-grok-api-key-here"
+# grokApiKey: "your-grok-api-key-here"
 
 # Whis Data Input Service
 whis-data-input:
