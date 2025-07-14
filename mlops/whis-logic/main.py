@@ -77,11 +77,17 @@ class RecommendationRequest(BaseModel):
 
 @app.get("/")
 async def root():
+    import os
+
+    demo_mode = os.getenv("GROK_API_KEY", "") == "demo_mode"
+
     return {
         "service": "whis-logic",
         "status": "healthy",
         "version": "1.0.0",
         "description": "Whis's internal ML model brain for embedding generation and similarity search",
+        "demo_mode": demo_mode,
+        "ai_capabilities": "disabled" if demo_mode else "enabled",
     }
 
 

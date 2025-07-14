@@ -103,6 +103,21 @@
         </div>
       </div>
     </section>
+
+    <!-- Demo Mode Indicator -->
+    <section class="demo-section">
+      <div class="demo-mode-banner">
+        <div class="demo-icon">⚠️</div>
+        <div class="demo-content">
+          <h3>Demo Mode: AI Enhancement Disabled</h3>
+          <p>The Whis pipeline is running in <strong>demo mode</strong>. AI-powered data enhancement features are simulated.</p>
+          <div class="demo-info">
+            <p><strong>What's simulated:</strong> Embedding generation, similarity search, and AI recommendations</p>
+            <p><strong>To enable real AI:</strong> Add your API key to the environment configuration</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 <script>
@@ -502,6 +517,65 @@ export default {
 
   .config-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Demo Mode Banner Styles */
+.demo-section {
+  margin-bottom: 3rem;
+}
+
+.demo-mode-banner {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border: 2px solid #ff8c00;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.demo-icon {
+  font-size: 2rem;
+  min-width: 40px;
+  margin-top: 0.25rem;
+}
+
+.demo-content h3 {
+  margin: 0 0 0.5rem 0;
+  color: #8b4513;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.demo-content p {
+  margin: 0 0 1rem 0;
+  color: #654321;
+  line-height: 1.5;
+}
+
+.demo-info {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #ff8c00;
+}
+
+.demo-info p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #654321;
+}
+
+.demo-info p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .demo-mode-banner {
+    flex-direction: column;
+    text-align: center;
   }
 }
 </style>

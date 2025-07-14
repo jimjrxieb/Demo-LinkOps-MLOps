@@ -89,6 +89,32 @@
       <h2 class="section-title">Find Orbs & Tasks</h2>
       <FicknurySearch @search="handleSearch" />
     </section>
+
+    <!-- Demo Mode Indicator -->
+    <section class="dashboard-section">
+      <div class="demo-mode-banner">
+        <div class="demo-icon">⚠️</div>
+        <div class="demo-content">
+          <h3>Demo Mode Active</h3>
+          <p>You're currently running in <strong>demo mode</strong>. AI model capabilities are disabled.</p>
+          <div class="demo-actions">
+            <input 
+              type="text" 
+              placeholder="Paste your API key (OpenAI, Grok, Claude)" 
+              disabled 
+              class="api-key-input"
+            />
+            <button disabled class="connect-btn">
+              Connect API Key (Disabled in Demo)
+            </button>
+          </div>
+          <div class="demo-info">
+            <p><strong>Supported Models:</strong> Grok (xAI), OpenAI (ChatGPT), Anthropic (Claude)</p>
+            <p><strong>To enable:</strong> Add your API key to the environment and restart the platform</p>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
 </template>
 <script>
@@ -332,6 +358,99 @@ export default {
 
   .action-btn {
     justify-content: center;
+  }
+}
+
+/* Demo Mode Banner Styles */
+.demo-mode-banner {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border: 2px solid #ff8c00;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.demo-icon {
+  font-size: 2rem;
+  min-width: 40px;
+  margin-top: 0.25rem;
+}
+
+.demo-content h3 {
+  margin: 0 0 0.5rem 0;
+  color: #8b4513;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.demo-content p {
+  margin: 0 0 1rem 0;
+  color: #654321;
+  line-height: 1.5;
+}
+
+.demo-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.api-key-input {
+  flex: 1;
+  min-width: 300px;
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f5f5f5;
+  color: #666;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.connect-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #ccc;
+  color: #666;
+  border: none;
+  border-radius: 6px;
+  cursor: not-allowed;
+  font-weight: bold;
+  opacity: 0.6;
+}
+
+.demo-info {
+  background: rgba(255, 255, 255, 0.7);
+  padding: 1rem;
+  border-radius: 8px;
+  border-left: 4px solid #ff8c00;
+}
+
+.demo-info p {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.9rem;
+  color: #654321;
+}
+
+.demo-info p:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .demo-mode-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .demo-actions {
+    flex-direction: column;
+  }
+  
+  .api-key-input {
+    min-width: auto;
   }
 }
 </style>

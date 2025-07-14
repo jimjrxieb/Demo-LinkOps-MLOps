@@ -309,7 +309,8 @@ def fix_hardcoded_tmp_directory(content: str, file_path: Path) -> Tuple[str, int
             # Replace with tempfile.gettempdir() or environment variable
             if "Field(default=" in line:
                 new_line = (
-                    line.replace('"/tmp/', 'os.getenv("TEMP_DIR", "/tmp/') + '"'  # TODO: Use tempfile.gettempdir() or environment variable
+                    line.replace('"/tmp/', 'os.getenv("TEMP_DIR", "/tmp/')
+                    + '"'  # TODO: Use tempfile.gettempdir() or environment variable
                 )  # TODO: Use tempfile.gettempdir() or environment variable  # TODO: Use tempfile.gettempdir() or environment variable  # TODO: Use tempfile.gettempdir() or environment variable
                 if new_line != line:
                     changes_made += 1

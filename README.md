@@ -125,8 +125,14 @@ Copy `env.template` to `.env` and configure:
 # Database
 POSTGRES_PASSWORD=your_secure_password
 
-# API Keys
-GROK_API_KEY=your_grok_api_key
+# Demo Mode Configuration
+DEMO_MODE=true  # Set to false to enable real AI capabilities
+
+# AI Model Configuration (Optional)
+# Uncomment and set one of the following to enable real AI capabilities:
+# GROK_API_KEY=your_grok_api_key_here
+# OPENAI_API_KEY=your_openai_api_key_here
+# ANTHROPIC_API_KEY=your_anthropic_api_key_here
 ```
 
 ### Helm Values
@@ -183,16 +189,76 @@ LOG_LEVEL=DEBUG
 - External access through ingress controllers
 - Database and Redis not exposed externally
 
-## 🧪 Testing
+## 🤖 Demo Mode
 
-### Local Testing
+### What is Demo Mode?
+The DEMO-LinkOps platform runs in **demo mode** by default, which provides a complete simulation of the platform's capabilities without requiring real AI API keys.
+
+### Demo Mode Features
+- ✅ **Full UI Experience** - All interfaces work as expected
+- ✅ **Simulated AI Responses** - Realistic AI-generated content without API calls
+- ✅ **Complete Workflow** - End-to-end task processing simulation
+- ✅ **No API Costs** - Zero external API usage or costs
+- ✅ **Safe for Demos** - No risk of exposing real API keys
+
+### Enabling Real AI Capabilities
+To enable real AI model integration:
+
+#### Option 1: Interactive Configuration Script (Recommended)
 ```bash
-# Run service tests
-cd mlops/whis-data-input && python -m pytest
-
-# Frontend tests
-cd frontend && npm test
+# Run the interactive configuration script
+./configure-ai-mode.sh
 ```
+
+#### Option 2: Manual Configuration
+1. **Set Demo Mode to False**
+   ```bash
+   DEMO_MODE=false
+   ```
+
+2. **Add Your API Key** (choose one):
+   ```bash
+   # For Grok (xAI)
+   GROK_API_KEY=your_grok_api_key_here
+   
+   # For OpenAI (ChatGPT/GPT-4)
+   OPENAI_API_KEY=your_openai_api_key_here
+   
+   # For Anthropic (Claude)
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   ```
+
+3. **Restart the Platform**
+   ```bash
+   docker-compose down
+   docker-compose up --build -d
+   ```
+
+### Supported AI Models
+- **Grok (xAI)** - Advanced reasoning and task analysis
+- **OpenAI (ChatGPT/GPT-4)** - Natural language processing and generation
+- **Anthropic (Claude)** - Safe and helpful AI assistance
+
+### Demo Mode Indicators
+The platform clearly indicates when running in demo mode:
+- ⚠️ **Yellow warning banners** in the UI
+- **"Demo Mode Active"** messages in responses
+- **Disabled API key inputs** (visual only)
+- **Simulated AI responses** with clear labeling
+
+### Checking Demo Status
+Use the status check script to verify your configuration:
+```bash
+./check-demo-status.sh
+```
+
+This script will show:
+- Current demo mode status
+- API key configuration
+- Service health status
+- Recommendations for your setup
+
+## 🧪 Testing
 
 ### Integration Testing
 ```bash
