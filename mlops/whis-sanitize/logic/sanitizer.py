@@ -287,7 +287,7 @@ class WhisSanitizer:
         elif data_type == "youtube_transcript":
             structured.update(self._structure_transcript(content))
         elif data_type == "info-dump":
-            structured.update(self._structure_info-dump(content))
+            structured.update(self._structure_info_dump(content))
 
         return structured
 
@@ -369,7 +369,7 @@ class WhisSanitizer:
             "paragraph_count": len(content.split("\n\n")),
         }
 
-    def _structure_info-dump(self, content: str) -> dict[str, Any]:
+    def _structure_info_dump(self, content: str) -> dict[str, Any]:
         """Structure info dump data."""
         return {
             "dump_type": "information_dump",
