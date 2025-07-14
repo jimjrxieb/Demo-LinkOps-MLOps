@@ -9,7 +9,8 @@ global:
   fullnameOverride: ""
 
 # Grok API Key for the demo
-# grokApiKey: "your-grok-api-key-here"
+# Set this to your actual Grok API key or leave empty to skip secret creation
+grokApiKey: ""
 
 # Whis Data Input Service
 whis-data-input:
@@ -85,11 +86,11 @@ whis-logic:
       value: "INFO"
     - name: SERVICE_PORT
       value: "8003"
-    - name: GROK_API_KEY
-      valueFrom:
-        secretKeyRef:
-          name: grok-api-secret
-          key: api-key
+  # Grok API Key - only set if grokApiKey is provided
+  grokApiKeyEnv:
+    enabled: false
+    secretName: grok-api-secret
+    secretKey: api-key
 
 # Frontend Service
 frontend:

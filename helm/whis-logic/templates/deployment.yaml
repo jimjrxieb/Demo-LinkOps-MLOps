@@ -38,11 +38,13 @@ spec:
               value: {{ .Values.env.LOG_LEVEL | quote }}
             - name: SERVICE_PORT
               value: {{ .Values.env.SERVICE_PORT | quote }}
+            {{- if .Values.grokApiKeyEnv.enabled }}
             - name: GROK_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.env.GROK_SECRET_NAME }}
-                  key: {{ .Values.env.GROK_SECRET_KEY }}
+                  name: {{ .Values.grokApiKeyEnv.secretName }}
+                  key: {{ .Values.grokApiKeyEnv.secretKey }}
+            {{- end }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
