@@ -350,6 +350,113 @@ async def get_recent_orbs():
         ) from e
 
 
+# --- DEMO ORB SEARCH ENDPOINT ---
+
+# Orb Library Mock (temporary for demo)
+orb_library = [
+    {
+        "title": "Kubernetes Pod Creation",
+        "keywords": ["create", "pod", "nginx", "kubectl", "run"],
+        "orb": "To create a pod using nginx: `kubectl run test --image=nginx`",
+        "rune": "R-001",
+        "confidence": 0.95,
+        "category": "Kubernetes",
+        "description": "Standard practice for creating Kubernetes pods with specific images",
+        "tags": ["kubernetes", "pod", "deployment"]
+    },
+    {
+        "title": "Deploy Kubernetes App",
+        "keywords": ["deployment", "kubectl", "k8s", "deploy", "app"],
+        "orb": "Use `kubectl create deployment demo --image=myapp`",
+        "rune": "R-002",
+        "confidence": 0.87,
+        "category": "Kubernetes",
+        "description": "Best practice for deploying applications to Kubernetes",
+        "tags": ["kubernetes", "deployment", "app"]
+    },
+    {
+        "title": "API Security Guidelines",
+        "keywords": ["api", "security", "authentication", "https", "jwt"],
+        "orb": "Implement HTTPS, JWT authentication, input validation, and rate limiting",
+        "rune": "R-003",
+        "confidence": 0.92,
+        "category": "Security",
+        "description": "Security best practices for RESTful API development",
+        "tags": ["api", "security", "authentication"]
+    },
+    {
+        "title": "Database Migration Best Practices",
+        "keywords": ["database", "migration", "backup", "schema", "sql"],
+        "orb": "Always backup before migrations, use version control, test on staging",
+        "rune": "R-004",
+        "confidence": 0.89,
+        "category": "Database",
+        "description": "Safe practices for database schema changes and migrations",
+        "tags": ["database", "migration", "backup"]
+    }
+]
+
+def match_orb(task_input: str):
+    """
+    Match task input against orb library and return best match or generated fallback.
+    """
+    task_lower = task_input.lower()
+    best_match = None
+    highest_score = 0
+
+    for orb in orb_library:
+        score = sum(1 for keyword in orb["keywords"] if keyword in task_lower)
+        if score > highest_score:
+            highest_score = score
+            best_match = orb
+
+    if best_match and highest_score > 0:
+        confidence = round(highest_score / len(best_match["keywords"]) * 100, 1)
+        return {
+            "match": best_match,
+            "confidence": confidence,
+            "generated_orb": None
+        }
+    else:
+        # Fallback: generate Orb (simulated Grok call)
+        generated_orb = {
+            "title": f"Best Practice for: {task_input}",
+            "description": "AI-generated best practice for the submitted task.",
+            "steps": [
+                "Analyze the task requirements",
+                "Identify key components and dependencies", 
+                "Follow industry best practices",
+                "Implement with proper error handling",
+                "Test and validate the solution"
+            ],
+            "model": "Grok API",
+            "confidence": 72,
+            "category": "General",
+            "rune": "N/A"
+        }
+        return {
+            "match": None,
+            "confidence": 72,
+            "generated_orb": generated_orb
+        }
+
+class TaskInput(BaseModel):
+    task: str
+
+@router.post("/demo/search-orb")
+def search_orb(input_data: TaskInput):
+    """
+    Search for matching Orbs in the library or generate a new one.
+    """
+    try:
+        result = match_orb(input_data.task)
+        return result
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Error searching Orbs: {str(e)}"
+        ) from e
+
+
 @router.get("/health")
 async def health_check():
     """

@@ -1,15 +1,55 @@
 <template>
-  ; ; ; ; ; ;
-  <div>
-    ; ; ; ; ; ;
-    <DashboardView />;
+  <div class="holo-app">
+    <!-- Navigation -->
+    <nav class="holo-nav">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <h1 class="brand-text">🛡️ DevSecOps Shadow</h1>
+          <p class="brand-subtitle">Demo Platform</p>
+        </div>
+        <div class="nav-links">
+          <button
+            :class="['nav-link', currentView === 'demo' ? 'active' : '']"
+            @click="currentView = 'demo'"
+          >
+            <span class="nav-icon">🎯</span>
+            Demo Agent
+          </button>
+          <button
+            :class="['nav-link', currentView === 'dashboard' ? 'active' : '']"
+            @click="currentView = 'dashboard'"
+          >
+            <span class="nav-icon">📊</span>
+            Dashboard
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <Demo v-if="currentView === 'demo'" />
+      <DashboardView v-else-if="currentView === 'dashboard'" />
+    </main>
+
+    <!-- Footer -->
+    <footer class="holo-footer">
+      <div class="footer-content">
+        <div class="footer-status">
+          <span>🟢 Demo Mode Active</span>
+        </div>
+        <div>Powered by LinkOps MLOps Platform • Live demo hosted on Azure</div>
+      </div>
+    </footer>
   </div>
-  ;
 </template>
-;
 
 <script setup>
+import { ref } from 'vue';
 import DashboardView from './views/DashboardView.vue';
+import Demo from './views/Demo.vue';
+
+const currentView = ref('demo'); // Start with demo view
 </script>
 ;
 

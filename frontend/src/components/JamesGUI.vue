@@ -1,74 +1,70 @@
 <template>
-  <div class="james-gui">
-    <!-- Demo Banner -->
-    <DemoBanner />
+  <div class="demo-container">
+    <h1 class="text-xl font-bold">🛡️ DevSecOps Shadow – Demo</h1>
 
-    <div class="gui-header">
-      <h2 class="gui-title">🧠 James GUI - Task Processing</h2>
-      <p class="gui-subtitle">Submit tasks and manage Orbs (best practices)</p>
-    </div>
+    <!-- Task Input -->
+    <section class="mt-4">
+      <h2 class="text-lg font-semibold">📝 Task Input</h2>
+      <p class="text-sm text-gray-400 mb-2">
+        Submit a platform, DevOps, or Kubernetes task to test the demo system.
+      </p>
+      <textarea
+        v-model="taskInput"
+        placeholder="e.g., create a pod named test with the image nginx..."
+        class="textarea"
+        rows="4"
+      ></textarea>
+      <button
+        @click="submitTask"
+        :disabled="!taskInput.trim() || processing"
+        class="btn mt-2"
+      >
+        <span v-if="processing" class="loading-spinner"></span>
+        {{ processing ? 'Processing...' : 'Submit Task' }}
+      </button>
+      <button @click="clearTask" class="btn-secondary mt-2 ml-2">Clear</button>
+    </section>
 
-    <!-- Task Input Section -->
-    <div class="task-input-section">
-      <h3 class="section-title">📝 Task Input</h3>
-      <div class="input-container">
-        <textarea
-          v-model="taskInput"
-          placeholder="Enter your task description here... (e.g., 'How do I deploy a Kubernetes application?')"
-          class="task-textarea"
-          rows="4"
-        ></textarea>
-        <div class="input-actions">
-          <button
-            @click="submitTask"
-            :disabled="!taskInput.trim() || processing"
-            class="btn-primary"
-          >
-            <span v-if="processing" class="loading-spinner"></span>
-            {{ processing ? 'Processing...' : 'Submit Task' }}
-          </button>
-          <button @click="clearTask" class="btn-secondary">Clear</button>
-        </div>
-      </div>
-    </div>
+    <!-- Processing Results -->
+    <section class="mt-8">
+      <h2 class="text-lg font-semibold">📊 Processing Results</h2>
 
-    <!-- Results Section -->
-    <div v-if="currentResult" class="results-section">
-      <h3 class="section-title">📊 Processing Results</h3>
-
-      <!-- Search Results -->
-      <div v-if="currentResult.searchResults" class="result-card">
-        <h4>🔍 Orb Library Search</h4>
-        <div
-          v-if="currentResult.searchResults.length > 0"
-          class="search-results"
-        >
-          <div
-            v-for="(orb, index) in currentResult.searchResults"
-            :key="index"
-            class="orb-item"
-          >
-            <h5>{{ orb.title }}</h5>
-            <p>{{ orb.description }}</p>
-            <div class="orb-meta">
-              <span class="meta-tag">Match Score: {{ orb.matchScore }}%</span>
-              <span class="meta-tag">Category: {{ orb.category }}</span>
-            </div>
+      <!-- Orb Results -->
+      <div v-if="orbFound">
+        <h3 class="text-md font-semibold">📚 Matching Orb</h3>
+        <p class="text-sm">
+          Based on past best practices in the LinkOps library.
+        </p>
+        <div class="orb-item mt-3">
+          <h5 class="font-semibold">
+            {{ currentResult.searchResults[0].title }}
+          </h5>
+          <p class="text-sm text-gray-300">
+            {{ currentResult.searchResults[0].description }}
+          </p>
+          <div class="orb-meta mt-2">
+            <span class="meta-tag"
+              >Match Score:
+              {{ currentResult.searchResults[0].matchScore }}%</span
+            >
+            <span class="meta-tag"
+              >Category: {{ currentResult.searchResults[0].category }}</span
+            >
           </div>
         </div>
-        <div v-else class="no-results">
-          <p>No matching Orbs found in the library.</p>
-        </div>
       </div>
 
-      <!-- Generated Orb -->
-      <div v-if="currentResult.generatedOrb" class="result-card">
-        <h4>✨ Generated Orb</h4>
+      <!-- Fallback Best Practice (Grok) -->
+      <div v-else-if="generatedOrb">
+        <h3 class="text-md font-semibold">✨ Generated Orb</h3>
+        <p class="text-sm italic">
+          Auto-generated fallback best practice using the Grok API
+        </p>
 
         <!-- Demo Warning Banner -->
         <div
           v-if="currentResult.generatedOrb.demo_warning"
-          class="demo-warning-banner"
+          class="demo-warning-banner mt-3"
         >
           <div class="warning-icon">⚠️</div>
           <div class="warning-text">
@@ -80,115 +76,113 @@
           </div>
         </div>
 
-        <div class="generated-orb">
-          <h5>{{ currentResult.generatedOrb.title }}</h5>
-          <p>{{ currentResult.generatedOrb.description }}</p>
-          <div class="orb-content">
-            <h6>Best Practice Steps:</h6>
-            <ol>
+        <div class="generated-orb mt-3">
+          <h5 class="font-semibold">{{ currentResult.generatedOrb.title }}</h5>
+          <p class="text-sm text-gray-300">
+            {{ currentResult.generatedOrb.description }}
+          </p>
+          <div class="orb-content mt-3">
+            <h6 class="font-semibold">Best Practice Steps:</h6>
+            <ul class="list-disc ml-6 mt-2">
               <li
                 v-for="(step, index) in currentResult.generatedOrb.steps"
                 :key="index"
+                class="text-sm"
               >
                 {{ step }}
               </li>
-            </ol>
+            </ul>
           </div>
-          <div class="orb-meta">
-            <span class="meta-tag"
-              >Generated by:
+          <div class="orb-meta mt-3">
+            <span class="meta-tag">
+              Generated by:
               {{
                 currentResult.generatedOrb.demo_warning
                   ? 'Demo Mode'
                   : 'Whis Logic'
-              }}</span
-            >
-            <span class="meta-tag"
-              >AI Model:
+              }}
+            </span>
+            <span class="meta-tag">
+              AI Model:
               {{
                 currentResult.generatedOrb.demo_warning
                   ? 'Simulated'
                   : 'Grok API'
-              }}</span
-            >
+              }}
+            </span>
           </div>
         </div>
 
-        <!-- Approval Actions -->
-        <div class="approval-actions">
-          <button @click="approveOrb" class="btn-success">
-            ✅ Approve & Save
-          </button>
-          <button @click="rejectOrb" class="btn-danger">❌ Reject</button>
-        </div>
+        <p class="text-xs mt-2 text-gray-400">
+          This demo version disables full logic training and Runes. Approve to
+          simulate saving.
+        </p>
+        <button @click="approveOrb" class="btn mt-3">
+          ✅ Approve & Save (Simulated)
+        </button>
+        <button @click="rejectOrb" class="btn-secondary mt-3 ml-2">
+          ❌ Reject
+        </button>
       </div>
 
-      <!-- Rejection Message -->
-      <div v-if="showRejectionMessage" class="rejection-popup-overlay">
-        <div class="rejection-popup">
-          <div class="popup-header">
-            <h4>🚫 Demo Limitation</h4>
-            <button @click="showRejectionMessage = false" class="popup-close">
-              ×
-            </button>
-          </div>
-          <div class="popup-content">
-            <p>
-              <strong
-                >This demo version does not support refinement or additional
-                learning.</strong
-              >
-            </p>
-            <p>
-              In the full platform, this task would be re-sent with feedback
-              through the full Whis pipeline for improvement.
-            </p>
-            <div class="popup-actions">
-              <button @click="showRejectionMessage = false" class="btn-primary">
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
+      <div v-else class="text-sm text-gray-500 mt-2">
+        No results found. Try submitting a different task.
       </div>
-    </div>
+    </section>
 
     <!-- Recent Orbs -->
-    <div v-if="recentOrbs.length > 0" class="recent-orbs-section">
-      <h3 class="section-title">📚 Recent Orbs</h3>
-      <div class="orbs-grid">
-        <div v-for="orb in recentOrbs" :key="orb.id" class="orb-card">
-          <h5>{{ orb.title }}</h5>
-          <p>{{ orb.description }}</p>
-          <div class="orb-meta">
-            <span class="meta-tag">{{ orb.category }}</span>
-            <span class="meta-tag">{{ orb.createdAt }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <section class="mt-10">
+      <h2 class="text-lg font-semibold">📚 Recent Orbs</h2>
+      <ul>
+        <li class="mt-2">
+          <strong>Kubernetes Deployment Best Practices</strong>
+          <span class="text-xs text-gray-400 ml-2">(DevOps · 2024-01-15)</span>
+        </li>
+        <li class="mt-2">
+          <strong>API Security Guidelines</strong>
+          <span class="text-xs text-gray-400 ml-2"
+            >(Security · 2024-01-14)</span
+          >
+        </li>
+      </ul>
+    </section>
 
-    <!-- Demo Info -->
-    <div class="demo-info">
-      <h3 class="section-title">ℹ️ Demo Information</h3>
-      <div class="info-grid">
-        <div class="info-card">
-          <h4>🎯 What This Demo Shows</h4>
-          <ul>
-            <li>Task input and processing</li>
-            <li>Orb library searching</li>
-            <li>AI-powered Orb generation</li>
-            <li>Approval workflow</li>
-          </ul>
+    <!-- Footer Banner -->
+    <footer class="mt-10 border-t pt-4 text-xs text-gray-500">
+      <p>DevSecOps Shadow – Demo • Powered by LinkOps MLOps Platform</p>
+      <p>
+        Live demo hosted on Azure ·
+        <a href="http://demo.linksmlm.com:3000" class="text-blue-400 underline">
+          demo.linksmlm.com
+        </a>
+      </p>
+    </footer>
+
+    <!-- Rejection Message -->
+    <div v-if="showRejectionMessage" class="rejection-popup-overlay">
+      <div class="rejection-popup">
+        <div class="popup-header">
+          <h4>🚫 Demo Limitation</h4>
+          <button @click="showRejectionMessage = false" class="popup-close">
+            ×
+          </button>
         </div>
-        <div class="info-card">
-          <h4>🚫 Demo Limitations</h4>
-          <ul>
-            <li>No refinement loop</li>
-            <li>No autonomous execution</li>
-            <li>No complex pipelines</li>
-            <li>No training capabilities</li>
-          </ul>
+        <div class="popup-content">
+          <p>
+            <strong
+              >This demo version does not support refinement or additional
+              learning.</strong
+            >
+          </p>
+          <p>
+            In the full platform, this task would be re-sent with feedback
+            through the full Whis pipeline for improvement.
+          </p>
+          <div class="popup-actions">
+            <button @click="showRejectionMessage = false" class="btn-primary">
+              Close
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -196,69 +190,75 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
-import DemoBanner from './DemoBanner.vue';
 
+// Reactive data
 const taskInput = ref('');
 const processing = ref(false);
 const currentResult = ref(null);
-const showRejectionMessage = ref(false);
 const recentOrbs = ref([]);
+const showRejectionMessage = ref(false);
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+// Computed properties
+const orbFound = computed(() => {
+  return (
+    currentResult.value?.searchResults &&
+    currentResult.value.searchResults.length > 0
+  );
+});
 
+const generatedOrb = computed(() => {
+  return currentResult.value?.generatedOrb;
+});
+
+// Methods
 const submitTask = async () => {
-  if (!taskInput.value.trim() || processing.value) return;
+  if (!taskInput.value.trim()) return;
 
   processing.value = true;
   currentResult.value = null;
-  showRejectionMessage.value = false;
 
   try {
-    // Step 1: Submit task
-    const taskResponse = await axios.post(`${API_BASE}/api/task/submit`, {
-      task: taskInput.value.trim(),
+    // First, search for existing Orbs
+    const searchResponse = await axios.post('/api/orbs/search', {
+      query: taskInput.value,
     });
 
-    // Step 2: Search for existing Orbs
-    const searchResponse = await axios.post(`${API_BASE}/api/orbs/search`, {
-      query: taskInput.value.trim(),
-    });
-
-    // Step 3: If no matches, generate new Orb
-    let generatedOrb = null;
+    // If no matching Orbs found, generate a new one
     if (searchResponse.data.results.length === 0) {
-      const generateResponse = await axios.post(
-        `${API_BASE}/api/orbs/generate`,
-        {
-          task: taskInput.value.trim(),
-        }
-      );
-      generatedOrb = generateResponse.data.orb;
-    }
+      const generateResponse = await axios.post('/api/orbs/generate', {
+        task: taskInput.value,
+      });
 
-    currentResult.value = {
-      task: taskInput.value.trim(),
-      searchResults: searchResponse.data.results,
-      generatedOrb: generatedOrb,
-    };
+      currentResult.value = {
+        searchResults: [],
+        generatedOrb: generateResponse.data.orb,
+      };
+    } else {
+      currentResult.value = {
+        searchResults: searchResponse.data.results,
+        generatedOrb: null,
+      };
+    }
   } catch (error) {
     console.error('Error processing task:', error);
-    // Fallback for demo - create mock result
+    // Fallback demo response
     currentResult.value = {
-      task: taskInput.value.trim(),
       searchResults: [],
       generatedOrb: {
-        title: `Best Practice for: ${taskInput.value.trim()}`,
-        description: `AI-generated best practice for the submitted task.`,
+        title: `Demo Response for: ${taskInput.value}`,
+        description:
+          '⚠️ Demo Mode: This is a simulated AI response. No real model was used.',
         steps: [
-          'Analyze the task requirements',
-          'Identify key components and dependencies',
-          'Follow industry best practices',
-          'Implement with proper error handling',
-          'Test and validate the solution',
+          '⚠️ Demo Mode Active - No Real AI Processing',
+          'This response simulates what AI generation would look like',
+          'To enable real AI capabilities, add your API key to the environment',
+          'Supported models: Grok (xAI), OpenAI (ChatGPT), Anthropic (Claude)',
+          'Contact the team for access to the full platform with real AI integration',
         ],
+        demo_warning: true,
+        demo_mode: true,
       },
     };
   } finally {
@@ -266,207 +266,228 @@ const submitTask = async () => {
   }
 };
 
+const clearTask = () => {
+  taskInput.value = '';
+  currentResult.value = null;
+};
+
 const approveOrb = async () => {
   if (!currentResult.value?.generatedOrb) return;
 
   try {
-    await axios.post(`${API_BASE}/api/orbs/approve`, {
+    await axios.post('/api/orbs/approve', {
       orb: currentResult.value.generatedOrb,
     });
 
     // Add to recent Orbs
     recentOrbs.value.unshift({
       id: Date.now(),
-      ...currentResult.value.generatedOrb,
-      category: 'Generated',
-      createdAt: new Date().toLocaleDateString(),
+      title: currentResult.value.generatedOrb.title,
+      description: currentResult.value.generatedOrb.description,
+      category: currentResult.value.generatedOrb.category || 'Generated',
+      createdAt: new Date().toISOString().split('T')[0],
     });
 
     // Clear current result
     currentResult.value = null;
-    taskInput.value = '';
   } catch (error) {
     console.error('Error approving Orb:', error);
-    // For demo, just add to local list
-    recentOrbs.value.unshift({
-      id: Date.now(),
-      ...currentResult.value.generatedOrb,
-      category: 'Generated',
-      createdAt: new Date().toLocaleDateString(),
-    });
-    currentResult.value = null;
-    taskInput.value = '';
   }
 };
 
 const rejectOrb = () => {
   showRejectionMessage.value = true;
-  currentResult.value = null;
-  taskInput.value = '';
 };
 
-const clearTask = () => {
-  taskInput.value = '';
-  currentResult.value = null;
-  showRejectionMessage.value = false;
-};
-
-const loadRecentOrbs = async () => {
+// Lifecycle
+onMounted(async () => {
   try {
-    const response = await axios.get(`${API_BASE}/api/orbs/recent`);
-    recentOrbs.value = response.data.orbs;
+    const response = await axios.get('/api/orbs/recent');
+    recentOrbs.value = response.data.orbs || [];
   } catch (error) {
     console.error('Error loading recent Orbs:', error);
-    // Mock data for demo
+    // Fallback demo data
     recentOrbs.value = [
       {
         id: 1,
         title: 'Kubernetes Deployment Best Practices',
-        description:
-          'Standard practices for deploying applications to Kubernetes clusters.',
+        description: 'Best practices for deploying applications to Kubernetes',
         category: 'DevOps',
         createdAt: '2024-01-15',
       },
       {
         id: 2,
         title: 'API Security Guidelines',
-        description: 'Security best practices for RESTful API development.',
+        description: 'Security best practices for API development',
         category: 'Security',
         createdAt: '2024-01-14',
       },
     ];
   }
-};
-
-onMounted(() => {
-  loadRecentOrbs();
 });
 </script>
 
 <style scoped>
-.james-gui {
-  max-width: 1200px;
+.demo-container {
+  max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+  color: #e0e0e0;
+  font-family: 'Orbitron', 'Courier New', monospace;
 }
 
-.gui-header {
-  text-align: center;
-  margin-bottom: 2rem;
+.text-xl {
+  font-size: 1.5rem;
 }
 
-.gui-title {
-  font-size: 2rem;
+.text-lg {
+  font-size: 1.25rem;
+}
+
+.text-md {
+  font-size: 1.125rem;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}
+
+.font-bold {
   font-weight: bold;
-  color: #00d4ff;
+}
+
+.font-semibold {
+  font-weight: 600;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.mt-10 {
+  margin-top: 2.5rem;
+}
+
+.ml-2 {
+  margin-left: 0.5rem;
+}
+
+.ml-6 {
+  margin-left: 1.5rem;
+}
+
+.mb-2 {
   margin-bottom: 0.5rem;
 }
 
-.gui-subtitle {
-  color: #888;
-  font-size: 1.1rem;
+.pt-4 {
+  padding-top: 1rem;
 }
 
-.section-title {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #e0e0e0;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid #00d4ff;
-  padding-bottom: 0.5rem;
+.text-gray-400 {
+  color: #9ca3af;
 }
 
-.task-input-section {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 2rem;
+.text-gray-500 {
+  color: #6b7280;
 }
 
-.input-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+.text-gray-300 {
+  color: #d1d5db;
 }
 
-.task-textarea {
+.text-blue-400 {
+  color: #60a5fa;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.border-t {
+  border-top: 1px solid #374151;
+}
+
+.textarea {
   width: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid #555;
-  border-radius: 4px;
-  color: #e0e0e0;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
   padding: 1rem;
-  font-size: 1rem;
+  color: #e0e0e0;
+  font-family: inherit;
   resize: vertical;
+  min-height: 100px;
 }
 
-.task-textarea:focus {
+.textarea:focus {
   outline: none;
-  border-color: #00d4ff;
   box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
 }
 
-.input-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-success,
-.btn-danger {
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
+  background: linear-gradient(45deg, #00d4ff, #0099cc);
   border: none;
-  border-radius: 4px;
+  border-radius: 8px;
+  color: white;
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
 }
 
-.btn-primary {
-  background: #00d4ff;
-  color: #000;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: #00b8e6;
+.btn:hover:not(:disabled) {
   transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
 }
 
-.btn-primary:disabled {
+.btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 .btn-secondary {
-  background: #666;
-  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  color: #00d4ff;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-secondary:hover {
-  background: #777;
-}
-
-.btn-success {
-  background: #10b981;
-  color: #fff;
-}
-
-.btn-success:hover {
-  background: #059669;
-}
-
-.btn-danger {
-  background: #ef4444;
-  color: #fff;
-}
-
-.btn-danger:hover {
-  background: #dc2626;
+  background: rgba(0, 212, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 212, 255, 0.3);
 }
 
 .loading-spinner {
@@ -479,347 +500,174 @@ onMounted(() => {
 }
 
 @keyframes spin {
-  to {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
     transform: rotate(360deg);
   }
 }
 
-.results-section {
-  margin-bottom: 2rem;
-}
-
-.result-card {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.result-card h4 {
-  color: #00d4ff;
-  margin-bottom: 1rem;
-}
-
-.search-results {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
 .orb-item {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid #444;
-  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
   padding: 1rem;
+  backdrop-filter: blur(10px);
 }
 
-.orb-item h5 {
-  color: #e0e0e0;
-  margin-bottom: 0.5rem;
+.generated-orb {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid #00d4ff;
+  border-radius: 8px;
+  padding: 1rem;
+  backdrop-filter: blur(10px);
 }
 
-.orb-item p {
-  color: #ccc;
-  margin-bottom: 0.5rem;
+.demo-warning-banner {
+  background: linear-gradient(135deg, #ffd700, #ffed4e);
+  border: 2px solid #ff8c00;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+}
+
+.warning-icon {
+  font-size: 1.5rem;
+  min-width: 24px;
+}
+
+.warning-text {
+  color: #8b4513;
+}
+
+.warning-text strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.warning-text span {
+  font-size: 0.875rem;
 }
 
 .orb-meta {
   display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.meta-tag {
-  background: #333;
-  color: #ccc;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
-  font-size: 0.8rem;
-}
-
-.no-results {
-  text-align: center;
-  color: #888;
-  padding: 2rem;
-}
-
-.generated-orb {
-  background: rgba(0, 212, 255, 0.1);
-  border: 1px solid #00d4ff;
-  border-radius: 4px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-}
-
-.generated-orb h5 {
-  color: #00d4ff;
-  margin-bottom: 0.5rem;
-}
-
-.orb-content {
-  margin: 1rem 0;
-}
-
-.orb-content h6 {
-  color: #e0e0e0;
-  margin-bottom: 0.5rem;
-}
-
-.orb-content ol {
-  color: #ccc;
-  padding-left: 1.5rem;
-}
-
-.orb-content li {
-  margin-bottom: 0.5rem;
-}
-
-.approval-actions {
-  display: flex;
   gap: 1rem;
-  justify-content: center;
+  flex-wrap: wrap;
   margin-top: 1rem;
 }
 
-.rejection-message {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid #ef4444;
-}
-
-.rejection-message h4 {
-  color: #ef4444;
-}
-
-.recent-orbs-section {
-  margin-bottom: 2rem;
-}
-
-.orbs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.orb-card {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-.orb-card h5 {
-  color: #e0e0e0;
-  margin-bottom: 0.5rem;
-}
-
-.orb-card p {
-  color: #ccc;
-  margin-bottom: 0.5rem;
-}
-
-.demo-info {
-  margin-top: 2rem;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.info-card {
-  background: rgba(0, 0, 0, 0.3);
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-.info-card h4 {
+.meta-tag {
+  background: rgba(0, 212, 255, 0.2);
+  border: 1px solid #00d4ff;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
   color: #00d4ff;
-  margin-bottom: 1rem;
 }
 
-.info-card ul {
-  color: #ccc;
-  padding-left: 1.5rem;
+.list-disc {
+  list-style-type: disc;
 }
 
-.info-card li {
-  margin-bottom: 0.5rem;
-}
-
-/* New styles for rejection popup */
 .rejection-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }
 
 .rejection-popup {
-  background: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 10px;
-  padding: 2rem;
-  width: 90%;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid #ff0000;
+  border-radius: 12px;
+  padding: 1.5rem;
   max-width: 500px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
-  position: relative;
-  animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateY(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  width: 90%;
+  backdrop-filter: blur(10px);
 }
 
 .popup-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
-  border-bottom: 1px solid #333;
-  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid #ff0000;
+  padding-bottom: 0.5rem;
 }
 
 .popup-header h4 {
-  color: #ef4444;
+  color: #ff0000;
   margin: 0;
 }
 
 .popup-close {
   background: none;
   border: none;
-  color: #888;
-  font-size: 2rem;
+  color: #ff0000;
+  font-size: 1.5rem;
   cursor: pointer;
-  padding: 0.5rem;
-  line-height: 1;
-}
-
-.popup-close:hover {
-  color: #fff;
-}
-
-.popup-content {
-  color: #ccc;
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-
-.popup-content p {
-  margin-bottom: 1rem;
-}
-
-.popup-content strong {
-  color: #ef4444;
-}
-
-.popup-actions {
+  padding: 0;
+  width: 30px;
+  height: 30px;
   display: flex;
+  align-items: center;
   justify-content: center;
 }
 
-.popup-actions .btn-primary {
-  background: #00d4ff;
-  color: #000;
-  padding: 0.75rem 2rem;
+.popup-content p {
+  margin: 0.5rem 0;
+  line-height: 1.5;
 }
 
-.popup-actions .btn-primary:hover:not(:disabled) {
-  background: #00b8e6;
+.popup-actions {
+  margin-top: 1.5rem;
+  text-align: right;
 }
 
-/* Demo Warning Banner */
-.demo-warning-banner {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 193, 7, 0.1),
-    rgba(255, 152, 0, 0.1)
-  );
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
-  display: flex;
+.btn-primary {
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  animation: pulse 2s ease-in-out infinite;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(45deg, #00d4ff, #0099cc);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
 }
 
-@keyframes pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-  }
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
 }
 
-.warning-icon {
-  font-size: 1.5rem;
-  flex-shrink: 0;
-}
-
-.warning-text {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.warning-text strong {
-  color: #ffc107;
-  font-size: 0.9rem;
-}
-
-.warning-text span {
-  color: rgba(255, 193, 7, 0.8);
-  font-size: 0.8rem;
-}
-
+/* Responsive Design */
 @media (max-width: 768px) {
-  .james-gui {
+  .demo-container {
     padding: 1rem;
   }
 
-  .input-actions {
+  .orb-meta {
     flex-direction: column;
+    gap: 0.5rem;
   }
 
-  .approval-actions {
-    flex-direction: column;
-  }
-
-  .orbs-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .info-grid {
-    grid-template-columns: 1fr;
+  .rejection-popup {
+    width: 95%;
+    margin: 1rem;
   }
 }
 </style>

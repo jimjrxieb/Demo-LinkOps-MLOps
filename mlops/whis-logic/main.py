@@ -39,6 +39,32 @@ from logic.model import (
     generate_recommendations,
 )
 from pydantic import BaseModel
+from fastapi import Query
+from typing import Optional
+
+# Simulated Orb Library (real version will query vector DB or ORM)
+ORB_LIBRARY = [
+    {
+        "title": "Kubernetes Deployment Best Practices",
+        "description": "Standard practices for deploying apps to K8s.",
+        "tags": ["kubernetes", "deployment"],
+        "rune_id": "rune.k8s.deploy.v1",
+        "score": 95
+    },
+    {
+        "title": "API Security Guidelines",
+        "description": "Security best practices for APIs.",
+        "tags": ["api", "security"],
+        "rune_id": "rune.api.sec.v1",
+        "score": 87
+    }
+]
+
+class OrbResult(BaseModel):
+    match_found: bool
+    best_match: Optional[dict] = None
+    ai_generated_orb: Optional[dict] = None
+
 
 app = FastAPI(
     title="Whis Logic Service",
@@ -193,6 +219,35 @@ async def test_embedding():
         "embedding": embedding,
         "embedding_dimension": len(embedding),
     }
+
+
+@app.get("/demo/orbsearch", response_model=OrbResult)
+def search_orbs(task: str = Query(..., description="Jira-style task string")):
+    task_lower = task.lower()
+    best = None
+    for orb in ORB_LIBRARY:
+        if any(tag in task_lower for tag in orb["tags"]):
+            best = orb
+            break
+
+    if best:
+        return OrbResult(match_found=True, best_match=best)
+    else:
+        # Fallback: generate Orb (simulated Grok call)
+        generated = {
+            "title": f"Best Practice for: {task}",
+            "description": "AI-generated best practice for the submitted task.",
+            "steps": [
+                "Analyze the task requirements",
+                "Identify key components and dependencies",
+                "Follow industry best practices",
+                "Implement with proper error handling",
+                "Test and validate the solution"
+            ],
+            "model": "Grok API",
+            "score": 72  # Simulated confidence score
+        }
+        return OrbResult(match_found=False, ai_generated_orb=generated)
 
 
 if __name__ == "__main__":
