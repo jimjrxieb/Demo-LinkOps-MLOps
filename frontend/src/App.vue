@@ -49,11 +49,25 @@ const currentPageTitle = computed(() => {
 
 const currentPageSubtitle = computed(() => {
   const routeSubtitles = {
-    '/': 'A slimmed-down AI/ML model that evolves with every Kubernetes/CD task and error I solve — built to learn like an engineer.',
+    '/': `I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor. 
+I incorporated industry-standard linters, formatters, and even wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.
+<br />
+This project is a showcase of my current skill level across multiple engineering roles. 
+For DevOps: I use GitHub Actions, Trivy, SonarQube, and GitGuardian. 
+For Kubernetes: I have my CKA and use ArgoCD to pull my main platform into Docker Desktop K8s. 
+For platform engineering: this demo runs in an Azure VM provisioned with Terraform. 
+For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps workflow.`,
     '/pipeline': 'Visualize the Whis MLOps learning process',
     '/orbs': 'Browse the Kubernetes/CD best practices library',
     '/keys': 'Configure AI API keys for enhanced features',
-    '/about': 'Learn about the LinkOps platform and demo'
+    '/about': `I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor. 
+I incorporated industry-standard linters, formatters, and even wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.
+<br />
+This project is a showcase of my current skill level across multiple engineering roles. 
+For DevOps: I use GitHub Actions, Trivy, SonarQube, and GitGuardian. 
+For Kubernetes: I have my CKA and use ArgoCD to pull my main platform into Docker Desktop K8s. 
+For platform engineering: this demo runs in an Azure VM provisioned with Terraform. 
+For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps workflow.`
   }
   return routeSubtitles[route.path] || 'LinkOps MLOps Platform'
 })
@@ -116,6 +130,8 @@ body {
 .page-subtitle {
   color: #64748b;
   font-size: 0.875rem;
+  max-width: 60ch;
+  line-height: 1.6;
 }
 
 .header-actions {
