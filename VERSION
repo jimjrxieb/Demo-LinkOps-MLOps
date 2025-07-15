@@ -1,17 +1,17 @@
 # LinkOps Demo Version
-# Generated: 2025-07-15 16:39:16 UTC
-# Commit: a249b6b6070c3d697b68b947ae11639f19f53930
-# Run: 51
+# Generated: 2025-07-15 20:05:09 UTC
+# Commit: 244ecc932d5aef0c10299ecf1f223105f6a6e1bf
+# Run: 53
 
-IMAGE_TAG=20250715-a249b6b
+IMAGE_TAG=20250715-244ecc9
 
 # Service Images
-FRONTEND_IMAGE=linksrobot/demo-frontend:20250715-a249b6b
-MLOPS_PLATFORM_IMAGE=linksrobot/demo-mlops-platform:20250715-a249b6b
-WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:20250715-a249b6b
-WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:20250715-a249b6b
-WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:20250715-a249b6b
-FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:20250715-a249b6b
+FRONTEND_IMAGE=linksrobot/demo-frontend:20250715-244ecc9
+MLOPS_PLATFORM_IMAGE=linksrobot/demo-mlops-platform:20250715-244ecc9
+WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:20250715-244ecc9
+WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:20250715-244ecc9
+WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:20250715-244ecc9
+FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:20250715-244ecc9
 
 # Docker Compose Command
 # docker-compose pull && docker-compose up -d
