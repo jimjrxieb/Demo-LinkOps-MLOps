@@ -1,0 +1,68 @@
+.
+├── Dockerfile
+├── README.md
+├── cleanup-legacy.sh
+├── dist
+│   ├── assets
+│   │   ├── index-DlE84yYe.js
+│   │   ├── index-DlE84yYe.js.map
+│   │   ├── index-UVbVIfcM.css
+│   │   ├── utils-Dq7h7Pqt.js
+│   │   ├── utils-Dq7h7Pqt.js.map
+│   │   ├── vendor-BurTW1ki.js
+│   │   └── vendor-BurTW1ki.js.map
+│   ├── audio
+│   │   └── arise-activation.mp3
+│   ├── index.html
+│   └── manifest.json
+├── docker-entrypoint.sh
+├── env.production
+├── eslint.config.js
+├── frontend-Tree.txt
+├── frontend_fix_20250710_001956.log
+├── frontend_fix_20250710_002038.log
+├── index.html
+├── index.js
+├── nginx.conf
+├── nginx.conf.template
+├── npm-install.sh
+├── package-lock.json
+├── package.json
+├── postcss.config.cjs
+├── postcss.config.js
+├── public
+│   ├── audio
+│   │   └── arise-activation.mp3
+│   └── manifest.json
+├── src
+│   ├── App.vue
+│   ├── assets
+│   │   ├── holo-theme.css
+│   │   └── tailwind.css
+│   ├── components
+│   │   ├── Sidebar.vue
+│   │   └── WhisPipeline.vue
+│   ├── main.js
+│   ├── router
+│   │   └── index.js
+│   ├── store
+│   │   ├── index.js
+│   │   ├── useAgentStore.js
+│   │   ├── useMainStore.js
+│   │   ├── useTaskStore.js
+│   │   └── useUserStore.js
+│   └── views
+│       ├── AboutDemo.vue
+│       ├── AddKeys.vue
+│       ├── Demo.vue
+│       ├── OrbLibrary.vue
+│       └── WhisPipeline.vue
+├── tailwind.config.js
+├── test-holocore-simple.js
+├── test-holocore.js
+├── tsconfig.json
+├── validate-configs.js
+├── vite.config.js
+└── vite.config.js.timestamp-1752089790538-b3137147c2a3a.mjs
+
+11 directories, 54 files

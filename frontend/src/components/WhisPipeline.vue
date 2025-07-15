@@ -28,6 +28,9 @@
             <p class="step-description">
               {{ step.description }}
             </p>
+            <p class="step-tools">
+              📦 Tools: {{ step.tools }}
+            </p>
             <div class="step-status">
               <span class="status-indicator" :class="getStepStatus(index)" />
               <span class="status-text">{{ getStepStatusText(index) }}</span>
@@ -184,9 +187,17 @@ export default {
 
 .step-description {
   color: #e0e0e0;
-  margin: 0 0 1rem 0;
+  margin: 0 0 0.5rem 0;
   font-size: 0.9rem;
   line-height: 1.4;
+}
+
+.step-tools {
+  color: #888;
+  margin: 0 0 1rem 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  font-style: italic;
 }
 
 .step-status {

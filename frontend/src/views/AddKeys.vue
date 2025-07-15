@@ -121,6 +121,10 @@
                 Test Connection
               </button>
             </div>
+            
+            <p class="text-sm text-blue-300 mt-2 italic">
+              Add your API key to unlock full LLM-powered pipeline experience (via Grok or OpenAI).
+            </p>
           </form>
         </div>
       </div>

@@ -4,7 +4,7 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">📚 DevSecOps Orb Library</h2>
+          <h2 class="card-title">📚 Kubernetes/CD Orb Library</h2>
           <p class="text-gray-600">Browse the collection of automated best practices and solutions</p>
         </div>
         <div class="card-body">
@@ -55,47 +55,17 @@
     </div>
 
     <!-- Orbs Grid -->
-    <div class="orbs-grid">
-      <div 
-        v-for="orb in filteredOrbs" 
-        :key="orb.rune" 
-        class="orb-card"
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div
+        v-for="orb in filteredOrbs"
+        :key="orb.rune"
+        class="bg-gray-800 text-white rounded-lg p-4 shadow hover:shadow-lg transition-all"
       >
-        <div class="orb-header">
-          <div class="orb-icon">{{ getCategoryIcon(orb.category) }}</div>
-          <div class="orb-meta">
-            <h3 class="orb-title">{{ orb.title }}</h3>
-            <div class="orb-category">{{ orb.category }}</div>
-          </div>
-          <div class="orb-confidence">
-            <span class="confidence-badge" :class="getConfidenceClass(orb.confidence)">
-              {{ Math.round(orb.confidence * 100) }}%
-            </span>
-          </div>
-        </div>
-        
-        <div class="orb-content">
-          <p class="orb-description">{{ orb.orb }}</p>
-          
-          <div class="orb-keywords">
-            <span class="keywords-label">Keywords:</span>
-            <div class="keyword-tags">
-              <span 
-                v-for="keyword in orb.keywords" 
-                :key="keyword" 
-                class="keyword-tag"
-              >
-                {{ keyword }}
-              </span>
-            </div>
-          </div>
-          
-          <div class="orb-footer">
-            <div class="rune-id">
-              <span class="rune-label">Rune:</span>
-              <code class="rune-code">{{ orb.rune }}</code>
-            </div>
-          </div>
+        <h3 class="text-lg font-semibold text-teal-300">{{ orb.title }}</h3>
+        <p class="text-sm text-gray-300 mb-2 italic">Category: {{ orb.category }}</p>
+        <p class="text-sm mb-2">{{ orb.orb }}</p>
+        <div class="text-xs text-blue-400 mt-2">
+          Tags: <span v-for="keyword in orb.keywords" :key="keyword" class="mr-1">#{{ keyword }}</span>
         </div>
       </div>
     </div>
@@ -117,9 +87,19 @@
 import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 
-const orbs = ref([])
+// Props for external orb data
+const props = defineProps({
+  orbs: {
+    type: Array,
+    default: () => []
+  }
+})
+
 const searchQuery = ref('')
 const selectedCategory = ref('')
+
+// Use props.orbs if provided, otherwise load from API
+const orbs = ref([])
 
 const categories = computed(() => {
   const cats = [...new Set(orbs.value.map(orb => orb.category))]
@@ -158,6 +138,7 @@ const getCategoryIcon = (category) => {
     'DevOps': '⚙️',
     'Security': '🛡️',
     'Kubernetes': '☸️',
+    'CI/CD': '🔄',
     'GitOps': '📦',
     'Infrastructure': '🏗️',
     'Observability': '📊'
@@ -172,6 +153,12 @@ const getConfidenceClass = (confidence) => {
 }
 
 const loadOrbs = async () => {
+  // If orbs are provided via props, use them
+  if (props.orbs && props.orbs.length > 0) {
+    orbs.value = props.orbs
+    return
+  }
+  
   try {
     const response = await axios.get('/api/demo/orbs')
     orbs.value = response.data.orbs || []
