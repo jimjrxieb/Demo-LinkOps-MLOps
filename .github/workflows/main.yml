@@ -9,6 +9,8 @@ on:
 env:
   PYTHON_VERSION: "3.11"
   NODE_VERSION: "20"
+  # Version strategy: YYYYMMDD-commit_hash (e.g., 20250714-a1b2c3d)
+  IMAGE_TAG: "${{ github.event_name == 'push' && format('{0}-{1}', github.run_number, github.sha) || 'latest' }}"
 
 permissions:
   contents: write  # For ArgoCD updates
@@ -313,7 +315,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: linksrobot/demo-frontend:latest
+          tags: linksrobot/demo-frontend:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -322,7 +324,7 @@ jobs:
         with:
           context: ./mlops/mlops-platform
           push: true
-          tags: linksrobot/demo-mlops-platform:latest
+          tags: linksrobot/demo-mlops-platform:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -331,7 +333,7 @@ jobs:
         with:
           context: ./mlops/whis-data-input
           push: true
-          tags: linksrobot/demo-whis-data-input:latest
+          tags: linksrobot/demo-whis-data-input:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -340,7 +342,7 @@ jobs:
         with:
           context: ./mlops/whis-sanitize
           push: true
-          tags: linksrobot/demo-whis-sanitize:latest
+          tags: linksrobot/demo-whis-sanitize:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -349,7 +351,7 @@ jobs:
         with:
           context: ./mlops/whis-logic
           push: true
-          tags: linksrobot/demo-whis-logic:latest
+          tags: linksrobot/demo-whis-logic:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -358,7 +360,7 @@ jobs:
         with:
           context: ./shadows/ficknury-evaluator
           push: true
-          tags: linksrobot/demo-ficknury-evaluator:latest
+          tags: linksrobot/demo-ficknury-evaluator:${{ env.IMAGE_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -368,15 +370,50 @@ jobs:
           echo "=================================="
           echo ""
           echo "✅ Successfully built and pushed:"
-          echo "  - linksrobot/demo-frontend:latest"
-          echo "  - linksrobot/demo-mlops-platform:latest"
-          echo "  - linksrobot/demo-whis-data-input:latest"
-          echo "  - linksrobot/demo-whis-sanitize:latest"
-          echo "  - linksrobot/demo-whis-logic:latest"
-          echo "  - linksrobot/demo-ficknury-evaluator:latest"
+          echo "  - linksrobot/demo-frontend:${{ env.IMAGE_TAG }}"
+          echo "  - linksrobot/demo-mlops-platform:${{ env.IMAGE_TAG }}"
+          echo "  - linksrobot/demo-whis-data-input:${{ env.IMAGE_TAG }}"
+          echo "  - linksrobot/demo-whis-sanitize:${{ env.IMAGE_TAG }}"
+          echo "  - linksrobot/demo-whis-logic:${{ env.IMAGE_TAG }}"
+          echo "  - linksrobot/demo-ficknury-evaluator:${{ env.IMAGE_TAG }}"
           echo ""
           echo "🚀 Ready for deployment on Azure VM!"
           echo "Run: docker-compose pull && docker-compose up -d"
+
+      - name: Create Version File
+        run: |
+          echo "📝 Creating version file for deployment tracking..."
+          cat > VERSION << EOF
+          # LinkOps Demo Version
+          # Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          # Commit: ${{ github.sha }}
+          # Run: ${{ github.run_number }}
+          
+          IMAGE_TAG=${{ env.IMAGE_TAG }}
+          
+          # Service Images
+          FRONTEND_IMAGE=linksrobot/demo-frontend:${{ env.IMAGE_TAG }}
+          MLOPS_PLATFORM_IMAGE=linksrobot/demo-mlops-platform:${{ env.IMAGE_TAG }}
+          WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:${{ env.IMAGE_TAG }}
+          WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:${{ env.IMAGE_TAG }}
+          WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:${{ env.IMAGE_TAG }}
+          FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:${{ env.IMAGE_TAG }}
+          
+          # Docker Compose Command
+          # docker-compose pull && docker-compose up -d
+          EOF
+          
+          echo "✅ Version file created:"
+          cat VERSION
+
+      - name: Commit Version File
+        if: github.event_name == 'push'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "actions@github.com"
+          git add VERSION
+          git commit -m "chore: update version to ${{ env.IMAGE_TAG }} - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+          git push || echo "No push needed"
 
   update-argocd:
     runs-on: ubuntu-latest

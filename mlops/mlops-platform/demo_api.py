@@ -356,43 +356,103 @@ async def get_recent_orbs():
 orb_library = [
     {
         "title": "Kubernetes Pod Creation",
-        "keywords": ["create", "pod", "nginx", "kubectl", "run"],
+        "keywords": ["create", "pod", "nginx", "kubectl", "run", "deploy", "container"],
         "orb": "To create a pod using nginx: `kubectl run test --image=nginx`",
         "rune": "R-001",
         "confidence": 0.95,
         "category": "Kubernetes",
         "description": "Standard practice for creating Kubernetes pods with specific images",
-        "tags": ["kubernetes", "pod", "deployment"]
+        "tags": ["kubernetes", "pod", "deployment", "container"]
     },
     {
         "title": "Deploy Kubernetes App",
-        "keywords": ["deployment", "kubectl", "k8s", "deploy", "app"],
+        "keywords": ["deployment", "kubectl", "k8s", "deploy", "app", "application"],
         "orb": "Use `kubectl create deployment demo --image=myapp`",
         "rune": "R-002",
         "confidence": 0.87,
         "category": "Kubernetes",
         "description": "Best practice for deploying applications to Kubernetes",
-        "tags": ["kubernetes", "deployment", "app"]
+        "tags": ["kubernetes", "deployment", "app", "microservice"]
     },
     {
-        "title": "API Security Guidelines",
-        "keywords": ["api", "security", "authentication", "https", "jwt"],
-        "orb": "Implement HTTPS, JWT authentication, input validation, and rate limiting",
+        "title": "Create Helm Chart",
+        "keywords": ["helm", "chart", "create", "package", "template", "values.yaml"],
+        "orb": "Run `helm create myapp` then customize values.yaml and templates/",
         "rune": "R-003",
         "confidence": 0.92,
-        "category": "Security",
-        "description": "Security best practices for RESTful API development",
-        "tags": ["api", "security", "authentication"]
+        "category": "Helm",
+        "description": "Standard workflow for creating and packaging Helm charts",
+        "tags": ["helm", "chart", "packaging", "kubernetes"]
     },
     {
-        "title": "Database Migration Best Practices",
-        "keywords": ["database", "migration", "backup", "schema", "sql"],
-        "orb": "Always backup before migrations, use version control, test on staging",
+        "title": "Security Scan Repository",
+        "keywords": ["security", "scan", "repo", "vulnerability", "trivy", "snyk", "secrets"],
+        "orb": "Use Trivy: `trivy fs --security-checks vuln,secret .` or Snyk: `snyk test`",
         "rune": "R-004",
+        "confidence": 0.89,
+        "category": "Security",
+        "description": "Comprehensive security scanning for vulnerabilities and secrets",
+        "tags": ["security", "scanning", "vulnerabilities", "secrets"]
+    },
+    {
+        "title": "Setup GitOps with ArgoCD",
+        "keywords": ["gitops", "argocd", "git", "ops", "declarative", "sync"],
+        "orb": "Install ArgoCD, create Application manifest, sync with Git repo",
+        "rune": "R-005",
+        "confidence": 0.85,
+        "category": "GitOps",
+        "description": "Declarative GitOps deployment using ArgoCD",
+        "tags": ["gitops", "argocd", "declarative", "deployment"]
+    },
+    {
+        "title": "CI/CD Pipeline Setup",
+        "keywords": ["ci", "cd", "pipeline", "github", "actions", "jenkins", "gitlab"],
+        "orb": "Create .github/workflows/main.yml for build, test, and deploy stages",
+        "rune": "R-006",
+        "confidence": 0.88,
+        "category": "CI/CD",
+        "description": "Automated build, test, and deployment pipeline setup",
+        "tags": ["ci", "cd", "pipeline", "automation"]
+    },
+    {
+        "title": "Infrastructure as Code (Terraform)",
+        "keywords": ["terraform", "iac", "infrastructure", "code", "aws", "azure", "gcp"],
+        "orb": "Write Terraform configs for VPC, subnets, and compute resources",
+        "rune": "R-007",
+        "confidence": 0.91,
+        "category": "Infrastructure",
+        "description": "Infrastructure provisioning using Terraform IaC",
+        "tags": ["terraform", "iac", "infrastructure", "cloud"]
+    },
+    {
+        "title": "Setup Monitoring & Logging",
+        "keywords": ["monitoring", "logging", "prometheus", "grafana", "elk", "stack"],
+        "orb": "Deploy Prometheus + Grafana for metrics, ELK stack for logs",
+        "rune": "R-008",
+        "confidence": 0.86,
+        "category": "Observability",
+        "description": "Comprehensive monitoring and logging infrastructure setup",
+        "tags": ["monitoring", "logging", "observability", "metrics"]
+    },
+    {
+        "title": "Database Migration & Backup",
+        "keywords": ["database", "migration", "backup", "schema", "sql", "postgres", "mysql"],
+        "orb": "Always backup before migrations, use version control, test on staging",
+        "rune": "R-009",
         "confidence": 0.89,
         "category": "Database",
         "description": "Safe practices for database schema changes and migrations",
-        "tags": ["database", "migration", "backup"]
+        "tags": ["database", "migration", "backup", "schema"]
+    },
+    {
+        "title": "API Security Implementation",
+        "keywords": ["api", "security", "authentication", "https", "jwt", "oauth", "rate", "limit"],
+        "orb": "Implement HTTPS, JWT authentication, input validation, and rate limiting",
+        "rune": "R-010",
+        "confidence": 0.92,
+        "category": "Security",
+        "description": "Security best practices for RESTful API development",
+        "tags": ["api", "security", "authentication", "authorization"]
     }
 ]
 

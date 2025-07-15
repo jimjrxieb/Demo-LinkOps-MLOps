@@ -1,185 +1,204 @@
 <template>
-  <div class="demo-container">
-    <h1 class="text-xl font-bold">🛡️ DevSecOps Shadow – Demo</h1>
-
-    <!-- Task Input -->
-    <section class="mt-4">
-      <h2 class="text-lg font-semibold">📝 Task Input</h2>
-      <p class="text-sm text-gray-400 mb-2">
-        Submit a platform, DevOps, or Kubernetes task to test the demo system.
+  <div class="p-6 space-y-6">
+    <!-- Welcome Header -->
+    <div class="text-center space-y-4">
+      <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
+        🛡️ DevSecOps Shadow Agent Demo
+      </h1>
+      <p class="text-lg text-gray-300 max-w-3xl mx-auto">
+        This is a demonstration of one of the Shadow Agents developed by LinkOps, tailored specifically for DevSecOps workflows.
       </p>
+    </div>
+
+    <!-- Demo Mode Banner -->
+    <div class="bg-yellow-200 text-yellow-900 text-center py-3 rounded-lg font-semibold">
+      🎯 Demo Mode: Results are simulated. No real AI or API keys required.
+    </div>
+
+    <!-- Task Submission UI -->
+    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
+      <h2 class="text-xl font-semibold mb-4 text-blue-400">🚀 Try It Now</h2>
+      <label class="text-lg font-medium block mb-3">Task You Would Give Me</label>
       <textarea
         v-model="taskInput"
-        placeholder="e.g., create a pod named test with the image nginx..."
-        class="textarea"
-        rows="4"
+        placeholder="e.g., create a pod named test with image nginx, or scan repo for security vulnerabilities"
+        class="w-full p-3 rounded-lg bg-black border border-gray-700 text-white resize-none"
+        rows="3"
       ></textarea>
-      <button
-        @click="submitTask"
-        :disabled="!taskInput.trim() || processing"
-        class="btn mt-2"
-      >
-        <span v-if="processing" class="loading-spinner"></span>
-        {{ processing ? 'Processing...' : 'Submit Task' }}
-      </button>
-      <button @click="clearTask" class="btn-secondary mt-2 ml-2">Clear</button>
-    </section>
+      <div class="flex justify-end mt-3 gap-3">
+        <button
+          @click="submitTask"
+          :disabled="!taskInput.trim() || processing"
+          class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 font-semibold"
+        >
+          <span v-if="processing" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mx-auto"></span>
+          {{ processing ? '🔍 Searching...' : '🔍 Search Orb' }}
+        </button>
+        <button @click="clearTask" class="bg-gray-700 text-white px-6 py-3 rounded-xl hover:bg-gray-600 font-semibold">
+          Clear
+        </button>
+      </div>
+    </div>
 
     <!-- Processing Results -->
-    <section class="mt-8">
-      <h2 class="text-lg font-semibold">📊 Processing Results</h2>
-
+    <div v-if="currentResult" class="space-y-4">
       <!-- Orb Results -->
-      <div v-if="orbFound">
-        <h3 class="text-md font-semibold">📚 Matching Orb</h3>
-        <p class="text-sm">
-          Based on past best practices in the LinkOps library.
-        </p>
-        <div class="orb-item mt-3">
-          <h5 class="font-semibold">
-            {{ currentResult.searchResults[0].title }}
-          </h5>
-          <p class="text-sm text-gray-300">
-            {{ currentResult.searchResults[0].description }}
-          </p>
-          <div class="orb-meta mt-2">
-            <span class="meta-tag"
-              >Match Score:
-              {{ currentResult.searchResults[0].matchScore }}%</span
-            >
-            <span class="meta-tag"
-              >Category: {{ currentResult.searchResults[0].category }}</span
-            >
+      <div v-if="orbFound" class="border border-green-500 bg-black/20 p-6 rounded-2xl">
+        <div class="flex items-center space-x-2 mb-4">
+          <span class="text-2xl">✅</span>
+          <h2 class="text-xl font-bold text-green-400">Orb Found!</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p><strong class="text-gray-300">Task:</strong> <span class="text-white">{{ taskInput }}</span></p>
+            <p><strong class="text-gray-300">Matching Orb:</strong> <span class="text-green-400">{{ currentResult.searchResults[0].title }}</span></p>
+            <p><strong class="text-gray-300">Match Score:</strong> <span class="text-yellow-400">{{ currentResult.searchResults[0].matchScore }}%</span></p>
+            <p><strong class="text-gray-300">Category:</strong> <span class="text-blue-400">{{ currentResult.searchResults[0].category }}</span></p>
           </div>
+          <div>
+            <p><strong class="text-gray-300">Description:</strong></p>
+            <p class="text-sm text-gray-300 mt-1">{{ currentResult.searchResults[0].description }}</p>
+          </div>
+        </div>
+        <div class="mt-4 p-4 bg-gray-800 rounded-lg">
+          <h3 class="text-lg font-bold text-green-300 mb-3">Best Practice Steps:</h3>
+          <ul class="list-disc list-inside text-white space-y-1">
+            <li v-for="(step, index) in currentResult.searchResults[0].steps" :key="index" class="text-sm">
+              {{ step }}
+            </li>
+          </ul>
+        </div>
+        <div class="mt-4 space-y-2 text-sm">
+          <p class="italic text-yellow-400">⚠️ Runes not available in demo. They are compiled solution path scripts.</p>
+          <p class="italic text-yellow-400">⚠️ "Send to Agent?" → Feature not available in demo. FickNury sends tasks that are 100% autonomous to field agents.</p>
         </div>
       </div>
 
       <!-- Fallback Best Practice (Grok) -->
-      <div v-else-if="generatedOrb">
-        <h3 class="text-md font-semibold">✨ Generated Orb</h3>
-        <p class="text-sm italic">
-          Auto-generated fallback best practice using the Grok API
-        </p>
+      <div v-else-if="generatedOrb" class="border border-blue-500 bg-black/20 p-6 rounded-2xl">
+        <div class="flex items-center space-x-2 mb-4">
+          <span class="text-2xl">✨</span>
+          <h2 class="text-xl font-bold text-blue-400">No Orb Found - Generated Best Practice</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <p><strong class="text-gray-300">Task:</strong> <span class="text-white">{{ taskInput }}</span></p>
+            <p class="text-sm italic text-green-400 mt-2">🔄 Sent to Whis for Learning...</p>
+          </div>
+          <div>
+            <p><strong class="text-gray-300">Generated by:</strong> <span class="text-purple-400">{{ currentResult.generatedOrb.demo_warning ? 'Demo Mode' : 'Whis Logic' }}</span></p>
+            <p><strong class="text-gray-300">AI Model:</strong> <span class="text-blue-400">{{ currentResult.generatedOrb.demo_warning ? 'Simulated' : 'Grok API' }}</span></p>
+          </div>
+        </div>
 
         <!-- Demo Warning Banner -->
         <div
           v-if="currentResult.generatedOrb.demo_warning"
-          class="demo-warning-banner mt-3"
+          class="bg-yellow-200 text-yellow-900 p-4 rounded-lg mt-4"
         >
-          <div class="warning-icon">⚠️</div>
-          <div class="warning-text">
-            <strong>Demo Mode Response</strong>
-            <span
-              >No real AI processing occurred - this is a simulated
-              response</span
-            >
+          <div class="flex items-center space-x-2">
+            <span class="text-xl">⚠️</span>
+            <div>
+              <strong>Demo Mode Response</strong>
+              <p class="text-sm">No real AI processing occurred - this is a simulated response</p>
+            </div>
           </div>
         </div>
 
-        <div class="generated-orb mt-3">
-          <h5 class="font-semibold">{{ currentResult.generatedOrb.title }}</h5>
-          <p class="text-sm text-gray-300">
-            {{ currentResult.generatedOrb.description }}
-          </p>
-          <div class="orb-content mt-3">
-            <h6 class="font-semibold">Best Practice Steps:</h6>
-            <ul class="list-disc ml-6 mt-2">
-              <li
-                v-for="(step, index) in currentResult.generatedOrb.steps"
-                :key="index"
-                class="text-sm"
-              >
-                {{ step }}
-              </li>
-            </ul>
-          </div>
-          <div class="orb-meta mt-3">
-            <span class="meta-tag">
-              Generated by:
-              {{
-                currentResult.generatedOrb.demo_warning
-                  ? 'Demo Mode'
-                  : 'Whis Logic'
-              }}
-            </span>
-            <span class="meta-tag">
-              AI Model:
-              {{
-                currentResult.generatedOrb.demo_warning
-                  ? 'Simulated'
-                  : 'Grok API'
-              }}
-            </span>
-          </div>
+        <div class="mt-4 p-4 bg-gray-800 rounded-lg">
+          <h3 class="text-lg font-bold text-green-300 mb-3">Best Practice for: {{ taskInput }}</h3>
+          <ul class="list-disc list-inside text-white space-y-1">
+            <li v-for="(step, index) in currentResult.generatedOrb.steps" :key="index" class="text-sm">
+              {{ step }}
+            </li>
+          </ul>
+          <p class="text-xs text-gray-400 mt-3">Generated by: {{ currentResult.generatedOrb.demo_warning ? 'Demo Mode' : 'Whis Logic' }} | Model: {{ currentResult.generatedOrb.demo_warning ? 'Simulated' : 'Grok API' }}</p>
         </div>
-
-        <p class="text-xs mt-2 text-gray-400">
-          This demo version disables full logic training and Runes. Approve to
-          simulate saving.
-        </p>
-        <button @click="approveOrb" class="btn mt-3">
-          ✅ Approve & Save (Simulated)
-        </button>
-        <button @click="rejectOrb" class="btn-secondary mt-3 ml-2">
-          ❌ Reject
-        </button>
+        <div class="flex gap-3 mt-4">
+          <button @click="approveOrb" class="px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white font-semibold">
+            ✅ Approve & Save
+          </button>
+          <button @click="rejectOrb" class="px-4 py-2 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold">
+            ❌ Reject
+          </button>
+        </div>
       </div>
-
-      <div v-else class="text-sm text-gray-500 mt-2">
-        No results found. Try submitting a different task.
-      </div>
-    </section>
+    </div>
 
     <!-- Recent Orbs -->
-    <section class="mt-10">
-      <h2 class="text-lg font-semibold">📚 Recent Orbs</h2>
-      <ul>
-        <li class="mt-2">
-          <strong>Kubernetes Deployment Best Practices</strong>
-          <span class="text-xs text-gray-400 ml-2">(DevOps · 2024-01-15)</span>
+    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
+      <h2 class="text-xl font-semibold mb-4 text-purple-400">📚 Recent Orbs</h2>
+      <ul class="space-y-2">
+        <li class="flex justify-between items-center">
+          <div>
+            <strong class="text-white">Kubernetes Deployment Best Practices</strong>
+            <span class="text-xs text-gray-400 ml-2">(DevOps · 2024-01-15)</span>
+          </div>
+          <span class="text-green-400 text-sm">95% match</span>
         </li>
-        <li class="mt-2">
-          <strong>API Security Guidelines</strong>
-          <span class="text-xs text-gray-400 ml-2"
-            >(Security · 2024-01-14)</span
-          >
+        <li class="flex justify-between items-center">
+          <div>
+            <strong class="text-white">API Security Guidelines</strong>
+            <span class="text-xs text-gray-400 ml-2">(Security · 2024-01-14)</span>
+          </div>
+          <span class="text-green-400 text-sm">88% match</span>
+        </li>
+        <li class="flex justify-between items-center">
+          <div>
+            <strong class="text-white">Database Migration Best Practices</strong>
+            <span class="text-xs text-gray-400 ml-2">(Database · 2024-01-13)</span>
+          </div>
+          <span class="text-green-400 text-sm">92% match</span>
         </li>
       </ul>
-    </section>
+    </div>
 
-    <!-- Footer Banner -->
-    <footer class="mt-10 border-t pt-4 text-xs text-gray-500">
-      <p>DevSecOps Shadow – Demo • Powered by LinkOps MLOps Platform</p>
-      <p>
-        Live demo hosted on Azure ·
-        <a href="http://demo.linksmlm.com:3000" class="text-blue-400 underline">
-          demo.linksmlm.com
-        </a>
-      </p>
-    </footer>
+    <!-- Purpose Section -->
+    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
+      <h2 class="text-2xl font-bold mb-4 text-purple-400">💡 Purpose of This Demo</h2>
+      <div class="space-y-3 text-gray-300">
+        <p>• Show how tasks are matched to existing automation</p>
+        <p>• Show fallback logic when task is new or incomplete</p>
+        <p>• Educate on <strong>how</strong> the model learns and <strong>what tech</strong> powers it</p>
+      </div>
+      
+      <div class="mt-6 p-4 bg-gray-800 rounded-lg">
+        <h3 class="text-lg font-semibold text-yellow-400 mb-2">✅ What You Can Do Here</h3>
+        <ul class="space-y-1 text-sm">
+          <li class="flex items-center space-x-2">
+            <span class="text-green-400">✅</span>
+            <span>Submit tasks like you would in a real job</span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <span class="text-green-400">✅</span>
+            <span>View how LinkOps agents rank automation readiness</span>
+          </li>
+          <li class="flex items-center space-x-2">
+            <span class="text-red-400">❌</span>
+            <span>No agent execution or full pipeline is available in this demo</span>
+          </li>
+        </ul>
+      </div>
+    </div>
 
     <!-- Rejection Message -->
-    <div v-if="showRejectionMessage" class="rejection-popup-overlay">
-      <div class="rejection-popup">
-        <div class="popup-header">
-          <h4>🚫 Demo Limitation</h4>
-          <button @click="showRejectionMessage = false" class="popup-close">
+    <div v-if="showRejectionMessage" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-gray-800 border border-gray-600 rounded-lg p-6 max-w-md mx-4">
+        <div class="flex justify-between items-center mb-4">
+          <h4 class="text-lg font-bold text-red-400">🚫 Demo Limitation</h4>
+          <button @click="showRejectionMessage = false" class="text-gray-400 hover:text-white text-xl">
             ×
           </button>
         </div>
-        <div class="popup-content">
-          <p>
-            <strong
-              >This demo version does not support refinement or additional
-              learning.</strong
-            >
+        <div class="space-y-3">
+          <p class="text-sm text-gray-300">
+            <strong>This demo version does not support refinement or additional learning.</strong>
           </p>
-          <p>
-            In the full platform, this task would be re-sent with feedback
-            through the full Whis pipeline for improvement.
+          <p class="text-sm text-gray-300">
+            In the full platform, this task would be re-sent with feedback through the full Whis pipeline for improvement.
           </p>
-          <div class="popup-actions">
-            <button @click="showRejectionMessage = false" class="btn-primary">
+          <div class="flex justify-end">
+            <button @click="showRejectionMessage = false" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
               Close
             </button>
           </div>
