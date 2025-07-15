@@ -50,25 +50,59 @@ docker-compose down
 
 ## 🐳 Docker Images
 
+### Auto-Versioning System
+The DEMO-LinkOps platform uses an **auto-versioning system** that generates unique tags for each build using the format `YYYYMMDD-commit_hash` (e.g., `20250714-a1b2c3d`). This ensures:
+
+- ✅ **No Stale Images** - Each deployment uses a specific, immutable version
+- ✅ **Easy Rollbacks** - Quickly revert to any previous version
+- ✅ **Build Traceability** - Link deployments to specific code commits
+- ✅ **Parallel Deployments** - Multiple environments can run different versions
+
 ### Demo Image Naming Convention
 All demo images use the `demo-` prefix and are pushed to Docker Hub under the `linksrobot` account:
 
-- `linksrobot/demo-whis-data-input:latest`
-- `linksrobot/demo-whis-sanitize:latest`
-- `linksrobot/demo-whis-logic:latest`
-- `linksrobot/demo-ficknury-evaluator:latest`
-- `linksrobot/demo-mlops-platform:latest`
-- `linksrobot/demo-frontend:latest`
+- `linksrobot/demo-whis-data-input:20250714-a1b2c3d`
+- `linksrobot/demo-whis-sanitize:20250714-a1b2c3d`
+- `linksrobot/demo-whis-logic:20250714-a1b2c3d`
+- `linksrobot/demo-ficknury-evaluator:20250714-a1b2c3d`
+- `linksrobot/demo-mlops-platform:20250714-a1b2c3d`
+- `linksrobot/demo-frontend:20250714-a1b2c3d`
 
-### Tagging and Pushing Images
-Use the provided script to tag and push demo images:
+### Deployment Scripts
+The platform includes automated deployment scripts in the `runes/` directory:
 
+#### Automatic Deployment (Recommended)
 ```bash
-# Tag images (dry run)
-./tag-and-push-demo-images.sh
+# Deploy with latest versioned images
+./runes/deploy-latest.sh
+```
 
-# Tag and push to Docker Hub
-./tag-and-push-demo-images.sh push
+This script will:
+- 🔍 Find the latest versioned images
+- 📝 Update docker-compose.yml automatically
+- 🚀 Pull and deploy the services
+- 📊 Show deployment status
+
+#### Manual Version Update
+```bash
+# Update to a specific version
+./runes/update-compose-versions.sh 20250714-a1b2c3d
+
+# Then deploy
+docker-compose pull
+docker-compose up -d
+```
+
+#### Manual Deployment
+```bash
+# Pull latest images
+docker-compose pull
+
+# Start services
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
 ```
 
 **Note:** Make sure you're logged in to Docker Hub:
@@ -149,13 +183,33 @@ whis-logic:
 
 ## 🚀 CI/CD
 
-### GitHub Actions
-The demo platform includes automated CI/CD workflows:
+### GitHub Actions Auto-Versioning
+The demo platform includes an automated CI/CD workflow that builds and versions images on every push to the main branch:
 
-- **Build and Push**: `/.github/workflows/demo-build.yml`
-  - Builds demo images on push to main/demo branches
-  - Pushes to Docker Hub with demo- prefix
-  - Updates Helm values with registry information
+#### Workflow Features
+- **Auto-Versioning**: Generates `YYYYMMDD-commit_hash` tags (e.g., `20250714-a1b2c3d`)
+- **Multi-Service Build**: Builds all 6 demo services in parallel
+- **Docker Hub Push**: Automatically pushes versioned images to `linksrobot/demo-*`
+- **Version Tracking**: Creates a `VERSION` file with deployment information
+- **Security Scanning**: Includes Trivy and GitGuardian security scans
+
+#### Workflow Steps
+1. **Code Quality Checks**: Linting, formatting, and security scans
+2. **Version Generation**: Creates unique version tag from commit SHA and date
+3. **Docker Builds**: Builds all services with the generated version tag
+4. **Image Push**: Pushes versioned images to Docker Hub
+5. **Version Tracking**: Commits version information for deployment tracking
+
+#### Example Version Output
+```
+✅ Successfully built and pushed:
+  - linksrobot/demo-frontend:20250714-a1b2c3d
+  - linksrobot/demo-mlops-platform:20250714-a1b2c3d
+  - linksrobot/demo-whis-data-input:20250714-a1b2c3d
+  - linksrobot/demo-whis-sanitize:20250714-a1b2c3d
+  - linksrobot/demo-whis-logic:20250714-a1b2c3d
+  - linksrobot/demo-ficknury-evaluator:20250714-a1b2c3d
+```
 
 ### ArgoCD Integration
 For GitOps deployment, use the provided ArgoCD Application manifest:

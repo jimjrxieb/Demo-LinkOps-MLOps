@@ -1,0 +1,82 @@
+[
+  {
+    "title": "CI/CD Pipeline Linting",
+    "keywords": ["ci", "cd", "pipeline", "lint", "yaml", "gha"],
+    "orb": "Ensure your CI/CD pipeline is linted using yamllint and GitHub Actions workflow syntax validation.",
+    "rune": "R-101",
+    "confidence": 0.96,
+    "category": "DevOps"
+  },
+  {
+    "title": "Container Image Vulnerability Scanning",
+    "keywords": ["trivy", "container", "image", "vulnerability", "scan"],
+    "orb": "Scan container images with Trivy to identify OS and dependency vulnerabilities.",
+    "rune": "R-102",
+    "confidence": 0.94,
+    "category": "Security"
+  },
+  {
+    "title": "Helm Chart Best Practices",
+    "keywords": ["helm", "chart", "values.yaml", "templates"],
+    "orb": "Follow Helm chart conventions: use `values.yaml`, document templates, and validate with `helm lint`.",
+    "rune": "R-103",
+    "confidence": 0.93,
+    "category": "Kubernetes"
+  },
+  {
+    "title": "GitOps Compliance Check",
+    "keywords": ["gitops", "argocd", "flux", "manifests"],
+    "orb": "Ensure Kubernetes manifests follow GitOps principles and are managed via tools like ArgoCD or Flux.",
+    "rune": "R-104",
+    "confidence": 0.91,
+    "category": "GitOps"
+  },
+  {
+    "title": "Secrets Management with Kubernetes",
+    "keywords": ["secret", "kubernetes", "sealed-secrets", "vault"],
+    "orb": "Use Sealed Secrets or HashiCorp Vault for secure Kubernetes secret management.",
+    "rune": "R-105",
+    "confidence": 0.92,
+    "category": "Security"
+  },
+  {
+    "title": "Shift Left Security",
+    "keywords": ["shift", "left", "security", "snyk", "bandit"],
+    "orb": "Integrate Snyk, Bandit, and Checkov into CI pipeline for early security checks.",
+    "rune": "R-106",
+    "confidence": 0.93,
+    "category": "Security"
+  },
+  {
+    "title": "Terraform Code Quality",
+    "keywords": ["terraform", "tfsec", "lint", "infrastructure"],
+    "orb": "Use `tflint`, `tfsec`, and `checkov` to audit infrastructure as code.",
+    "rune": "R-107",
+    "confidence": 0.94,
+    "category": "Infrastructure"
+  },
+  {
+    "title": "Kubernetes Pod Security",
+    "keywords": ["pod", "security", "psa", "policy", "kubernetes"],
+    "orb": "Apply Pod Security Standards (restricted, baseline, privileged) via PSA admission controller.",
+    "rune": "R-108",
+    "confidence": 0.95,
+    "category": "Kubernetes"
+  },
+  {
+    "title": "API Security Guidelines",
+    "keywords": ["api", "security", "authentication", "authorization"],
+    "orb": "Enforce authentication, rate limiting, and secure headers for REST APIs.",
+    "rune": "R-109",
+    "confidence": 0.91,
+    "category": "Security"
+  },
+  {
+    "title": "Log Aggregation for Debugging",
+    "keywords": ["logs", "debug", "grafana", "prometheus", "loki"],
+    "orb": "Centralize logs using Loki or ELK to enable efficient debugging and alerting.",
+    "rune": "R-110",
+    "confidence": 0.90,
+    "category": "Observability"
+  }
+] 

@@ -32,6 +32,7 @@ from pydantic import BaseModel
 from scorer import score_task
 from selector import select_agent_for_task
 from task_router import Task, TaskEvaluation, evaluate_task
+from orb_scoring import score_task_against_orbs, search_orbs, get_library_stats
 
 app = FastAPI(title="FickNury Evaluator")
 
@@ -96,3 +97,74 @@ def health() -> dict[str, str]:
 @app.get("/")
 def read_root():
     return {"status": "ok", "service": "ficknury_evaluator"}
+
+
+# --- ORB SCORING ENDPOINTS ---
+
+class OrbTaskInput(BaseModel):
+    task: str
+
+
+class OrbSearchInput(BaseModel):
+    query: str
+
+
+@app.post("/api/orb/score")
+async def score_task_with_orbs(input_data: OrbTaskInput):
+    """
+    Score a task against the DevSecOps Orb library for automation evaluation
+    """
+    try:
+        result = score_task_against_orbs(input_data.task)
+        return result
+    except Exception as e:
+        return {"error": str(e), "task": input_data.task}
+
+
+@app.post("/api/orb/search")
+async def search_orb_library(input_data: OrbSearchInput):
+    """
+    Search the Orb library by title, keywords, or category
+    """
+    try:
+        results = search_orbs(input_data.query)
+        return {
+            "query": input_data.query,
+            "results": results,
+            "total": len(results)
+        }
+    except Exception as e:
+        return {"error": str(e), "query": input_data.query}
+
+
+@app.get("/api/orb/stats")
+async def get_orb_library_stats():
+    """
+    Get statistics about the Orb library
+    """
+    try:
+        return get_library_stats()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@app.get("/api/orb/health")
+async def orb_health_check():
+    """
+    Health check for Orb scoring functionality
+    """
+    try:
+        stats = get_library_stats()
+        return {
+            "status": "healthy",
+            "orb_scoring": "enabled",
+            "library_loaded": stats["total_orbs"] > 0,
+            "total_orbs": stats["total_orbs"],
+            "categories": stats["category_count"]
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "orb_scoring": "error",
+            "error": str(e)
+        }

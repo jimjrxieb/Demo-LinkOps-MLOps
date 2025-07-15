@@ -126,7 +126,7 @@
     </div>
 
     <!-- Results -->
-    <div v-if="matchingOrb || generatedOrb" class="space-y-4">
+    <div v-if="matchingOrb || generatedOrb || (confidenceScore === 0 && taskInput)" class="space-y-4">
       <!-- Best Match Found -->
       <div v-if="matchingOrb" class="border border-green-500 bg-black/20 p-6 rounded-2xl">
         <div class="flex items-center space-x-2 mb-4">
@@ -191,6 +191,11 @@
           </button>
         </div>
       </div>
+
+      <!-- No Match Found - Show Whis Pipeline -->
+      <div v-else-if="confidenceScore === 0 && taskInput" class="space-y-4">
+        <WhisPipeline />
+      </div>
     </div>
 
     <!-- Purpose Section -->
@@ -220,18 +225,69 @@
         </ul>
       </div>
     </div>
+
+    <!-- 🧠 Add AI API Keys (Plug-and-Play Style) -->
+    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
+      <h2 class="text-2xl font-bold mb-4 text-purple-400">🧠 Add AI API Keys</h2>
+      <p class="text-gray-300 mb-4">
+        You can plug in your own AI API key to enable fallback learning and solution generation.
+      </p>
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-300 mb-2">OpenAI / Grok API Key</label>
+          <input 
+            v-model="aiApiKey" 
+            type="password"
+            placeholder="sk-... or gsk_..." 
+            class="w-full p-3 rounded-lg bg-black border border-gray-700 text-white focus:border-purple-500 focus:outline-none"
+          />
+          <p class="text-xs text-gray-400 mt-1">
+            Your API key is stored locally and never sent to our servers
+          </p>
+        </div>
+        <div class="flex gap-3">
+          <button 
+            @click="saveApiKey" 
+            :disabled="!aiApiKey.trim()"
+            class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 font-semibold"
+          >
+            🔑 Save Key
+          </button>
+          <button 
+            @click="clearApiKey" 
+            class="bg-gray-700 text-white px-6 py-3 rounded-xl hover:bg-gray-600 font-semibold"
+          >
+            🗑️ Clear Key
+          </button>
+        </div>
+        <div v-if="apiKeyStatus" class="p-3 rounded-lg" :class="apiKeyStatus.type === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'">
+          {{ apiKeyStatus.message }}
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
+import WhisPipeline from './WhisPipeline.vue'
 
 const taskInput = ref('')
 const generatedOrb = ref(null)
 const matchingOrb = ref(null)
 const confidenceScore = ref(null)
 const loading = ref(false)
+const aiApiKey = ref('')
+const apiKeyStatus = ref(null)
+
+// Load API key from localStorage on mount
+onMounted(() => {
+  const savedKey = localStorage.getItem('linkops_ai_api_key')
+  if (savedKey) {
+    aiApiKey.value = savedKey
+  }
+})
 
 const submitTask = async () => {
   loading.value = true
@@ -239,33 +295,24 @@ const submitTask = async () => {
     const response = await axios.post('/api/demo/search-orb', {
       task: taskInput.value
     })
+    
+    // Handle the new response format (no Grok fallback)
     if (response.data.match) {
       matchingOrb.value = response.data.match
       confidenceScore.value = response.data.confidence
       generatedOrb.value = null
     } else {
+      // No match found - show empty state
       matchingOrb.value = null
-      confidenceScore.value = response.data.confidence
-      generatedOrb.value = response.data.generated_orb
+      confidenceScore.value = 0
+      generatedOrb.value = null
     }
   } catch (error) {
     console.error(error)
-    // Fallback demo response
+    // Show error state
     matchingOrb.value = null
-    confidenceScore.value = 72
-    generatedOrb.value = {
-      title: `Best Practice for: ${taskInput.value}`,
-      description: 'AI-generated best practice for the submitted task.',
-      steps: [
-        'Analyze the task requirements',
-        'Identify key components and dependencies',
-        'Follow industry best practices',
-        'Implement with proper error handling',
-        'Test and validate the solution',
-      ],
-      model: 'Grok API',
-      category: 'General',
-    }
+    confidenceScore.value = 0
+    generatedOrb.value = null
   } finally {
     loading.value = false
   }
@@ -276,6 +323,31 @@ const clearResults = () => {
   generatedOrb.value = null
   matchingOrb.value = null
   confidenceScore.value = null
+}
+
+const saveApiKey = () => {
+  if (aiApiKey.value.trim()) {
+    localStorage.setItem('linkops_ai_api_key', aiApiKey.value)
+    apiKeyStatus.value = {
+      type: 'success',
+      message: '✅ API key saved successfully! You can now enable AI fallback features.'
+    }
+    setTimeout(() => {
+      apiKeyStatus.value = null
+    }, 3000)
+  }
+}
+
+const clearApiKey = () => {
+  aiApiKey.value = ''
+  localStorage.removeItem('linkops_ai_api_key')
+  apiKeyStatus.value = {
+    type: 'success',
+    message: '🗑️ API key cleared successfully!'
+  }
+  setTimeout(() => {
+    apiKeyStatus.value = null
+  }, 3000)
 }
 </script>
 

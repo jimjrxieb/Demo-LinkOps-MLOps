@@ -1,5 +1,19 @@
+import json
 from datetime import datetime
+from pathlib import Path
 from typing import Any, Optional
+
+# Load Orb library from JSON file
+ORB_PATH = Path(__file__).parent / "data" / "orb_library.json"
+try:
+    with open(ORB_PATH) as f:
+        orb_library = json.load(f)
+except FileNotFoundError:
+    print(f"Warning: Orb library file not found at {ORB_PATH}")
+    orb_library = []
+except json.JSONDecodeError as e:
+    print(f"Warning: Invalid JSON in Orb library file: {e}")
+    orb_library = []
 
 
 def sanitize_cmd(cmd):
@@ -352,113 +366,12 @@ async def get_recent_orbs():
 
 # --- DEMO ORB SEARCH ENDPOINT ---
 
-# Orb Library Mock (temporary for demo)
-orb_library = [
-    {
-        "title": "Kubernetes Pod Creation",
-        "keywords": ["create", "pod", "nginx", "kubectl", "run", "deploy", "container"],
-        "orb": "To create a pod using nginx: `kubectl run test --image=nginx`",
-        "rune": "R-001",
-        "confidence": 0.95,
-        "category": "Kubernetes",
-        "description": "Standard practice for creating Kubernetes pods with specific images",
-        "tags": ["kubernetes", "pod", "deployment", "container"]
-    },
-    {
-        "title": "Deploy Kubernetes App",
-        "keywords": ["deployment", "kubectl", "k8s", "deploy", "app", "application"],
-        "orb": "Use `kubectl create deployment demo --image=myapp`",
-        "rune": "R-002",
-        "confidence": 0.87,
-        "category": "Kubernetes",
-        "description": "Best practice for deploying applications to Kubernetes",
-        "tags": ["kubernetes", "deployment", "app", "microservice"]
-    },
-    {
-        "title": "Create Helm Chart",
-        "keywords": ["helm", "chart", "create", "package", "template", "values.yaml"],
-        "orb": "Run `helm create myapp` then customize values.yaml and templates/",
-        "rune": "R-003",
-        "confidence": 0.92,
-        "category": "Helm",
-        "description": "Standard workflow for creating and packaging Helm charts",
-        "tags": ["helm", "chart", "packaging", "kubernetes"]
-    },
-    {
-        "title": "Security Scan Repository",
-        "keywords": ["security", "scan", "repo", "vulnerability", "trivy", "snyk", "secrets"],
-        "orb": "Use Trivy: `trivy fs --security-checks vuln,secret .` or Snyk: `snyk test`",
-        "rune": "R-004",
-        "confidence": 0.89,
-        "category": "Security",
-        "description": "Comprehensive security scanning for vulnerabilities and secrets",
-        "tags": ["security", "scanning", "vulnerabilities", "secrets"]
-    },
-    {
-        "title": "Setup GitOps with ArgoCD",
-        "keywords": ["gitops", "argocd", "git", "ops", "declarative", "sync"],
-        "orb": "Install ArgoCD, create Application manifest, sync with Git repo",
-        "rune": "R-005",
-        "confidence": 0.85,
-        "category": "GitOps",
-        "description": "Declarative GitOps deployment using ArgoCD",
-        "tags": ["gitops", "argocd", "declarative", "deployment"]
-    },
-    {
-        "title": "CI/CD Pipeline Setup",
-        "keywords": ["ci", "cd", "pipeline", "github", "actions", "jenkins", "gitlab"],
-        "orb": "Create .github/workflows/main.yml for build, test, and deploy stages",
-        "rune": "R-006",
-        "confidence": 0.88,
-        "category": "CI/CD",
-        "description": "Automated build, test, and deployment pipeline setup",
-        "tags": ["ci", "cd", "pipeline", "automation"]
-    },
-    {
-        "title": "Infrastructure as Code (Terraform)",
-        "keywords": ["terraform", "iac", "infrastructure", "code", "aws", "azure", "gcp"],
-        "orb": "Write Terraform configs for VPC, subnets, and compute resources",
-        "rune": "R-007",
-        "confidence": 0.91,
-        "category": "Infrastructure",
-        "description": "Infrastructure provisioning using Terraform IaC",
-        "tags": ["terraform", "iac", "infrastructure", "cloud"]
-    },
-    {
-        "title": "Setup Monitoring & Logging",
-        "keywords": ["monitoring", "logging", "prometheus", "grafana", "elk", "stack"],
-        "orb": "Deploy Prometheus + Grafana for metrics, ELK stack for logs",
-        "rune": "R-008",
-        "confidence": 0.86,
-        "category": "Observability",
-        "description": "Comprehensive monitoring and logging infrastructure setup",
-        "tags": ["monitoring", "logging", "observability", "metrics"]
-    },
-    {
-        "title": "Database Migration & Backup",
-        "keywords": ["database", "migration", "backup", "schema", "sql", "postgres", "mysql"],
-        "orb": "Always backup before migrations, use version control, test on staging",
-        "rune": "R-009",
-        "confidence": 0.89,
-        "category": "Database",
-        "description": "Safe practices for database schema changes and migrations",
-        "tags": ["database", "migration", "backup", "schema"]
-    },
-    {
-        "title": "API Security Implementation",
-        "keywords": ["api", "security", "authentication", "https", "jwt", "oauth", "rate", "limit"],
-        "orb": "Implement HTTPS, JWT authentication, input validation, and rate limiting",
-        "rune": "R-010",
-        "confidence": 0.92,
-        "category": "Security",
-        "description": "Security best practices for RESTful API development",
-        "tags": ["api", "security", "authentication", "authorization"]
-    }
-]
+# Orb library is now loaded from JSON file at startup
 
 def match_orb(task_input: str):
     """
-    Match task input against orb library and return best match or generated fallback.
+    Match task input against orb library and return best match only.
+    No Grok fallback - only exact matches from the hardcoded library.
     """
     task_lower = task_input.lower()
     best_match = None
@@ -478,26 +391,11 @@ def match_orb(task_input: str):
             "generated_orb": None
         }
     else:
-        # Fallback: generate Orb (simulated Grok call)
-        generated_orb = {
-            "title": f"Best Practice for: {task_input}",
-            "description": "AI-generated best practice for the submitted task.",
-            "steps": [
-                "Analyze the task requirements",
-                "Identify key components and dependencies", 
-                "Follow industry best practices",
-                "Implement with proper error handling",
-                "Test and validate the solution"
-            ],
-            "model": "Grok API",
-            "confidence": 72,
-            "category": "General",
-            "rune": "N/A"
-        }
+        # No match found - return empty result
         return {
             "match": None,
-            "confidence": 72,
-            "generated_orb": generated_orb
+            "confidence": 0,
+            "generated_orb": None
         }
 
 class TaskInput(BaseModel):
@@ -506,7 +404,8 @@ class TaskInput(BaseModel):
 @router.post("/demo/search-orb")
 def search_orb(input_data: TaskInput):
     """
-    Search for matching Orbs in the library or generate a new one.
+    Search for matching Orbs in the hardcoded library only.
+    No AI fallback - only exact matches from the DevSecOps Orb Library.
     """
     try:
         result = match_orb(input_data.task)
@@ -528,4 +427,6 @@ async def health_check():
         "environment": "demo",
         "timestamp": datetime.now().isoformat(),
         "orbs_count": len(DEMO_ORBS),
+        "orb_library_count": len(orb_library),
+        "orb_library_loaded": len(orb_library) > 0,
     }

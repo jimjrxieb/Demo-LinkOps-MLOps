@@ -9,8 +9,6 @@ on:
 env:
   PYTHON_VERSION: "3.11"
   NODE_VERSION: "20"
-  # Version strategy: YYYYMMDD-commit_hash (e.g., 20250714-a1b2c3d)
-  IMAGE_TAG: "${{ github.event_name == 'push' && format('{0}-{1}', github.run_number, github.sha) || 'latest' }}"
 
 permissions:
   contents: write  # For ArgoCD updates
@@ -267,6 +265,14 @@ jobs:
 
       - uses: docker/setup-buildx-action@v3
 
+      - name: Generate Version Tag
+        id: version
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          DATE=$(date +%Y%m%d)
+          echo "TAG=${DATE}-${SHORT_SHA}" >> $GITHUB_OUTPUT
+          echo "Generated version tag: ${DATE}-${SHORT_SHA}"
+
       - name: Debug - List Demo Services
         run: |
           echo "🔍 Demo Services Check..."
@@ -315,7 +321,7 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: linksrobot/demo-frontend:${{ env.IMAGE_TAG }}
+          tags: linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -324,7 +330,7 @@ jobs:
         with:
           context: ./mlops/mlops-platform
           push: true
-          tags: linksrobot/demo-mlops-platform:${{ env.IMAGE_TAG }}
+          tags: linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -333,7 +339,7 @@ jobs:
         with:
           context: ./mlops/whis-data-input
           push: true
-          tags: linksrobot/demo-whis-data-input:${{ env.IMAGE_TAG }}
+          tags: linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -342,7 +348,7 @@ jobs:
         with:
           context: ./mlops/whis-sanitize
           push: true
-          tags: linksrobot/demo-whis-sanitize:${{ env.IMAGE_TAG }}
+          tags: linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -351,7 +357,7 @@ jobs:
         with:
           context: ./mlops/whis-logic
           push: true
-          tags: linksrobot/demo-whis-logic:${{ env.IMAGE_TAG }}
+          tags: linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -360,7 +366,7 @@ jobs:
         with:
           context: ./shadows/ficknury-evaluator
           push: true
-          tags: linksrobot/demo-ficknury-evaluator:${{ env.IMAGE_TAG }}
+          tags: linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -370,12 +376,12 @@ jobs:
           echo "=================================="
           echo ""
           echo "✅ Successfully built and pushed:"
-          echo "  - linksrobot/demo-frontend:${{ env.IMAGE_TAG }}"
-          echo "  - linksrobot/demo-mlops-platform:${{ env.IMAGE_TAG }}"
-          echo "  - linksrobot/demo-whis-data-input:${{ env.IMAGE_TAG }}"
-          echo "  - linksrobot/demo-whis-sanitize:${{ env.IMAGE_TAG }}"
-          echo "  - linksrobot/demo-whis-logic:${{ env.IMAGE_TAG }}"
-          echo "  - linksrobot/demo-ficknury-evaluator:${{ env.IMAGE_TAG }}"
+          echo "  - linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}"
+          echo "  - linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}"
+          echo "  - linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}"
+          echo "  - linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}"
+          echo "  - linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}"
+          echo "  - linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}"
           echo ""
           echo "🚀 Ready for deployment on Azure VM!"
           echo "Run: docker-compose pull && docker-compose up -d"
@@ -389,15 +395,15 @@ jobs:
           # Commit: ${{ github.sha }}
           # Run: ${{ github.run_number }}
           
-          IMAGE_TAG=${{ env.IMAGE_TAG }}
+          IMAGE_TAG=${{ steps.version.outputs.TAG }}
           
           # Service Images
-          FRONTEND_IMAGE=linksrobot/demo-frontend:${{ env.IMAGE_TAG }}
-          MLOPS_PLATFORM_IMAGE=linksrobot/demo-mlops-platform:${{ env.IMAGE_TAG }}
-          WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:${{ env.IMAGE_TAG }}
-          WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:${{ env.IMAGE_TAG }}
-          WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:${{ env.IMAGE_TAG }}
-          FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:${{ env.IMAGE_TAG }}
+          FRONTEND_IMAGE=linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}
+          MLOPS_PLATFORM_IMAGE=linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}
+          WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
+          WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
+          WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
+          FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
           
           # Docker Compose Command
           # docker-compose pull && docker-compose up -d
@@ -412,7 +418,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add VERSION
-          git commit -m "chore: update version to ${{ env.IMAGE_TAG }} - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+          git commit -m "chore: update version to ${{ steps.version.outputs.TAG }} - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
           git push || echo "No push needed"
 
   update-argocd:
