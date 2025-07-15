@@ -28,11 +28,11 @@ def sanitize_cmd(cmd):
 
 
 from fastapi import FastAPI, Request
+from orb_scoring import get_library_stats, score_task_against_orbs, search_orbs
 from pydantic import BaseModel
 from scorer import score_task
 from selector import select_agent_for_task
 from task_router import Task, TaskEvaluation, evaluate_task
-from orb_scoring import score_task_against_orbs, search_orbs, get_library_stats
 
 app = FastAPI(title="FickNury Evaluator")
 
@@ -101,6 +101,7 @@ def read_root():
 
 # --- ORB SCORING ENDPOINTS ---
 
+
 class OrbTaskInput(BaseModel):
     task: str
 
@@ -128,11 +129,7 @@ async def search_orb_library(input_data: OrbSearchInput):
     """
     try:
         results = search_orbs(input_data.query)
-        return {
-            "query": input_data.query,
-            "results": results,
-            "total": len(results)
-        }
+        return {"query": input_data.query, "results": results, "total": len(results)}
     except Exception as e:
         return {"error": str(e), "query": input_data.query}
 
@@ -160,11 +157,7 @@ async def orb_health_check():
             "orb_scoring": "enabled",
             "library_loaded": stats["total_orbs"] > 0,
             "total_orbs": stats["total_orbs"],
-            "categories": stats["category_count"]
+            "categories": stats["category_count"],
         }
     except Exception as e:
-        return {
-            "status": "unhealthy",
-            "orb_scoring": "error",
-            "error": str(e)
-        }
+        return {"status": "unhealthy", "orb_scoring": "error", "error": str(e)}

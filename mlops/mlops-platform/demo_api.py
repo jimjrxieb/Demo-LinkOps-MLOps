@@ -368,6 +368,7 @@ async def get_recent_orbs():
 
 # Orb library is now loaded from JSON file at startup
 
+
 def match_orb(task_input: str):
     """
     Match task input against orb library and return best match only.
@@ -385,21 +386,15 @@ def match_orb(task_input: str):
 
     if best_match and highest_score > 0:
         confidence = round(highest_score / len(best_match["keywords"]) * 100, 1)
-        return {
-            "match": best_match,
-            "confidence": confidence,
-            "generated_orb": None
-        }
+        return {"match": best_match, "confidence": confidence, "generated_orb": None}
     else:
         # No match found - return empty result
-        return {
-            "match": None,
-            "confidence": 0,
-            "generated_orb": None
-        }
+        return {"match": None, "confidence": 0, "generated_orb": None}
+
 
 class TaskInput(BaseModel):
     task: str
+
 
 @router.post("/demo/search-orb")
 def search_orb(input_data: TaskInput):

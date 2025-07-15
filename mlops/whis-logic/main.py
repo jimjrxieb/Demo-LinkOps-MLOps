@@ -30,7 +30,9 @@ def sanitize_cmd(cmd):
     return cmd
 
 
-from fastapi import FastAPI, HTTPException
+from typing import Optional
+
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from logic.model import (
     WhisLogic,
@@ -39,8 +41,6 @@ from logic.model import (
     generate_recommendations,
 )
 from pydantic import BaseModel
-from fastapi import Query
-from typing import Optional
 
 # Simulated Orb Library (real version will query vector DB or ORM)
 ORB_LIBRARY = [
@@ -49,16 +49,17 @@ ORB_LIBRARY = [
         "description": "Standard practices for deploying apps to K8s.",
         "tags": ["kubernetes", "deployment"],
         "rune_id": "rune.k8s.deploy.v1",
-        "score": 95
+        "score": 95,
     },
     {
         "title": "API Security Guidelines",
         "description": "Security best practices for APIs.",
         "tags": ["api", "security"],
         "rune_id": "rune.api.sec.v1",
-        "score": 87
-    }
+        "score": 87,
+    },
 ]
+
 
 class OrbResult(BaseModel):
     match_found: bool
@@ -242,10 +243,10 @@ def search_orbs(task: str = Query(..., description="Jira-style task string")):
                 "Identify key components and dependencies",
                 "Follow industry best practices",
                 "Implement with proper error handling",
-                "Test and validate the solution"
+                "Test and validate the solution",
             ],
             "model": "Grok API",
-            "score": 72  # Simulated confidence score
+            "score": 72,  # Simulated confidence score
         }
         return OrbResult(match_found=False, ai_generated_orb=generated)
 

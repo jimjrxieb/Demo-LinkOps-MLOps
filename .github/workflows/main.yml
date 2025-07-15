@@ -321,7 +321,9 @@ jobs:
         with:
           context: ./frontend
           push: true
-          tags: linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}
+          tags: |
+            linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -330,7 +332,9 @@ jobs:
         with:
           context: ./mlops/mlops-platform
           push: true
-          tags: linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}
+          tags: |
+            linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-mlops-platform:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -339,7 +343,9 @@ jobs:
         with:
           context: ./mlops/whis-data-input
           push: true
-          tags: linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
+          tags: |
+            linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-whis-data-input:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -348,7 +354,9 @@ jobs:
         with:
           context: ./mlops/whis-sanitize
           push: true
-          tags: linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
+          tags: |
+            linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-whis-sanitize:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -357,7 +365,9 @@ jobs:
         with:
           context: ./mlops/whis-logic
           push: true
-          tags: linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
+          tags: |
+            linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-whis-logic:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -366,7 +376,9 @@ jobs:
         with:
           context: ./shadows/ficknury-evaluator
           push: true
-          tags: linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
+          tags: |
+            linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-ficknury-evaluator:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -376,15 +388,20 @@ jobs:
           echo "=================================="
           echo ""
           echo "✅ Successfully built and pushed:"
-          echo "  - linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}"
-          echo "  - linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}"
-          echo "  - linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}"
-          echo "  - linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}"
-          echo "  - linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}"
-          echo "  - linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}"
+          echo "  - linksrobot/demo-frontend:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }} (and :latest)"
           echo ""
           echo "🚀 Ready for deployment on Azure VM!"
           echo "Run: docker-compose pull && docker-compose up -d"
+          echo ""
+          echo "📋 Version Info:"
+          echo "  - Version Tag: ${{ steps.version.outputs.TAG }}"
+          echo "  - Commit SHA: ${{ github.sha }}"
+          echo "  - Run Number: ${{ github.run_number }}"
 
       - name: Create Version File
         run: |
