@@ -40,14 +40,26 @@
                 placeholder="Search by title, keywords, or category..."
               />
             </div>
+            
+            <!-- Category Buttons -->
             <div class="form-group">
               <label class="form-label">Filter by Category</label>
-              <select v-model="selectedCategory" class="form-input">
-                <option value="">All Categories</option>
-                <option v-for="category in categories" :key="category" :value="category">
+              <div class="category-buttons">
+                <button
+                  @click="selectedCategory = ''"
+                  :class="['category-btn', selectedCategory === '' ? 'category-btn-active' : 'category-btn-inactive']"
+                >
+                  All Categories
+                </button>
+                <button
+                  v-for="category in categories"
+                  :key="category"
+                  @click="selectedCategory = category"
+                  :class="['category-btn', selectedCategory === category ? 'category-btn-active' : 'category-btn-inactive']"
+                >
                   {{ category }}
-                </option>
-              </select>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -372,6 +384,46 @@ onMounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1.5rem;
+}
+
+.category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.category-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-btn-active {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border-color: #1d4ed8;
+}
+
+.category-btn-active:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.category-btn-inactive {
+  background: #f8fafc;
+  color: #475569;
+  border-color: #cbd5e1;
+}
+
+.category-btn-inactive:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+  border-color: #94a3b8;
 }
 
 .orbs-grid {

@@ -7,17 +7,18 @@
 
     <div class="pipeline-container">
       <div class="pipeline-steps">
-        <div
-          v-for="(step, index) in pipelineData"
-          :key="step.id"
-          class="pipeline-step"
-          :class="{
-            active: index === currentStep,
-            completed: index < currentStep,
-            pending: index > currentStep,
-          }"
-          @click="$emit('step-click', step)"
-        >
+        <transition-group name="step-fade" tag="div">
+          <div
+            v-for="(step, index) in pipelineData"
+            :key="step.id"
+            class="pipeline-step"
+            :class="{
+              active: index === currentStep,
+              completed: index < currentStep,
+              pending: index > currentStep,
+            }"
+            @click="$emit('step-click', step)"
+          >
           <div class="step-icon">
             {{ step.icon }}
           </div>
@@ -31,6 +32,13 @@
             <p class="step-tools">
               📦 Tools: {{ step.tools }}
             </p>
+            
+            <!-- Enhanced Tool Details -->
+            <div v-if="index === currentStep" class="tool-details">
+              <div class="tool-title">🔧 Current Process</div>
+              <div class="tool-description">{{ getToolDescription(index) }}</div>
+              <div class="tool-tech">{{ getToolTechStack(index) }}</div>
+            </div>
             <div class="step-status">
               <span class="status-indicator" :class="getStepStatus(index)" />
               <span class="status-text">{{ getStepStatusText(index) }}</span>
@@ -85,7 +93,7 @@
             <div class="connector-line" />
             <div class="connector-arrow">→</div>
           </div>
-        </div>
+        </transition-group>
       </div>
     </div>
 
@@ -144,6 +152,28 @@ const getStepStatusText = (index) => {
   if (index < props.currentStep) return 'Completed';
   if (index === props.currentStep) return 'Processing';
   return 'Pending';
+};
+
+const getToolDescription = (index) => {
+  const descriptions = {
+    0: 'Collecting task input from user interface and preparing for processing. Validating input format and extracting key parameters.',
+    1: 'Sanitizing input data by removing sensitive information, standardizing format, and ensuring data quality for AI processing.',
+    2: 'AI-powered analysis using LangChain and OpenAI to understand task requirements and generate execution strategies.',
+    3: 'Orchestrating the complete workflow, managing dependencies, and coordinating between different processing stages.',
+    4: 'Executing the final solution, deploying resources, and providing real-time feedback on task completion.'
+  };
+  return descriptions[index] || 'Processing step...';
+};
+
+const getToolTechStack = (index) => {
+  const techStacks = {
+    0: 'FastAPI, JSON Schema, Vue.js, Axios',
+    1: 'Python sanitizer, PII detection, data validation',
+    2: 'LangChain, OpenAI GPT-4, prompt engineering',
+    3: 'Workflow engine, Redis, PostgreSQL, monitoring',
+    4: 'Kubernetes API, Helm, Terraform, CI/CD tools'
+  };
+  return techStacks[index] || 'Various tools and frameworks';
 };
 </script>
 
@@ -346,6 +376,78 @@ const getStepStatusText = (index) => {
 .approval-section .btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Transition Animations */
+.step-fade-enter-active,
+.step-fade-leave-active {
+  transition: all 0.5s ease;
+}
+
+.step-fade-enter-from {
+  opacity: 0;
+  transform: translateX(-30px);
+}
+
+.step-fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.step-fade-move {
+  transition: transform 0.5s ease;
+}
+
+/* Enhanced Tool Descriptions */
+.tool-details {
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+  transition: all 0.3s ease;
+}
+
+.tool-details:hover {
+  border-color: #00d4ff;
+  box-shadow: 0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+.tool-title {
+  color: #00d4ff;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.tool-description {
+  color: #e0e0e0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+}
+
+.tool-tech {
+  color: #888;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+/* Live Pipeline Animation */
+.pipeline-step.processing {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  }
 }
 
 /* Responsive Design */

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  frontend:
+    volumes:
+      - ./frontend/.htpasswd:/etc/nginx/.htpasswd:ro
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
+    command: >
+      sh -c "
+        echo 'Creating htpasswd file...' &&
+        htpasswd -cb /etc/nginx/.htpasswd demo KubernetesCD2024! &&
+        echo 'Starting nginx...' &&
+        nginx -g 'daemon off;'
+      " 
