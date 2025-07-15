@@ -1,276 +1,446 @@
 <template>
-  <div class="pipeline-container">
-    <div class="pipeline-header">
-      <h2>🧠 Whis Learning Pipeline (Simulated)</h2>
-      <p class="pipeline-subtitle">
-        This task was not found in the Orb Library. Here's how Whis would learn it:
-      </p>
-    </div>
-
-    <div class="pipeline-steps">
-      <div 
-        v-for="(step, index) in steps" 
-        :key="index" 
-        class="pipeline-step"
-        :class="{ 'active': currentStep >= index }"
-      >
-        <div class="step-header">
-          <div class="step-number">{{ index + 1 }}</div>
-          <h3>{{ step.title }}</h3>
+  <div class="whis-pipeline">
+    <!-- Header Section -->
+    <div class="header-section">
+      <div class="card">
+        <div class="card-header">
+          <h2 class="card-title">🧠 Whis Learning Pipeline</h2>
+          <p class="text-gray-600">Visualize the AI-powered task processing and learning stages</p>
         </div>
-        <p class="step-description">{{ step.description }}</p>
-        <div class="step-status">
-          <span v-if="currentStep >= index" class="status-completed">✅ Completed</span>
-          <span v-else class="status-pending">⏳ Pending</span>
-        </div>
-        <div v-if="step.tools" class="step-tools">
-          <strong>Tools:</strong> {{ step.tools }}
+        <div class="card-body">
+          <div class="pipeline-overview">
+            <p>The Whis pipeline processes tasks through multiple intelligent stages, each designed to enhance understanding and generate optimal solutions.</p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="pipeline-footer">
-      <div class="final-note">
-        <h4>🎯 Learning Outcome</h4>
-        <p>✅ Task learned and a new Orb + Rune would be created in full system.</p>
-        <p>📌 Note: In demo mode, actual learning is disabled.</p>
+    <!-- Pipeline Stages -->
+    <div class="pipeline-stages">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">Pipeline Stages</h3>
+        </div>
+        <div class="card-body">
+          <div class="stages-grid">
+            <!-- Stage 1: Input -->
+            <div class="stage-card">
+              <div class="stage-header">
+                <div class="stage-icon">📥</div>
+                <div class="stage-info">
+                  <h4>1. Input Processing</h4>
+                  <span class="stage-status">Active</span>
+                </div>
+              </div>
+              <div class="stage-content">
+                <p>Raw task input is received and validated. The system analyzes the request format, extracts key parameters, and prepares for processing.</p>
+                <ul class="stage-features">
+                  <li>Input validation and sanitization</li>
+                  <li>Parameter extraction</li>
+                  <li>Request categorization</li>
+                  <li>Priority assessment</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Stage 2: Sanitization -->
+            <div class="stage-card">
+              <div class="stage-header">
+                <div class="stage-icon">🧹</div>
+                <div class="stage-info">
+                  <h4>2. Sanitization</h4>
+                  <span class="stage-status">Active</span>
+                </div>
+              </div>
+              <div class="stage-content">
+                <p>Input is cleaned and normalized to ensure consistency and security. This stage removes noise, validates content, and prepares for analysis.</p>
+                <ul class="stage-features">
+                  <li>Content cleaning and normalization</li>
+                  <li>Security validation</li>
+                  <li>Format standardization</li>
+                  <li>Noise reduction</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Stage 3: Smithing -->
+            <div class="stage-card active">
+              <div class="stage-header">
+                <div class="stage-icon">⚒️</div>
+                <div class="stage-info">
+                  <h4>3. Smithing</h4>
+                  <span class="stage-status active">Processing</span>
+                </div>
+              </div>
+              <div class="stage-content">
+                <p>The core AI processing stage where the system analyzes requirements, identifies patterns, and crafts intelligent solutions.</p>
+                
+                <div class="smithing-process">
+                  <h5>Smithing Process Includes:</h5>
+                  <ul class="stage-features">
+                    <li>Analyze the task requirements</li>
+                    <li>Identify key components and dependencies</li>
+                    <li>Follow industry best practices</li>
+                    <li>Implement with proper error handling</li>
+                    <li>Test and validate the solution</li>
+                  </ul>
+                </div>
+                
+                <div class="smithing-details">
+                  <p><strong>AI Analysis:</strong> The system uses advanced language models to understand context, extract requirements, and identify the most appropriate solution patterns.</p>
+                  <p><strong>Best Practices:</strong> Solutions are crafted following DevSecOps principles, security guidelines, and industry standards.</p>
+                  <p><strong>Quality Assurance:</strong> Each solution includes proper error handling, validation, and testing recommendations.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Stage 4: Evaluation -->
+            <div class="stage-card">
+              <div class="stage-header">
+                <div class="stage-icon">📊</div>
+                <div class="stage-info">
+                  <h4>4. Evaluation</h4>
+                  <span class="stage-status">Pending</span>
+                </div>
+              </div>
+              <div class="stage-content">
+                <p>Generated solutions are evaluated for quality, security, and effectiveness. Confidence scores and recommendations are provided.</p>
+                <ul class="stage-features">
+                  <li>Solution quality assessment</li>
+                  <li>Security compliance checking</li>
+                  <li>Performance optimization</li>
+                  <li>Confidence scoring</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Stage 5: Output -->
+            <div class="stage-card">
+              <div class="stage-header">
+                <div class="stage-icon">📤</div>
+                <div class="stage-info">
+                  <h4>5. Output Generation</h4>
+                  <span class="stage-status">Pending</span>
+                </div>
+              </div>
+              <div class="stage-content">
+                <p>Final solutions are formatted and presented with explanations, confidence scores, and additional recommendations.</p>
+                <ul class="stage-features">
+                  <li>Solution formatting</li>
+                  <li>Explanation generation</li>
+                  <li>Confidence reporting</li>
+                  <li>Additional recommendations</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <div class="demo-info">
-        <h4>🔍 Demo Mode Information</h4>
-        <ul>
-          <li>This is a simulation of the Whis MLOps pipeline</li>
-          <li>In production, Whis would create new Orbs and Runes</li>
-          <li>Each step uses specialized AI models and tools</li>
-          <li>The pipeline ensures quality and consistency</li>
-        </ul>
+    </div>
+
+    <!-- Learning Insights -->
+    <div class="learning-insights">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">🎓 Learning Insights</h3>
+        </div>
+        <div class="card-body">
+          <div class="insights-grid">
+            <div class="insight-item">
+              <div class="insight-icon">📈</div>
+              <div class="insight-content">
+                <h4>Continuous Learning</h4>
+                <p>The Whis pipeline learns from each interaction, improving its understanding and solution quality over time.</p>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <div class="insight-icon">🔍</div>
+              <div class="insight-content">
+                <h4>Pattern Recognition</h4>
+                <p>Advanced algorithms identify patterns in tasks and solutions, enabling faster and more accurate processing.</p>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <div class="insight-icon">🛡️</div>
+              <div class="insight-content">
+                <h4>Security Focus</h4>
+                <p>Every solution is evaluated for security implications and compliance with best practices.</p>
+              </div>
+            </div>
+            
+            <div class="insight-item">
+              <div class="insight-icon">⚡</div>
+              <div class="insight-content">
+                <h4>Performance Optimization</h4>
+                <p>Solutions are optimized for performance, scalability, and maintainability.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Notice -->
+    <div class="demo-notice">
+      <div class="card">
+        <div class="card-body">
+          <div class="notice-content">
+            <div class="notice-icon">🎯</div>
+            <div class="notice-text">
+              <h4>Demo Mode Active</h4>
+              <p>This visualization shows the Whis pipeline structure. In production, each stage processes real tasks with live AI models and generates actual solutions.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-
-const currentStep = ref(-1)
-
-const steps = [
-  {
-    title: "Task Received in whis_data_input",
-    description: "Tasks are input from text, Q&A, images, or YouTube transcripts. The system captures and normalizes the input for processing.",
-    tools: "Text processing, Image analysis, YouTube API"
-  },
-  {
-    title: "Sanitization in whis_sanitize", 
-    description: "Whis removes sensitive data, structures input, and engineers it into clean ML-ready format. This ensures data quality and security.",
-    tools: "Data cleaning, PII detection, Structure validation"
-  },
-  {
-    title: "Smithing in whis_smithing",
-    description: "Whis analyzes the cleaned input, applies AI reasoning to generate Orbs and Runes. This is where the core learning happens.",
-    tools: "AI reasoning, Pattern recognition, Orb generation"
-  },
-  {
-    title: "Enhancement in whis_enhance",
-    description: "After human approval, new Orbs/Runes are stored under categories like CI, CD, Security, and GitOps philosophy.",
-    tools: "Category classification, Metadata enrichment, Storage"
-  }
-]
-
-// Simulate pipeline progression
-onMounted(() => {
-  let step = 0
-  const interval = setInterval(() => {
-    currentStep.value = step
-    step++
-    if (step >= steps.length) {
-      clearInterval(interval)
-    }
-  }, 800) // 800ms between steps
-})
+// No additional logic needed for this component
 </script>
 
 <style scoped>
-.pipeline-container {
-  padding: 2rem;
-  background: linear-gradient(135deg, #101820 0%, #1e2b35 100%);
+.whis-pipeline {
+  space-y: 6;
+}
+
+.header-section {
+  margin-bottom: 2rem;
+}
+
+.pipeline-overview {
+  color: #64748b;
+  line-height: 1.6;
+}
+
+.pipeline-stages {
+  margin-bottom: 2rem;
+}
+
+.stages-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.stage-card {
+  background: white;
+  border: 2px solid #e2e8f0;
   border-radius: 12px;
-  color: #f8f8f8;
-  border: 1px solid #2c3e50;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-.pipeline-header {
-  text-align: center;
-  margin-bottom: 2rem;
-  padding-bottom: 1rem;
-  border-bottom: 2px solid #00bcd4;
-}
-
-.pipeline-header h2 {
-  color: #00bcd4;
-  margin-bottom: 0.5rem;
-  font-size: 1.8rem;
-}
-
-.pipeline-subtitle {
-  color: #bdc3c7;
-  font-size: 1.1rem;
-  margin: 0;
-}
-
-.pipeline-steps {
-  margin-bottom: 2rem;
-}
-
-.pipeline-step {
-  margin-bottom: 1.5rem;
-  padding: 1.5rem;
-  border-left: 4px solid #34495e;
-  background: rgba(30, 43, 53, 0.6);
-  border-radius: 0 8px 8px 0;
+  overflow: hidden;
   transition: all 0.3s ease;
-  opacity: 0.6;
 }
 
-.pipeline-step.active {
-  border-left-color: #00bcd4;
-  background: rgba(30, 43, 53, 0.9);
-  opacity: 1;
-  box-shadow: 0 4px 16px rgba(0, 188, 212, 0.2);
+.stage-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.step-header {
+.stage-card.active {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.stage-header {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.step-number {
-  background: #00bcd4;
-  color: #101820;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
+.stage-icon {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: bold;
-  margin-right: 1rem;
-  font-size: 1.1rem;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
 }
 
-.pipeline-step.active .step-number {
-  background: #00e676;
-  animation: pulse 2s infinite;
+.stage-info h4 {
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
 }
 
-.step-header h3 {
-  margin: 0;
-  color: #00bcd4;
-  font-size: 1.3rem;
+.stage-status {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  background: #f1f5f9;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.pipeline-step.active .step-header h3 {
-  color: #00e676;
+.stage-status.active {
+  background: #dcfce7;
+  color: #166534;
 }
 
-.step-description {
-  color: #ecf0f1;
+.stage-content {
+  padding: 1.5rem;
+}
+
+.stage-content p {
+  color: #374151;
   line-height: 1.6;
   margin-bottom: 1rem;
 }
 
-.step-status {
-  margin-bottom: 0.5rem;
-}
-
-.status-completed {
-  color: #00e676;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.status-pending {
-  color: #f39c12;
-  font-weight: bold;
-  font-size: 1.1rem;
-}
-
-.step-tools {
-  background: rgba(52, 73, 94, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  color: #bdc3c7;
-}
-
-.pipeline-footer {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.final-note, .demo-info {
-  background: rgba(40, 56, 69, 0.8);
-  padding: 1.5rem;
-  border-radius: 8px;
-  border-left: 4px solid #ff9800;
-}
-
-.final-note h4, .demo-info h4 {
-  color: #ff9800;
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-
-.final-note p, .demo-info p {
-  margin-bottom: 0.5rem;
-  color: #ecf0f1;
-}
-
-.demo-info ul {
+.stage-features {
+  list-style: none;
+  padding: 0;
   margin: 0;
+}
+
+.stage-features li {
+  color: #64748b;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f5f9;
+  position: relative;
   padding-left: 1.5rem;
-  color: #bdc3c7;
 }
 
-.demo-info li {
-  margin-bottom: 0.5rem;
+.stage-features li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: #10b981;
+  font-weight: bold;
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-  100% {
-    transform: scale(1);
-  }
+.stage-features li:last-child {
+  border-bottom: none;
 }
 
-/* Responsive design */
+.smithing-process {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1rem 0;
+}
+
+.smithing-process h5 {
+  color: #0369a1;
+  margin: 0 0 0.75rem 0;
+  font-weight: 600;
+}
+
+.smithing-details {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.smithing-details p {
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.smithing-details p:last-child {
+  margin-bottom: 0;
+}
+
+.learning-insights {
+  margin-bottom: 2rem;
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.insight-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.insight-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.insight-content h4 {
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.insight-content p {
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.demo-notice {
+  margin-bottom: 2rem;
+}
+
+.notice-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+}
+
+.notice-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.notice-text h4 {
+  color: #92400e;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.notice-text p {
+  color: #78350f;
+  line-height: 1.6;
+  margin: 0;
+}
+
 @media (max-width: 768px) {
-  .pipeline-container {
-    padding: 1rem;
-  }
-  
-  .pipeline-footer {
+  .stages-grid {
     grid-template-columns: 1fr;
-    gap: 1rem;
   }
   
-  .step-header {
+  .insights-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stage-header {
     flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
   }
   
-  .step-number {
-    margin-bottom: 0.5rem;
-    margin-right: 0;
+  .notice-content {
+    flex-direction: column;
+    text-align: center;
   }
 }
-</style> 
+</style>

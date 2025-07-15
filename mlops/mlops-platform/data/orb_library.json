@@ -78,5 +78,13 @@
     "rune": "R-110",
     "confidence": 0.90,
     "category": "Observability"
+  },
+  {
+    "title": "Create Pod with Nginx",
+    "keywords": ["create", "pod", "nginx", "kubectl", "run"],
+    "orb": "Use `kubectl run test --image=nginx` to create a simple pod.",
+    "rune": "R-111",
+    "confidence": 0.99,
+    "category": "Kubernetes"
   }
 ] 

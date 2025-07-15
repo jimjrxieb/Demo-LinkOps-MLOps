@@ -1,267 +1,199 @@
 <template>
-  <div class="p-6 space-y-6">
-    <!-- Welcome Header -->
-    <div class="text-center space-y-4">
-      <h1 class="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-500 bg-clip-text text-transparent">
-        🛡️ DevSecOps Shadow Agent Demo
-      </h1>
-      <p class="text-lg text-gray-300 max-w-3xl mx-auto">
-        This is a demonstration of one of the Shadow Agents developed by LinkOps, tailored specifically for DevSecOps workflows.
-      </p>
-    </div>
-
-    <!-- Demo Mode Banner -->
-    <div class="bg-yellow-200 text-yellow-900 text-center py-3 rounded-lg font-semibold">
-      🎯 Demo Mode: Results are simulated. No real AI or API keys required.
-    </div>
-
-    <!-- How It Works Section -->
-    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
-      <h2 class="text-2xl font-bold mb-4 text-purple-400">🧠 How It Works</h2>
-      
-      <div class="space-y-6">
-        <!-- Step 1 -->
-        <div class="border-l-4 border-blue-500 pl-4">
-          <h3 class="text-xl font-semibold text-blue-400">Step 1: Submit a Task You Would Give Me</h3>
-          <p class="text-gray-300 mt-2">
-            This input bar simulates a Jira-style task — anything you would assign a junior platform or DevSecOps engineer.
-          </p>
-          <p class="text-gray-400 italic mt-1">
-            Example: "Deploy an app with Helm and ArgoCD", "Scan this repo for security issues", "Convert to GitOps"
-          </p>
+  <div class="demo-view">
+    <!-- Task Input Section -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">🎯 Submit DevSecOps Task</h2>
+        <p class="text-gray-600">Enter a task and see how LinkOps processes it through the Whis pipeline</p>
+      </div>
+      <div class="card-body">
+        <div class="form-group">
+          <label class="form-label">Task Description</label>
+          <textarea 
+            v-model="taskInput" 
+            class="form-input form-textarea"
+            placeholder="e.g., create a pod named test with image nginx, set up CI/CD pipeline, scan for vulnerabilities..."
+            rows="4"
+          ></textarea>
         </div>
+        
+        <div class="form-actions">
+          <button 
+            @click="submitTask" 
+            :disabled="!taskInput.trim() || loading"
+            class="btn btn-primary"
+          >
+            <span v-if="loading" class="btn-icon">⏳</span>
+            <span v-else class="btn-icon">🚀</span>
+            {{ loading ? 'Processing...' : 'Submit Task' }}
+          </button>
+          
+          <button 
+            @click="clearResults" 
+            class="btn btn-secondary"
+          >
+            <span class="btn-icon">🗑️</span>
+            Clear
+          </button>
+        </div>
+      </div>
+    </div>
 
-        <!-- Step 2 -->
-        <div class="border-l-4 border-green-500 pl-4">
-          <h3 class="text-xl font-semibold text-green-400">Step 2: Orb Search and Ranking</h3>
-          <p class="text-gray-300 mt-2">
-            We search our Orb Library for matching best practices (Orbs) and score its ability to complete your task.
-          </p>
-          <div class="mt-3 space-y-2">
-            <div class="flex items-start space-x-2">
-              <span class="text-green-400">✅</span>
-              <div>
-                <strong class="text-green-400">If an Orb Exists:</strong>
-                <ul class="text-sm text-gray-300 mt-1 ml-4 list-disc">
-                  <li>Orb Title + Summary</li>
-                  <li>Rune ID (compiled script)</li>
-                  <li>Confidence Score</li>
-                </ul>
+    <!-- Results Section -->
+    <div v-if="taskInput && !loading" class="results-section">
+      <!-- Orb Match Found -->
+      <div v-if="matchingOrb" class="card">
+        <div class="card-header">
+          <h3 class="card-title">✅ Orb Match Found</h3>
+          <span class="confidence-badge success">{{ confidenceScore }}% Confidence</span>
+        </div>
+        <div class="card-body">
+          <div class="orb-details">
+            <div class="orb-header">
+              <div class="orb-icon">📚</div>
+              <div class="orb-info">
+                <h4>{{ matchingOrb.title }}</h4>
+                <div class="orb-meta">
+                  <span class="orb-category">{{ matchingOrb.category }}</span>
+                  <span class="orb-rune">{{ matchingOrb.rune }}</span>
+                </div>
               </div>
             </div>
-            <div class="flex items-start space-x-2">
-              <span class="text-red-400">🚫</span>
-              <div>
-                <strong class="text-red-400">If No Match or Low Confidence:</strong>
-                <p class="text-sm text-gray-300 mt-1">Task is routed to <strong>Whis</strong>, our MLOps model, to learn it for future automation.</p>
+            
+            <div class="orb-content">
+              <p class="orb-description">{{ matchingOrb.orb }}</p>
+              
+              <div class="orb-keywords">
+                <span class="keywords-label">Keywords:</span>
+                <div class="keyword-tags">
+                  <span 
+                    v-for="keyword in matchingOrb.keywords" 
+                    :key="keyword" 
+                    class="keyword-tag"
+                  >
+                    {{ keyword }}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Step 3 -->
-        <div class="border-l-4 border-purple-500 pl-4">
-          <h3 class="text-xl font-semibold text-purple-400">Step 3: Whis Learning Process</h3>
-          <p class="text-gray-300 mt-2 italic">
-            Whis is the AI/ML model powering LinkOps agent intelligence.
-          </p>
-          <div class="mt-3 space-y-3">
-            <div>
-              <strong class="text-purple-400">📥 Input Sources:</strong>
-              <ul class="text-sm text-gray-300 mt-1 ml-4 list-disc">
-                <li>Task submission</li>
-                <li>Q&A entries</li>
-                <li>Data dumps (e.g., guides or docs)</li>
-                <li>Image OCR & YouTube transcript downloads</li>
-              </ul>
-            </div>
-            <div>
-              <strong class="text-purple-400">🧼 Sanitization Pipeline:</strong>
-              <p class="text-sm text-gray-300 mt-1">Cleans and formats data using data engineering techniques, redacts sensitive info and replaces with placeholders</p>
-            </div>
-            <div>
-              <strong class="text-purple-400">⚙️ Smithing Phase:</strong>
-              <p class="text-sm text-gray-300 mt-1">Whis applies machine learning and LLM APIs to extract best practices (Orbs) and solution steps (Runes)</p>
-            </div>
-            <div>
-              <strong class="text-purple-400">✅ Approval + Enhancement:</strong>
-              <p class="text-sm text-gray-300 mt-1">Human-in-the-loop verifies and approves logic, Whis injects approved logic into future agent capabilities</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Task Submission UI -->
-    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
-      <h2 class="text-xl font-semibold mb-4 text-blue-400">🚀 Try It Now</h2>
-      <label class="text-lg font-medium block mb-3">Task You Would Give Me</label>
-      <textarea 
-        v-model="taskInput" 
-        class="w-full p-3 rounded-lg bg-black border border-gray-700 text-white resize-none" 
-        rows="3" 
-        placeholder="e.g., create a pod named test with image nginx, or scan repo for security vulnerabilities"
-      ></textarea>
-      <div class="flex justify-end mt-3 gap-3">
-        <button 
-          @click="submitTask" 
-          :disabled="loading" 
-          class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 font-semibold"
-        >
-          {{ loading ? '🔍 Searching...' : '🔍 Search Orb' }}
-        </button>
-        <button 
-          @click="clearResults" 
-          class="bg-gray-700 text-white px-6 py-3 rounded-xl hover:bg-gray-600 font-semibold"
-        >
-          Clear
-        </button>
-      </div>
-    </div>
-
-    <!-- Loading State -->
-    <div v-if="loading" class="text-center text-gray-400 py-6">
-      <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-2"></div>
-      Searching and scoring your task...
-    </div>
-
-    <!-- Results -->
-    <div v-if="matchingOrb || generatedOrb || (confidenceScore === 0 && taskInput)" class="space-y-4">
-      <!-- Best Match Found -->
-      <div v-if="matchingOrb" class="border border-green-500 bg-black/20 p-6 rounded-2xl">
-        <div class="flex items-center space-x-2 mb-4">
-          <span class="text-2xl">✅</span>
-          <h2 class="text-xl font-bold text-green-400">Orb Found!</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p><strong class="text-gray-300">Task:</strong> <span class="text-white">{{ taskInput }}</span></p>
-            <p><strong class="text-gray-300">Matching Orb:</strong> <span class="text-green-400">{{ matchingOrb.title }}</span></p>
-            <p><strong class="text-gray-300">Confidence Score:</strong> <span class="text-yellow-400">{{ confidenceScore }}%</span></p>
-            <p><strong class="text-gray-300">Category:</strong> <span class="text-blue-400">{{ matchingOrb.category }}</span></p>
-          </div>
-          <div>
-            <p><strong class="text-gray-300">Description:</strong></p>
-            <p class="text-sm text-gray-300 mt-1">{{ matchingOrb.description }}</p>
-            <p class="text-sm text-gray-400 mt-2"><strong>Tags:</strong> {{ matchingOrb.tags?.join(', ') }}</p>
-          </div>
-        </div>
-        <div class="mt-4 p-4 bg-gray-800 rounded-lg">
-          <p><strong class="text-gray-300">Corresponding Rune:</strong> <span class="text-purple-400">#{{ matchingOrb.rune }}</span></p>
-          <button class="mt-3 px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 text-white">
-            🔍 View Orb Details
-          </button>
-        </div>
-        <div class="mt-4 space-y-2 text-sm">
-          <p class="italic text-yellow-400">⚠️ Runes not available in demo. They are compiled solution path scripts.</p>
-          <p class="italic text-yellow-400">⚠️ "Send to Agent?" → Feature not available in demo. FickNury sends tasks that are 100% autonomous to field agents.</p>
-        </div>
-      </div>
-
-      <!-- AI Generated Orb -->
-      <div v-else-if="generatedOrb" class="border border-blue-500 bg-black/20 p-6 rounded-2xl">
-        <div class="flex items-center space-x-2 mb-4">
-          <span class="text-2xl">✨</span>
-          <h2 class="text-xl font-bold text-blue-400">No Orb Found - Generated Best Practice</h2>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <p><strong class="text-gray-300">Task:</strong> <span class="text-white">{{ taskInput }}</span></p>
-            <p><strong class="text-gray-300">Confidence Score:</strong> <span class="text-yellow-400">{{ confidenceScore }}%</span></p>
-            <p class="text-sm italic text-green-400 mt-2">🔄 Sent to Whis for Learning...</p>
-          </div>
-          <div>
-            <p><strong class="text-gray-300">Generated by:</strong> <span class="text-purple-400">{{ generatedOrb.model }}</span></p>
-            <p><strong class="text-gray-300">Category:</strong> <span class="text-blue-400">{{ generatedOrb.category }}</span></p>
-          </div>
-        </div>
-        <div class="mt-4 p-4 bg-gray-800 rounded-lg">
-          <h3 class="text-lg font-bold text-green-300 mb-3">Best Practice for: {{ taskInput }}</h3>
-          <ul class="list-disc list-inside text-white space-y-1">
-            <li v-for="(step, idx) in generatedOrb.steps" :key="idx">{{ step }}</li>
-          </ul>
-          <p class="text-xs text-gray-400 mt-3">Generated by: Whis Logic | Model: {{ generatedOrb.model }}</p>
-        </div>
-        <div class="flex gap-3 mt-4">
-          <button class="px-4 py-2 rounded-lg bg-green-700 hover:bg-green-600 text-white font-semibold">
-            ✅ Approve & Save
-          </button>
-          <button class="px-4 py-2 rounded-lg bg-red-700 hover:bg-red-600 text-white font-semibold">
-            ❌ Reject
-          </button>
         </div>
       </div>
 
       <!-- No Match Found - Show Whis Pipeline -->
-      <div v-else-if="confidenceScore === 0 && taskInput" class="space-y-4">
-        <WhisPipeline />
+      <div v-else-if="confidenceScore === 0" class="card">
+        <div class="card-header">
+          <h3 class="card-title">🔍 No Orb Match Found</h3>
+          <span class="confidence-badge warning">0% Confidence</span>
+        </div>
+        <div class="card-body">
+          <div class="no-match-content">
+            <div class="no-match-icon">🔍</div>
+            <h4>Task: {{ taskInput }}</h4>
+            <p>This task doesn't match any existing Orbs in our library. Here's what happens next:</p>
+            
+            <div class="whis-pipeline-demo">
+              <WhisPipeline />
+            </div>
+            
+            <div class="suggestions">
+              <h5>Suggested Keywords:</h5>
+              <div class="suggestion-tags">
+                <span class="suggestion-tag">kubernetes</span>
+                <span class="suggestion-tag">pod</span>
+                <span class="suggestion-tag">deployment</span>
+                <span class="suggestion-tag">container</span>
+                <span class="suggestion-tag">nginx</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Purpose Section -->
-    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
-      <h2 class="text-2xl font-bold mb-4 text-purple-400">💡 Purpose of This Demo</h2>
-      <div class="space-y-3 text-gray-300">
-        <p>• Show how tasks are matched to existing automation</p>
-        <p>• Show fallback logic when task is new or incomplete</p>
-        <p>• Educate on <strong>how</strong> the model learns and <strong>what tech</strong> powers it</p>
+    <!-- API Keys Section -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">🔑 AI API Key Management</h2>
+        <p class="text-gray-600">Configure API keys to enable enhanced AI features</p>
       </div>
-      
-      <div class="mt-6 p-4 bg-gray-800 rounded-lg">
-        <h3 class="text-lg font-semibold text-yellow-400 mb-2">✅ What You Can Do Here</h3>
-        <ul class="space-y-1 text-sm">
-          <li class="flex items-center space-x-2">
-            <span class="text-green-400">✅</span>
-            <span>Submit tasks like you would in a real job</span>
-          </li>
-          <li class="flex items-center space-x-2">
-            <span class="text-green-400">✅</span>
-            <span>View how LinkOps agents rank automation readiness</span>
-          </li>
-          <li class="flex items-center space-x-2">
-            <span class="text-red-400">❌</span>
-            <span>No agent execution or full pipeline is available in this demo</span>
-          </li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- 🧠 Add AI API Keys (Plug-and-Play Style) -->
-    <div class="border border-gray-700 rounded-2xl p-6 bg-black/30">
-      <h2 class="text-2xl font-bold mb-4 text-purple-400">🧠 Add AI API Keys</h2>
-      <p class="text-gray-300 mb-4">
-        You can plug in your own AI API key to enable fallback learning and solution generation.
-      </p>
-      <div class="space-y-4">
-        <div>
-          <label class="block text-sm font-medium text-gray-300 mb-2">OpenAI / Grok API Key</label>
+      <div class="card-body">
+        <div class="demo-notice">
+          <div class="notice-icon">🎯</div>
+          <div class="notice-content">
+            <h4>Demo Mode Active</h4>
+            <p>Currently running with simulated responses. Add API keys to enable real AI processing.</p>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">OpenAI / Grok API Key</label>
           <input 
             v-model="aiApiKey" 
             type="password"
             placeholder="sk-... or gsk_..." 
-            class="w-full p-3 rounded-lg bg-black border border-gray-700 text-white focus:border-purple-500 focus:outline-none"
+            class="form-input"
+            disabled
           />
-          <p class="text-xs text-gray-400 mt-1">
-            Your API key is stored locally and never sent to our servers
-          </p>
+          <p class="form-help">Your API key is stored locally and never sent to our servers</p>
         </div>
-        <div class="flex gap-3">
+        
+        <div class="form-actions">
           <button 
             @click="saveApiKey" 
             :disabled="!aiApiKey.trim()"
-            class="bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-blue-700 disabled:opacity-50 font-semibold"
+            class="btn btn-success"
           >
-            🔑 Save Key
+            <span class="btn-icon">💾</span>
+            Save Key
           </button>
+          
           <button 
             @click="clearApiKey" 
-            class="bg-gray-700 text-white px-6 py-3 rounded-xl hover:bg-gray-600 font-semibold"
+            class="btn btn-secondary"
           >
-            🗑️ Clear Key
+            <span class="btn-icon">🗑️</span>
+            Clear Key
           </button>
         </div>
-        <div v-if="apiKeyStatus" class="p-3 rounded-lg" :class="apiKeyStatus.type === 'success' ? 'bg-green-900 text-green-300' : 'bg-red-900 text-red-300'">
+        
+        <div v-if="apiKeyStatus" class="status-message" :class="apiKeyStatus.type">
           {{ apiKeyStatus.message }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Demo Information -->
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">ℹ️ About This Demo</h2>
+      </div>
+      <div class="card-body">
+        <div class="info-grid">
+          <div class="info-item">
+            <h4>What You're Seeing</h4>
+            <p>A fully functional demo of the LinkOps platform running in demo mode with simulated responses.</p>
+          </div>
+          
+          <div class="info-item">
+            <h4>Try These Tasks</h4>
+            <ul>
+              <li>"create a pod named test with image nginx"</li>
+              <li>"set up CI/CD pipeline with GitHub Actions"</li>
+              <li>"scan container images for vulnerabilities"</li>
+              <li>"configure Kubernetes secrets management"</li>
+            </ul>
+          </div>
+          
+          <div class="info-item">
+            <h4>Demo Features</h4>
+            <ul>
+              <li>Orb matching and confidence scoring</li>
+              <li>Whis pipeline visualization</li>
+              <li>Professional admin interface</li>
+              <li>API key management</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -271,10 +203,9 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import WhisPipeline from './WhisPipeline.vue'
+import WhisPipeline from '../components/WhisPipeline.vue'
 
 const taskInput = ref('')
-const generatedOrb = ref(null)
 const matchingOrb = ref(null)
 const confidenceScore = ref(null)
 const loading = ref(false)
@@ -300,19 +231,16 @@ const submitTask = async () => {
     if (response.data.match) {
       matchingOrb.value = response.data.match
       confidenceScore.value = response.data.confidence
-      generatedOrb.value = null
     } else {
       // No match found - show empty state
       matchingOrb.value = null
       confidenceScore.value = 0
-      generatedOrb.value = null
     }
   } catch (error) {
     console.error(error)
     // Show error state
     matchingOrb.value = null
     confidenceScore.value = 0
-    generatedOrb.value = null
   } finally {
     loading.value = false
   }
@@ -320,7 +248,6 @@ const submitTask = async () => {
 
 const clearResults = () => {
   taskInput.value = ''
-  generatedOrb.value = null
   matchingOrb.value = null
   confidenceScore.value = null
 }
@@ -352,10 +279,272 @@ const clearApiKey = () => {
 </script>
 
 <style scoped>
-textarea:focus {
-  outline: none;
-  border-color: #10b981;
-  box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+.demo-view {
+  space-y: 6;
+}
+
+.results-section {
+  margin-bottom: 2rem;
+}
+
+.orb-details {
+  space-y: 2;
+}
+
+.orb-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.orb-icon {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.orb-info h4 {
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+}
+
+.orb-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.875rem;
+}
+
+.orb-category {
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.orb-rune {
+  color: #64748b;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+.orb-content {
+  padding: 1rem 0;
+}
+
+.orb-description {
+  color: #374151;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.orb-keywords {
+  margin-bottom: 1rem;
+}
+
+.keywords-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.keyword-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword-tag {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+.confidence-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.confidence-badge.success {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.confidence-badge.warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.no-match-content {
+  text-align: center;
+  padding: 2rem;
+}
+
+.no-match-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.no-match-content h4 {
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.no-match-content p {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+.whis-pipeline-demo {
+  margin: 2rem 0;
+}
+
+.suggestions {
+  margin-top: 2rem;
+}
+
+.suggestions h5 {
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.suggestion-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.suggestion-tag {
+  background: #e0f2fe;
+  color: #0369a1;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid #bae6fd;
+}
+
+.demo-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 1px solid #f59e0b;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.notice-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.notice-content h4 {
+  color: #92400e;
+  margin: 0 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.notice-content p {
+  color: #78350f;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.status-message {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.status-message.success {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-message.error {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.info-item {
+  padding: 1.5rem;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.info-item h4 {
+  color: #1e293b;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.info-item p {
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.info-item ul {
+  color: #64748b;
+  line-height: 1.6;
+  padding-left: 1.5rem;
+}
+
+.info-item li {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .orb-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .orb-meta {
+    justify-content: center;
+  }
+  
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .demo-notice {
+    flex-direction: column;
+    text-align: center;
+  }
 }
 </style>
 

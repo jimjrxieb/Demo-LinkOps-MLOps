@@ -1,243 +1,290 @@
 <template>
-  <div class="holo-app">
-    <!-- Navigation -->
-    <nav class="holo-nav">
-      <div class="nav-container">
-        <div class="nav-brand">
-          <h1 class="brand-text">🛡️ DevSecOps Shadow</h1>
-          <p class="brand-subtitle">Demo Platform</p>
+  <div class="admin-app">
+    <!-- Sidebar -->
+    <Sidebar />
+    
+    <!-- Main Content Area -->
+    <div class="main-content" :class="{ 'sidebar-collapsed': false }">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-content">
+          <div class="page-title">
+            <h1>{{ currentPageTitle }}</h1>
+            <p class="page-subtitle">{{ currentPageSubtitle }}</p>
+          </div>
+          <div class="header-actions">
+            <div class="demo-badge">
+              <span class="badge-icon">🎯</span>
+              <span class="badge-text">Demo Mode</span>
+            </div>
+          </div>
         </div>
-        <div class="nav-links">
-          <button
-            :class="['nav-link', currentView === 'demo' ? 'active' : '']"
-            @click="currentView = 'demo'"
-          >
-            <span class="nav-icon">🎯</span>
-            Demo Agent
-          </button>
-          <button
-            :class="['nav-link', currentView === 'dashboard' ? 'active' : '']"
-            @click="currentView = 'dashboard'"
-          >
-            <span class="nav-icon">📊</span>
-            Dashboard
-          </button>
-        </div>
-      </div>
-    </nav>
+      </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-      <Demo v-if="currentView === 'demo'" />
-      <DashboardView v-else-if="currentView === 'dashboard'" />
-    </main>
-
-    <!-- Footer -->
-    <footer class="holo-footer">
-      <div class="footer-content">
-        <div class="footer-status">
-          <span>🟢 Demo Mode Active</span>
-        </div>
-        <div>Powered by LinkOps MLOps Platform • Live demo hosted on Azure</div>
-      </div>
-    </footer>
+      <!-- Page Content -->
+      <main class="page-content">
+        <router-view />
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import DashboardView from './views/DashboardView.vue';
-import Demo from './views/Demo.vue';
+import { computed } from 'vue'
+import { useRoute } from 'vue-router'
+import Sidebar from './components/Sidebar.vue'
 
-const currentView = ref('demo'); // Start with demo view
+const route = useRoute()
+
+const currentPageTitle = computed(() => {
+  const routeTitles = {
+    '/': 'DevSecOps Shadow Agent Demo',
+    '/pipeline': 'Whis Learning Pipeline',
+    '/orbs': 'Orb Library',
+    '/keys': 'API Key Management',
+    '/about': 'About This Demo'
+  }
+  return routeTitles[route.path] || 'DevSecOps Demo'
+})
+
+const currentPageSubtitle = computed(() => {
+  const routeSubtitles = {
+    '/': 'Submit tasks and see how LinkOps agents process them',
+    '/pipeline': 'Visualize the Whis MLOps learning process',
+    '/orbs': 'Browse the DevSecOps best practices library',
+    '/keys': 'Configure AI API keys for enhanced features',
+    '/about': 'Learn about the LinkOps platform and demo'
+  }
+  return routeSubtitles[route.path] || 'LinkOps MLOps Platform'
+})
 </script>
-;
 
 <style>
-@import './assets/holo-theme.css';
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-.holo-app {
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f8fafc;
+  color: #1e293b;
+  line-height: 1.6;
+}
+
+.admin-app {
+  display: flex;
   min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
-  color: #e0e0e0;
-  font-family: 'Orbitron', 'Courier New', monospace;
 }
 
-.holo-nav {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  border-bottom: 2px solid #00d4ff;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
+.main-content.sidebar-collapsed {
+  margin-left: 70px;
 }
 
-.nav-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem 2rem;
+.top-header {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 1.5rem 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-.nav-brand {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+.page-title h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
 }
 
-.brand-text {
-  font-size: 2rem;
-  font-weight: bold;
-  background: linear-gradient(45deg, #00d4ff, #ff00ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin: 0;
-  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+.page-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
 }
 
-.brand-subtitle {
-  font-size: 0.8rem;
-  color: #888;
-  margin-top: -0.5rem;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-}
-
-.user-info {
+.header-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.user-role {
-  color: #00d4ff;
-  font-weight: bold;
-  font-size: 0.9rem;
-}
-
-.logout-btn {
+.demo-badge {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(255, 0, 0, 0.2);
-  border: 1px solid #ff0000;
-  color: #ff0000;
-  border-radius: 8px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
   padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(251, 191, 36, 0.3);
 }
 
-.logout-btn:hover {
-  background: rgba(255, 0, 0, 0.3);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+.badge-icon {
+  font-size: 1rem;
 }
 
-.nav-link {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  text-decoration: none;
-  color: #e0e0e0;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  border: 1px solid transparent;
-}
-
-.nav-link:hover {
-  background: rgba(0, 212, 255, 0.1);
-  border-color: #00d4ff;
-  box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
-  transform: translateY(-2px);
-}
-
-.nav-link.active {
-  background: rgba(0, 212, 255, 0.2);
-  border-color: #00d4ff;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
-}
-
-.nav-icon {
-  font-size: 1.2rem;
-}
-
-.main-content {
+.page-content {
   flex: 1;
   padding: 2rem;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   width: 100%;
 }
 
-.holo-footer {
-  background: rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid #00d4ff;
-  padding: 1rem 2rem;
-  margin-top: auto;
+/* Card styles for consistent UI */
+.card {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
-.footer-content {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9rem;
-  color: #888;
+.card-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
 }
 
-.footer-status {
-  display: flex;
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Button styles */
+.btn {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .nav-container {
-    flex-direction: column;
-    gap: 1rem;
-  }
+.btn-primary {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+}
 
-  .nav-links {
-    gap: 1rem;
-  }
+.btn-primary:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
 
-  .nav-actions {
-    margin-top: 1rem;
-  }
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
 
-  .user-info {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
+.btn-secondary:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
 
+.btn-success {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* Form styles */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  background: white;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
   .main-content {
+    margin-left: 0;
+  }
+  
+  .page-content {
     padding: 1rem;
   }
-
-  .footer-content {
+  
+  .header-content {
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .top-header {
+    padding: 1rem;
+  }
+  
+  .page-title h1 {
+    font-size: 1.5rem;
+  }
+  
+  .page-content {
+    padding: 0.75rem;
   }
 }
 </style>
-;
