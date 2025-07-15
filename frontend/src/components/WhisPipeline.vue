@@ -93,6 +93,7 @@
             <div class="connector-line" />
             <div class="connector-arrow">→</div>
           </div>
+          </div>
         </transition-group>
       </div>
     </div>

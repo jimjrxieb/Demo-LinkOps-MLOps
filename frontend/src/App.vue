@@ -49,25 +49,27 @@ const currentPageTitle = computed(() => {
 
 const currentPageSubtitle = computed(() => {
   const routeSubtitles = {
-    '/': `I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor. 
-I incorporated industry-standard linters, formatters, and even wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.
-<br />
-This project is a showcase of my current skill level across multiple engineering roles. 
-For DevOps: I use GitHub Actions, Trivy, SonarQube, and GitGuardian. 
-For Kubernetes: I have my CKA and use ArgoCD to pull my main platform into Docker Desktop K8s. 
-For platform engineering: this demo runs in an Azure VM provisioned with Terraform. 
-For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps workflow.`,
+    '/': [
+      'I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor.',
+      'I incorporated industry-standard linters, formatters, and wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.',
+      '',
+      'For DevOps: I used GitHub Actions, Trivy, SonarQube, and GitGuardian.',
+      'For Kubernetes: I earned my CKA and use ArgoCD to sync this platform into Docker Desktop\'s K8s environment.',
+      'For Cloud Engineering: I deployed this demo into an Azure VM provisioned using Terraform.',
+      'For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps pipeline.'
+    ].join('\n'),
     '/pipeline': 'Visualize the Whis MLOps learning process',
     '/orbs': 'Browse the Kubernetes/CD best practices library',
     '/keys': 'Configure AI API keys for enhanced features',
-    '/about': `I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor. 
-I incorporated industry-standard linters, formatters, and even wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.
-<br />
-This project is a showcase of my current skill level across multiple engineering roles. 
-For DevOps: I use GitHub Actions, Trivy, SonarQube, and GitGuardian. 
-For Kubernetes: I have my CKA and use ArgoCD to pull my main platform into Docker Desktop K8s. 
-For platform engineering: this demo runs in an Azure VM provisioned with Terraform. 
-For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps workflow.`
+    '/about': [
+      'I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor.',
+      'I incorporated industry-standard linters, formatters, and wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.',
+      '',
+      'For DevOps: I used GitHub Actions, Trivy, SonarQube, and GitGuardian.',
+      'For Kubernetes: I earned my CKA and use ArgoCD to sync this platform into Docker Desktop\'s K8s environment.',
+      'For Platform Engineering: I deployed this demo into an Azure VM provisioned using Terraform.',
+      'For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps pipeline.'
+    ].join('\n')
   }
   return routeSubtitles[route.path] || 'LinkOps MLOps Platform'
 })
@@ -132,6 +134,7 @@ body {
   font-size: 0.875rem;
   max-width: 60ch;
   line-height: 1.6;
+  white-space: pre-wrap;
 }
 
 .header-actions {
