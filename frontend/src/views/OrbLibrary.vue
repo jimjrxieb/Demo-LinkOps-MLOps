@@ -59,13 +59,17 @@
       <div
         v-for="orb in filteredOrbs"
         :key="orb.rune"
-        class="bg-gray-800 text-white rounded-lg p-4 shadow hover:shadow-lg transition-all"
+        class="bg-gray-800 text-white rounded-lg p-4 shadow hover:shadow-lg transition-all cursor-pointer"
+        @click="openOrbModal(orb)"
       >
         <h3 class="text-lg font-semibold text-teal-300">{{ orb.title }}</h3>
         <p class="text-sm text-gray-300 mb-2 italic">Category: {{ orb.category }}</p>
         <p class="text-sm mb-2">{{ orb.orb }}</p>
         <div class="text-xs text-blue-400 mt-2">
           Tags: <span v-for="keyword in orb.keywords" :key="keyword" class="mr-1">#{{ keyword }}</span>
+        </div>
+        <div class="text-xs text-gray-400 mt-2 italic">
+          Click to view details →
         </div>
       </div>
     </div>
@@ -77,6 +81,64 @@
           <div class="no-results-icon">🔍</div>
           <h3>No Orbs Found</h3>
           <p>Try adjusting your search criteria or category filter.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Orb Detail Modal -->
+    <div v-if="showModal" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h2 class="modal-title">📚 {{ selectedOrb?.title }}</h2>
+          <button @click="closeModal" class="modal-close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="orb-detail-grid">
+            <div class="detail-section">
+              <h3 class="detail-label">Category</h3>
+              <p class="detail-value">{{ selectedOrb?.category }}</p>
+            </div>
+            
+            <div class="detail-section">
+              <h3 class="detail-label">Description</h3>
+              <p class="detail-value">{{ selectedOrb?.orb }}</p>
+            </div>
+            
+            <div class="detail-section">
+              <h3 class="detail-label">Keywords</h3>
+              <div class="keyword-tags">
+                <span 
+                  v-for="keyword in selectedOrb?.keywords" 
+                  :key="keyword" 
+                  class="keyword-tag"
+                >
+                  #{{ keyword }}
+                </span>
+              </div>
+            </div>
+            
+            <div class="detail-section">
+              <h3 class="detail-label">Rune ID</h3>
+              <code class="rune-code">{{ selectedOrb?.rune || 'R-' + Math.floor(Math.random() * 1000) }}</code>
+            </div>
+            
+            <div class="detail-section">
+              <h3 class="detail-label">Confidence Score</h3>
+              <div class="confidence-score">
+                <span class="score-value">{{ Math.round((selectedOrb?.confidence || 0.85) * 100) }}%</span>
+                <div class="confidence-bar">
+                  <div 
+                    class="confidence-fill" 
+                    :style="{ width: Math.round((selectedOrb?.confidence || 0.85) * 100) + '%' }"
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button @click="closeModal" class="btn btn-secondary">Close</button>
+          <button class="btn btn-primary">Use This Orb</button>
         </div>
       </div>
     </div>
@@ -97,6 +159,8 @@ const props = defineProps({
 
 const searchQuery = ref('')
 const selectedCategory = ref('')
+const selectedOrb = ref(null)
+const showModal = ref(false)
 
 // Use props.orbs if provided, otherwise load from API
 const orbs = ref([])
@@ -150,6 +214,16 @@ const getConfidenceClass = (confidence) => {
   if (confidence >= 0.9) return 'confidence-high'
   if (confidence >= 0.7) return 'confidence-medium'
   return 'confidence-low'
+}
+
+const openOrbModal = (orb) => {
+  selectedOrb.value = orb
+  showModal.value = true
+}
+
+const closeModal = () => {
+  showModal.value = false
+  selectedOrb.value = null
 }
 
 const loadOrbs = async () => {
@@ -469,6 +543,159 @@ onMounted(() => {
   color: #64748b;
 }
 
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.orb-detail-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.detail-section {
+  border-bottom: 1px solid #f1f5f9;
+  padding-bottom: 1rem;
+}
+
+.detail-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.detail-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.detail-value {
+  color: #1e293b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.keyword-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword-tag {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+.rune-code {
+  background: #1e293b;
+  color: #f8fafc;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  display: inline-block;
+}
+
+.confidence-score {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.score-value {
+  font-weight: 600;
+  color: #059669;
+  font-size: 1.125rem;
+}
+
+.confidence-bar {
+  flex: 1;
+  height: 8px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.confidence-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #059669);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
 @media (max-width: 768px) {
   .filter-controls {
     grid-template-columns: 1fr;
@@ -481,6 +708,15 @@ onMounted(() => {
   .orb-header {
     flex-direction: column;
     text-align: center;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
   }
 }
 </style> 
