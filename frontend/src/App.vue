@@ -15,7 +15,7 @@
           <div class="header-actions">
             <div class="demo-badge">
               <span class="badge-icon">🎯</span>
-              <span class="badge-text">Demo Mode</span>
+              <span class="badge-text">Kubernetes/CD Demo</span>
             </div>
           </div>
         </div>
@@ -38,20 +38,20 @@ const route = useRoute()
 
 const currentPageTitle = computed(() => {
   const routeTitles = {
-    '/': 'DevSecOps Shadow Agent Demo',
+    '/': 'Kubernetes/CD Shadow Agent DEMO',
     '/pipeline': 'Whis Learning Pipeline',
     '/orbs': 'Orb Library',
     '/keys': 'API Key Management',
     '/about': 'About This Demo'
   }
-  return routeTitles[route.path] || 'DevSecOps Demo'
+  return routeTitles[route.path] || 'LinkOps Demo'
 })
 
 const currentPageSubtitle = computed(() => {
   const routeSubtitles = {
-    '/': 'Submit tasks and see how LinkOps agents process them',
+    '/': 'A slimmed-down AI/ML model that evolves with every Kubernetes/CD task and error I solve — built to learn like an engineer.',
     '/pipeline': 'Visualize the Whis MLOps learning process',
-    '/orbs': 'Browse the DevSecOps best practices library',
+    '/orbs': 'Browse the Kubernetes/CD best practices library',
     '/keys': 'Configure AI API keys for enhanced features',
     '/about': 'Learn about the LinkOps platform and demo'
   }

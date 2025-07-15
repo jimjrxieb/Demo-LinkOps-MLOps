@@ -35,6 +35,49 @@
               <span class="status-indicator" :class="getStepStatus(index)" />
               <span class="status-text">{{ getStepStatusText(index) }}</span>
             </div>
+            
+            <!-- Approve/Reject buttons for Logic step (index 2) -->
+            <div v-if="index === 2 && currentStep >= 2" class="approval-section mt-3">
+              <!-- 3a. Orb Creation -->
+              <div v-if="!orbApproved" class="bg-gray-900 p-3 rounded shadow mb-2">
+                <h4 class="text-md text-yellow-300 font-bold mb-1">3a. Orb Creation</h4>
+                <p class="text-white text-sm mb-2">
+                  Whis uses LLMs + LangChain to create best practices (Orbs) from sanitized input.
+                </p>
+                <div class="flex gap-2">
+                  <button @click="orbApproved = true" class="btn btn-success text-xs px-3 py-1">
+                    ✅ Approve Orb
+                  </button>
+                  <button @click="runeApproved = false" class="btn btn-secondary text-xs px-3 py-1">
+                    ❌ Reject Orb
+                  </button>
+                </div>
+              </div>
+
+              <!-- 3b. Rune Creation -->
+              <div v-if="orbApproved && !runeApproved" class="bg-gray-900 p-3 rounded shadow mb-2">
+                <h4 class="text-md text-purple-300 font-bold mb-1">3b. Rune Generation</h4>
+                <p class="text-white text-sm mb-2">
+                  Whis converts the approved Orb into an executable step-by-step solution path (Rune).
+                </p>
+                <div class="flex gap-2">
+                  <button @click="runeApproved = true" class="btn btn-success text-xs px-3 py-1">
+                    ✅ Approve Rune
+                  </button>
+                  <button @click="orbApproved = false" class="btn btn-secondary text-xs px-3 py-1">
+                    ❌ Reject Rune
+                  </button>
+                </div>
+              </div>
+
+              <!-- Success messages -->
+              <div v-if="orbApproved && !runeApproved" class="text-green-400 text-sm font-bold mt-2">
+                Orb approved. Proceeding to Rune generation...
+              </div>
+              <div v-if="runeApproved" class="text-green-400 text-sm font-bold mt-2">
+                Rune approved. Task is now complete.
+              </div>
+            </div>
           </div>
 
           <!-- Connection Line -->
@@ -63,37 +106,44 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'WhisPipeline',
-  emits: ['step-click'],
-  props: {
-    pipelineData: {
-      type: Array,
-      required: true,
-    },
-    currentStep: {
-      type: Number,
-      default: 0,
-    },
+<script setup>
+import { ref, computed } from 'vue';
+
+// Props
+const props = defineProps({
+  pipelineData: {
+    type: Array,
+    required: true,
   },
-  computed: {
-    progressPercentage() {
-      return (this.currentStep / (this.pipelineData.length - 1)) * 100;
-    },
+  currentStep: {
+    type: Number,
+    default: 0,
   },
-  methods: {
-    getStepStatus(index) {
-      if (index < this.currentStep) return 'completed';
-      if (index === this.currentStep) return 'active';
-      return 'pending';
-    },
-    getStepStatusText(index) {
-      if (index < this.currentStep) return 'Completed';
-      if (index === this.currentStep) return 'Processing';
-      return 'Pending';
-    },
-  },
+});
+
+// Emits
+const emit = defineEmits(['step-click']);
+
+// State for approve/reject functionality
+const orbApproved = ref(false);
+const runeApproved = ref(false);
+
+// Computed
+const progressPercentage = computed(() => {
+  return (props.currentStep / (props.pipelineData.length - 1)) * 100;
+});
+
+// Methods
+const getStepStatus = (index) => {
+  if (index < props.currentStep) return 'completed';
+  if (index === props.currentStep) return 'active';
+  return 'pending';
+};
+
+const getStepStatusText = (index) => {
+  if (index < props.currentStep) return 'Completed';
+  if (index === props.currentStep) return 'Processing';
+  return 'Pending';
 };
 </script>
 
@@ -279,6 +329,23 @@ export default {
   color: #00d4ff;
   font-weight: bold;
   font-size: 1rem;
+}
+
+.approval-section {
+  border-top: 1px solid rgba(0, 212, 255, 0.3);
+  padding-top: 1rem;
+}
+
+.approval-section .btn {
+  font-size: 0.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.approval-section .btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Responsive Design */

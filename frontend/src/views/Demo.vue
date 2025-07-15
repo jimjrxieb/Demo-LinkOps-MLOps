@@ -8,11 +8,24 @@
       </div>
     </div>
     
+    <!-- Hero Section -->
+    <div class="hero-section mb-8">
+      <h1 class="text-3xl font-extrabold text-white mb-2">Kubernetes/CD Shadow Agent <span class="text-blue-400">DEMO</span></h1>
+      
+      <p class="text-gray-300 text-sm mb-4 max-w-3xl leading-relaxed">
+        This demo is a slimmed-down version of my personal Kubernetes AI/ML model under the LinkOps umbrella.
+        Every Kubernetes-related Jira task I'm assigned — or errors I've encountered and solved using tools like ChatGPT and K8sGPT —
+        gets entered into this system, where it is structured, learned from, and versioned.
+        Over time, it becomes a reflection of my real-world experience, industry best practices, and troubleshooting patterns.
+        The long-term goal is to reach a state where this system can autonomously complete any Kubernetes or CD-related task I receive.
+      </p>
+    </div>
+    
     <!-- 1. Task Input -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🎯 Submit Kubernetes/CD Task</h2>
-        <p class="text-gray-600">Enter a K8s task and see how this model processes it or sends it to the Whis-ML pipeline</p>
+        <h2 class="card-title">🎯 Submit a Kubernetes/CD Task or Error</h2>
+        <p class="text-gray-600">Enter a Kubernetes task, goal, or error you've encountered — and see how LinkOps processes it through the AI/ML pipeline.</p>
       </div>
       <div class="card-body">
         <div class="form-group">
@@ -71,7 +84,7 @@
         <div class="info-grid">
           <div class="info-item">
             <h4>What You're Seeing</h4>
-            <p>A fully functional demo of the LinkOps platform running in demo mode with simulated responses.</p>
+            <p>A fully functional demo of my personal Kubernetes AI/ML model that learns from real-world tasks and errors.</p>
           </div>
           
           <div class="info-item">
@@ -87,10 +100,10 @@
           <div class="info-item">
             <h4>Demo Features</h4>
             <ul>
-              <li>Orb matching and confidence scoring</li>
-              <li>Whis pipeline visualization</li>
-              <li>Professional admin interface</li>
-              <li>API key management</li>
+              <li>AI-powered task matching and confidence scoring</li>
+              <li>Real-time Whis pipeline visualization</li>
+              <li>Professional Kubernetes/CD interface</li>
+              <li>Learning from Jira tasks and K8sGPT solutions</li>
             </ul>
           </div>
         </div>
@@ -264,6 +277,19 @@ const clearResults = () => {
 <style scoped>
 .demo-view {
   space-y: 6;
+}
+
+.hero-section {
+  text-align: center;
+  padding: 2rem 0;
+}
+
+.hero-section h1 {
+  background: linear-gradient(135deg, #ffffff, #94a3b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
 }
 
 .demo-banner {
