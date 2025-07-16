@@ -5,4 +5,4 @@ pyyaml==6.0.1
 python-dotenv==1.0.0
 requests>=2.32.4
 tensorflow==2.15.0
-tensorflow-hub==0.15.0
+tensorflow-hub==0.16.1
