@@ -1,0 +1,55 @@
+version: 2
+updates:
+  # Frontend dependencies
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+
+  # MLOps Platform Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/mlops/mlops-platform"
+    schedule:
+      interval: "weekly"
+
+  # Whis Data Input Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/mlops/whis-data-input"
+    schedule:
+      interval: "weekly"
+
+  # Whis Logic Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/mlops/whis-logic"
+    schedule:
+      interval: "weekly"
+
+  # Whis Sanitize Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/mlops/whis-sanitize"
+    schedule:
+      interval: "weekly"
+
+  # Whis ML Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/mlops/whis-ml"
+    schedule:
+      interval: "weekly"
+
+  # FickNury Evaluator Python dependencies
+  - package-ecosystem: "pip"
+    directory: "/shadows/ficknury-evaluator"
+    schedule:
+      interval: "weekly"
+
+  # Docker dependencies (scans all Dockerfiles)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actions workflow dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly" 

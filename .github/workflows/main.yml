@@ -284,10 +284,11 @@ jobs:
           echo "✅ mlops/whis-data-input/ (Data input service)"
           echo "✅ mlops/whis-sanitize/ (Data sanitization service)"
           echo "✅ mlops/whis-logic/ (ML logic service)"
+          echo "✅ mlops/whis-ml/ (ML training and inference service)"
           echo "✅ shadows/ficknury-evaluator/ (Task evaluation service)"
           echo ""
           echo "Checking Dockerfiles exist:"
-          for service in frontend mlops/mlops-platform mlops/whis-data-input mlops/whis-sanitize mlops/whis-logic shadows/ficknury-evaluator; do
+          for service in frontend mlops/mlops-platform mlops/whis-data-input mlops/whis-sanitize mlops/whis-logic mlops/whis-ml shadows/ficknury-evaluator; do
             if [[ -f "$service/Dockerfile" ]]; then
               echo "✅ $service/Dockerfile exists"
             else
@@ -382,6 +383,17 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build + Push Whis ML
+        uses: docker/build-push-action@v4
+        with:
+          context: ./mlops/whis-ml
+          push: true
+          tags: |
+            linksrobot/demo-whis-ml:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-whis-ml:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
       - name: Build Summary
         run: |
           echo "🎉 Demo Docker Build Complete!"
@@ -393,6 +405,7 @@ jobs:
           echo "  - linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-whis-ml:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }} (and :latest)"
           echo ""
           echo "🚀 Ready for deployment on Azure VM!"
@@ -420,6 +433,7 @@ jobs:
           WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
           WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
           WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
+          WHIS_ML_IMAGE=linksrobot/demo-whis-ml:${{ steps.version.outputs.TAG }}
           FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
           
           # Docker Compose Command

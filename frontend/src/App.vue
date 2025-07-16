@@ -20,7 +20,7 @@
           <div class="header-actions">
             <div class="demo-badge">
               <span class="badge-icon">🎯</span>
-              <span class="badge-text">Kubernetes/CD Demo</span>
+              <span class="badge-text">LinkOps AI/ML Platform</span>
             </div>
           </div>
         </div>
@@ -43,7 +43,7 @@ const route = useRoute()
 
 const currentPageTitle = computed(() => {
   const routeTitles = {
-    '/': 'Kubernetes/CD Shadow Agent DEMO',
+    '/': 'LinkOps AI/ML Platform',
     '/pipeline': 'Whis Learning Pipeline',
     '/orbs': 'Orb Library',
     '/keys': 'API Key Management',

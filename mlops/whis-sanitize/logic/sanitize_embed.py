@@ -5,7 +5,7 @@ Uses Universal Sentence Encoder to generate embeddings for task text.
 """
 
 import logging
-from typing import List, Optional
+from typing import List
 
 import tensorflow as tf
 import tensorflow_hub as hub

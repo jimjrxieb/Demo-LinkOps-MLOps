@@ -27,14 +27,12 @@ def sanitize_cmd(cmd):
     return cmd
 
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from orb_scoring import get_library_stats, score_task_against_orbs, search_orbs
 from pydantic import BaseModel
-from scorer import score_task
-from selector import select_agent_for_task
-from task_router import Task, TaskEvaluation, evaluate_task
+from task_router import AutonomyEvaluation, Task, evaluate_task
 
-app = FastAPI(title="FickNury Evaluator")
+app = FastAPI(title="FickNury Autonomy Evaluator")
 
 
 class TaskItem(BaseModel):
@@ -42,64 +40,57 @@ class TaskItem(BaseModel):
     task_description: str
 
 
-class EvaluationResponse(BaseModel):
-    automatable: list[str]
-    non_automatable: list[str]
-    score_map: dict[str, float]
-    suggestions: dict[str, str]
+class AutonomyResponse(BaseModel):
+    task_id: str
+    autonomous: bool
+    confidence: float
+    reasoning: str
+    automation_feasibility: str
+    recommendations: list[str]
 
 
-@app.post("/api/evaluate", response_model=EvaluationResponse)
-async def evaluate_tasks(request: Request):
-    data = await request.json()
-    tasks = data.get("tasks", [])
+@app.post("/api/evaluate-autonomy", response_model=AutonomyResponse)
+async def evaluate_task_autonomy(task: Task) -> AutonomyResponse:
+    """
+    Evaluate if a task can be 100% completed autonomously using AI/ML, orbs, and runes.
+    This works AFTER the 70% orb confidence check - only for tasks with <70% confidence.
+    """
+    evaluation = await evaluate_task(task)
 
-    auto_ids = []
-    non_auto_ids = []
-    score_map = {}
-    suggestions = {}
-
-    for task in tasks:
-        task_id = task.get("task_id")
-        description = task.get("task_description")
-        score_data = score_task(task)
-        agent = select_agent_for_task(description, {})
-
-        score_map[task_id] = score_data["score"]
-        suggestions[task_id] = agent
-
-        if score_data["automatable"]:
-            auto_ids.append(task_id)
-        else:
-            non_auto_ids.append(task_id)
-
-    return EvaluationResponse(
-        automatable=auto_ids,
-        non_automatable=non_auto_ids,
-        score_map=score_map,
-        suggestions=suggestions,
+    return AutonomyResponse(
+        task_id=evaluation.task_id,
+        autonomous=evaluation.autonomous,
+        confidence=evaluation.confidence,
+        reasoning=evaluation.reasoning,
+        automation_feasibility=evaluation.automation_feasibility,
+        recommendations=evaluation.recommendations,
     )
 
 
 @app.post("/evaluate")
-async def evaluate_single_task(task: Task) -> TaskEvaluation:
+async def evaluate_single_task(task: Task) -> AutonomyEvaluation:
     """
-    Evaluate a single task using the new task router.
+    Evaluate a single task for autonomy (new system).
     """
     return await evaluate_task(task)
 
 
 @app.get("/health")
 def health() -> dict[str, str]:
-    return {"status": "healthy", "service": "ficknury-evaluator"}
+    return {"status": "healthy", "service": "ficknury-autonomy-evaluator"}
 
 
 @app.get("/")
 def read_root():
-    return {"status": "ok", "service": "ficknury_evaluator"}
+    return {
+        "status": "ok",
+        "service": "ficknury_autonomy_evaluator",
+        "purpose": "Evaluates if tasks can be 100% completed autonomously",
+        "note": "Works with 70% orb confidence system - evaluates low-confidence tasks",
+    }
 
 
-# --- ORB SCORING ENDPOINTS ---
+# --- ORB SCORING ENDPOINTS (unchanged) ---
 
 
 class OrbTaskInput(BaseModel):
@@ -157,7 +148,7 @@ async def orb_health_check():
             "orb_scoring": "enabled",
             "library_loaded": stats["total_orbs"] > 0,
             "total_orbs": stats["total_orbs"],
-            "categories": stats["category_count"],
+            "categories": stats["categories"],
         }
     except Exception as e:
         return {"status": "unhealthy", "orb_scoring": "error", "error": str(e)}
