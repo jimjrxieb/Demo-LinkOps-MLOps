@@ -318,7 +318,7 @@ jobs:
 
       # Build and push each demo service
       - name: Build + Push Frontend
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./frontend
           push: true
@@ -329,7 +329,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build + Push MLOps Platform
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./mlops/mlops-platform
           push: true
@@ -340,7 +340,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build + Push Whis Data Input
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./mlops/whis-data-input
           push: true
@@ -351,7 +351,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build + Push Whis Sanitize
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./mlops/whis-sanitize
           push: true
@@ -362,7 +362,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build + Push Whis Logic
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./mlops/whis-logic
           push: true
@@ -373,7 +373,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build + Push Ficknury Evaluator
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./shadows/ficknury-evaluator
           push: true
@@ -384,7 +384,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build + Push Whis ML
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v6
         with:
           context: ./mlops/whis-ml
           push: true
