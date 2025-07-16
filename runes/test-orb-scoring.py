@@ -47,7 +47,7 @@ try:
             print(f"   Score: {result['best_match']['score']:.2f}")
             print(f"   Category: {result['best_match']['category']}")
         else:
-            print(f"   Best match: None")
+            print("   Best match: None")
 
     print("\n✅ All tests completed successfully!")
 

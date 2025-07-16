@@ -9,49 +9,65 @@
     </div>
     
     <!-- Hero Section -->
-    <div class="hero-section mb-8">
-      <h1 class="text-3xl font-extrabold text-white mb-2">Kubernetes/CD Shadow Agent <span class="text-blue-400">DEMO</span></h1>
-      
-      <p class="text-gray-300 text-sm mb-4 max-w-3xl leading-relaxed">
-        This demo is a slimmed-down version of my personal Kubernetes AI/ML model under the LinkOps umbrella.
-        Every Kubernetes-related Jira task I'm assigned — or errors I've encountered and solved using tools like ChatGPT and K8sGPT —
-        gets entered into this system, where it is structured, learned from, and versioned.
-        Over time, it becomes a reflection of my real-world experience, industry best practices, and troubleshooting patterns.
-        The long-term goal is to reach a state where this system can autonomously complete any Kubernetes or CD-related task I receive.
-      </p>
+    <div class="hero-section">
+      <div class="card">
+        <div class="card-body">
+          <h1 class="hero-title">
+            Kubernetes/CD Shadow Agent <span class="hero-highlight">DEMO</span>
+          </h1>
+          
+          <p class="hero-description">
+            This demo is a slimmed-down version of my personal Kubernetes AI/ML model under the LinkOps umbrella.
+            Every Kubernetes-related Jira task I'm assigned — or errors I've encountered and solved using tools like ChatGPT and K8sGPT —
+            gets entered into this system, where it is structured, learned from, and versioned.
+            Over time, it becomes a reflection of my real-world experience, industry best practices, and troubleshooting patterns.
+            The long-term goal is to reach a state where this system can autonomously complete any Kubernetes or CD-related task I receive.
+          </p>
+        </div>
+      </div>
     </div>
     
     <!-- 1. Task Input -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🎯 Submit a Kubernetes/CD Task or Error</h2>
-        <p class="text-gray-600">Enter a Kubernetes task, goal, or error you've encountered — and see how LinkOps processes it through the AI/ML pipeline.</p>
+        <h2 class="card-title">
+          🎯 Submit a Kubernetes/CD Task or Error
+        </h2>
+        <p class="card-subtitle">
+          Enter a Kubernetes task, goal, or error you've encountered — and see how LinkOps processes it through the AI/ML pipeline.
+        </p>
       </div>
       <div class="card-body">
         <div class="form-group">
           <label class="form-label">Task Description</label>
           <textarea 
             v-model="taskInput" 
-            class="form-input form-textarea bg-white text-black px-3 py-2 rounded-md w-full border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+            class="form-input form-textarea"
             placeholder="e.g., create a pod named test with image nginx..."
             rows="4"
-          ></textarea>
+          />
         </div>
         
         <div class="form-actions">
           <button 
-            @click="submitTask" 
-            :disabled="!taskInput.trim() || loading"
+            :disabled="!taskInput.trim() || loading" 
             class="btn btn-primary"
+            @click="submitTask"
           >
-            <span v-if="loading" class="btn-icon">⏳</span>
-            <span v-else class="btn-icon">🚀</span>
+            <span
+              v-if="loading"
+              class="btn-icon"
+            >⏳</span>
+            <span
+              v-else
+              class="btn-icon"
+            >🚀</span>
             {{ loading ? 'Processing...' : 'Submit Task' }}
           </button>
           
           <button 
-            @click="clearResults" 
-            class="btn btn-secondary"
+            class="btn btn-secondary" 
+            @click="clearResults"
           >
             <span class="btn-icon">🗑️</span>
             Clear
@@ -61,24 +77,41 @@
     </div>
 
     <!-- 2. Orb Match Section -->
-    <div v-if="taskInput && !loading && matchingOrb" class="results-section">
-      <OrbResultCard :orb="matchingOrb" :confidence="confidenceScore" />
+    <div
+      v-if="taskInput && !loading && matchingOrb"
+      class="results-section"
+    >
+      <OrbResultCard
+        :orb="matchingOrb"
+        :confidence="confidenceScore"
+      />
     </div>
 
     <!-- 3. Whis Pipeline Side Panel -->
-    <div v-if="taskInput && !loading" class="mt-4">
-      <WhisPipeline :pipeline-data="pipelineData" :current-step="currentStep" />
+    <div
+      v-if="taskInput && !loading"
+      class="pipeline-section"
+    >
+      <WhisPipeline
+        :pipeline-data="pipelineData"
+        :current-step="currentStep"
+      />
     </div>
 
     <!-- 4. Full Orb Library Always Visible -->
-    <div class="mt-6">
-      <OrbLibrary :orbs="orbLibrary" />
+    <div class="library-section">
+      <OrbLibrary
+        :orbs="orbLibrary"
+        @retrain="retrainModel"
+      />
     </div>
 
     <!-- 5. Demo Information -->
-    <div class="card mt-6">
+    <div class="card demo-info-card">
       <div class="card-header">
-        <h2 class="card-title">ℹ️ About This Demo</h2>
+        <h2 class="card-title">
+          ℹ️ About This Demo
+        </h2>
       </div>
       <div class="card-body">
         <div class="info-grid">
@@ -109,8 +142,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
 </template>
 
@@ -139,9 +170,9 @@ const pipelineData = ref([
   {
     id: 2,
     name: 'whis_sanitize',
-    description: 'Cleans and validates input data, removes sensitive information',
+    description: 'Cleans and validates input data, removes sensitive information, generates TensorFlow embeddings',
     icon: '🧹',
-    tools: 'Data validation, PII detection, format standardization'
+    tools: 'Data validation, PII detection, format standardization, TensorFlow USE embeddings'
   },
   {
     id: 3,
@@ -168,6 +199,26 @@ const pipelineData = ref([
 
 // Pre-seeded Orb Library data
 const orbLibrary = ref([
+  {
+    title: "ML Task Classifier",
+    category: "AI/ML Engineer",
+    orb: "Predicts the category of engineering tasks using a trained TensorFlow model. Used in whis_smithing to reduce LLM reliance.",
+    keywords: ["classification", "ai", "tensorflow", "tokenizer"],
+    type: "training",
+    version: "v1",
+    confidence: 0.92,
+    last_trained: "2025-07-15 14:00 UTC"
+  },
+  {
+    title: "TensorFlow USE Embeddings",
+    category: "AI/ML Engineer",
+    orb: "Generates Universal Sentence Encoder embeddings for task text using TensorFlow. Used in whis_sanitize for semantic similarity.",
+    keywords: ["embeddings", "tensorflow", "use", "semantic", "similarity"],
+    type: "training",
+    version: "v4",
+    confidence: 0.95,
+    last_trained: "2025-07-15 14:00 UTC"
+  },
   {
     title: "Kubernetes Pod Creation",
     category: "Kubernetes",
@@ -272,6 +323,14 @@ const clearResults = () => {
   matchingOrb.value = null
   confidenceScore.value = null
 }
+
+const retrainModel = () => {
+  console.log("🧠 Simulating model retraining...");
+  const now = new Date().toISOString().replace("T", " ").split(".")[0] + " UTC";
+  const orb = orbLibrary.value.find(o => o.title === "ML Task Classifier");
+  if (orb) orb.last_trained = now;
+  alert(`✅ Training Orb 'ML Task Classifier' retrained at ${now}`);
+};
 </script>
 
 <style scoped>

@@ -22,7 +22,7 @@ ORB_LIBRARY_PATH = (
 def load_orb_library() -> List[Dict[str, Any]]:
     """Load the Orb library from JSON file."""
     try:
-        with open(ORB_LIBRARY_PATH, "r") as f:
+        with open(ORB_LIBRARY_PATH) as f:
             return json.load(f)
     except FileNotFoundError:
         print(f"❌ Orb library file not found: {ORB_LIBRARY_PATH}")
@@ -201,7 +201,7 @@ def main():
     elif command == "test":
         print("🧪 Testing Orb library...")
         print(f"✅ Loaded {len(orbs)} Orbs from {ORB_LIBRARY_PATH}")
-        print(f"✅ JSON is valid")
+        print("✅ JSON is valid")
         is_valid = validate_library(orbs)
         if is_valid:
             print("✅ All tests passed!")

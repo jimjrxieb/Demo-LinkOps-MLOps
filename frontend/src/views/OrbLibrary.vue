@@ -4,22 +4,38 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">📚 Kubernetes/CD Orb Library</h2>
-          <p class="text-gray-600">Browse the collection of automated best practices and solutions</p>
+          <h2 class="card-title">
+            📚 Kubernetes/CD Orb Library
+          </h2>
+          <p class="text-gray-600">
+            Browse the collection of automated best practices and solutions
+          </p>
         </div>
         <div class="card-body">
           <div class="stats-grid">
             <div class="stat-card">
-              <div class="stat-number">{{ orbs.length }}</div>
-              <div class="stat-label">Total Orbs</div>
+              <div class="stat-number">
+                {{ orbs.length }}
+              </div>
+              <div class="stat-label">
+                Total Orbs
+              </div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">{{ categories.length }}</div>
-              <div class="stat-label">Categories</div>
+              <div class="stat-number">
+                {{ categories.length }}
+              </div>
+              <div class="stat-label">
+                Categories
+              </div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">{{ averageConfidence }}%</div>
-              <div class="stat-label">Avg Confidence</div>
+              <div class="stat-number">
+                {{ averageConfidence }}%
+              </div>
+              <div class="stat-label">
+                Avg Confidence
+              </div>
             </div>
           </div>
         </div>
@@ -38,7 +54,7 @@
                 type="text" 
                 class="form-input" 
                 placeholder="Search by title, keywords, or category..."
-              />
+              >
             </div>
             
             <!-- Category Buttons -->
@@ -46,16 +62,16 @@
               <label class="form-label">Filter by Category</label>
               <div class="category-buttons">
                 <button
-                  @click="selectedCategory = ''"
                   :class="['category-btn', selectedCategory === '' ? 'category-btn-active' : 'category-btn-inactive']"
+                  @click="selectedCategory = ''"
                 >
                   All Categories
                 </button>
                 <button
                   v-for="category in categories"
                   :key="category"
-                  @click="selectedCategory = category"
                   :class="['category-btn', selectedCategory === category ? 'category-btn-active' : 'category-btn-inactive']"
+                  @click="selectedCategory = category"
                 >
                   {{ category }}
                 </button>
@@ -66,31 +82,157 @@
       </div>
     </div>
 
-    <!-- Orbs Grid -->
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <!-- Training Orbs Section -->
+    <div class="training-orbs-section">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">
+            🧠 Training Orbs (AI/ML)
+          </h3>
+          <p class="card-subtitle">
+            Machine learning models that learn from your tasks
+          </p>
+        </div>
+        <div class="card-body">
+          <div class="training-orbs-grid">
+            <div class="training-orb-card">
+              <div class="orb-header">
+                <div class="orb-icon">
+                  🤖
+                </div>
+                <div class="orb-meta">
+                  <h4 class="orb-title">
+                    ML Task Classifier
+                  </h4>
+                  <p class="orb-category">
+                    AI/ML Engineer
+                  </p>
+                </div>
+              </div>
+              <div class="orb-content">
+                <p class="orb-description">
+                  Predicts the type of engineering task using a local TensorFlow model. 
+                  Used in whis_smithing to reduce LLM reliance.
+                </p>
+                <div class="orb-stats">
+                  <div class="stat-item">
+                    <span class="stat-label">Model Version:</span>
+                    <span class="stat-value">v1</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Tools:</span>
+                    <span class="stat-value">TensorFlow, Keras, scikit-learn</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Status:</span>
+                    <span class="stat-value status-active">Active</span>
+                  </div>
+                </div>
+                <div class="orb-actions">
+                  <button class="btn btn-primary btn-sm">
+                    View Details
+                  </button>
+                  <button class="btn btn-secondary btn-sm">
+                    Retrain Model
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Regular Orbs Grid -->
+    <div class="orbs-grid">
       <div
         v-for="orb in filteredOrbs"
-        :key="orb.rune"
-        class="bg-gray-800 text-white rounded-lg p-4 shadow hover:shadow-lg transition-all cursor-pointer"
+        :key="orb.rune || orb.title"
+        :class="[
+          'orb-card',
+          orb.type === 'training' ? 'training-orb-card' : 'regular-orb-card'
+        ]"
         @click="openOrbModal(orb)"
       >
-        <h3 class="text-lg font-semibold text-teal-300">{{ orb.title }}</h3>
-        <p class="text-sm text-gray-300 mb-2 italic">Category: {{ orb.category }}</p>
-        <p class="text-sm mb-2">{{ orb.orb }}</p>
-        <div class="text-xs text-blue-400 mt-2">
-          Tags: <span v-for="keyword in orb.keywords" :key="keyword" class="mr-1">#{{ keyword }}</span>
+        <div class="orb-header">
+          <div
+            class="orb-icon"
+            :class="{ 'training-icon': orb.type === 'training' }"
+          >
+            {{ orb.type === 'training' ? '🤖' : '📚' }}
+          </div>
+          <div class="orb-meta">
+            <h3 class="orb-title">
+              {{ orb.title }}
+            </h3>
+            <p class="orb-category">
+              {{ orb.category }}
+              <span
+                v-if="orb.type === 'training'"
+                class="training-badge"
+              >Training Orb</span>
+            </p>
+          </div>
         </div>
-        <div class="text-xs text-gray-400 mt-2 italic">
-          Click to view details →
+        <div class="orb-content">
+          <p class="orb-description">
+            {{ orb.orb }}
+          </p>
+          <div class="orb-keywords">
+            <span class="keywords-label">Tags:</span>
+            <div class="keyword-tags">
+              <span
+                v-for="keyword in orb.keywords"
+                :key="keyword"
+                class="keyword-tag"
+              >#{{ keyword }}</span>
+            </div>
+          </div>
+          <div
+            v-if="orb.type === 'training'"
+            class="training-stats"
+          >
+            <div class="stat-item">
+              <span class="stat-label">Version:</span>
+              <span class="stat-value">{{ orb.version }}</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Confidence:</span>
+              <span class="stat-value">{{ Math.round((orb.confidence || 0.85) * 100) }}%</span>
+            </div>
+          </div>
+          <div class="orb-footer">
+            <span class="click-hint">Click to view details →</span>
+            <div
+              v-if="orb.type === 'training'"
+              class="retrain-section"
+            >
+              <button
+                class="retrain-btn"
+                @click.stop="$emit('retrain')"
+              >
+                🔁 Retrain Model
+              </button>
+              <div class="last-trained-info">
+                <span class="last-trained-label">Last trained:</span>
+                <span class="last-trained-timestamp">{{ orb.last_trained }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- No Results -->
-    <div v-if="filteredOrbs.length === 0" class="no-results">
+    <div
+      v-if="filteredOrbs.length === 0"
+      class="no-results"
+    >
       <div class="card">
         <div class="card-body text-center">
-          <div class="no-results-icon">🔍</div>
+          <div class="no-results-icon">
+            🔍
+          </div>
           <h3>No Orbs Found</h3>
           <p>Try adjusting your search criteria or category filter.</p>
         </div>
@@ -98,26 +240,50 @@
     </div>
 
     <!-- Orb Detail Modal -->
-    <div v-if="showModal" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
+    <div
+      v-if="showModal"
+      class="modal-overlay"
+      @click="closeModal"
+    >
+      <div
+        class="modal-content"
+        @click.stop
+      >
         <div class="modal-header">
-          <h2 class="modal-title">📚 {{ selectedOrb?.title }}</h2>
-          <button @click="closeModal" class="modal-close">×</button>
+          <h2 class="modal-title">
+            📚 {{ selectedOrb?.title }}
+          </h2>
+          <button
+            class="modal-close"
+            @click="closeModal"
+          >
+            ×
+          </button>
         </div>
         <div class="modal-body">
           <div class="orb-detail-grid">
             <div class="detail-section">
-              <h3 class="detail-label">Category</h3>
-              <p class="detail-value">{{ selectedOrb?.category }}</p>
+              <h3 class="detail-label">
+                Category
+              </h3>
+              <p class="detail-value">
+                {{ selectedOrb?.category }}
+              </p>
             </div>
             
             <div class="detail-section">
-              <h3 class="detail-label">Description</h3>
-              <p class="detail-value">{{ selectedOrb?.orb }}</p>
+              <h3 class="detail-label">
+                Description
+              </h3>
+              <p class="detail-value">
+                {{ selectedOrb?.orb }}
+              </p>
             </div>
             
             <div class="detail-section">
-              <h3 class="detail-label">Keywords</h3>
+              <h3 class="detail-label">
+                Keywords
+              </h3>
               <div class="keyword-tags">
                 <span 
                   v-for="keyword in selectedOrb?.keywords" 
@@ -130,27 +296,38 @@
             </div>
             
             <div class="detail-section">
-              <h3 class="detail-label">Rune ID</h3>
+              <h3 class="detail-label">
+                Rune ID
+              </h3>
               <code class="rune-code">{{ selectedOrb?.rune || 'R-' + Math.floor(Math.random() * 1000) }}</code>
             </div>
             
             <div class="detail-section">
-              <h3 class="detail-label">Confidence Score</h3>
+              <h3 class="detail-label">
+                Confidence Score
+              </h3>
               <div class="confidence-score">
                 <span class="score-value">{{ Math.round((selectedOrb?.confidence || 0.85) * 100) }}%</span>
                 <div class="confidence-bar">
                   <div 
                     class="confidence-fill" 
                     :style="{ width: Math.round((selectedOrb?.confidence || 0.85) * 100) + '%' }"
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer">
-          <button @click="closeModal" class="btn btn-secondary">Close</button>
-          <button class="btn btn-primary">Use This Orb</button>
+          <button
+            class="btn btn-secondary"
+            @click="closeModal"
+          >
+            Close
+          </button>
+          <button class="btn btn-primary">
+            Use This Orb
+          </button>
         </div>
       </div>
     </div>
@@ -168,6 +345,9 @@ const props = defineProps({
     default: () => []
   }
 })
+
+// Emits
+const emit = defineEmits(['retrain'])
 
 const searchQuery = ref('')
 const selectedCategory = ref('')
@@ -770,5 +950,351 @@ onMounted(() => {
   .modal-footer {
     flex-direction: column;
   }
+}
+
+/* Training Orbs Styles */
+.training-orbs-section {
+  margin-bottom: 2rem;
+}
+
+.training-orbs-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.training-orb-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.training-orb-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+}
+
+.orb-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.orb-icon {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border-radius: 12px;
+}
+
+.orb-meta h4 {
+  color: #f8fafc;
+  margin: 0 0 0.25rem 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.orb-meta p {
+  color: #94a3b8;
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.orb-content {
+  color: #e2e8f0;
+}
+
+.orb-description {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.orb-stats {
+  margin-bottom: 1rem;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #334155;
+}
+
+.stat-item:last-child {
+  border-bottom: none;
+}
+
+.stat-label {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #f8fafc;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.status-active {
+  color: #10b981;
+}
+
+.orb-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+}
+
+/* Regular Orb Cards */
+.regular-orb-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.regular-orb-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-color: #3b82f6;
+}
+
+/* Training Orb Cards */
+.training-orb-card {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  border: 1px solid #334155;
+  border-radius: 12px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.training-orb-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  border-color: #3b82f6;
+}
+
+.orb-card {
+  overflow: hidden;
+}
+
+.orb-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.orb-icon {
+  font-size: 2rem;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+}
+
+.training-icon {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+}
+
+.orb-meta {
+  flex: 1;
+}
+
+.orb-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.25rem 0;
+}
+
+.training-orb-card .orb-title {
+  color: #f8fafc;
+}
+
+.orb-category {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+  margin: 0;
+}
+
+.training-orb-card .orb-category {
+  color: #94a3b8;
+}
+
+.training-badge {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.orb-content {
+  color: #374151;
+}
+
+.training-orb-card .orb-content {
+  color: #e2e8f0;
+}
+
+.orb-description {
+  line-height: 1.6;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.orb-keywords {
+  margin-bottom: 1rem;
+}
+
+.keywords-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #64748b;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.training-orb-card .keywords-label {
+  color: #94a3b8;
+}
+
+.keyword-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.keyword-tag {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+.training-orb-card .keyword-tag {
+  background: rgba(59, 130, 246, 0.2);
+  color: #dbeafe;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.training-stats {
+  margin-bottom: 1rem;
+}
+
+.orb-footer {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
+}
+
+.training-orb-card .orb-footer {
+  border-top-color: #334155;
+}
+
+.click-hint {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.training-orb-card .click-hint {
+  color: #64748b;
+}
+
+.retrain-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+.training-orb-card .retrain-section {
+  border-top-color: #334155;
+}
+
+.retrain-btn {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.retrain-btn:hover {
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+}
+
+.retrain-btn:active {
+  transform: translateY(0);
+}
+
+.last-trained-info {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.last-trained-label {
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.last-trained-timestamp {
+  color: #64748b;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+
+.training-orb-card .last-trained-label {
+  color: #64748b;
+}
+
+.training-orb-card .last-trained-timestamp {
+  color: #94a3b8;
+  background: rgba(255, 255, 255, 0.1);
 }
 </style> 

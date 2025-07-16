@@ -4,8 +4,12 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🧠 Whis Learning Pipeline</h2>
-          <p class="text-gray-600">Visualize the AI-powered task processing and learning stages</p>
+          <h2 class="card-title">
+            🧠 Whis Learning Pipeline
+          </h2>
+          <p class="text-gray-600">
+            Visualize the AI-powered task processing and learning stages
+          </p>
         </div>
         <div class="card-body">
           <div class="pipeline-overview">
@@ -19,14 +23,18 @@
     <div class="pipeline-stages">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Pipeline Stages</h3>
+          <h3 class="card-title">
+            Pipeline Stages
+          </h3>
         </div>
         <div class="card-body">
           <div class="stages-grid">
             <!-- Stage 1: Input -->
             <div class="stage-card">
               <div class="stage-header">
-                <div class="stage-icon">📥</div>
+                <div class="stage-icon">
+                  📥
+                </div>
                 <div class="stage-info">
                   <h4>1. Input Processing</h4>
                   <span class="stage-status">Active</span>
@@ -46,7 +54,9 @@
             <!-- Stage 2: Sanitization -->
             <div class="stage-card">
               <div class="stage-header">
-                <div class="stage-icon">🧹</div>
+                <div class="stage-icon">
+                  🧹
+                </div>
                 <div class="stage-info">
                   <h4>2. Sanitization</h4>
                   <span class="stage-status">Active</span>
@@ -66,7 +76,9 @@
             <!-- Stage 3: Smithing -->
             <div class="stage-card active">
               <div class="stage-header">
-                <div class="stage-icon">⚒️</div>
+                <div class="stage-icon">
+                  ⚒️
+                </div>
                 <div class="stage-info">
                   <h4>3. Smithing</h4>
                   <span class="stage-status active">Processing</span>
@@ -97,7 +109,9 @@
             <!-- Stage 4: Evaluation -->
             <div class="stage-card">
               <div class="stage-header">
-                <div class="stage-icon">📊</div>
+                <div class="stage-icon">
+                  📊
+                </div>
                 <div class="stage-info">
                   <h4>4. Evaluation</h4>
                   <span class="stage-status">Pending</span>
@@ -117,7 +131,9 @@
             <!-- Stage 5: Output -->
             <div class="stage-card">
               <div class="stage-header">
-                <div class="stage-icon">📤</div>
+                <div class="stage-icon">
+                  📤
+                </div>
                 <div class="stage-info">
                   <h4>5. Output Generation</h4>
                   <span class="stage-status">Pending</span>
@@ -142,12 +158,16 @@
     <div class="learning-insights">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">🎓 Learning Insights</h3>
+          <h3 class="card-title">
+            🎓 Learning Insights
+          </h3>
         </div>
         <div class="card-body">
           <div class="insights-grid">
             <div class="insight-item">
-              <div class="insight-icon">📈</div>
+              <div class="insight-icon">
+                📈
+              </div>
               <div class="insight-content">
                 <h4>Continuous Learning</h4>
                 <p>The Whis pipeline learns from each interaction, improving its understanding and solution quality over time.</p>
@@ -155,7 +175,9 @@
             </div>
             
             <div class="insight-item">
-              <div class="insight-icon">🔍</div>
+              <div class="insight-icon">
+                🔍
+              </div>
               <div class="insight-content">
                 <h4>Pattern Recognition</h4>
                 <p>Advanced algorithms identify patterns in tasks and solutions, enabling faster and more accurate processing.</p>
@@ -163,7 +185,9 @@
             </div>
             
             <div class="insight-item">
-              <div class="insight-icon">🛡️</div>
+              <div class="insight-icon">
+                🛡️
+              </div>
               <div class="insight-content">
                 <h4>Security Focus</h4>
                 <p>Every solution is evaluated for security implications and compliance with best practices.</p>
@@ -171,7 +195,9 @@
             </div>
             
             <div class="insight-item">
-              <div class="insight-icon">⚡</div>
+              <div class="insight-icon">
+                ⚡
+              </div>
               <div class="insight-content">
                 <h4>Performance Optimization</h4>
                 <p>Solutions are optimized for performance, scalability, and maintainability.</p>
@@ -187,7 +213,9 @@
       <div class="card">
         <div class="card-body">
           <div class="notice-content">
-            <div class="notice-icon">🎯</div>
+            <div class="notice-icon">
+              🎯
+            </div>
             <div class="notice-text">
               <h4>Demo Mode Active</h4>
               <p>This visualization shows the Whis pipeline structure. In production, each stage processes real tasks with live AI models and generates actual solutions.</p>

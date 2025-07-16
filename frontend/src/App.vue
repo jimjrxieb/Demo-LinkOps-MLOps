@@ -4,13 +4,18 @@
     <Sidebar />
     
     <!-- Main Content Area -->
-    <div class="main-content" :class="{ 'sidebar-collapsed': false }">
+    <div
+      class="main-content"
+      :class="{ 'sidebar-collapsed': false }"
+    >
       <!-- Top Header -->
       <header class="top-header">
         <div class="header-content">
           <div class="page-title">
             <h1>{{ currentPageTitle }}</h1>
-            <p class="page-subtitle">{{ currentPageSubtitle }}</p>
+            <p class="page-subtitle">
+              {{ currentPageSubtitle }}
+            </p>
           </div>
           <div class="header-actions">
             <div class="demo-badge">
@@ -192,6 +197,49 @@ body {
 
 .card-body {
   padding: 1.5rem;
+}
+
+.card-subtitle {
+  color: #64748b;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.hero-section {
+  margin-bottom: 2rem;
+}
+
+.hero-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hero-highlight {
+  color: #3b82f6;
+}
+
+.hero-description {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.7;
+  margin: 0;
+  max-width: 60ch;
+}
+
+.pipeline-section {
+  margin-top: 1.5rem;
+}
+
+.library-section {
+  margin-top: 2.5rem;
+}
+
+.demo-info-card {
+  margin-top: 2.5rem;
 }
 
 /* Button styles */

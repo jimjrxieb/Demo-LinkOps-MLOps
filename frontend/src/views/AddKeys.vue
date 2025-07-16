@@ -4,12 +4,18 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🔑 API Key Management</h2>
-          <p class="text-gray-600">Configure AI API keys to enable enhanced features and real AI processing</p>
+          <h2 class="card-title">
+            🔑 API Key Management
+          </h2>
+          <p class="text-gray-600">
+            Configure AI API keys to enable enhanced features and real AI processing
+          </p>
         </div>
         <div class="card-body">
           <div class="demo-notice">
-            <div class="notice-icon">🎯</div>
+            <div class="notice-icon">
+              🎯
+            </div>
             <div class="notice-content">
               <h4>Demo Mode Active</h4>
               <p>Currently running in demo mode with simulated responses. Add API keys to enable real AI processing.</p>
@@ -23,10 +29,15 @@
     <div class="keys-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Configure API Keys</h3>
+          <h3 class="card-title">
+            Configure API Keys
+          </h3>
         </div>
         <div class="card-body">
-          <form @submit.prevent="saveKeys" class="keys-form">
+          <form
+            class="keys-form"
+            @submit.prevent="saveKeys"
+          >
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">
@@ -39,8 +50,10 @@
                   class="form-input" 
                   placeholder="sk-..."
                   :disabled="isDemoMode"
-                />
-                <p class="form-help">Used for GPT-4 task processing and code generation</p>
+                >
+                <p class="form-help">
+                  Used for GPT-4 task processing and code generation
+                </p>
               </div>
               
               <div class="form-group">
@@ -54,8 +67,10 @@
                   class="form-input" 
                   placeholder="grok_..."
                   :disabled="isDemoMode"
-                />
-                <p class="form-help">Used for advanced reasoning and complex task analysis</p>
+                >
+                <p class="form-help">
+                  Used for advanced reasoning and complex task analysis
+                </p>
               </div>
             </div>
 
@@ -71,8 +86,10 @@
                   class="form-input" 
                   placeholder="sk-ant-..."
                   :disabled="isDemoMode"
-                />
-                <p class="form-help">Used for Claude-based reasoning and analysis</p>
+                >
+                <p class="form-help">
+                  Used for Claude-based reasoning and analysis
+                </p>
               </div>
               
               <div class="form-group">
@@ -86,8 +103,10 @@
                   class="form-input" 
                   placeholder="https://api.example.com/v1"
                   :disabled="isDemoMode"
-                />
-                <p class="form-help">Custom API endpoint for specialized services</p>
+                >
+                <p class="form-help">
+                  Custom API endpoint for specialized services
+                </p>
               </div>
             </div>
 
@@ -104,8 +123,8 @@
               <button 
                 type="button" 
                 class="btn btn-secondary"
-                @click="clearKeys"
                 :disabled="isDemoMode"
+                @click="clearKeys"
               >
                 <span class="btn-icon">🗑️</span>
                 Clear All Keys
@@ -114,8 +133,8 @@
               <button 
                 type="button" 
                 class="btn btn-success"
-                @click="testConnection"
                 :disabled="isDemoMode || !hasAnyKey"
+                @click="testConnection"
               >
                 <span class="btn-icon">🧪</span>
                 Test Connection
@@ -134,45 +153,75 @@
     <div class="status-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">Connection Status</h3>
+          <h3 class="card-title">
+            Connection Status
+          </h3>
         </div>
         <div class="card-body">
           <div class="status-grid">
             <div class="status-item">
-              <div class="status-icon">🤖</div>
+              <div class="status-icon">
+                🤖
+              </div>
               <div class="status-info">
-                <div class="status-name">OpenAI</div>
-                <div class="status-value" :class="getStatusClass('openai')">
+                <div class="status-name">
+                  OpenAI
+                </div>
+                <div
+                  class="status-value"
+                  :class="getStatusClass('openai')"
+                >
                   {{ getStatusText('openai') }}
                 </div>
               </div>
             </div>
             
             <div class="status-item">
-              <div class="status-icon">🧠</div>
+              <div class="status-icon">
+                🧠
+              </div>
               <div class="status-info">
-                <div class="status-name">Grok</div>
-                <div class="status-value" :class="getStatusClass('grok')">
+                <div class="status-name">
+                  Grok
+                </div>
+                <div
+                  class="status-value"
+                  :class="getStatusClass('grok')"
+                >
                   {{ getStatusText('grok') }}
                 </div>
               </div>
             </div>
             
             <div class="status-item">
-              <div class="status-icon">🔍</div>
+              <div class="status-icon">
+                🔍
+              </div>
               <div class="status-info">
-                <div class="status-name">Anthropic</div>
-                <div class="status-value" :class="getStatusClass('anthropic')">
+                <div class="status-name">
+                  Anthropic
+                </div>
+                <div
+                  class="status-value"
+                  :class="getStatusClass('anthropic')"
+                >
                   {{ getStatusText('anthropic') }}
                 </div>
               </div>
             </div>
             
             <div class="status-item">
-              <div class="status-icon">⚡</div>
+              <div class="status-icon">
+                ⚡
+              </div>
               <div class="status-info">
-                <div class="status-name">Custom</div>
-                <div class="status-value" :class="getStatusClass('custom')">
+                <div class="status-name">
+                  Custom
+                </div>
+                <div
+                  class="status-value"
+                  :class="getStatusClass('custom')"
+                >
                   {{ getStatusText('custom') }}
                 </div>
               </div>
@@ -186,12 +235,16 @@
     <div class="instructions-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">📖 Getting Started</h3>
+          <h3 class="card-title">
+            📖 Getting Started
+          </h3>
         </div>
         <div class="card-body">
           <div class="instructions-grid">
             <div class="instruction-item">
-              <div class="instruction-number">1</div>
+              <div class="instruction-number">
+                1
+              </div>
               <div class="instruction-content">
                 <h4>Get API Keys</h4>
                 <p>Sign up for OpenAI, Grok, or Anthropic to get your API keys</p>
@@ -199,7 +252,9 @@
             </div>
             
             <div class="instruction-item">
-              <div class="instruction-number">2</div>
+              <div class="instruction-number">
+                2
+              </div>
               <div class="instruction-content">
                 <h4>Add Keys Securely</h4>
                 <p>Enter your API keys above. They're stored locally in your browser</p>
@@ -207,7 +262,9 @@
             </div>
             
             <div class="instruction-item">
-              <div class="instruction-number">3</div>
+              <div class="instruction-number">
+                3
+              </div>
               <div class="instruction-content">
                 <h4>Test Connection</h4>
                 <p>Verify your keys work by testing the connection</p>
@@ -215,7 +272,9 @@
             </div>
             
             <div class="instruction-item">
-              <div class="instruction-number">4</div>
+              <div class="instruction-number">
+                4
+              </div>
               <div class="instruction-content">
                 <h4>Start Using AI</h4>
                 <p>Go to the Home page and submit tasks for real AI processing</p>

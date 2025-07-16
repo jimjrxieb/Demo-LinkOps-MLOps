@@ -36,6 +36,20 @@ from fastapi.middleware.cors import CORSMiddleware
 from logic.sanitizer import WhisSanitizer, batch_sanitize, sanitize_input
 from pydantic import BaseModel
 
+# Import TensorFlow embedding functionality
+try:
+    from logic.sanitize_embed import (
+        check_embedding_service,
+        generate_embedding,
+        generate_embeddings_batch,
+        get_embedding_info,
+    )
+
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
+    print("Warning: TensorFlow embedding module not available")
+
 app = FastAPI(
     title="Whis Sanitizer Service",
     description="Cleans, structures, and tags data like a pro data scientist",
@@ -184,7 +198,7 @@ async def get_sanitization_stats():
     """
     Get sanitization service statistics.
     """
-    return {
+    stats = {
         "service": "whis-sanitize",
         "total_processed": 0,  # TODO: Implement actual stats
         "success_rate": 0.0,
@@ -193,6 +207,114 @@ async def get_sanitization_stats():
         "supported_formats": ["json", "yaml", "text", "code"],
         "auto_tagging_domains": list(sanitizer.domain_keywords.keys()),
     }
+
+    # Add TensorFlow embedding info if available
+    if TENSORFLOW_AVAILABLE:
+        stats["tensorflow_available"] = True
+        stats["embedding_info"] = get_embedding_info()
+    else:
+        stats["tensorflow_available"] = False
+
+    return stats
+
+
+@app.get("/embedding/health")
+async def embedding_health_check():
+    """
+    Check TensorFlow embedding service health.
+    """
+    if not TENSORFLOW_AVAILABLE:
+        return {
+            "status": "unavailable",
+            "error": "TensorFlow embedding module not available",
+            "service": "whis-sanitize-embedding",
+        }
+
+    try:
+        health_status = check_embedding_service()
+        return {
+            "status": health_status["status"],
+            "model_loaded": health_status["model_loaded"],
+            "test_embedding_length": health_status["test_embedding_length"],
+            "test_embedding_sample": health_status["test_embedding_sample"],
+            "error": health_status["error"],
+            "service": "whis-sanitize-embedding",
+        }
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "service": "whis-sanitize-embedding",
+        }
+
+
+@app.post("/embedding/generate")
+async def generate_text_embedding(text: str):
+    """
+    Generate TensorFlow embedding for a single text.
+    """
+    if not TENSORFLOW_AVAILABLE:
+        raise HTTPException(
+            status_code=503, detail="TensorFlow embedding service not available"
+        )
+
+    try:
+        embedding = generate_embedding(text)
+
+        return {
+            "text": text,
+            "embedding": embedding,
+            "embedding_length": len(embedding),
+            "model_info": get_embedding_info(),
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to generate embedding: {str(e)}"
+        ) from e
+
+
+@app.post("/embedding/batch")
+async def generate_batch_embeddings(texts: list[str]):
+    """
+    Generate TensorFlow embeddings for multiple texts.
+    """
+    if not TENSORFLOW_AVAILABLE:
+        raise HTTPException(
+            status_code=503, detail="TensorFlow embedding service not available"
+        )
+
+    try:
+        embeddings = generate_embeddings_batch(texts)
+
+        return {
+            "texts": texts,
+            "embeddings": embeddings,
+            "batch_size": len(texts),
+            "embedding_dimensions": len(embeddings[0]) if embeddings else 0,
+            "model_info": get_embedding_info(),
+        }
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to generate batch embeddings: {str(e)}"
+        ) from e
+
+
+@app.get("/embedding/info")
+async def get_embedding_model_info():
+    """
+    Get information about the TensorFlow embedding model.
+    """
+    if not TENSORFLOW_AVAILABLE:
+        raise HTTPException(
+            status_code=503, detail="TensorFlow embedding service not available"
+        )
+
+    try:
+        return get_embedding_info()
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Failed to get embedding info: {str(e)}"
+        ) from e
 
 
 @app.post("/test")

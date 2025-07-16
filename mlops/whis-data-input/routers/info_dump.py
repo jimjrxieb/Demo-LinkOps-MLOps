@@ -57,7 +57,7 @@ class InfoDumpBatch(BaseModel):
 
 
 @router.post("/dump")
-async def submit_info-dump(dump: InfoDump):
+async def submit_info_dump(dump: InfoDump):
     """
     Submit raw information dump for processing.
     """
@@ -106,7 +106,7 @@ async def submit_info-dump(dump: InfoDump):
 
 
 @router.post("/dump/batch")
-async def submit_info-dump_batch(batch: InfoDumpBatch):
+async def submit_info_dump_batch(batch: InfoDumpBatch):
     """
     Submit multiple info dumps in a batch.
     """
@@ -272,7 +272,7 @@ def _generate_auto_tags(content: str, format_hint: str) -> list[str]:
 
 
 @router.get("/dump/{dump_id}")
-async def get_info-dump(dump_id: str):
+async def get_info_dump(dump_id: str):
     """
     Retrieve a specific info dump by ID.
     """
@@ -281,7 +281,7 @@ async def get_info-dump(dump_id: str):
 
 
 @router.get("/dump")
-async def list_info-dumps(
+async def list_info_dumps(
     limit: int = 100,
     offset: int = 0,
     format_hint: Optional[str] = None,

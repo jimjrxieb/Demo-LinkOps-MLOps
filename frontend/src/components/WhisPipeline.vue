@@ -1,13 +1,20 @@
 <template>
   <div class="whis-pipeline">
     <div class="pipeline-header">
-      <h2 class="pipeline-title">Whis Pipeline Flow</h2>
-      <p class="pipeline-subtitle">Data Processing & Enhancement Workflow</p>
+      <h2 class="pipeline-title">
+        Whis Pipeline Flow
+      </h2>
+      <p class="pipeline-subtitle">
+        Data Processing & Enhancement Workflow
+      </p>
     </div>
 
     <div class="pipeline-container">
       <div class="pipeline-steps">
-        <transition-group name="step-fade" tag="div">
+        <transition-group
+          name="step-fade"
+          tag="div"
+        >
           <div
             v-for="(step, index) in pipelineData"
             :key="step.id"
@@ -19,80 +26,128 @@
             }"
             @click="$emit('step-click', step)"
           >
-          <div class="step-icon">
-            {{ step.icon }}
-          </div>
-          <div class="step-content">
-            <h3 class="step-title">
-              {{ step.name }}
-            </h3>
-            <p class="step-description">
-              {{ step.description }}
-            </p>
-            <p class="step-tools">
-              📦 Tools: {{ step.tools }}
-            </p>
-            
-            <!-- Enhanced Tool Details -->
-            <div v-if="index === currentStep" class="tool-details">
-              <div class="tool-title">🔧 Current Process</div>
-              <div class="tool-description">{{ getToolDescription(index) }}</div>
-              <div class="tool-tech">{{ getToolTechStack(index) }}</div>
+            <div class="step-icon">
+              {{ step.icon }}
             </div>
-            <div class="step-status">
-              <span class="status-indicator" :class="getStepStatus(index)" />
-              <span class="status-text">{{ getStepStatusText(index) }}</span>
-            </div>
+            <div class="step-content">
+              <h3 class="step-title">
+                {{ step.name }}
+              </h3>
+              <p class="step-description">
+                {{ step.description }}
+              </p>
+              <p class="step-tools">
+                📦 Tools: {{ step.tools }}
+              </p>
             
-            <!-- Approve/Reject buttons for Logic step (index 2) -->
-            <div v-if="index === 2 && currentStep >= 2" class="approval-section mt-3">
-              <!-- 3a. Orb Creation -->
-              <div v-if="!orbApproved" class="bg-gray-900 p-3 rounded shadow mb-2">
-                <h4 class="text-md text-yellow-300 font-bold mb-1">3a. Orb Creation</h4>
-                <p class="text-white text-sm mb-2">
-                  Whis uses LLMs + LangChain to create best practices (Orbs) from sanitized input.
-                </p>
-                <div class="flex gap-2">
-                  <button @click="orbApproved = true" class="btn btn-success text-xs px-3 py-1">
-                    ✅ Approve Orb
-                  </button>
-                  <button @click="runeApproved = false" class="btn btn-secondary text-xs px-3 py-1">
-                    ❌ Reject Orb
-                  </button>
+              <!-- Enhanced Tool Details -->
+              <div
+                v-if="index === currentStep"
+                class="tool-details"
+              >
+                <div class="tool-title">
+                  🔧 Current Process
+                </div>
+                <div class="tool-description">
+                  {{ getToolDescription(index) }}
+                </div>
+                <div class="tool-tech">
+                  {{ getToolTechStack(index) }}
                 </div>
               </div>
+              <div class="step-status">
+                <span
+                  class="status-indicator"
+                  :class="getStepStatus(index)"
+                />
+                <span class="status-text">{{ getStepStatusText(index) }}</span>
+              </div>
+            
+              <!-- Approve/Reject buttons for Logic step (index 2) -->
+              <div
+                v-if="index === 2 && currentStep >= 2"
+                class="approval-section mt-3"
+              >
+                <!-- 3a. Orb Creation -->
+                <div
+                  v-if="!orbApproved"
+                  class="bg-gray-900 p-3 rounded shadow mb-2"
+                >
+                  <h4 class="text-md text-yellow-300 font-bold mb-1">
+                    3a. Orb Creation
+                  </h4>
+                  <p class="text-white text-sm mb-2">
+                    Whis uses LLMs + LangChain to create best practices (Orbs) from sanitized input.
+                  </p>
+                  <div class="flex gap-2">
+                    <button
+                      class="btn btn-success text-xs px-3 py-1"
+                      @click="orbApproved = true"
+                    >
+                      ✅ Approve Orb
+                    </button>
+                    <button
+                      class="btn btn-secondary text-xs px-3 py-1"
+                      @click="runeApproved = false"
+                    >
+                      ❌ Reject Orb
+                    </button>
+                  </div>
+                </div>
 
-              <!-- 3b. Rune Creation -->
-              <div v-if="orbApproved && !runeApproved" class="bg-gray-900 p-3 rounded shadow mb-2">
-                <h4 class="text-md text-purple-300 font-bold mb-1">3b. Rune Generation</h4>
-                <p class="text-white text-sm mb-2">
-                  Whis converts the approved Orb into an executable step-by-step solution path (Rune).
-                </p>
-                <div class="flex gap-2">
-                  <button @click="runeApproved = true" class="btn btn-success text-xs px-3 py-1">
-                    ✅ Approve Rune
-                  </button>
-                  <button @click="orbApproved = false" class="btn btn-secondary text-xs px-3 py-1">
-                    ❌ Reject Rune
-                  </button>
+                <!-- 3b. Rune Creation -->
+                <div
+                  v-if="orbApproved && !runeApproved"
+                  class="bg-gray-900 p-3 rounded shadow mb-2"
+                >
+                  <h4 class="text-md text-purple-300 font-bold mb-1">
+                    3b. Rune Generation
+                  </h4>
+                  <p class="text-white text-sm mb-2">
+                    Whis converts the approved Orb into an executable step-by-step solution path (Rune).
+                  </p>
+                  <div class="flex gap-2">
+                    <button
+                      class="btn btn-success text-xs px-3 py-1"
+                      @click="runeApproved = true"
+                    >
+                      ✅ Approve Rune
+                    </button>
+                    <button
+                      class="btn btn-secondary text-xs px-3 py-1"
+                      @click="orbApproved = false"
+                    >
+                      ❌ Reject Rune
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Success messages -->
+                <div
+                  v-if="orbApproved && !runeApproved"
+                  class="text-green-400 text-sm font-bold mt-2"
+                >
+                  Orb approved. Proceeding to Rune generation...
+                </div>
+                <div
+                  v-if="runeApproved"
+                  class="text-green-400 text-sm font-bold mt-2"
+                >
+                  Rune approved. Task is now complete.
                 </div>
               </div>
+            </div>
 
-              <!-- Success messages -->
-              <div v-if="orbApproved && !runeApproved" class="text-green-400 text-sm font-bold mt-2">
-                Orb approved. Proceeding to Rune generation...
-              </div>
-              <div v-if="runeApproved" class="text-green-400 text-sm font-bold mt-2">
-                Rune approved. Task is now complete.
+            <!-- Connection Line -->
+            <div
+              v-if="index < pipelineData.length - 1"
+              class="step-connector"
+            >
+              <div class="connector-line" />
+              <div class="connector-arrow">
+                →
               </div>
             </div>
-          </div>
-
-          <!-- Connection Line -->
-          <div v-if="index < pipelineData.length - 1" class="step-connector">
-            <div class="connector-line" />
-            <div class="connector-arrow">→</div>
-          </div>
           </div>
         </transition-group>
       </div>

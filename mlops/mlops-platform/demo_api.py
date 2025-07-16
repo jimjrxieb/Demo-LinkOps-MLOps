@@ -157,16 +157,67 @@ class OrbRejectionResponse(BaseModel):
 @router.post("/task/submit", response_model=TaskResponse)
 async def submit_task(request: TaskRequest):
     """
-    Submit a new task for processing.
+    Submit a new task for processing through the Whis pipeline.
     """
     try:
         task_id = f"task_{datetime.now().timestamp()}"
+        timestamp = datetime.now().isoformat()
+
+        # Step 1: Send to whis-sanitize for cleaning and embedding
+        sanitize_payload = {
+            "id": task_id,
+            "type": "task",
+            "content": request.task,
+            "source": "demo_api",
+            "tags": ["demo", "task"],
+            "timestamp": timestamp,
+        }
+
+        try:
+            import requests
+
+            sanitize_response = requests.post(
+                "http://whis-sanitize:8002/sanitize",
+                json={"data": sanitize_payload},
+                timeout=10,
+            )
+            sanitize_response.raise_for_status()
+            sanitized_data = sanitize_response.json()["sanitized_data"]
+
+            # Extract embedding if available
+            embedding = sanitized_data.get("embedding", [])
+            embedding_info = {
+                "embedding_generated": len(embedding) > 0,
+                "embedding_dimensions": len(embedding) if embedding else 0,
+                "embedding_sample": embedding[:3] if embedding else [],
+            }
+
+        except Exception as sanitize_error:
+            print(f"Warning: Sanitize service unavailable: {sanitize_error}")
+            sanitized_data = None
+            embedding_info = {
+                "embedding_generated": False,
+                "error": str(sanitize_error),
+            }
+
+        # Store task in history with sanitization results
+        task_record = {
+            "id": task_id,
+            "task": request.task,
+            "status": "submitted",
+            "timestamp": timestamp,
+            "sanitized": sanitized_data is not None,
+            "embedding_info": embedding_info,
+        }
+
+        # Append to history
+        storage.append_to_json("tasks.json", task_record)
 
         return TaskResponse(
             task_id=task_id,
             task=request.task,
             status="submitted",
-            timestamp=datetime.now().isoformat(),
+            timestamp=timestamp,
         )
     except Exception as e:
         raise HTTPException(

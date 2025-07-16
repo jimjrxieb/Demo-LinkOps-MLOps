@@ -6,6 +6,15 @@ from typing import Any, Optional
 
 import yaml
 
+# Import TensorFlow embedding functionality
+try:
+    from .sanitize_embed import generate_embedding, get_embedding_info
+
+    TENSORFLOW_AVAILABLE = True
+except ImportError:
+    TENSORFLOW_AVAILABLE = False
+    print("Warning: TensorFlow embedding module not available")
+
 
 def sanitize_cmd(cmd):
     import shlex
@@ -114,7 +123,15 @@ class WhisSanitizer:
             # Step 4: Structure data
             structured_data = self._structure_data(normalized_content, data_type)
 
-            # Step 5: Generate metadata
+            # Step 5: Generate TensorFlow embeddings
+            embedding = []
+            if TENSORFLOW_AVAILABLE and normalized_content:
+                try:
+                    embedding = generate_embedding(normalized_content)
+                except Exception as e:
+                    print(f"Warning: Failed to generate embedding: {e}")
+
+            # Step 6: Generate metadata
             metadata = self._generate_metadata(raw_data, processing_id)
 
             # Prepare final output
@@ -125,6 +142,7 @@ class WhisSanitizer:
                 "sanitized_content": sanitized_content,
                 "normalized_content": normalized_content,
                 "structured_data": structured_data,
+                "embedding": embedding,  # TensorFlow USE embedding
                 "tags": list(set(raw_data.get("tags", []) + auto_tags)),
                 "source": raw_data.get("source", "unknown"),
                 "timestamp": datetime.utcnow().isoformat(),
@@ -135,6 +153,8 @@ class WhisSanitizer:
                     "sanitized_length": len(sanitized_content),
                     "pii_removed": len(content) - len(sanitized_content),
                     "tags_generated": len(auto_tags),
+                    "embedding_generated": len(embedding) > 0,
+                    "embedding_dimensions": len(embedding) if embedding else 0,
                 },
             }
 

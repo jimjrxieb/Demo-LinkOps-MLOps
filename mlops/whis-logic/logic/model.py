@@ -8,6 +8,8 @@ from typing import Any
 
 import numpy as np
 
+from mlops.whis_ml.infer import predict_category
+
 
 def sanitize_cmd(cmd):
     if isinstance(cmd, str):
@@ -251,3 +253,8 @@ def generate_recommendations(
     """Generate recommendations based on user context."""
     logic = WhisLogic()
     return logic.generate_recommendations(user_context, available_assets)
+
+
+def classify_task(task: str):
+    label, confidence = predict_category(task)
+    return label, confidence

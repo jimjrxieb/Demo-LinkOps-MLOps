@@ -1,105 +1,53 @@
-networks:
-  linkops-network:
-    driver: bridge
-
-volumes:
-  postgres_data:
-  redis_data:
+version: '3.8'
 
 services:
-  whis-data-input:
-    image: linksrobot/demo-whis-data-input:latest
-    ports:
-      - "8001:8001"
-    environment:
-      - LOG_LEVEL=INFO
-      - SERVICE_PORT=8001
-    networks:
-      - linkops-network
-
-  whis-sanitize:
-    image: linksrobot/demo-whis-sanitize:latest
-    ports:
-      - "8002:8002"
-    environment:
-      - LOG_LEVEL=INFO
-      - SERVICE_PORT=8002
-    networks:
-      - linkops-network
-
-  whis-logic:
-    image: linksrobot/demo-whis-logic:latest
-    ports:
-      - "8003:8003"
-    environment:
-      - LOG_LEVEL=INFO
-      - SERVICE_PORT=8003
-      - GROK_API_KEY=demo_mode
-    networks:
-      - linkops-network
-
-  ficknury-evaluator:
-    image: linksrobot/demo-ficknury-evaluator:latest
-    ports:
-      - "8004:8004"
-    environment:
-      - LOG_LEVEL=INFO
-      - SERVICE_PORT=8004
-    networks:
-      - linkops-network
-
-  mlops-platform:
-    image: linksrobot/demo-mlops-platform:latest
-    ports:
-      - "8000:8000"
-    environment:
-      - LOG_LEVEL=INFO
-      - SERVICE_PORT=8000
-      - GROK_API_KEY=demo_mode
-    networks:
-      - linkops-network
-
   frontend:
-    image: linksrobot/demo-frontend:latest
+    build: ./frontend
     ports:
-      - "3000:80"
-    environment:
-      - VITE_API_BASE_URL=/api
-    networks:
-      - linkops-network
+      - "80:80"
     depends_on:
       - mlops-platform
-
-  db:
-    image: postgres:15-alpine
-    container_name: demo-linkops-postgres
-    ports:
-      - "5432:5432"
     environment:
-      POSTGRES_DB: linkops
-      POSTGRES_USER: linkops
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-demo_password}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U linkops"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - linkops-network
+      - REACT_APP_API_URL=http://localhost:8000
 
-  redis:
-    image: redis:7-alpine
-    container_name: demo-linkops-redis
+  mlops-platform:
+    build: ./mlops/mlops-platform
     ports:
-      - "6379:6379"
+      - "8000:8000"
     volumes:
-      - redis_data:/data
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    networks:
-      - linkops-network 
+      - ./mlops/mlops-platform/data:/app/data
+    environment:
+      - ENVIRONMENT=production
+
+  whis-data-input:
+    build: ./mlops/whis-data-input
+    ports:
+      - "8001:8000"
+    environment:
+      - ENVIRONMENT=production
+
+  whis-logic:
+    build: ./mlops/whis-logic
+    ports:
+      - "8002:8000"
+    environment:
+      - ENVIRONMENT=production
+
+  whis-sanitize:
+    build: ./mlops/whis-sanitize
+    ports:
+      - "8003:8000"
+    environment:
+      - ENVIRONMENT=production
+
+  whis-ml:
+    build: ./mlops/whis-ml
+    ports:
+      - "8004:8000"
+    volumes:
+      - ./mlops/whis-ml/dataset:/app/dataset
+      - ./mlops/whis-ml/training_orbs:/app/training_orbs
+      - ./mlops/whis-ml/backups:/app/backups
+    environment:
+      - ENVIRONMENT=production
+    command: ["python", "infer.py"] 
