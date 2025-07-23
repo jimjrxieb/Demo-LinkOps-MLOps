@@ -1,0 +1,21 @@
+employee_id,name,department,salary,years_experience,performance_score,attrition
+1,John Smith,Engineering,75000,5,85,0
+2,Sarah Johnson,Marketing,65000,3,78,0
+3,Michael Brown,Sales,70000,4,82,0
+4,Emily Davis,Engineering,80000,6,90,0
+5,David Wilson,Marketing,60000,2,75,1
+6,Lisa Anderson,Sales,72000,4,80,0
+7,Robert Taylor,Engineering,85000,7,88,0
+8,Jennifer Martinez,Marketing,68000,3,77,0
+9,Christopher Garcia,Sales,75000,5,83,0
+10,Amanda Rodriguez,Engineering,90000,8,92,0
+11,James Lopez,Marketing,62000,2,74,1
+12,Michelle White,Sales,78000,5,85,0
+13,Daniel Lee,Engineering,82000,6,87,0
+14,Stephanie Clark,Marketing,70000,4,79,0
+15,Kevin Hall,Sales,73000,4,81,0
+16,Ashley Young,Engineering,88000,7,89,0
+17,Jason King,Marketing,64000,3,76,0
+18,Nicole Wright,Sales,76000,5,84,0
+19,Ryan Scott,Engineering,86000,7,91,0
+20,Lauren Green,Marketing,66000,3,77,1 

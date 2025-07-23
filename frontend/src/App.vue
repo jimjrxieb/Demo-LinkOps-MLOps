@@ -47,6 +47,9 @@ const currentPageTitle = computed(() => {
     '/pipeline': 'Whis Learning Pipeline',
     '/orbs': 'Orb Library',
     '/keys': 'API Key Management',
+    '/demo/rag': 'Demo RAG: Kubernetes Model Interaction',
+    '/demo/pipeline': 'Demo Pipeline: Model Training',
+    '/demo/ml-creator': 'ML Creator: Build Your ML Model',
     '/about': 'About This Demo'
   }
   return routeTitles[route.path] || 'LinkOps Demo'
@@ -66,6 +69,9 @@ const currentPageSubtitle = computed(() => {
     '/pipeline': 'Visualize the Whis MLOps learning process',
     '/orbs': 'Browse the Kubernetes/CD best practices library',
     '/keys': 'Configure AI API keys for enhanced features',
+    '/demo/rag': 'Ask questions or assign tasks about the Kubernetes ML model. Experience intelligent task ranking and execution.',
+    '/demo/pipeline': 'Experience a simplified, animated visualization of the Kubernetes ML model training pipeline.',
+    '/demo/ml-creator': 'Easily create machine learning models without coding expertise. Perfect for non-data scientists.',
     '/about': [
       'I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor.',
       'I incorporated industry-standard linters, formatters, and wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.',
@@ -311,6 +317,7 @@ body {
   font-size: 0.875rem;
   transition: all 0.2s ease;
   background: white;
+  color: #1e293b;
 }
 
 .form-input:focus {

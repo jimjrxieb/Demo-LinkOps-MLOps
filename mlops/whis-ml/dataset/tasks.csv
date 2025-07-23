@@ -1,6 +1,0 @@
-task,category
-create a pod with image nginx,kubernetes
-scan docker images for CVEs,security
-setup github actions pipeline,ci
-generate secrets in k8s,secrets
-write helm chart for service,kubernetes 

@@ -1,0 +1,19 @@
+import requests
+import logging
+import os
+
+logging.basicConfig(level=logging.INFO)
+
+def run_{{ agent_name }}():
+    try:
+        response = requests.get("{{ backlog_url }}", headers={"Authorization": f"Bearer {os.getenv('JIRA_API_TOKEN')}"})
+        tasks = response.json().get("issues", [])
+        report = "Backlog Report for {{ agent_name }}\n\n"
+        for task in tasks:
+            report += f"- {task['key']}: {task['fields']['summary']} ({task['fields']['status']['name']})\n"
+            if task['fields']['description']:
+                report += f"  Notes: {task['fields']['description']}\n"
+        return report
+    except Exception as e:
+        logging.error(f"Agent {{ agent_name }} execution failed: {e}")
+        raise 

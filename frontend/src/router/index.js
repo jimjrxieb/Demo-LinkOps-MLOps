@@ -7,6 +7,16 @@ import OrbLibrary from '../views/OrbLibrary.vue'
 import AddKeys from '../views/AddKeys.vue'
 import AboutDemo from '../views/AboutDemo.vue'
 
+// Import new demo views
+import MLCreator from '../views/MLCreator.vue'
+import AgentCreator from '../views/AgentCreator.vue'
+import HTC from '../views/HTC.vue'
+import Reports from '../views/Reports.vue'
+
+// Import demo components
+import DemoRAG from '../components/DemoRAG.vue'
+import DemoPipeline from '../components/DemoPipeline.vue'
+
 const routes = [
   {
     path: '/',
@@ -32,6 +42,38 @@ const routes = [
     path: '/about',
     name: 'AboutDemo',
     component: AboutDemo
+  },
+  // New demo routes with unified API
+  {
+    path: '/ml',
+    name: 'MLCreator',
+    component: MLCreator
+  },
+  {
+    path: '/agents',
+    name: 'AgentCreator',
+    component: AgentCreator
+  },
+  {
+    path: '/htc',
+    name: 'HTC',
+    component: HTC
+  },
+  {
+    path: '/reports',
+    name: 'Reports',
+    component: Reports
+  },
+  // Legacy demo routes (for backward compatibility)
+  {
+    path: '/demo/rag',
+    name: 'DemoRAG',
+    component: DemoRAG
+  },
+  {
+    path: '/demo/pipeline',
+    name: 'DemoPipeline',
+    component: DemoPipeline
   }
 ]
 

@@ -1,0 +1,12 @@
+ml_creator:
+  models_dir: "demo-db/ml-models/models/"
+  agents_dir: "demo-db/ml-models/agents/"
+  database_url: "postgresql://user:pass@localhost:5432/demo_linkops"
+smtp:
+  server: "smtp.gmail.com"
+  port: 587
+  from: "your_email@gmail.com"
+  user: "your_email@gmail.com"
+  pass: "${SMTP_PASS}"
+jira:
+  api_token: "${JIRA_API_TOKEN}" 

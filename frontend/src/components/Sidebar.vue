@@ -90,6 +90,21 @@ const menuItems = [
     icon: '🔑'
   },
   {
+    title: 'Demo RAG',
+    path: '/demo/rag',
+    icon: '🔍'
+  },
+  {
+    title: 'Demo Pipeline',
+    path: '/demo/pipeline',
+    icon: '⚙️'
+  },
+  {
+    title: 'ML Creator',
+    path: '/demo/ml-creator',
+    icon: '🤖'
+  },
+  {
     title: 'About Demo',
     path: '/about',
     icon: 'ℹ️'

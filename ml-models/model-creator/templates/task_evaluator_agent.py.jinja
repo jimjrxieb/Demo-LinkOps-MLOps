@@ -1,0 +1,361 @@
+#!/usr/bin/env python3
+"""
+Generated Task Evaluator Agent
+==============================
+
+Agent Type: {{ agent_type }}
+Capabilities: {{ capabilities_str }}
+Model Type: {{ model_type }}
+
+This agent evaluates and scores ML tasks and provides recommendations.
+"""
+
+import json
+import logging
+from datetime import datetime
+from typing import Any, Dict, List, Optional
+
+import numpy as np
+import pandas as pd
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+class TaskEvaluatorAgent:
+    """
+    AI Agent for evaluating ML tasks and providing recommendations.
+    
+    Capabilities: {{ capabilities_str }}
+    """
+    
+    def __init__(self, model_type: str = "{{ model_type }}"):
+        self.model_type = model_type
+        self.capabilities = {{ capabilities }}
+        self.evaluation_history = []
+        self.task_scores = {}
+        
+        logger.info(f"🤖 TaskEvaluatorAgent initialized with model type: {model_type}")
+        logger.info(f"   Capabilities: {', '.join(self.capabilities)}")
+    
+    def evaluate_task(self, task_description: str, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Evaluate an ML task and provide scoring and recommendations.
+        
+        Args:
+            task_description: Human-readable description of the task
+            task_data: Dictionary containing task parameters and data info
+            
+        Returns:
+            Dictionary with evaluation results
+        """
+        logger.info(f"🔍 Evaluating task: {task_description}")
+        
+        evaluation = {
+            "task_id": self._generate_task_id(),
+            "timestamp": datetime.now().isoformat(),
+            "task_description": task_description,
+            "task_data": task_data,
+            "scores": {},
+            "recommendations": [],
+            "complexity_assessment": {},
+            "resource_requirements": {},
+            "risk_assessment": {}
+        }
+        
+        # Score different aspects of the task
+        if "classification" in self.capabilities:
+            evaluation["scores"]["classification"] = self._score_classification_task(task_data)
+        
+        if "scoring" in self.capabilities:
+            evaluation["scores"]["overall"] = self._calculate_overall_score(task_data)
+        
+        if "recommendation" in self.capabilities:
+            evaluation["recommendations"] = self._generate_recommendations(task_data, evaluation["scores"])
+        
+        # Assess complexity
+        evaluation["complexity_assessment"] = self._assess_complexity(task_data)
+        
+        # Estimate resource requirements
+        evaluation["resource_requirements"] = self._estimate_resources(task_data)
+        
+        # Assess risks
+        evaluation["risk_assessment"] = self._assess_risks(task_data)
+        
+        # Store evaluation
+        self.evaluation_history.append(evaluation)
+        self.task_scores[evaluation["task_id"]] = evaluation["scores"]
+        
+        logger.info(f"✅ Task evaluation completed. Overall score: {evaluation['scores'].get('overall', 'N/A')}")
+        
+        return evaluation
+    
+    def _generate_task_id(self) -> str:
+        """Generate a unique task ID."""
+        return f"task_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{np.random.randint(1000, 9999)}"
+    
+    def _score_classification_task(self, task_data: Dict[str, Any]) -> float:
+        """Score a classification task based on various factors."""
+        score = 0.0
+        
+        # Data quality score (0-30 points)
+        data_quality = task_data.get("data_quality", {})
+        if data_quality.get("sample_size", 0) > 1000:
+            score += 10
+        if data_quality.get("feature_count", 0) > 5:
+            score += 10
+        if data_quality.get("class_balance", 0) > 0.3:
+            score += 10
+        
+        # Task complexity score (0-40 points)
+        complexity = task_data.get("complexity", {})
+        if complexity.get("algorithm", "") in ["random_forest", "svm", "neural_network"]:
+            score += 15
+        if complexity.get("feature_engineering", False):
+            score += 15
+        if complexity.get("hyperparameter_tuning", False):
+            score += 10
+        
+        # Business value score (0-30 points)
+        business_value = task_data.get("business_value", {})
+        if business_value.get("impact", "low") in ["high", "medium"]:
+            score += 15
+        if business_value.get("urgency", "low") in ["high", "medium"]:
+            score += 15
+        
+        return min(score, 100.0)
+    
+    def _calculate_overall_score(self, task_data: Dict[str, Any]) -> float:
+        """Calculate overall task score."""
+        scores = []
+        
+        # Classification score
+        if "classification" in self.capabilities:
+            scores.append(self._score_classification_task(task_data))
+        
+        # Add other scoring methods here
+        if "regression" in self.capabilities:
+            scores.append(self._score_regression_task(task_data))
+        
+        if "clustering" in self.capabilities:
+            scores.append(self._score_clustering_task(task_data))
+        
+        return np.mean(scores) if scores else 50.0
+    
+    def _score_regression_task(self, task_data: Dict[str, Any]) -> float:
+        """Score a regression task."""
+        score = 50.0  # Base score
+        
+        # Adjust based on data characteristics
+        data_quality = task_data.get("data_quality", {})
+        if data_quality.get("sample_size", 0) > 500:
+            score += 20
+        if data_quality.get("feature_count", 0) > 3:
+            score += 20
+        if data_quality.get("missing_data_ratio", 1.0) < 0.1:
+            score += 10
+        
+        return min(score, 100.0)
+    
+    def _score_clustering_task(self, task_data: Dict[str, Any]) -> float:
+        """Score a clustering task."""
+        score = 50.0  # Base score
+        
+        # Adjust based on clustering requirements
+        complexity = task_data.get("complexity", {})
+        if complexity.get("expected_clusters", 0) > 2:
+            score += 20
+        if complexity.get("dimensionality_reduction", False):
+            score += 15
+        if complexity.get("validation_method", "") != "":
+            score += 15
+        
+        return min(score, 100.0)
+    
+    def _generate_recommendations(self, task_data: Dict[str, Any], scores: Dict[str, float]) -> List[str]:
+        """Generate recommendations based on task evaluation."""
+        recommendations = []
+        
+        overall_score = scores.get("overall", 50.0)
+        
+        if overall_score < 30:
+            recommendations.append("⚠️ Consider simplifying the task or improving data quality")
+            recommendations.append("📊 Increase sample size if possible")
+            recommendations.append("🔧 Start with simpler algorithms before moving to complex ones")
+        
+        elif overall_score < 60:
+            recommendations.append("📈 Task has moderate complexity - proceed with caution")
+            recommendations.append("🔍 Consider feature engineering to improve performance")
+            recommendations.append("⚙️ Implement cross-validation for robust evaluation")
+        
+        else:
+            recommendations.append("✅ Task looks well-structured and feasible")
+            recommendations.append("🚀 Consider advanced techniques like ensemble methods")
+            recommendations.append("📊 Implement comprehensive evaluation metrics")
+        
+        # Specific recommendations based on model type
+        if self.model_type == "classification":
+            recommendations.append("🎯 For classification: Consider class imbalance techniques if needed")
+        elif self.model_type == "regression":
+            recommendations.append("📏 For regression: Check for outliers and consider robust methods")
+        elif self.model_type == "clustering":
+            recommendations.append("🔍 For clustering: Validate cluster quality with multiple metrics")
+        
+        return recommendations
+    
+    def _assess_complexity(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Assess task complexity."""
+        complexity = {
+            "level": "medium",
+            "factors": [],
+            "estimated_duration": "1-2 weeks",
+            "skill_requirements": []
+        }
+        
+        # Assess complexity level
+        data_size = task_data.get("data_quality", {}).get("sample_size", 0)
+        feature_count = task_data.get("data_quality", {}).get("feature_count", 0)
+        
+        if data_size > 10000 or feature_count > 20:
+            complexity["level"] = "high"
+            complexity["estimated_duration"] = "2-4 weeks"
+        elif data_size < 1000 and feature_count < 5:
+            complexity["level"] = "low"
+            complexity["estimated_duration"] = "3-5 days"
+        
+        # Add complexity factors
+        if task_data.get("complexity", {}).get("feature_engineering", False):
+            complexity["factors"].append("Feature engineering required")
+        if task_data.get("complexity", {}).get("hyperparameter_tuning", False):
+            complexity["factors"].append("Hyperparameter tuning needed")
+        
+        # Skill requirements
+        if self.model_type == "neural_network":
+            complexity["skill_requirements"].append("Deep learning experience")
+        if "hyperparameter_tuning" in complexity["factors"]:
+            complexity["skill_requirements"].append("ML optimization techniques")
+        
+        return complexity
+    
+    def _estimate_resources(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Estimate resource requirements."""
+        resources = {
+            "compute": "medium",
+            "memory": "4-8 GB",
+            "storage": "1-5 GB",
+            "time": "1-2 weeks"
+        }
+        
+        # Adjust based on data size
+        data_size = task_data.get("data_quality", {}).get("sample_size", 0)
+        if data_size > 50000:
+            resources["compute"] = "high"
+            resources["memory"] = "16+ GB"
+            resources["storage"] = "10+ GB"
+        elif data_size < 1000:
+            resources["compute"] = "low"
+            resources["memory"] = "2-4 GB"
+            resources["storage"] = "100 MB - 1 GB"
+        
+        return resources
+    
+    def _assess_risks(self, task_data: Dict[str, Any]) -> Dict[str, Any]:
+        """Assess potential risks."""
+        risks = {
+            "level": "low",
+            "risks": [],
+            "mitigation_strategies": []
+        }
+        
+        # Data quality risks
+        if task_data.get("data_quality", {}).get("missing_data_ratio", 0) > 0.2:
+            risks["risks"].append("High missing data ratio")
+            risks["mitigation_strategies"].append("Implement robust imputation strategies")
+        
+        # Model complexity risks
+        if task_data.get("complexity", {}).get("algorithm", "") == "neural_network":
+            risks["risks"].append("Complex model may overfit")
+            risks["mitigation_strategies"].append("Use regularization and early stopping")
+        
+        # Business risks
+        if task_data.get("business_value", {}).get("impact", "low") == "high":
+            risks["level"] = "medium"
+            risks["risks"].append("High business impact - errors costly")
+            risks["mitigation_strategies"].append("Implement comprehensive testing and validation")
+        
+        return risks
+    
+    def get_evaluation_summary(self) -> Dict[str, Any]:
+        """Get summary of all evaluations."""
+        if not self.evaluation_history:
+            return {"message": "No evaluations performed yet"}
+        
+        total_evaluations = len(self.evaluation_history)
+        avg_overall_score = np.mean([
+            eval["scores"].get("overall", 50.0) 
+            for eval in self.evaluation_history
+        ])
+        
+        return {
+            "total_evaluations": total_evaluations,
+            "average_overall_score": avg_overall_score,
+            "recent_evaluations": self.evaluation_history[-5:],  # Last 5 evaluations
+            "capabilities_used": self.capabilities
+        }
+
+def main():
+    """Demo function to test the TaskEvaluatorAgent."""
+    print("🤖 Task Evaluator Agent Demo")
+    print("=" * 40)
+    
+    # Initialize agent
+    agent = TaskEvaluatorAgent()
+    
+    # Example task data
+    sample_task = {
+        "task_description": "Customer churn prediction using historical data",
+        "task_data": {
+            "data_quality": {
+                "sample_size": 5000,
+                "feature_count": 15,
+                "class_balance": 0.3,
+                "missing_data_ratio": 0.05
+            },
+            "complexity": {
+                "algorithm": "random_forest",
+                "feature_engineering": True,
+                "hyperparameter_tuning": True,
+                "expected_clusters": 0
+            },
+            "business_value": {
+                "impact": "high",
+                "urgency": "medium"
+            }
+        }
+    }
+    
+    # Evaluate task
+    evaluation = agent.evaluate_task(
+        sample_task["task_description"], 
+        sample_task["task_data"]
+    )
+    
+    # Print results
+    print(f"\n📊 Evaluation Results:")
+    print(f"   Task ID: {evaluation['task_id']}")
+    print(f"   Overall Score: {evaluation['scores'].get('overall', 'N/A'):.1f}")
+    print(f"   Complexity: {evaluation['complexity_assessment']['level']}")
+    print(f"   Estimated Duration: {evaluation['complexity_assessment']['estimated_duration']}")
+    
+    print(f"\n💡 Recommendations:")
+    for rec in evaluation['recommendations']:
+        print(f"   • {rec}")
+    
+    print(f"\n⚠️ Risks:")
+    for risk in evaluation['risk_assessment']['risks']:
+        print(f"   • {risk}")
+    
+    return agent, evaluation
+
+if __name__ == "__main__":
+    agent, evaluation = main() 

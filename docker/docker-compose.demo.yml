@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # Frontend Demo
+  demo-frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - demo-rag
+      - ml-creator
+
+  # Demo RAG Service
+  demo-rag:
+    build: ./demo-rag
+    ports:
+      - "8001:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-demo-key}
+    volumes:
+      - ./demo-rag:/app/demo-rag
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ML Creator Service
+  ml-creator:
+    build: ./ml-creator
+    ports:
+      - "8002:8002"
+    environment:
+      - DATABASE_URL=postgresql://user:pass@demo-db:5432/demo_linkops
+      - SMTP_SERVER=${SMTP_SERVER:-smtp.gmail.com}
+      - SMTP_PORT=${SMTP_PORT:-587}
+      - SMTP_USER=${SMTP_USER:-demo@example.com}
+      - SMTP_PASS=${SMTP_PASS:-demo-pass}
+      - JIRA_API_TOKEN=${JIRA_API_TOKEN:-demo-token}
+    volumes:
+      - ./ml-creator:/app/ml-creator
+      - ./demo-db:/app/demo-db
+    depends_on:
+      - demo-db
+
+  # Demo Database
+  demo-db:
+    image: postgres:13
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=demo_linkops
+    volumes:
+      - demo_postgres_data:/var/lib/postgresql/data
+      - ./demo-db:/app/demo-db
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d demo_linkops"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  demo_postgres_data: 

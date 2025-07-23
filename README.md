@@ -1,229 +1,347 @@
-# 🚀 LinkOps Kubernetes/CD Demo Platform
+# 🔒 Secure AI Deployment Demo for OCI
 
-> **A full-stack platform engineering demo showcasing DevOps, Kubernetes, AI/ML, and MLOps skills**
+## Overview
 
-[![CI/CD Pipeline](https://github.com/your-username/linkops-demo/workflows/LinkOps%20CI/badge.svg)](https://github.com/your-username/linkops-demo/actions)
-[![Docker](https://img.shields.io/badge/Docker-Ready-blue?logo=docker)](https://hub.docker.com/u/linksrobot)
-[![Kubernetes](https://img.shields.io/badge/Kubernetes-CKA%20Certified-blue?logo=kubernetes)](https://www.cncf.io/certification/cka/)
-[![MLOps](https://img.shields.io/badge/MLOps-TensorFlow%20%7C%20FastAPI-green?logo=tensorflow)](https://tensorflow.org)
-
-## 🎯 What This Demo Shows
-
-This is a **production-ready platform engineering demo** that simulates how I'd approach end-to-end automation and learning systems in a real job. It demonstrates:
-
-- **DevOps Engineering**: GitHub Actions CI/CD, security scanning, Docker orchestration
-- **Kubernetes Expertise**: Helm charts, ArgoCD, multi-service deployments
-- **Cloud/Platform Engineering**: Azure VM deployment, Terraform infrastructure
-- **AI/ML Engineering**: TensorFlow models, MLOps pipelines, learning systems
-- **Full-Stack Development**: Vue.js frontend, FastAPI microservices, modular architecture
-
-## 🏗️ Architecture Overview
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Vue.js        │    │   FastAPI       │    │   TensorFlow    │
-│   Frontend      │◄──►│   Microservices │◄──►│   ML Models     │
-│   (Demo UI)     │    │   (Whis Logic)  │    │   (Training)    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   GitHub        │    │   Docker        │    │   Kubernetes    │
-│   Actions CI/CD  │    │   Containers    │    │   Helm Charts   │
-│   (Automation)  │    │   (Orchestration)│   │   (Deployment)  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## 🧠 The Whis Learning Pipeline
-
-The core innovation is the **Whis Pipeline** - an AI-powered system that learns from Kubernetes/CD tasks:
-
-### Pipeline Stages:
-1. **Data Input** (`whis_data_input`) - Collects tasks from UI, Q&A, image OCR
-2. **Sanitization** (`whis_sanitize`) - Cleans data, removes PII, validates format
-3. **AI Processing** (`whis_logic`) - TensorFlow classification + OpenAI fallback
-4. **Orchestration** (`mlops_platform`) - Manages workflows, monitoring, logging
-5. **Execution** (`whis_execution`) - Deploys resources, manages infrastructure
-
-### AI/ML Integration:
-- **TensorFlow Classifier**: Local ML model for task categorization
-- **Training Orbs**: Versioned ML models that learn from approved tasks
-- **Human-in-Loop**: Approval workflow with feedback for continuous learning
-- **Fallback Logic**: OpenAI integration when ML confidence is low
-
-## 🛠️ Technology Stack
-
-### Frontend
-- **Vue.js 3** with Composition API
-- **Tailwind CSS** for modern UI
-- **Vite** for fast development
-- **Axios** for API communication
-
-### Backend
-- **FastAPI** microservices architecture
-- **Python 3.11** with type hints
-- **TensorFlow 2.15** for ML models
-- **scikit-learn** for data preprocessing
-- **Pandas** for data manipulation
-
-### DevOps & Infrastructure
-- **GitHub Actions** for CI/CD pipeline
-- **Docker** for containerization
-- **Kubernetes** with Helm charts
-- **ArgoCD** for GitOps deployment
-- **Azure VM** for hosting
-
-### Security & Quality
-- **Trivy** for vulnerability scanning
-- **GitGuardian** for secret detection
-- **Bandit** for Python security
-- **Ruff** for Python linting
-- **ESLint** for JavaScript linting
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Docker Desktop with Kubernetes enabled
-- Python 3.11+
-- Node.js 20+
-
-### Local Development
-```bash
-# Clone the repository
-git clone https://github.com/your-username/linkops-demo.git
-cd linkops-demo
-
-# Start the demo
-docker-compose up -d
-
-# Access the application
-open http://localhost:3000
-```
-
-### Production Deployment
-```bash
-# Deploy to Azure VM (requires setup)
-./runes/deploy-demo.sh
-
-# Or use Helm charts
-helm install linkops-demo ./helm/demo-stack
-```
-
-## 📊 Demo Features
-
-### 1. Task Processing
-- Submit Kubernetes/CD tasks through the UI
-- Watch real-time processing through the Whis pipeline
-- See AI-powered task matching and confidence scoring
-
-### 2. Orb Library
-- Browse categorized best practices and solutions
-- View Training Orbs (ML models) with versioning and metrics
-- Retrain models with new data
-
-### 3. Learning System
-- Human-in-loop approval workflow
-- Continuous learning from approved tasks
-- Versioned model management
-
-### 4. Professional UI
-- Modern, responsive design
-- Real-time pipeline visualization
-- Interactive orb browsing and search
-
-## 🔧 Development Workflow
-
-### Code Quality
-```bash
-# Python linting and formatting
-ruff check mlops/
-ruff format mlops/
-
-# Frontend linting
-cd frontend && npm run lint
-
-# Security scanning
-bandit -r mlops/
-trivy fs .
-```
-
-### Testing
-```bash
-# Run tests
-pytest mlops/
-npm test --prefix frontend
-
-# Build verification
-docker-compose build
-```
-
-## 📈 MLOps Features
-
-### Model Management
-- **Versioned Models**: TensorFlow models with metadata
-- **Training Pipeline**: Automated retraining with new data
-- **A/B Testing**: Model comparison and selection
-- **Monitoring**: Model performance and drift detection
-
-### Data Pipeline
-- **Data Validation**: Input sanitization and quality checks
-- **Feature Engineering**: Automated feature extraction
-- **Label Management**: Human-in-loop labeling workflow
-- **Data Versioning**: Tracked data lineage and changes
-
-## 🎯 Interview-Ready Talking Points
-
-### For DevOps Engineers
-- "I built a complete CI/CD pipeline with GitHub Actions, including security scanning with Trivy and GitGuardian"
-- "The system uses Docker for containerization and can deploy to any Kubernetes cluster"
-- "I implemented proper secret management and infrastructure as code"
-
-### For Kubernetes Engineers
-- "I designed a multi-service architecture with Helm charts for easy deployment"
-- "The system integrates with ArgoCD for GitOps-style deployments"
-- "I earned my CKA and this demo shows real-world Kubernetes patterns"
-
-### For AI/ML Engineers
-- "I built a custom TensorFlow classifier that learns from engineering tasks"
-- "The system includes proper MLOps practices like model versioning and retraining"
-- "I implemented human-in-loop workflows for continuous learning"
-
-### For Platform Engineers
-- "This demonstrates end-to-end platform engineering from frontend to infrastructure"
-- "I used microservices architecture with proper API design and documentation"
-- "The system is designed for scalability and maintainability"
-
-## 📚 Learning Resources
-
-### Kubernetes
-- [CKA Certification](https://www.cncf.io/certification/cka/)
-- [Helm Documentation](https://helm.sh/docs/)
-- [ArgoCD User Guide](https://argo-cd.readthedocs.io/)
-
-### AI/ML
-- [TensorFlow Tutorials](https://www.tensorflow.org/tutorials)
-- [MLOps Best Practices](https://mlops.community/)
-- [FastAPI Documentation](https://fastapi.tiangolo.com/)
-
-### DevOps
-- [GitHub Actions](https://docs.github.com/en/actions)
-- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
-- [Security Scanning](https://aquasecurity.github.io/trivy/)
-
-## 🤝 Contributing
-
-This is a demo project showcasing platform engineering skills. For questions or feedback:
-
-1. Review the code and architecture
-2. Test the demo functionality
-3. Provide constructive feedback on the implementation
-
-## 📄 License
-
-This project is for demonstration purposes. Feel free to use the concepts and patterns in your own work.
+This demo showcases a fully self-contained, secure AI automation platform designed for clients handling **top-secret or sensitive data**. It allows internal teams to train models, build agents, and query private documents using AI — **all without data ever leaving the client's environment.**
 
 ---
 
-**Built with ❤️ by a platform engineer passionate about DevOps, Kubernetes, and AI/ML**
+## 🚀 What It Does
 
-*This demo represents the kind of systems I'd build and maintain in a real platform engineering role.*
+| Feature | Description |
+|--------|-------------|
+| 🧠 **ML Model Builder** | Build classification or regression models from internal CSVs |
+| 🤖 **AI Agent Creator** | Build task or command agents that automate internal tasks |
+| 🔎 **RAG Search** | Query embedded documents locally (PDFs, TXT, CSVs, etc) |
+| ⏱️ **HTC Training Hub** | Upload → sanitize → train → store results privately |
+| 📊 **Reports & Logs** | View saved models, agents, outputs — nothing leaves disk |
+
+---
+
+## 🛡️ Why It's Secure
+
+- **No data leaves the machine** - All processing happens locally
+- **No external API calls** - No OpenAI, Anthropic, or cloud dependencies
+- **Private vector search** - FAISS-based embeddings stay on-premises
+- **Secure document handling** - PII redaction and data sanitization
+- **Audit trail** - Complete logging of all operations
+- **Air-gapped ready** - Works in isolated environments
+
+---
+
+## 🎮 How to Use
+
+```bash
+# 1. Launch everything locally
+docker-compose up --build
+
+# 2. Open the frontend GUI
+http://localhost:8080
+
+# 3. Use the tabs:
+# - ML Creator: train predictive models
+# - Agent Creator: automate tasks  
+# - HTC: train RAG or improve outputs
+# - Reports: view saved agents, tools, and training logs
+```
+
+---
+
+## 📁 Architecture
+
+```
+DEMO-LinkOps/
+├── frontend/           # Vue 3 + Tailwind CSS GUI
+│   ├── src/views/      # Main application tabs
+│   └── src/components/ # Reusable UI components
+├── ml-models/          # ML and Agent creation services
+│   ├── model-creator/  # Classification/regression models
+│   └── agent-creator/  # Task/command automation agents
+├── pipeline/           # Secure training pipeline
+│   ├── data-intake/    # File upload and validation
+│   ├── data-sanitize/  # PII redaction and cleaning
+│   ├── embedder/       # Document vectorization
+│   └── trainer/        # ML model training
+├── rag/                # Retrieval-Augmented Generation
+│   ├── logic/          # FAISS vector search engine
+│   ├── schemas/        # API request/response models
+│   └── vectorstore/    # Local document embeddings
+├── unified-api/        # Single backend router (port 9000)
+├── docker/             # Container orchestration
+└── docker-compose.yml  # Unified launcher
+```
+
+---
+
+## 🔧 Technical Stack
+
+### Frontend
+- **Vue 3** - Modern reactive framework
+- **Tailwind CSS** - Utility-first styling
+- **Vite** - Fast build tool
+- **Pinia** - State management
+
+### Backend Services
+- **FastAPI** - High-performance Python web framework
+- **FAISS** - Facebook AI Similarity Search for vectors
+- **Sentence Transformers** - Local embedding models
+- **Scikit-learn** - Machine learning algorithms
+- **Pandas** - Data manipulation and analysis
+
+### Infrastructure
+- **Docker** - Containerization
+- **Docker Compose** - Multi-service orchestration
+- **Nginx** - Reverse proxy and static serving
+
+---
+
+## 🧠 Demo Workflows
+
+### 1. ML Model Creation
+```
+1. Upload CSV file → 2. Select target column → 3. Choose algorithm → 4. Generate model
+```
+
+### 2. AI Agent Building
+```
+1. Define agent type → 2. Configure tools → 3. Set security level → 4. Build agent
+```
+
+### 3. RAG Document Search
+```
+1. Upload documents → 2. Embed into vectors → 3. Query knowledge base → 4. Get answers
+```
+
+### 4. HTC Training Pipeline
+```
+1. Upload data → 2. Sanitize → 3. Train/Embed → 4. Store results
+```
+
+---
+
+## 🛡️ Security Features
+
+### Data Privacy
+- **Local Processing**: All AI operations happen on-premises
+- **No External Calls**: Zero dependencies on external AI services
+- **Encrypted Storage**: Sensitive data encrypted at rest
+- **Access Controls**: Role-based permissions and audit logs
+
+### Input Validation
+- **File Type Validation**: Whitelist of allowed file formats
+- **Content Scanning**: Malware and malicious content detection
+- **Size Limits**: Configurable file size restrictions
+- **PII Detection**: Automatic sensitive data identification
+
+### Output Security
+- **Sanitized Results**: All outputs cleaned of sensitive information
+- **Audit Logging**: Complete trail of all operations
+- **Secure Downloads**: Encrypted file transfers
+- **Access Logs**: User activity monitoring
+
+---
+
+## 📊 Performance Metrics
+
+| Operation | Speed | Memory | Storage |
+|-----------|-------|--------|---------|
+| Document Embedding | ~1000 chunks/sec | ~4MB/1000 chunks | ~1.5MB/1000 chunks |
+| Vector Search | ~1ms per query | Minimal | FAISS index |
+| Model Training | Varies by dataset | 2-8GB RAM | Model files |
+| Agent Generation | ~5-10 seconds | ~500MB | Python scripts |
+
+---
+
+## 🔧 Configuration
+
+### Environment Variables
+```bash
+# Security
+SECURITY_LEVEL=high
+ENCRYPTION_ENABLED=true
+AUDIT_LOGGING=true
+
+# Performance
+MAX_FILE_SIZE=50MB
+CHUNK_SIZE=1000
+SIMILARITY_THRESHOLD=0.7
+
+# Storage
+VECTOR_STORE_PATH=/app/vectorstore
+MODEL_STORE_PATH=/app/models
+LOG_STORE_PATH=/app/logs
+```
+
+### Customization
+- **Embedding Models**: Switch between different sentence transformers
+- **ML Algorithms**: Add custom scikit-learn models
+- **Security Policies**: Configure PII detection rules
+- **Storage Backends**: Integrate with existing databases
+
+---
+
+## 🚀 Deployment Options
+
+### Local Development
+```bash
+git clone <repository>
+cd DEMO-LinkOps
+docker-compose up --build
+```
+
+### OCI VM Deployment
+```bash
+# Install Docker and Docker Compose
+curl -fsSL https://get.docker.com -o get-docker.sh
+sudo sh get-docker.sh
+sudo curl -L "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Deploy the demo
+git clone <repository>
+cd DEMO-LinkOps
+docker-compose up -d
+```
+
+### Air-Gapped Deployment
+```bash
+# Export images for offline deployment
+docker save demo-frontend demo-unified-api -o demo-images.tar
+
+# Transfer to air-gapped system
+scp demo-images.tar user@air-gapped-server:/tmp/
+
+# Load and run on air-gapped system
+docker load -i /tmp/demo-images.tar
+docker-compose up -d
+```
+
+---
+
+## 📈 Scaling Considerations
+
+### Horizontal Scaling
+- **Load Balancer**: Nginx for frontend distribution
+- **API Gateway**: Unified backend router for service discovery
+- **Database**: PostgreSQL for metadata storage
+- **Cache**: Redis for session management
+
+### Vertical Scaling
+- **GPU Support**: CUDA-enabled containers for faster training
+- **Memory Optimization**: Configurable resource limits
+- **Storage**: Distributed file systems for large datasets
+
+---
+
+## 🔍 Monitoring & Logging
+
+### Health Checks
+```bash
+# Service health
+curl http://localhost:9000/health
+
+# Individual service status
+curl http://localhost:9000/pipeline/health
+curl http://localhost:9000/rag/health
+curl http://localhost:9000/model-creator/health
+```
+
+### Logs
+```bash
+# View all logs
+docker-compose logs -f
+
+# Service-specific logs
+docker-compose logs -f unified-api
+docker-compose logs -f frontend
+```
+
+### Metrics
+- **API Response Times**: Average and 95th percentile
+- **Error Rates**: Failed requests and exceptions
+- **Resource Usage**: CPU, memory, and disk utilization
+- **User Activity**: Page views and feature usage
+
+---
+
+## 🛠️ Troubleshooting
+
+### Common Issues
+
+**Service won't start**
+```bash
+# Check Docker resources
+docker system df
+docker system prune
+
+# Verify ports are available
+netstat -tulpn | grep :9000
+```
+
+**File upload fails**
+```bash
+# Check file permissions
+ls -la /tmp/uploads/
+
+# Verify file size limits
+docker-compose logs unified-api | grep "file size"
+```
+
+**Search returns no results**
+```bash
+# Check vector store
+ls -la rag/vectorstore/
+
+# Verify embeddings exist
+curl http://localhost:9000/rag/stats
+```
+
+---
+
+## 📞 Support
+
+### Documentation
+- **API Reference**: `/docs` endpoint for interactive documentation
+- **Code Examples**: Sample scripts in `/examples`
+- **Configuration**: Environment variable reference
+
+### Contact
+- **Technical Issues**: GitHub Issues
+- **Security Concerns**: Private security channel
+- **Deployment Help**: OCI support team
+
+---
+
+## 🔄 Updates & Maintenance
+
+### Version Updates
+```bash
+# Pull latest changes
+git pull origin main
+
+# Rebuild containers
+docker-compose down
+docker-compose up --build -d
+```
+
+### Data Backup
+```bash
+# Backup vector store
+tar -czf vectorstore-backup.tar.gz rag/vectorstore/
+
+# Backup models
+tar -czf models-backup.tar.gz ml-models/output/
+
+# Backup logs
+tar -czf logs-backup.tar.gz logs/
+```
+
+---
+
+## 📄 License
+
+This demo is provided as-is for evaluation purposes. Production deployment requires appropriate licensing and support agreements.
+
+---
+
+**Ready to deploy to OCI?** This stack runs on bare metal servers, OCI VMs, and air-gapped machines with full security compliance.

@@ -1,0 +1,300 @@
+.
+├── -Tree.txt
+├── DEMO-LinkOps
+│   ├── rag
+│   │   ├── logic
+│   │   ├── schemas
+│   │   ├── test
+│   │   └── vectorstore
+│   ├── sample_data
+│   └── unified-api
+│       └── routers
+├── Makefile
+├── NEW-STRUCTURE.txt
+├── README-OCI.md
+├── README.md
+├── archive
+│   ├── CONFIGURATION.md
+│   ├── DEMO_CHANGES.md
+│   ├── DOCKER-COMPOSE-BUILD.md
+│   ├── INTERVIEW_PLATFORM_ENGINEER.md
+│   ├── PHASE3_4_SUMMARY.md
+│   ├── backup
+│   │   ├── Application.yaml.backup
+│   │   ├── Chart.yaml.backup
+│   │   ├── FUNDING.yml.backup
+│   │   ├── chatgpt_csv.py.backup
+│   │   ├── ci.yml.backup
+│   │   ├── demo_api.py.backup
+│   │   ├── dependabot.yml.backup
+│   │   ├── deployment.yaml.backup
+│   │   ├── digest.py.backup
+│   │   ├── docker-compose.yml.backup
+│   │   ├── fix_all_nested_raises.py.backup
+│   │   ├── fix_b904_proper.py.backup
+│   │   ├── fix_bandit.py.backup
+│   │   ├── fix_bandit_issues.py.backup
+│   │   ├── fix_e402_imports.py.backup
+│   │   ├── fix_frontend.py.backup
+│   │   ├── fix_helm.py.backup
+│   │   ├── fix_nested_raises.py.backup
+│   │   ├── fix_prettier.py.backup
+│   │   ├── fix_ruff.py.backup
+│   │   ├── fix_ruff_b904.py.backup
+│   │   ├── fix_ruff_up006.py.backup
+│   │   ├── fix_yaml_linting.py.backup
+│   │   ├── fix_yamllint.py.backup
+│   │   ├── image_text.py.backup
+│   │   ├── info_dump.py.backup
+│   │   ├── ingress.yaml.backup
+│   │   ├── main.py.backup
+│   │   ├── main.yml.backup
+│   │   ├── model.py.backup
+│   │   ├── node.js.yml.backup
+│   │   ├── orb.gha.security.v1.yaml.backup
+│   │   ├── orbs.py.backup
+│   │   ├── qna_input.py.backup
+│   │   ├── rune.gha.pipeline.v1.py.backup
+│   │   ├── rune_executor.py.backup
+│   │   ├── runes.py.backup
+│   │   ├── sanitizer.py.backup
+│   │   ├── scorer.py.backup
+│   │   ├── scripts.py.backup
+│   │   ├── secret.yaml.backup
+│   │   ├── selector.py.backup
+│   │   ├── service.yaml.backup
+│   │   ├── serviceaccount.yaml.backup
+│   │   ├── storage.py.backup
+│   │   ├── task_router.py.backup
+│   │   ├── tasks.py.backup
+│   │   ├── values.yaml.backup
+│   │   ├── verify_fixes.py.backup
+│   │   ├── workflows.py.backup
+│   │   └── youtube.py.backup
+│   ├── demo-db
+│   ├── deployment-fixed.md
+│   ├── docker-hub-setup.md
+│   └── phase5-6-summary.md
+├── deploy.sh
+├── docker
+│   ├── deploy-demo.sh
+│   ├── docker-compose.demo.yml
+│   ├── docker-compose.override.yml
+│   └── docker-compose.yml
+├── docs
+│   ├── ARISE-README.md
+│   ├── CD-README.md
+│   ├── CHECKLIST-CI-CD.md
+│   ├── CHECKLIST-CURSOR-PLATFORM-READINESS.md
+│   ├── CHECKLIST-HELM-ARGO-GITOPS.md
+│   ├── CHECKLIST-K8S-NETWORKING.md
+│   ├── CHECKLIST-SECURITY.md
+│   ├── CI-CD-SETUP.md
+│   ├── COMPLETE-PIPELINE-README.md
+│   ├── DEPLOYMENT_AUTOMATION.md
+│   ├── NEW-SAHDOW.MD
+│   ├── PLATFORM_COMPLETE.md
+│   ├── README.md
+│   ├── api
+│   ├── architecture
+│   │   ├── DATA_FLOW_DIAGRAM.md
+│   │   ├── WHIS_MICROSERVICES_REFACTOR.md
+│   │   └── WHIS_TRAINING_SYSTEM.md
+│   ├── deployment
+│   │   ├── CI-CD-SETUP.md
+│   │   ├── ENVIRONMENT_SETUP.md
+│   │   ├── GITHUB_ACTIONS_SETUP.md
+│   │   ├── GITHUB_ACTIONS_SUMMARY.md
+│   │   ├── GITHUB_SECRETS_SETUP.md
+│   │   ├── IGRIS_DEPLOYMENT_READY.md
+│   │   ├── README_COMPOSE_MODES.md
+│   │   ├── SECURE_DEPLOYMENT_GUIDE.md
+│   │   └── shadow-agents.md
+│   ├── development
+│   │   └── README.md
+│   ├── guides
+│   ├── sec-cve
+│   │   ├── CVE-2023-4863-RESPONSE.md
+│   │   ├── CVE-2025-6556-RESPONSE.md
+│   │   ├── SECURITY-ACTIONS.md
+│   │   ├── SECURITY-FIXES-JULY-2025.md
+│   │   └── SECURITY-SUMMARY-JULY-2025.md
+│   └── services
+│       ├── auditguard
+│       │   └── README.md
+│       ├── igris-logic
+│       │   └── README.md
+│       ├── james-logic
+│       │   └── README.md
+│       ├── katie-logic
+│       │   └── README.md
+│       └── whis-webscraper
+│           └── README.md
+├── frontend
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── create-htpasswd.sh
+│   ├── dist
+│   │   ├── assets
+│   │   │   ├── index-D6QKePG0.js
+│   │   │   ├── index-D6QKePG0.js.map
+│   │   │   ├── index-RPDlWDuc.css
+│   │   │   ├── utils-Dq7h7Pqt.js
+│   │   │   ├── utils-Dq7h7Pqt.js.map
+│   │   │   ├── vendor-wbHgyyZa.js
+│   │   │   └── vendor-wbHgyyZa.js.map
+│   │   ├── audio
+│   │   │   └── arise-activation.mp3
+│   │   ├── index.html
+│   │   └── manifest.json
+│   ├── docker-entrypoint.sh
+│   ├── env.production
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── index.js
+│   ├── nginx.conf
+│   ├── nginx.conf.template
+│   ├── npm-install.sh
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.cjs
+│   ├── postcss.config.js
+│   ├── public
+│   │   ├── audio
+│   │   │   └── arise-activation.mp3
+│   │   └── manifest.json
+│   ├── src
+│   │   ├── App.vue
+│   │   ├── assets
+│   │   │   ├── holo-theme.css
+│   │   │   └── tailwind.css
+│   │   ├── components
+│   │   │   ├── DemoPipeline.vue
+│   │   │   ├── DemoRAG.vue
+│   │   │   ├── MLCreator.vue
+│   │   │   ├── OrbResultCard.vue
+│   │   │   ├── Sidebar.vue
+│   │   │   └── WhisPipeline.vue
+│   │   ├── main.js
+│   │   ├── router
+│   │   │   └── index.js
+│   │   ├── store
+│   │   │   ├── index.js
+│   │   │   ├── useAgentStore.js
+│   │   │   ├── useMainStore.js
+│   │   │   ├── useTaskStore.js
+│   │   │   └── useUserStore.js
+│   │   └── views
+│   │       ├── AboutDemo.vue
+│   │       ├── AddKeys.vue
+│   │       ├── AgentCreator.vue
+│   │       ├── Demo.vue
+│   │       ├── HTC.vue
+│   │       ├── MLCreator.vue
+│   │       ├── OrbLibrary.vue
+│   │       ├── Reports.vue
+│   │       └── WhisPipeline.vue
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── validate-configs.js
+│   ├── vite.config.js
+│   └── vite.config.js.timestamp-1752089790538-b3137147c2a3a.mjs
+├── ml-models
+│   ├── -Tree.txt
+│   ├── DEMO-LinkOps
+│   │   └── pipeline
+│   │       ├── data-intake
+│   │       ├── data-sanitize
+│   │       ├── embedder
+│   │       └── trainer
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── agent-creator
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── api
+│   │   │   └── __init__.py
+│   │   ├── logic
+│   │   │   └── agent_generator.py
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   ├── templates
+│   │   │   ├── assistant.py.jinja
+│   │   │   ├── base_agent.py.jinja
+│   │   │   ├── commandbot.py.jinja
+│   │   │   ├── taskbot.py.jinja
+│   │   │   └── workflow.py.jinja
+│   │   └── test_agent_creator.py
+│   ├── api
+│   │   ├── __init__.py
+│   │   ├── agent_generator.py
+│   │   ├── main.py
+│   │   └── model_generator.py
+│   ├── config.yaml
+│   ├── model-creator
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── api
+│   │   │   └── __init__.py
+│   │   ├── logic
+│   │   │   └── model_generator.py
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   ├── templates
+│   │   │   ├── classification_model.py.jinja
+│   │   │   ├── clustering_model.py.jinja
+│   │   │   ├── regression_model.py.jinja
+│   │   │   ├── task_evaluator_agent.py.jinja
+│   │   │   └── time_series_model.py.jinja
+│   │   └── test_model_creator.py
+│   ├── requirements.txt
+│   └── templates
+│       ├── agent_backlog_scanner.py.jinja
+│       ├── classification_model.py.jinja
+│       └── regression_model.py.jinja
+├── pipeline
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── __init__.py
+│   ├── data-intake
+│   │   └── intake.py
+│   ├── data-sanitize
+│   │   └── sanitizer.py
+│   ├── embedder
+│   │   └── embedder.py
+│   ├── main.py
+│   ├── requirements.txt
+│   └── trainer
+│       └── trainer.py
+├── pyproject.toml
+├── rag
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── logic
+│   │   ├── __init__.py
+│   │   ├── embed.py
+│   │   └── search.py
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   └── query_schema.py
+│   └── test
+│       ├── __init__.py
+│       └── test_query.py
+├── sample_data
+│   ├── company_documents.txt
+│   └── employee_data.csv
+└── unified-api
+    ├── Dockerfile
+    ├── main.py
+    ├── requirements.txt
+    ├── routers
+    │   ├── __init__.py
+    │   ├── agent_creator.py
+    │   ├── model_creator.py
+    │   ├── pipeline.py
+    │   └── rag.py
+    └── test_unified_api.py
+
+67 directories, 230 files

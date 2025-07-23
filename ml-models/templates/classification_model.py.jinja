@@ -1,0 +1,27 @@
+import pandas as pd
+from sklearn.{{ algorithm|lower }} import {{ algorithm }}
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+def train_{{ model_name }}():
+    try:
+        df = pd.read_csv("{{ dataset }}")
+        X = df.drop("target", axis=1)
+        y = df["target"]
+        
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        model = {{ algorithm }}()
+        model.fit(X_train, y_train)
+        
+        predictions = model.predict(X_test)
+        accuracy = accuracy_score(y_test, predictions)
+        
+        logging.info(f"Model {{ model_name }} trained with accuracy: {accuracy}")
+        return {"model": model, "accuracy": accuracy}
+    except Exception as e:
+        logging.error(f"Training failed for {{ model_name }}: {e}")
+        raise 

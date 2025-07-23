@@ -1,0 +1,78 @@
+name: ML Creator Pipeline
+on:
+  push:
+    branches: ["main"]
+    paths: ["ml-creator/**"]
+  pull_request:
+    branches: ["main"]
+    paths: ["ml-creator/**"]
+
+jobs:
+  ml_creator:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+          POSTGRES_DB: demo_linkops
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install dependencies
+        run: pip install -r ml-creator/requirements.txt
+      
+      - name: Test database connection
+        run: |
+          python -c "
+          import os
+          os.environ['DATABASE_URL'] = 'postgresql://user:pass@localhost:5432/demo_linkops'
+          try:
+              from demo_db.db import init_db
+              init_db()
+              print('Database connection successful')
+          except Exception as e:
+              print(f'Database connection failed: {e}')
+              exit(1)
+          "
+      
+      - name: Test API imports
+        run: |
+          python -c "
+          try:
+              from ml_creator.api.model_generator import generate_model
+              from ml_creator.api.agent_generator import generate_agent
+              print('API imports successful')
+          except Exception as e:
+              print(f'API imports failed: {e}')
+              exit(1)
+          "
+      
+      - name: Run linting
+        run: |
+          pip install flake8
+          flake8 ml-creator/ --max-line-length=120 --ignore=E501,W503
+      
+      - name: Build Docker image
+        run: |
+          docker build -t demo-ml-creator-service ml-creator/
+      
+      - name: Test Docker container
+        run: |
+          docker run --rm -d --name test-ml-creator demo-ml-creator-service
+          sleep 10
+          docker stop test-ml-creator 
