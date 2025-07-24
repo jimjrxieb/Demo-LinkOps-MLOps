@@ -1,0 +1,7 @@
+{
+  "name": "sample-tool",
+  "description": "A sample tool that demonstrates basic command execution",
+  "task_type": "command",
+  "command": "echo 'Hello from MCP Tool Executor!' && date && whoami",
+  "tags": ["demo", "sample", "system-info"]
+} 

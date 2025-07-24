@@ -117,6 +117,76 @@ async def query_rag(request: QueryRequest):
         raise HTTPException(status_code=500, detail=f"RAG query failed: {str(e)}")
 
 
+@router.post("/query-llm")
+async def query_rag_with_llm(request: QueryRequest):
+    """Query the RAG system with LLM-generated answers."""
+    try:
+        if not search_engine:
+            raise HTTPException(
+                status_code=503, detail="RAG search engine not available"
+            )
+
+        # Perform LLM-enhanced search
+        llm_result = search_engine.search_with_llm(
+            query=request.query,
+            top_k=request.top_k,
+            similarity_threshold=request.similarity_threshold,
+        )
+
+        # Convert sources to response format
+        sources = []
+        for result in llm_result["sources"]:
+            sources.append(
+                {
+                    "content": result.content,
+                    "similarity_score": result.similarity_score,
+                    "document_id": result.document_id,
+                    "chunk_index": result.chunk_index,
+                    "metadata": result.metadata,
+                }
+            )
+
+        return {
+            "query": request.query,
+            "answer": llm_result["answer"],
+            "sources": sources,
+            "citations": llm_result.get("citations", []),
+            "total_sources": len(sources),
+            "llm_used": llm_result["llm_used"],
+            "model": llm_result["model"],
+            "timestamp": datetime.now().isoformat(),
+        }
+
+    except Exception as e:
+        logger.error(f"RAG LLM query failed: {e}")
+        raise HTTPException(status_code=500, detail=f"RAG LLM query failed: {str(e)}")
+
+
+@router.get("/memory-log")
+async def get_rag_memory_log(
+    limit: int = Query(50, description="Number of entries to return")
+):
+    """Get recent RAG memory log entries."""
+    try:
+        if not search_engine:
+            raise HTTPException(
+                status_code=503, detail="RAG search engine not available"
+            )
+
+        # This would need to be implemented in the search engine
+        # For now, return a placeholder
+        return {
+            "entries": [],
+            "total": 0,
+            "returned": 0,
+            "message": "Memory log endpoint available - implementation pending",
+        }
+
+    except Exception as e:
+        logger.error(f"RAG memory log failed: {e}")
+        raise HTTPException(status_code=500, detail=f"RAG memory log failed: {str(e)}")
+
+
 @router.get("/search")
 async def simple_search(
     query: str = Query(..., description="Search query"),

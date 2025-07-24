@@ -19,7 +19,18 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.responses import JSONResponse
 
 # Import routers from each service
-from routers import agent_creator, model_creator, pipeline, rag
+from routers import (
+    agent_builder,
+    agent_creator,
+    executor,
+    htc,
+    mcp_tool,
+    ml_builder,
+    model_creator,
+    pipeline,
+    rag,
+    train_model,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -61,6 +72,20 @@ app.include_router(pipeline.router, prefix="/pipeline", tags=["Training Pipeline
 
 app.include_router(rag.router, prefix="/rag", tags=["RAG Search"])
 
+app.include_router(ml_builder.router, prefix="/ml-builder", tags=["ML Model Builder"])
+
+app.include_router(
+    agent_builder.router, prefix="/agent-builder", tags=["Agent Builder"]
+)
+
+app.include_router(train_model.router, prefix="/train-model", tags=["Model Training"])
+
+app.include_router(mcp_tool.router, prefix="/mcp-tool", tags=["MCP Tool Creator"])
+
+app.include_router(executor.router, prefix="/executor", tags=["MCP Tool Executor"])
+
+app.include_router(htc.router, prefix="/htc", tags=["HTC Document Memory"])
+
 
 # Global middleware for request logging
 @app.middleware("http")
@@ -98,6 +123,12 @@ async def root():
             "agent_creator": "/agent-creator",
             "pipeline": "/pipeline",
             "rag": "/rag",
+            "ml_builder": "/ml-builder",
+            "agent_builder": "/agent-builder",
+            "train_model": "/train-model",
+            "mcp_tool": "/mcp-tool",
+            "executor": "/executor",
+            "htc": "/htc",
             "docs": "/docs",
             "health": "/health",
         },
@@ -131,6 +162,16 @@ async def health_check():
         health_status["services"]["agent_creator"] = agent_health
     except Exception as e:
         health_status["services"]["agent_creator"] = {
+            "status": "error",
+            "error": str(e),
+        }
+
+    try:
+        # Train Model health
+        train_health = await train_model.health_check()
+        health_status["services"]["train_model"] = train_health
+    except Exception as e:
+        health_status["services"]["train_model"] = {
             "status": "error",
             "error": str(e),
         }
@@ -192,6 +233,15 @@ async def system_info():
                 "status": "running",
                 "endpoints": ["/query", "/embed", "/documents", "/stats"],
             },
+            "train_model": {
+                "port": 9000,
+                "status": "running",
+                "endpoints": [
+                    "/train-model",
+                    "/train-model/status",
+                    "/train-model/{model_name}",
+                ],
+            },
         },
         "security": {
             "cors_enabled": True,
@@ -216,6 +266,7 @@ async def not_found_handler(request: Request, exc: HTTPException):
                 "agent_creator": "/agent-creator/*",
                 "pipeline": "/pipeline/*",
                 "rag": "/rag/*",
+                "train_model": "/train-model/*",
                 "docs": "/docs",
                 "health": "/health",
             },
@@ -248,6 +299,7 @@ async def startup_event():
     logger.info("   - Agent Creator: /agent-creator")
     logger.info("   - Pipeline: /pipeline")
     logger.info("   - RAG: /rag")
+    logger.info("   - Train Model: /train-model")
     logger.info("📚 Documentation: /docs")
     logger.info("💚 Health Check: /health")
 

@@ -1,0 +1,11 @@
+{
+  "name": "network-info",
+  "description": "Display network information",
+  "task_type": "command",
+  "command": "echo '=== Network Interfaces ===' && ip addr show && echo '=== Routing ===' && ip route show",
+  "tags": [
+    "network",
+    "info",
+    "system"
+  ]
+}

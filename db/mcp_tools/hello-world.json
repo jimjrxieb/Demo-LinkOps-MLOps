@@ -1,0 +1,11 @@
+{
+  "name": "hello-world",
+  "description": "Simple hello world demonstration",
+  "task_type": "command",
+  "command": "echo 'Hello from MCP Tool Executor!' && echo 'Current time:' && date",
+  "tags": [
+    "demo",
+    "hello",
+    "basic"
+  ]
+}

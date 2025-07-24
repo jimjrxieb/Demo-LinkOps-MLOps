@@ -1,0 +1,7 @@
+{
+  "name": "system-info",
+  "description": "Get system information including OS, memory, and disk usage",
+  "task_type": "command",
+  "command": "uname -a && echo '--- Memory ---' && free -h && echo '--- Disk ---' && df -h",
+  "tags": ["system", "monitoring", "info"]
+} 

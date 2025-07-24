@@ -1,12 +1,33 @@
-import os
-import tempfile
-import uuid
+#!/usr/bin/env python3
+"""
+Agent Creator FastAPI Service
+============================
 
+FastAPI service for generating and managing AI agents and tools from natural language.
+"""
+
+import logging
+import os
+from pathlib import Path
+from typing import Any, Dict, List
+
+import uvicorn
 from fastapi import FastAPI, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from logic.agent_generator import generate_agent_code, validate_agent_parameters
+from logic.agent_generator import AgentGenerator
 
-app = FastAPI(title="Agent Creator", version="1.0.0")
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
+
+# Initialize FastAPI app
+app = FastAPI(
+    title="Agent Creator",
+    description="Generate AI agents and tools from natural language",
+    version="1.0.0",
+)
 
 # Add CORS middleware
 app.add_middleware(
@@ -17,257 +38,108 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize agent generator
+agent_generator = AgentGenerator()
+
+
+@app.get("/")
+async def root():
+    """Health check endpoint."""
+    return {
+        "service": "Agent Creator",
+        "status": "running",
+        "version": "1.0.0",
+        "endpoints": [
+            "/agent/create",
+            "/agent/list",
+            "/agent/{tool_id}",
+            "/categories",
+            "/health",
+        ],
+    }
+
 
 @app.get("/health")
 async def health_check():
     """Health check endpoint."""
-    return {"status": "healthy", "service": "agent-creator"}
-
-
-@app.post("/generate-agent/")
-async def generate_agent(
-    agent_type: str = Form(
-        ..., description="Type of agent: base, taskbot, commandbot, assistant, workflow"
-    ),
-    agent_name: str = Form(..., description="Name for the agent"),
-    tools: str = Form("", description="Comma-separated list of tools/commands"),
-    capabilities: str = Form("", description="Comma-separated list of capabilities"),
-    security_level: str = Form(
-        "medium", description="Security level: low, medium, high"
-    ),
-    description: str = Form("", description="Agent description"),
-):
-    """
-    Generate AI agent code based on parameters.
-
-    Args:
-        agent_type: Type of agent (base, taskbot, commandbot, assistant, workflow)
-        agent_name: Name for the agent
-        tools: Comma-separated list of tools/commands
-        capabilities: Comma-separated list of capabilities
-        security_level: Security level (low, medium, high)
-        description: Agent description
-
-    Returns:
-        Generated agent code and metadata
-    """
     try:
-        # Parse parameters
-        tools_list = [tool.strip() for tool in tools.split(",") if tool.strip()]
-        capabilities_list = [
-            cap.strip() for cap in capabilities.split(",") if cap.strip()
-        ]
-
-        # Validate parameters
-        validate_agent_parameters(agent_type, agent_name, tools_list, security_level)
-
-        # Generate agent code
-        output_path = generate_agent_code(
-            agent_type=agent_type,
-            agent_name=agent_name,
-            tools=tools_list,
-            capabilities=capabilities_list,
-            security_level=security_level,
-            description=description,
-        )
-
-        # Read generated code
-        with open(output_path, "r") as f:
-            generated_code = f.read()
-
+        llm_available = agent_generator._initialize_llm()
         return {
-            "message": "Agent created successfully",
-            "agent_type": agent_type,
-            "agent_name": agent_name,
-            "tools": tools_list,
-            "capabilities": capabilities_list,
-            "security_level": security_level,
-            "output_path": output_path,
-            "agent_code": generated_code,
-            "status": "success",
+            "status": "healthy" if llm_available else "degraded",
+            "service": "agent-creator",
+            "llm_available": llm_available,
         }
+    except Exception as e:
+        return {"status": "error", "service": "agent-creator", "error": str(e)}
+
+
+@app.post("/agent/create")
+async def create_agent(task: str = Form(...), category: str = Form(None)):
+    """Create an AI agent/tool from a natural language task."""
+    try:
+        if not task.strip():
+            raise HTTPException(status_code=400, detail="Task description is required")
+
+        result = agent_generator.generate_tool(task, category)
+
+        if "error" in result:
+            raise HTTPException(status_code=400, detail=result["error"])
+
+        return result
 
     except Exception as e:
+        logger.error(f"Agent creation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Creation failed: {str(e)}")
+
+
+@app.get("/agent/list")
+async def list_agents():
+    """List all generated agents/tools."""
+    try:
+        tools = agent_generator.list_tools()
+        return {"tools": tools, "count": len(tools)}
+    except Exception as e:
+        logger.error(f"Failed to list agents: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to list agents: {str(e)}")
+
+
+@app.get("/agent/{tool_id}")
+async def get_agent(tool_id: str):
+    """Get a specific agent/tool by ID."""
+    try:
+        result = agent_generator.get_tool(tool_id)
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except Exception as e:
+        logger.error(f"Failed to get agent: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to get agent: {str(e)}")
+
+
+@app.delete("/agent/{tool_id}")
+async def delete_agent(tool_id: str):
+    """Delete an agent/tool by ID."""
+    try:
+        result = agent_generator.delete_tool(tool_id)
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except Exception as e:
+        logger.error(f"Failed to delete agent: {e}")
+        raise HTTPException(status_code=500, detail=f"Failed to delete agent: {str(e)}")
+
+
+@app.get("/categories")
+async def get_categories():
+    """Get available tool categories and their descriptions."""
+    try:
+        return agent_generator.get_categories()
+    except Exception as e:
+        logger.error(f"Failed to get categories: {e}")
         raise HTTPException(
-            status_code=500, detail=f"Agent generation failed: {str(e)}"
+            status_code=500, detail=f"Failed to get categories: {str(e)}"
         )
-
-
-@app.post("/generate-workflow-agent/")
-async def generate_workflow_agent(
-    workflow_name: str = Form(..., description="Name for the workflow agent"),
-    steps: str = Form(..., description="JSON string of workflow steps"),
-    triggers: str = Form("", description="Comma-separated list of triggers"),
-    error_handling: str = Form(
-        "retry", description="Error handling strategy: retry, skip, stop"
-    ),
-):
-    """
-    Generate a workflow agent for orchestrating multiple tasks.
-
-    Args:
-        workflow_name: Name for the workflow
-        steps: JSON string defining workflow steps
-        triggers: Comma-separated list of triggers
-        error_handling: Error handling strategy
-
-    Returns:
-        Generated workflow agent code
-    """
-    try:
-        import json
-
-        # Parse workflow steps
-        try:
-            workflow_steps = json.loads(steps)
-        except json.JSONDecodeError:
-            raise HTTPException(
-                status_code=400, detail="Invalid JSON in steps parameter"
-            )
-
-        # Parse triggers
-        triggers_list = [
-            trigger.strip() for trigger in triggers.split(",") if trigger.strip()
-        ]
-
-        # Generate workflow agent
-        output_path = generate_agent_code(
-            agent_type="workflow",
-            agent_name=workflow_name,
-            tools=[],
-            capabilities=["workflow_orchestration", "error_handling", "monitoring"],
-            security_level="high",
-            description=f"Workflow agent for {workflow_name}",
-            workflow_steps=workflow_steps,
-            triggers=triggers_list,
-            error_handling=error_handling,
-        )
-
-        # Read generated code
-        with open(output_path, "r") as f:
-            generated_code = f.read()
-
-        return {
-            "message": "Workflow agent created successfully",
-            "workflow_name": workflow_name,
-            "steps": workflow_steps,
-            "triggers": triggers_list,
-            "error_handling": error_handling,
-            "output_path": output_path,
-            "agent_code": generated_code,
-            "status": "success",
-        }
-
-    except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Workflow agent generation failed: {str(e)}"
-        )
-
-
-@app.get("/supported-agents")
-async def get_supported_agents():
-    """Get list of supported agent types and capabilities."""
-    return {
-        "agent_types": ["base", "taskbot", "commandbot", "assistant", "workflow"],
-        "capabilities": [
-            "task_execution",
-            "command_execution",
-            "data_processing",
-            "file_operations",
-            "network_requests",
-            "workflow_orchestration",
-            "error_handling",
-            "monitoring",
-            "logging",
-            "security_validation",
-        ],
-        "security_levels": ["low", "medium", "high"],
-        "error_handling_strategies": ["retry", "skip", "stop", "notify"],
-    }
-
-
-@app.get("/agent-templates")
-async def get_agent_templates():
-    """Get available agent templates with examples."""
-    return {
-        "base": {
-            "description": "Basic agent template with minimal functionality",
-            "example": {
-                "agent_type": "base",
-                "agent_name": "MyAgent",
-                "tools": "",
-                "capabilities": "",
-            },
-        },
-        "taskbot": {
-            "description": "Task-oriented agent for handling specific tasks",
-            "example": {
-                "agent_type": "taskbot",
-                "agent_name": "DataProcessor",
-                "tools": "pandas,numpy,matplotlib",
-                "capabilities": "data_processing,visualization",
-            },
-        },
-        "commandbot": {
-            "description": "Command execution agent with security controls",
-            "example": {
-                "agent_type": "commandbot",
-                "agent_name": "SecureShell",
-                "tools": "ls,pwd,whoami,echo",
-                "capabilities": "command_execution,security_validation",
-            },
-        },
-        "assistant": {
-            "description": "AI assistant agent with conversation capabilities",
-            "example": {
-                "agent_type": "assistant",
-                "agent_name": "HelpBot",
-                "tools": "search,calculate,format",
-                "capabilities": "conversation,information_retrieval",
-            },
-        },
-        "workflow": {
-            "description": "Workflow orchestration agent",
-            "example": {
-                "agent_type": "workflow",
-                "workflow_name": "DataPipeline",
-                "steps": '[{"step": "extract", "action": "read_data"}, {"step": "transform", "action": "process_data"}]',
-                "triggers": "schedule,manual,event",
-            },
-        },
-    }
-
-
-@app.post("/validate-agent/")
-async def validate_agent_config(
-    agent_type: str = Form(...),
-    tools: str = Form(""),
-    security_level: str = Form("medium"),
-):
-    """Validate agent configuration before generation."""
-    try:
-        tools_list = [tool.strip() for tool in tools.split(",") if tool.strip()]
-
-        # Validate parameters
-        validate_agent_parameters(agent_type, "test_agent", tools_list, security_level)
-
-        return {
-            "valid": True,
-            "message": "Agent configuration is valid",
-            "warnings": [],
-            "recommendations": [],
-        }
-
-    except Exception as e:
-        return {
-            "valid": False,
-            "message": str(e),
-            "warnings": [],
-            "recommendations": [],
-        }
 
 
 if __name__ == "__main__":
-    import uvicorn
-
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    uvicorn.run("main:app", host="0.0.0.0", port=8700, reload=True)

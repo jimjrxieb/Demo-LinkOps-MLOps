@@ -1,17 +1,16 @@
 .
 ├── -Tree.txt
-├── DEMO-LinkOps
-│   ├── rag
-│   │   ├── logic
-│   │   ├── schemas
-│   │   ├── test
-│   │   └── vectorstore
-│   ├── sample_data
-│   └── unified-api
-│       └── routers
+├── DEMO-Tree.txt
+├── DEPLOYMENT-READY.md
 ├── Makefile
 ├── NEW-STRUCTURE.txt
+├── RAG-INTEGRATION.md
+├── README-HTC-CSV-RAG.md
+├── README-HTC-FEEDBACK-LOOP.md
+├── README-HTC-PROMPT-EDITOR.md
+├── README-MULTI-QUERY.md
 ├── README-OCI.md
+├── README-TENANT-SYNC.md
 ├── README.md
 ├── archive
 │   ├── CONFIGURATION.md
@@ -75,7 +74,15 @@
 │   ├── deployment-fixed.md
 │   ├── docker-hub-setup.md
 │   └── phase5-6-summary.md
-├── deploy.sh
+├── backend
+│   ├── routes
+│   │   ├── status.py
+│   │   └── train_model.py
+│   └── sync_engine
+│       └── tenant_sync.py
+├── db
+│   └── mcp_tools
+├── deploy-simple.sh
 ├── docker
 │   ├── deploy-demo.sh
 │   ├── docker-compose.demo.yml
@@ -171,6 +178,7 @@
 │   │   ├── components
 │   │   │   ├── DemoPipeline.vue
 │   │   │   ├── DemoRAG.vue
+│   │   │   ├── DropZone.vue
 │   │   │   ├── MLCreator.vue
 │   │   │   ├── OrbResultCard.vue
 │   │   │   ├── Sidebar.vue
@@ -180,25 +188,48 @@
 │   │   │   └── index.js
 │   │   ├── store
 │   │   │   ├── index.js
+│   │   │   ├── train_model.js
 │   │   │   ├── useAgentStore.js
 │   │   │   ├── useMainStore.js
 │   │   │   ├── useTaskStore.js
 │   │   │   └── useUserStore.js
+│   │   ├── utils
+│   │   │   └── uploadToServer.js
 │   │   └── views
 │   │       ├── AboutDemo.vue
 │   │       ├── AddKeys.vue
+│   │       ├── AgentBuilder.vue
 │   │       ├── AgentCreator.vue
 │   │       ├── Demo.vue
+│   │       ├── DemoDashboard.vue
 │   │       ├── HTC.vue
+│   │       ├── HTCFeedback.vue
+│   │       ├── HTCPromptEditor.vue
+│   │       ├── MCPToolCreator.vue
+│   │       ├── MLBuilder.vue
 │   │       ├── MLCreator.vue
+│   │       ├── ModelCreator.vue
 │   │       ├── OrbLibrary.vue
+│   │       ├── RAGSearch.vue
 │   │       ├── Reports.vue
+│   │       ├── SearchMemory.vue
+│   │       ├── SyncDashboard.vue
 │   │       └── WhisPipeline.vue
 │   ├── tailwind.config.js
 │   ├── tsconfig.json
 │   ├── validate-configs.js
 │   ├── vite.config.js
 │   └── vite.config.js.timestamp-1752089790538-b3137147c2a3a.mjs
+├── htc
+│   ├── feedback_collector.py
+│   ├── prompt_template_builder.py
+│   ├── routes
+│   │   ├── feedback.py
+│   │   └── prompt_editor.py
+│   └── train_lora.py
+├── ml
+│   ├── routes.py
+│   └── train_model.py
 ├── ml-models
 │   ├── -Tree.txt
 │   ├── DEMO-LinkOps
@@ -218,6 +249,7 @@
 │   │   │   └── agent_generator.py
 │   │   ├── main.py
 │   │   ├── requirements.txt
+│   │   ├── sample_tasks.md
 │   │   ├── templates
 │   │   │   ├── assistant.py.jinja
 │   │   │   ├── base_agent.py.jinja
@@ -240,6 +272,8 @@
 │   │   │   └── model_generator.py
 │   │   ├── main.py
 │   │   ├── requirements.txt
+│   │   ├── sample_data
+│   │   │   └── employee_data.csv
 │   │   ├── templates
 │   │   │   ├── classification_model.py.jinja
 │   │   │   ├── clustering_model.py.jinja
@@ -252,6 +286,10 @@
 │       ├── agent_backlog_scanner.py.jinja
 │       ├── classification_model.py.jinja
 │       └── regression_model.py.jinja
+├── ml_models
+│   ├── models
+│   ├── test_trainer.py
+│   └── trainer.py
 ├── pipeline
 │   ├── Dockerfile
 │   ├── README.md
@@ -269,32 +307,61 @@
 ├── pyproject.toml
 ├── rag
 │   ├── Dockerfile
+│   ├── README-UPLOAD-QA.md
 │   ├── README.md
+│   ├── chroma_db
+│   ├── config
+│   │   └── llm_config.yaml
+│   ├── embed.py
+│   ├── llm_weights
+│   │   ├── README.md
+│   │   └── mistral.gguf
+│   ├── loaders
+│   │   └── csv_embedder.py
 │   ├── logic
 │   │   ├── __init__.py
 │   │   ├── embed.py
+│   │   ├── llm_runner.py
 │   │   └── search.py
 │   ├── main.py
+│   ├── rag_config.json
 │   ├── requirements.txt
+│   ├── routes
+│   │   └── upload_csv.py
 │   ├── schemas
 │   │   ├── __init__.py
 │   │   └── query_schema.py
-│   └── test
-│       ├── __init__.py
-│       └── test_query.py
+│   ├── test
+│   │   ├── __init__.py
+│   │   └── test_query.py
+│   ├── test_multi_query.py
+│   ├── test_upload_qa.py
+│   └── uploads
 ├── sample_data
 │   ├── company_documents.txt
-│   └── employee_data.csv
-└── unified-api
-    ├── Dockerfile
-    ├── main.py
-    ├── requirements.txt
-    ├── routers
-    │   ├── __init__.py
-    │   ├── agent_creator.py
-    │   ├── model_creator.py
-    │   ├── pipeline.py
-    │   └── rag.py
-    └── test_unified_api.py
+│   ├── employee_data.csv
+│   ├── kubernetes_basics.txt
+│   ├── mlops_pipeline.txt
+│   └── sample_tenants.csv
+├── start-tenant-sync.sh
+├── start-upload-qa.sh
+├── unified-api
+│   ├── Dockerfile
+│   ├── main.py
+│   ├── requirements-light.txt
+│   ├── requirements.txt
+│   ├── routers
+│   │   ├── __init__.py
+│   │   ├── agent_builder.py
+│   │   ├── agent_creator.py
+│   │   ├── htc.py
+│   │   ├── mcp_tool.py
+│   │   ├── ml_builder.py
+│   │   ├── model_creator.py
+│   │   ├── pipeline.py
+│   │   ├── rag.py
+│   │   └── train_model.py
+│   └── test_unified_api.py
+└── uploads
 
-67 directories, 230 files
+77 directories, 287 files

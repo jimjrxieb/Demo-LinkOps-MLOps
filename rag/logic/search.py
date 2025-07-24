@@ -20,6 +20,21 @@ import numpy as np
 # Import schemas
 from schemas.query_schema import SearchResult
 
+# LangChain imports for LLM integration
+try:
+    from langchain.chains import RetrievalQA
+    from langchain.embeddings import HuggingFaceEmbeddings
+    from langchain.llms import LlamaCpp
+    from langchain.retrievers.multi_query import MultiQueryRetriever
+    from langchain.text_splitter import RecursiveCharacterTextSplitter
+    from langchain.vectorstores import FAISS
+
+    LANGCHAIN_AVAILABLE = True
+except ImportError:
+    LANGCHAIN_AVAILABLE = False
+    logger = logging.getLogger(__name__)
+    logger.warning("LangChain not available. LLM features will be disabled.")
+
 logger = logging.getLogger(__name__)
 
 
@@ -32,6 +47,8 @@ class RAGSearchEngine:
         self,
         vectorstore_path: str = "vectorstore/index.pkl",
         model_name: str = "sentence-transformers/all-MiniLM-L6-v2",
+        use_llm: bool = True,
+        llm_model_path: str = "llm_weights/mistral.gguf",
     ):
         """
         Initialize the RAG search engine.
@@ -39,16 +56,24 @@ class RAGSearchEngine:
         Args:
             vectorstore_path: Path to the vector store file
             model_name: Name of the embedding model to use
+            use_llm: Whether to enable LLM integration for answer generation
+            llm_model: HuggingFace model ID for LLM
         """
         self.vectorstore_path = Path(vectorstore_path)
         self.model_name = model_name
         self.embedding_dimension = 384  # Default for all-MiniLM-L6-v2
+        self.use_llm = use_llm and LANGCHAIN_AVAILABLE
+        self.llm_model_path = llm_model_path
 
         # Initialize components
         self.index = None
         self.documents = []
         self.document_metadata = {}
         self.model = None
+        self.langchain_vectorstore = None
+        self.qa_chain = None
+        self.multi_query_retriever = None
+        self.use_multi_query = True  # Enable MultiQueryRetriever by default
 
         # Create vectorstore directory
         self.vectorstore_path.parent.mkdir(parents=True, exist_ok=True)
@@ -56,10 +81,130 @@ class RAGSearchEngine:
         # Load or initialize the index
         self._load_or_initialize_index()
 
+        # Initialize LangChain components if available
+        if self.use_llm:
+            self._initialize_langchain()
+
+        # Initialize MultiQueryRetriever if enabled
+        if self.use_multi_query and self.use_llm:
+            self._initialize_multi_query_retriever()
+
         logger.info(f"🔍 RAG search engine initialized")
         logger.info(f"   Model: {self.model_name}")
         logger.info(f"   Vector store: {self.vectorstore_path}")
         logger.info(f"   Documents loaded: {len(self.documents)}")
+        logger.info(f"   LLM enabled: {self.use_llm}")
+        if self.use_llm:
+            logger.info(f"   LLM model: {self.llm_model_path}")
+        logger.info(f"   MultiQuery enabled: {self.use_multi_query}")
+
+    def _initialize_langchain(self):
+        """Initialize LangChain components for LLM integration."""
+        try:
+            if not LANGCHAIN_AVAILABLE:
+                logger.warning("LangChain not available, skipping LLM initialization")
+                return
+
+            # Initialize embeddings
+            embeddings = HuggingFaceEmbeddings(model_name=self.model_name)
+
+            # Create or load LangChain vectorstore
+            langchain_index_path = self.vectorstore_path.parent / "langchain_index"
+            if langchain_index_path.exists() and len(self.documents) > 0:
+                self.langchain_vectorstore = FAISS.load_local(
+                    str(langchain_index_path), embeddings
+                )
+                logger.info("📂 Loaded existing LangChain vectorstore")
+            else:
+                # Create empty vectorstore
+                self.langchain_vectorstore = FAISS.from_texts(
+                    ["Initial document"], embeddings
+                )
+                logger.info("🆕 Created new LangChain vectorstore")
+
+            # Initialize QA chain
+            try:
+                # Check if model file exists
+                model_path = Path(self.llm_model_path)
+                if not model_path.exists():
+                    logger.warning(f"LLM model file not found: {self.llm_model_path}")
+                    self.use_llm = False
+                    return
+
+                llm = LlamaCpp(
+                    model_path=str(model_path),
+                    temperature=0.1,
+                    max_tokens=512,
+                    n_ctx=2048,
+                    verbose=False,
+                    n_gpu_layers=0,  # Set to 1 or higher if GPU available
+                )
+                retriever = self.langchain_vectorstore.as_retriever(
+                    search_type="similarity", search_kwargs={"k": 3}
+                )
+                self.qa_chain = RetrievalQA.from_chain_type(
+                    llm=llm, retriever=retriever, return_source_documents=True
+                )
+                logger.info("🧠 Local LLM QA chain initialized successfully")
+            except Exception as e:
+                logger.warning(f"Failed to initialize local LLM: {e}")
+                self.use_llm = False
+
+        except Exception as e:
+            logger.error(f"Failed to initialize LangChain: {e}")
+            self.use_llm = False
+
+    def _initialize_multi_query_retriever(self):
+        """Initialize MultiQueryRetriever for smarter search."""
+        try:
+            if not self.use_llm or self.langchain_vectorstore is None:
+                logger.warning(
+                    "LangChain not available, skipping MultiQueryRetriever initialization"
+                )
+                return
+
+            # Check if LLM model exists
+            model_path = Path(self.llm_model_path)
+            if not model_path.exists():
+                logger.warning(f"LLM model file not found: {self.llm_model_path}")
+                self.use_multi_query = False
+                return
+
+            # Initialize LLM for query generation
+            llm = LlamaCpp(
+                model_path=str(model_path),
+                temperature=0.1,
+                max_tokens=256,
+                n_ctx=2048,
+                verbose=False,
+                n_gpu_layers=0,  # Set to 1 or higher if GPU available
+            )
+
+            # Create base retriever
+            base_retriever = self.langchain_vectorstore.as_retriever(
+                search_type="mmr",  # Maximum Marginal Relevance for diversity
+                search_kwargs={
+                    "k": 6,  # Number of documents to retrieve
+                    "fetch_k": 10,  # Number of documents to fetch before filtering
+                    "lambda_mult": 0.7,  # Diversity parameter
+                },
+            )
+
+            # Create MultiQueryRetriever
+            self.multi_query_retriever = MultiQueryRetriever.from_llm(
+                retriever=base_retriever,
+                llm=llm,
+                parser_key="text",  # Use text parser for query generation
+            )
+
+            logger.info("🧠 MultiQueryRetriever initialized successfully")
+            logger.info("   - Generates multiple semantically similar queries")
+            logger.info("   - Uses MMR search for diverse results")
+            logger.info("   - Improves accuracy for vague or varied questions")
+
+        except Exception as e:
+            logger.error(f"Failed to initialize MultiQueryRetriever: {e}")
+            self.use_multi_query = False
 
     def _load_or_initialize_index(self):
         """Load existing index or initialize a new one."""
@@ -215,6 +360,73 @@ class RAGSearchEngine:
         except Exception as e:
             logger.error(f"Search failed: {e}")
             return []
+
+    def search_with_multi_query(
+        self,
+        query: str,
+        top_k: int = 5,
+        similarity_threshold: float = 0.5,
+        include_metadata: bool = True,
+    ) -> List[SearchResult]:
+        """
+        Search using MultiQueryRetriever for smarter results.
+
+        This method generates multiple semantically similar queries from the original query,
+        then retrieves documents using all generated queries for better coverage.
+
+        Args:
+            query: Search query
+            top_k: Number of results to return
+            similarity_threshold: Minimum similarity threshold
+            include_metadata: Include document metadata in results
+
+        Returns:
+            List of search results with enhanced relevance
+        """
+        if not self.use_multi_query or self.multi_query_retriever is None:
+            logger.info(
+                "MultiQueryRetriever not available, falling back to regular search"
+            )
+            return self.search(query, top_k, similarity_threshold, include_metadata)
+
+        try:
+            logger.info(f"🔍 MultiQuery search for: {query[:50]}...")
+
+            # Use MultiQueryRetriever to get relevant documents
+            documents = self.multi_query_retriever.get_relevant_documents(query)
+
+            # Convert to SearchResult format
+            results = []
+            for i, doc in enumerate(documents):
+                if i >= top_k:
+                    break
+
+                # Calculate approximate similarity score (higher for earlier results)
+                similarity_score = max(0.5, 1.0 - (i * 0.1))
+
+                if similarity_score >= similarity_threshold:
+                    metadata = doc.metadata if include_metadata else None
+
+                    result = SearchResult(
+                        content=doc.page_content,
+                        similarity_score=float(similarity_score),
+                        document_id=(
+                            metadata.get("source", f"doc_{i}")
+                            if metadata
+                            else f"doc_{i}"
+                        ),
+                        chunk_index=i,
+                        metadata=metadata,
+                    )
+                    results.append(result)
+
+            logger.info(f"🧠 MultiQuery search completed: {len(results)} results")
+            return results
+
+        except Exception as e:
+            logger.error(f"MultiQuery search failed: {e}")
+            logger.info("Falling back to regular search")
+            return self.search(query, top_k, similarity_threshold, include_metadata)
 
     def _get_document_id(self, chunk_index: int) -> str:
         """Get document ID for a chunk index."""
@@ -380,6 +592,160 @@ class RAGSearchEngine:
         logger.warning(f"Document deletion not fully implemented for {doc_id}")
         return False
 
+    def search_with_llm(
+        self,
+        query: str,
+        top_k: int = 3,
+        similarity_threshold: float = 0.5,
+    ) -> Dict[str, Any]:
+        """
+        Search with LLM-generated answer using RetrievalQA chain.
+
+        Args:
+            query: Search query
+            top_k: Number of top results to retrieve
+            similarity_threshold: Minimum similarity threshold
+
+        Returns:
+            Dictionary with answer, sources, citations, and metadata
+        """
+        if not self.use_llm or self.qa_chain is None:
+            # Fallback to regular search
+            results = self.search(query, top_k, similarity_threshold)
+            return {
+                "answer": "LLM not available. Here are the most relevant document chunks:\n\n"
+                + "\n\n".join([f"• {r.content}" for r in results]),
+                "sources": results,
+                "citations": [r.content for r in results],
+                "llm_used": False,
+                "model": "fallback",
+            }
+
+        try:
+            # Use LangChain QA chain
+            result = self.qa_chain({"query": query})
+
+            # Extract answer and sources
+            answer = result.get("result", "No answer generated")
+            source_documents = result.get("source_documents", [])
+
+            # Convert source documents to SearchResult format
+            sources = []
+            citations = []
+            for i, doc in enumerate(source_documents):
+                sources.append(
+                    SearchResult(
+                        content=doc.page_content,
+                        score=1.0 - (i * 0.1),  # Approximate score
+                        metadata={
+                            "source": f"Document {i+1}",
+                            "chunk_id": i,
+                            "llm_source": True,
+                        },
+                    )
+                )
+                citations.append(doc.page_content)
+
+            # Save to memory log
+            self._save_to_memory(query, answer, citations)
+
+            return {
+                "answer": answer,
+                "sources": sources,
+                "citations": citations,
+                "llm_used": True,
+                "model": "local-mistral-7b",
+                "query": query,
+            }
+
+        except Exception as e:
+            logger.error(f"LLM search failed: {e}")
+            # Fallback to regular search
+            results = self.search(query, top_k, similarity_threshold)
+            return {
+                "answer": f"LLM search failed: {str(e)}. Here are the most relevant document chunks:\n\n"
+                + "\n\n".join([f"• {r.content}" for r in results]),
+                "sources": results,
+                "citations": [r.content for r in results],
+                "llm_used": False,
+                "model": "fallback",
+                "error": str(e),
+            }
+
+    def _save_to_memory(self, query: str, answer: str, citations: List[str]):
+        """
+        Save query, answer, and citations to JSON log file.
+
+        Args:
+            query: The user's question
+            answer: The LLM-generated answer
+            citations: List of source document chunks
+        """
+        try:
+            import json
+            import os
+            from datetime import datetime
+
+            record = {
+                "timestamp": datetime.utcnow().isoformat(),
+                "query": query,
+                "answer": answer,
+                "citations": citations,
+                "model": "local-mistral-7b",
+                "llm_used": True,
+            }
+
+            # Create db directory if it doesn't exist
+            db_path = Path("db")
+            db_path.mkdir(exist_ok=True)
+
+            log_path = db_path / "query_log.json"
+
+            # Append to log file
+            with open(log_path, "a", encoding="utf-8") as f:
+                f.write(json.dumps(record, ensure_ascii=False) + "\n")
+
+            logger.info(f"💾 Saved query to memory log: {log_path}")
+
+        except Exception as e:
+            logger.error(f"Failed to save to memory log: {e}")
+
+    def update_langchain_vectorstore(
+        self, documents: List[str], metadata: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Update the LangChain vectorstore with new documents.
+
+        Args:
+            documents: List of document chunks
+            metadata: Optional metadata for the documents
+        """
+        if not self.use_llm or not LANGCHAIN_AVAILABLE:
+            logger.warning("LangChain not available, skipping vectorstore update")
+            return
+
+        try:
+            # Initialize embeddings if not already done
+            embeddings = HuggingFaceEmbeddings(model_name=self.model_name)
+
+            # Create new vectorstore with documents
+            self.langchain_vectorstore = FAISS.from_texts(documents, embeddings)
+
+            # Save the vectorstore
+            langchain_index_path = self.vectorstore_path.parent / "langchain_index"
+            self.langchain_vectorstore.save_local(str(langchain_index_path))
+
+            # Reinitialize QA chain
+            if self.qa_chain is None:
+                self._initialize_langchain()
+
+            logger.info(
+                f"✅ Updated LangChain vectorstore with {len(documents)} documents"
+            )
+
+        except Exception as e:
+            logger.error(f"Failed to update LangChain vectorstore: {e}")
+
 
 def search_query(query: str) -> str:
     """
@@ -398,6 +764,27 @@ def search_query(query: str) -> str:
         return results[0].content
     else:
         return "No relevant documents found."
+
+
+def retrieve_chunks(query: str, use_multi_query: bool = True) -> List[SearchResult]:
+    """
+    Convenience function for retrieving document chunks with optional MultiQueryRetriever.
+
+    Args:
+        query: Search query
+        use_multi_query: Whether to use MultiQueryRetriever for smarter search
+
+    Returns:
+        List of search results
+    """
+    search_engine = RAGSearchEngine()
+
+    if use_multi_query and search_engine.use_multi_query:
+        return search_engine.search_with_multi_query(
+            query, top_k=5, similarity_threshold=0.5
+        )
+    else:
+        return search_engine.search(query, top_k=5, similarity_threshold=0.5)
 
 
 if __name__ == "__main__":

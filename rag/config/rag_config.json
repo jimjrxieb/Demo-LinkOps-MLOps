@@ -1,0 +1,17 @@
+{
+  "version": "1.0.0",
+  "description": "RAG Configuration for Document Memory",
+  "settings": {
+    "chunk_size": 1000,
+    "chunk_overlap": 100,
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "vector_db": "chroma",
+    "collection_name": "documents"
+  },
+  "sources": {},
+  "tags": {},
+  "vector_ids": {},
+  "last_sync": null,
+  "auto_sync_enabled": false,
+  "watch_directory": "rag/uploads"
+} 

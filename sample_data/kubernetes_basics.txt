@@ -1,0 +1,108 @@
+Kubernetes Basics: A Comprehensive Guide
+
+What is Kubernetes?
+Kubernetes (K8s) is an open-source container orchestration platform that automates the deployment, scaling, and management of containerized applications. It was originally developed by Google and is now maintained by the Cloud Native Computing Foundation (CNCF).
+
+Key Concepts:
+
+1. Pods
+Pods are the smallest deployable units in Kubernetes. A pod can contain one or more containers that share the same network namespace and storage volumes. Pods are ephemeral and can be created, destroyed, and recreated as needed.
+
+2. Services
+Services provide a stable network endpoint for pods. They enable load balancing and service discovery within the cluster. Services can be of different types:
+- ClusterIP: Internal access only
+- NodePort: External access via node port
+- LoadBalancer: External access via cloud load balancer
+- ExternalName: Maps to external DNS name
+
+3. Deployments
+Deployments manage the desired state for pods and ReplicaSets. They provide declarative updates for pods and ReplicaSets. Key features include:
+- Rolling updates and rollbacks
+- Scaling up and down
+- Self-healing (replaces failed pods)
+
+4. ConfigMaps and Secrets
+ConfigMaps store non-confidential configuration data in key-value pairs. Secrets store sensitive data like passwords, tokens, and keys. Both can be mounted as files or environment variables in pods.
+
+5. Volumes
+Volumes provide persistent storage for pods. Kubernetes supports various volume types:
+- emptyDir: Temporary storage
+- persistentVolumeClaim: Persistent storage
+- configMap: Configuration data
+- secret: Sensitive data
+
+Best Practices:
+
+1. Resource Management
+Always specify resource requests and limits for containers:
+```yaml
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "250m"
+  limits:
+    memory: "128Mi"
+    cpu: "500m"
+```
+
+2. Health Checks
+Implement liveness and readiness probes:
+```yaml
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8080
+  initialDelaySeconds: 30
+  periodSeconds: 10
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: 8080
+  initialDelaySeconds: 5
+  periodSeconds: 5
+```
+
+3. Security
+- Use RBAC (Role-Based Access Control)
+- Implement network policies
+- Use security contexts
+- Regularly update images and dependencies
+
+4. Monitoring and Logging
+- Use Prometheus for metrics collection
+- Implement centralized logging with ELK stack
+- Set up alerts for critical metrics
+- Monitor resource usage and performance
+
+Common Commands:
+```bash
+# Get all resources
+kubectl get all
+
+# Describe a resource
+kubectl describe pod <pod-name>
+
+# View logs
+kubectl logs <pod-name>
+
+# Execute command in pod
+kubectl exec -it <pod-name> -- /bin/bash
+
+# Port forward
+kubectl port-forward <pod-name> 8080:80
+
+# Apply configuration
+kubectl apply -f <file.yaml>
+
+# Delete resource
+kubectl delete <resource-type> <name>
+```
+
+Troubleshooting:
+1. Check pod status: kubectl get pods
+2. View pod events: kubectl describe pod <pod-name>
+3. Check logs: kubectl logs <pod-name>
+4. Verify service endpoints: kubectl get endpoints
+5. Test connectivity: kubectl exec -it <pod-name> -- curl <service-url>
+
+This guide covers the fundamental concepts and best practices for working with Kubernetes. For more advanced topics, refer to the official Kubernetes documentation. 

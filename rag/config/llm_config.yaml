@@ -1,0 +1,50 @@
+# LLM Runner Configuration
+# =======================
+
+# Default LLM backend to use
+# Options: "llama-cpp", "ollama", "transformers", "fallback"
+default_backend: "llama-cpp"
+
+# Model configurations for each backend
+models:
+  llama-cpp:
+    model_path: "llm_weights/mistral-7b-instruct.Q4_K_M.gguf"
+    n_ctx: 2048
+    n_threads: 4
+    n_gpu_layers: 0  # Set to > 0 for GPU acceleration
+    
+  ollama:
+    model_name: "mistral"
+    host: "http://localhost:11434"
+    
+  transformers:
+    model_path: "microsoft/DialoGPT-medium"
+    device: "auto"  # "cpu", "cuda", "auto"
+    torch_dtype: "float16"
+
+# Generation parameters
+generation:
+  max_tokens: 512
+  temperature: 0.7
+  top_p: 0.9
+  top_k: 40
+  repetition_penalty: 1.1
+
+# Prompt templates
+prompts:
+  qa_template: |
+    <s>[INST] You are a helpful AI assistant. Answer the question based on the provided context. If the context doesn't contain enough information to answer the question, say so.
+
+    Context:
+    {context}
+
+    Question: {question}
+
+    Answer: [/INST]
+
+  fallback_template: |
+    Based on the available information:
+
+    {context}
+
+    Note: This is a fallback response as the LLM is not available. 

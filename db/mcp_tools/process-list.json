@@ -1,0 +1,7 @@
+{
+  "name": "process-list",
+  "description": "List running processes with basic information",
+  "task_type": "command",
+  "command": "ps aux --sort=-%cpu | head -10",
+  "tags": ["system", "processes", "monitoring"]
+} 

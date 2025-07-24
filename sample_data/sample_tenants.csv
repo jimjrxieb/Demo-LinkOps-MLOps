@@ -1,0 +1,11 @@
+tenant_name,unit,status,lease_start,lease_end,rent_amount,email,phone
+John Smith,101,active,2024-01-01,2024-12-31,1500,john.smith@email.com,555-0101
+Jane Doe,102,active,2024-02-01,2024-11-30,1600,jane.doe@email.com,555-0102
+Bob Johnson,103,active,2024-03-01,2024-10-31,1400,bob.johnson@email.com,555-0103
+Alice Brown,104,active,2024-01-15,2024-12-15,1700,alice.brown@email.com,555-0104
+Charlie Wilson,105,active,2024-02-15,2024-11-15,1550,charlie.wilson@email.com,555-0105
+Diana Davis,106,active,2024-03-15,2024-10-15,1650,diana.davis@email.com,555-0106
+Edward Miller,107,active,2024-01-30,2024-12-30,1450,edward.miller@email.com,555-0107
+Fiona Garcia,108,active,2024-02-28,2024-11-28,1750,fiona.garcia@email.com,555-0108
+George Martinez,109,active,2024-03-31,2024-10-31,1350,george.martinez@email.com,555-0109
+Helen Rodriguez,110,active,2024-01-10,2024-12-10,1800,helen.rodriguez@email.com,555-0110 

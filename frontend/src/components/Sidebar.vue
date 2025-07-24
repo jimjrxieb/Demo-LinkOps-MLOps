@@ -70,14 +70,54 @@ const collapsed = ref(false)
 
 const menuItems = [
   {
-    title: 'Home',
+    title: 'Demo Dashboard',
     path: '/',
-    icon: '🏠'
+    icon: '🧠'
+  },
+  {
+    title: 'Task Processing',
+    path: '/demo',
+    icon: '🎯'
   },
   {
     title: 'Whis Pipeline',
     path: '/pipeline',
+    icon: '⚙️'
+  },
+  {
+    title: 'RAG Search',
+    path: '/rag-search',
+    icon: '🔍'
+  },
+  {
+    title: 'ML Builder',
+    path: '/ml-builder',
+    icon: '📊'
+  },
+  {
+    title: 'Model Creator',
+    path: '/model-creator',
+    icon: '🤖'
+  },
+  {
+    title: 'MCP Tool Creator',
+    path: '/mcp-tool-creator',
+    icon: '🔧'
+  },
+  {
+    title: 'Tool Executor',
+    path: '/execute-tool',
+    icon: '⚡'
+  },
+  {
+    title: 'HTC Feedback',
+    path: '/htc',
     icon: '🧠'
+  },
+  {
+    title: 'Reports',
+    path: '/reports',
+    icon: '📈'
   },
   {
     title: 'Orb Library',
@@ -85,24 +125,29 @@ const menuItems = [
     icon: '📚'
   },
   {
+    title: 'Document Q&A',
+    path: '/search-memory',
+    icon: '📄'
+  },
+  {
+    title: 'AI Feedback',
+    path: '/htc-feedback',
+    icon: '📝'
+  },
+  {
+    title: 'AI Keywords',
+    path: '/htc-prompt-editor',
+    icon: '📓'
+  },
+  {
+    title: 'Agent Builder',
+    path: '/agent-builder',
+    icon: '⚒️'
+  },
+  {
     title: 'Add API Keys',
     path: '/keys',
     icon: '🔑'
-  },
-  {
-    title: 'Demo RAG',
-    path: '/demo/rag',
-    icon: '🔍'
-  },
-  {
-    title: 'Demo Pipeline',
-    path: '/demo/pipeline',
-    icon: '⚙️'
-  },
-  {
-    title: 'ML Creator',
-    path: '/demo/ml-creator',
-    icon: '🤖'
   },
   {
     title: 'About Demo',

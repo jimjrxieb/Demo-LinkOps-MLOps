@@ -27,21 +27,65 @@ services:
       - ../ml-models:/app/ml-models
       - ../pipeline:/app/pipeline
       - ../rag:/app/rag
-      
+
       # Data persistence
       - demo_data:/app/data
       - demo_logs:/app/logs
       - demo_vectorstore:/app/rag/vectorstore
+      - demo_rag_memory:/app/rag/db
       - demo_models:/app/ml-models/model-creator/output
       - demo_agents:/app/ml-models/agent-creator/output
       - demo_pipeline:/app/pipeline/output
-      
+
       # Temporary directories
       - /tmp:/tmp
     networks:
       - demo-network
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ML Model Builder Service
+  model-builder:
+    build:
+      context: ../ml-models/model-creator
+    ports:
+      - "8600:8600"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ../ml-models/model-creator:/app
+      - demo_models:/app/output/models
+      - /tmp:/tmp
+    networks:
+      - demo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8600/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Agent Builder Service
+  agent-builder:
+    build:
+      context: ../ml-models/agent-creator
+    ports:
+      - "8700:8700"
+    environment:
+      - PYTHONPATH=/app
+    volumes:
+      - ../ml-models/agent-creator:/app
+      - demo_agents:/app/output/tools
+      - demo_llm_weights:/app/llm_weights
+      - /tmp:/tmp
+    networks:
+      - demo-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8700/health"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -58,9 +102,13 @@ volumes:
     driver: local
   demo_vectorstore:
     driver: local
+  demo_rag_memory:
+    driver: local
   demo_models:
     driver: local
   demo_agents:
     driver: local
+  demo_llm_weights:
+    driver: local
   demo_pipeline:
-    driver: local 
+    driver: local
