@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-pipeline
+  namespace: demo-linkops
+  labels:
+    app: demo-pipeline
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-pipeline
+  template:
+    metadata:
+      labels:
+        app: demo-pipeline
+    spec:
+      containers:
+      - name: pipeline
+        image: linksrobot/demo-linkops-pipeline:latest
+        ports:
+        - containerPort: 8003
+        envFrom:
+        - configMapRef:
+            name: demo-linkops-config
+        volumeMounts:
+        - name: pipeline-data
+          mountPath: /app/data
+        - name: input-data
+          mountPath: /app/input_data
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8003
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: pipeline-data
+        persistentVolumeClaim:
+          claimName: pipeline-data-pvc
+      - name: input-data
+        persistentVolumeClaim:
+          claimName: pipeline-input-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-pipeline
+  namespace: demo-linkops
+spec:
+  type: ClusterIP
+  selector:
+    app: demo-pipeline
+  ports:
+  - protocol: TCP
+    port: 8003
+    targetPort: 8003
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-data-pvc
+  namespace: demo-linkops
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pipeline-input-pvc
+  namespace: demo-linkops
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi

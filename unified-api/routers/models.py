@@ -308,7 +308,7 @@ def predict(model_name: str, payload: PredictRequest):
             if col in label_encoders:
                 try:
                     value = label_encoders[col].transform([str(value)])[0]
-                except:
+                except Exception:
                     raise HTTPException(
                         status_code=400,
                         detail=f"Invalid value '{value}' for categorical feature '{col}'",

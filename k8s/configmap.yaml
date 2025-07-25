@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: demo-linkops-config
+  namespace: demo-linkops
+data:
+  ENVIRONMENT: "demo"
+  DEMO_MODE: "true"
+  POSTGRES_DB: "linkops_demo"
+  POSTGRES_USER: "linkops"
+  RAG_SERVICE_URL: "http://demo-rag:8005"
+  ML_MODELS_SERVICE_URL: "http://demo-ml-models:8002"
+  PIPELINE_SERVICE_URL: "http://demo-pipeline:8003"
+  SYNC_ENGINE_SERVICE_URL: "http://demo-sync-engine:8004"
+  VITE_API_BASE_URL: "http://demo-unified-api:9000"

@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-ml-models
+  namespace: demo-linkops
+  labels:
+    app: demo-ml-models
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-ml-models
+  template:
+    metadata:
+      labels:
+        app: demo-ml-models
+    spec:
+      containers:
+      - name: ml-models
+        image: linksrobot/demo-linkops-ml-models:latest
+        ports:
+        - containerPort: 8002
+        envFrom:
+        - configMapRef:
+            name: demo-linkops-config
+        volumeMounts:
+        - name: models
+          mountPath: /app/models
+        - name: data
+          mountPath: /app/data
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8002
+          initialDelaySeconds: 30
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: models
+        persistentVolumeClaim:
+          claimName: ml-models-pvc
+      - name: data
+        persistentVolumeClaim:
+          claimName: ml-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: demo-ml-models
+  namespace: demo-linkops
+spec:
+  type: ClusterIP
+  selector:
+    app: demo-ml-models
+  ports:
+  - protocol: TCP
+    port: 8002
+    targetPort: 8002
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ml-models-pvc
+  namespace: demo-linkops
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ml-data-pvc
+  namespace: demo-linkops
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

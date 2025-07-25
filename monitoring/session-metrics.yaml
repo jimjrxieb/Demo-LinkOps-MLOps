@@ -1,0 +1,120 @@
+metrics:
+  # Session Activity Metrics
+  - name: session_login_attempts
+    type: counter
+    help: "Number of login attempts"
+    labels:
+      - status
+      - user_type
+
+  - name: session_refresh_attempts
+    type: counter
+    help: "Number of session refresh attempts"
+    labels:
+      - status
+      - user_type
+
+  - name: session_duration_seconds
+    type: histogram
+    help: "Distribution of session durations"
+    buckets: [300, 600, 900, 1200, 1500, 1800]  # 5min to 30min
+    labels:
+      - user_type
+
+  - name: active_sessions
+    type: gauge
+    help: "Current number of active sessions"
+    labels:
+      - user_type
+
+  # Security Metrics
+  - name: token_validation_failures
+    type: counter
+    help: "Number of token validation failures"
+    labels:
+      - reason
+      - token_type
+
+  - name: refresh_token_rotations
+    type: counter
+    help: "Number of refresh token rotations"
+    labels:
+      - status
+
+  # Warning Banner Metrics
+  - name: session_warnings_shown
+    type: counter
+    help: "Number of session expiry warnings shown"
+
+  - name: session_extensions
+    type: counter
+    help: "Number of manual session extensions"
+    labels:
+      - user_type
+
+alerts:
+  # Security Alerts
+  - name: high_token_validation_failures
+    expr: rate(token_validation_failures[5m]) > 10
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High rate of token validation failures"
+      description: "Token validation failures exceeding threshold"
+
+  - name: refresh_token_rotation_failures
+    expr: rate(refresh_token_rotations{status="failure"}[5m]) > 5
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High rate of refresh token rotation failures"
+      description: "Multiple refresh token rotation failures detected"
+
+  # User Experience Alerts
+  - name: high_session_expiry_rate
+    expr: rate(session_warnings_shown[30m]) > 20
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High rate of session expiry warnings"
+      description: "Many users seeing session expiry warnings"
+
+dashboards:
+  - name: session_overview
+    title: "Session Management Overview"
+    refresh: 30s
+    rows:
+      - title: "Active Sessions"
+        panels:
+          - title: "Current Active Sessions"
+            type: gauge
+            metric: active_sessions
+          - title: "Session Duration Distribution"
+            type: histogram
+            metric: session_duration_seconds
+
+      - title: "Session Activity"
+        panels:
+          - title: "Login Success Rate"
+            type: graph
+            metrics:
+              - expr: rate(session_login_attempts{status="success"}[5m])
+              - expr: rate(session_login_attempts{status="failure"}[5m])
+          - title: "Refresh Token Usage"
+            type: graph
+            metrics:
+              - expr: rate(refresh_token_rotations[5m])
+
+      - title: "Security Overview"
+        panels:
+          - title: "Token Validation Issues"
+            type: graph
+            metrics:
+              - expr: sum by (reason) (rate(token_validation_failures[5m]))
+          - title: "Session Extensions"
+            type: graph
+            metrics:
+              - expr: rate(session_extensions[5m]) 

@@ -110,9 +110,7 @@ async def quick_train_model(request: dict[str, Any]) -> TrainingResponse:
         }
 
         # Start training in background
-        asyncio.create_task(
-            quick_training_task(model_name, config, training_data)
-        )
+        asyncio.create_task(quick_training_task(model_name, config, training_data))
 
         return TrainingResponse(
             success=True,
@@ -180,9 +178,7 @@ async def retrain_model(request: dict[str, Any]) -> TrainingResponse:
         }
 
         # Start retraining in background
-        asyncio.create_task(
-            retraining_task(model_name, config, training_data)
-        )
+        asyncio.create_task(retraining_task(model_name, config, training_data))
 
         return TrainingResponse(
             success=True,
@@ -248,7 +244,7 @@ async def health_check() -> HealthCheckResponse:
                     active_deployments = len(
                         [d for d in deployments if d.get("status") == "active"]
                     )
-            except:
+            except Exception:
                 pass
 
         return HealthCheckResponse(
@@ -290,7 +286,7 @@ async def list_models() -> list[ModelInfo]:
                     try:
                         with open(metadata_file) as f:
                             metadata = json.load(f)
-                    except:
+                    except Exception:
                         pass
 
                 models.append(

@@ -4,6 +4,7 @@
 ├── DEMO-Tree.txt
 ├── MANAGER-CONFIRMATION-IMPLEMENTATION.md
 ├── Makefile
+├── PIPELINE_FIXES_SUMMARY.md
 ├── auto_runner.log
 ├── db
 │   ├── execution_logs.db
@@ -158,13 +159,13 @@
 │   ├── create-htpasswd.sh
 │   ├── dist
 │   │   ├── assets
-│   │   │   ├── index-D6QKePG0.js
-│   │   │   ├── index-D6QKePG0.js.map
-│   │   │   ├── index-RPDlWDuc.css
+│   │   │   ├── index-B-8aWSEP.css
+│   │   │   ├── index-Cocx1jCL.js
+│   │   │   ├── index-Cocx1jCL.js.map
 │   │   │   ├── utils-Dq7h7Pqt.js
 │   │   │   ├── utils-Dq7h7Pqt.js.map
-│   │   │   ├── vendor-wbHgyyZa.js
-│   │   │   └── vendor-wbHgyyZa.js.map
+│   │   │   ├── vendor-Cex9wGGI.js
+│   │   │   └── vendor-Cex9wGGI.js.map
 │   │   ├── audio
 │   │   │   └── arise-activation.mp3
 │   │   ├── index.html
@@ -364,8 +365,10 @@
 │   ├── test_mcp_schema.py
 │   └── test_sqlite_logger.py
 ├── sync_engine
+│   ├── Dockerfile
 │   ├── auto_embed.py
 │   ├── config.py
+│   ├── requirements.txt
 │   └── watcher.py
 ├── unified-api
 │   ├── Dockerfile
@@ -408,4 +411,4 @@
 │   └── test_unified_api.py
 └── vectorstore
 
-87 directories, 321 files
+87 directories, 324 files

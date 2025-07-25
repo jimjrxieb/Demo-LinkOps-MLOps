@@ -210,8 +210,19 @@ jobs:
         with:
           fetch-depth: 0  # Full history for better secret detection
 
+      - name: "Check GitGuardian API Key"
+        id: check-gitguardian
+        run: |
+          if [[ -n "${{ secrets.GITGUARDIAN_API_KEY }}" ]]; then
+            echo "gitguardian-available=true" >> $GITHUB_OUTPUT
+            echo "✅ GitGuardian API key is configured"
+          else
+            echo "gitguardian-available=false" >> $GITHUB_OUTPUT
+            echo "⚠️ GitGuardian API key not configured - skipping advanced secret scanning"
+          fi
+
       - name: "🛡 Scan with GitGuardian"
-        if: vars.GITGUARDIAN_API_KEY != '' || secrets.GITGUARDIAN_API_KEY != ''
+        if: steps.check-gitguardian.outputs.gitguardian-available == 'true'
         uses: GitGuardian/ggshield-action@v1.20.0
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
@@ -220,7 +231,7 @@ jobs:
         continue-on-error: true
 
       - name: "📊 GitGuardian Report Summary"
-        if: vars.GITGUARDIAN_API_KEY != '' || secrets.GITGUARDIAN_API_KEY != ''
+        if: steps.check-gitguardian.outputs.gitguardian-available == 'true'
         run: |
           echo "🛡️ GitGuardian secret scan completed"
           echo "🔍 Advanced secret detection performed"
@@ -228,7 +239,7 @@ jobs:
         continue-on-error: true
 
       - name: "📊 GitGuardian Not Configured"
-        if: vars.GITGUARDIAN_API_KEY == '' && secrets.GITGUARDIAN_API_KEY == ''
+        if: steps.check-gitguardian.outputs.gitguardian-available == 'false'
         run: |
           echo "⚠️ GitGuardian secret scan skipped (API key not configured)"
           echo "🔧 To enable GitGuardian scanning, add GITGUARDIAN_API_KEY secret"
@@ -550,6 +561,152 @@ jobs:
             git commit -m "chore: update version (local build) - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
           fi
           git push || echo "No push needed"
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    name: "End-to-End Tests"
+    needs: [docker-build-push]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Frontend Dependencies
+        run: |
+          cd frontend
+          npm ci
+
+      - name: Install Backend Dependencies
+        run: |
+          cd unified-api
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio httpx
+
+      - name: Install Playwright
+        run: |
+          cd frontend
+          npx playwright install --with-deps chromium
+
+      - name: Start Services
+        run: |
+          # Start backend
+          cd unified-api
+          python main.py &
+          echo $! > /tmp/backend.pid
+          
+          # Start frontend
+          cd ../frontend
+          npm run dev &
+          echo $! > /tmp/frontend.pid
+          
+          # Wait for services to be ready
+          sleep 10
+
+      - name: Run E2E Tests
+        env:
+          JWT_SECRET_KEY: "test-secret-key-for-ci"
+          JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+          JWT_REFRESH_TOKEN_EXPIRE_DAYS: "7"
+        run: |
+          cd frontend
+          npm run test:e2e
+
+      - name: Run Backend Tests
+        run: |
+          cd unified-api
+          pytest tests/
+
+      - name: Cleanup Services
+        if: always()
+        run: |
+          kill $(cat /tmp/backend.pid) || true
+          kill $(cat /tmp/frontend.pid) || true
+
+  security-tests:
+    runs-on: ubuntu-latest
+    name: "Security & Session Tests"
+    needs: [e2e-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install Security Tools
+        run: |
+          pip install bandit safety pytest-cov
+
+      - name: Run Bandit Security Scan
+        run: |
+          bandit -r unified-api/ -c .bandit
+          bandit -r unified-api/routers/auth.py --severity-level high -f json
+
+      - name: Check Dependencies
+        run: |
+          safety check
+
+      - name: Run Session-specific Tests
+        run: |
+          cd unified-api
+          pytest tests/test_auth.py --cov=routers.auth --cov-report=xml
+
+      - name: Upload Coverage
+        uses: actions/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: unified-api/coverage.xml
+
+  session-monitoring:
+    runs-on: ubuntu-latest
+    name: "Session Monitoring Setup"
+    needs: [security-tests]
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Monitoring Config
+        run: |
+          if [[ -f "monitoring/session-metrics.yaml" ]]; then
+            echo "✅ Session monitoring configuration found"
+            yamllint monitoring/session-metrics.yaml
+          else
+            echo "⚠️ No session monitoring configuration found"
+            echo "Consider adding monitoring/session-metrics.yaml for session tracking"
+          fi
+
+      - name: Check Cookie Security
+        run: |
+          echo "🔍 Checking cookie security settings..."
+          grep -r "set_cookie" unified-api/ | while read -r line; do
+            if [[ ! "$line" =~ "httponly=True" ]] || [[ ! "$line" =~ "secure=True" ]]; then
+              echo "⚠️ Warning: Cookie missing security flags: $line"
+              exit 1
+            fi
+          done
+
+      - name: Verify Token Configuration
+        run: |
+          echo "🔍 Checking token configuration..."
+          if grep -q "JWT_SECRET_KEY" .env.example && \
+             grep -q "JWT_ACCESS_TOKEN_EXPIRE_MINUTES" .env.example && \
+             grep -q "JWT_REFRESH_TOKEN_EXPIRE_DAYS" .env.example; then
+            echo "✅ Token configuration variables present"
+          else
+            echo "⚠️ Missing token configuration in .env.example"
+            exit 1
+          fi
 
   deploy-notify:
     runs-on: ubuntu-latest

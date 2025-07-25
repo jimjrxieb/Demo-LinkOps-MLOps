@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-rag
+  namespace: demo-linkops
+  labels:
+    app: demo-rag
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo-rag
+  template:
+    metadata:
+      labels:
+        app: demo-rag
+    spec:
+      containers:
+      - name: rag
+        image: linksrobot/demo-linkops-rag:latest
+        ports:
+        - containerPort: 8005
+        envFrom:
+        - configMapRef:
+            name: demo-linkops-config
+        volumeMounts:
+        - name: vectorstore
+          mountPath: /app/vectorstore
+        - name: data
+          mountPath: /app/data
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+          initialDelaySeconds: 15
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8005
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "500m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: vectorstore
+        persistentVolumeClaim:
+          claimName: rag-vectorstore-pvc
+      - name: data
+        persistentVolumeClaim:
+          claimName: rag-data-pvc 

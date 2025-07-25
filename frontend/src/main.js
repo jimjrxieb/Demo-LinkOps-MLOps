@@ -1,10 +1,22 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from './router';
-import pinia from './store';
-import './assets/tailwind.css';
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import router from './router'
+import { useMainStore } from './store/useMainStore'
 
-const app = createApp(App);
-app.use(router);
-app.use(pinia);
-app.mount('#app');
+// Create app instance
+const app = createApp(App)
+
+// Setup Pinia store
+const pinia = createPinia()
+app.use(pinia)
+
+// Setup router
+app.use(router)
+
+// Initialize the app
+app.mount('#app')
+
+// Initialize auth state
+const store = useMainStore()
+store.initializeAuth()

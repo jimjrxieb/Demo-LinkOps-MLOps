@@ -1,0 +1,59 @@
+# Default configuration values
+replicaCount: 1
+
+image:
+  frontend:
+    repository: demo-linkops-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  unifiedApi:
+    repository: demo-linkops-unified-api
+    tag: latest
+    pullPolicy: IfNotPresent
+  rag:
+    repository: demo-linkops-rag
+    tag: latest
+    pullPolicy: IfNotPresent
+  pipeline:
+    repository: demo-linkops-pipeline
+    tag: latest
+    pullPolicy: IfNotPresent
+  mlModels:
+    repository: demo-linkops-ml-models
+    tag: latest
+    pullPolicy: IfNotPresent
+  syncEngine:
+    repository: demo-linkops-sync-engine
+    tag: latest
+    pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  frontend:
+    port: 80
+  unifiedApi:
+    port: 8000
+  rag:
+    port: 8001
+  pipeline:
+    port: 8500
+  mlModels:
+    port: 8600
+
+ingress:
+  enabled: true
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  hosts:
+    - host: demo.local
+      paths:
+        - path: /
+          service: frontend
+          port: 80
+        - path: /api
+          service: unified-api
+          port: 8000
+        - path: /rag
+          service: rag
+          port: 8001
+  tls: [] 

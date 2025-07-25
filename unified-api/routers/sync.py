@@ -274,9 +274,11 @@ def get_watch_directory():
         return {
             "watch_directory": str(watch_dir),
             "exists": watch_dir.exists(),
-            "files": [f.name for f in watch_dir.iterdir() if f.is_file()]
-            if watch_dir.exists()
-            else [],
+            "files": (
+                [f.name for f in watch_dir.iterdir() if f.is_file()]
+                if watch_dir.exists()
+                else []
+            ),
         }
 
     except ImportError:

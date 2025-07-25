@@ -1,0 +1,66 @@
+# Docker Compose override for development
+# This file provides development-specific configurations
+
+services:
+  # Development overrides for faster iteration
+  unified-api:
+    volumes:
+      - ./unified-api:/app
+      - /app/__pycache__
+    environment:
+      - PYTHONPATH=/app
+      - FASTAPI_ENV=development
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "9000", "--reload"]
+
+  rag:
+    volumes:
+      - ./rag:/app
+      - /app/__pycache__
+      - ./rag/vectorstore:/app/vectorstore
+    environment:
+      - PYTHONPATH=/app
+      - FASTAPI_ENV=development
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8005", "--reload"]
+
+  ml-models:
+    volumes:
+      - ./ml-models:/app
+      - /app/__pycache__
+      - ./ml-models/models:/app/models
+    environment:
+      - PYTHONPATH=/app
+      - FASTAPI_ENV=development
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8002", "--reload"]
+
+  pipeline:
+    volumes:
+      - ./pipeline:/app
+      - /app/__pycache__
+      - ./pipeline/data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - FASTAPI_ENV=development
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8003", "--reload"]
+
+  sync-engine:
+    volumes:
+      - ./sync_engine:/app
+      - /app/__pycache__
+      - ./sync_engine/data:/app/data
+    environment:
+      - PYTHONPATH=/app
+      - FASTAPI_ENV=development
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8004", "--reload"]
+
+  frontend:
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    command: ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+
+  # Remove nginx in development to avoid conflicts
+  nginx:
+    profiles: ["production"]

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "demo-linkops.fullname" . }}-{{ .Values.serviceName | default "frontend" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "demo-linkops.name" . }}
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: {{ include "demo-linkops.name" . }}
+        component: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: "{{ .Values.image.frontend.repository }}:{{ .Values.image.frontend.tag }}"
+        imagePullPolicy: {{ .Values.image.frontend.pullPolicy }}
+        ports:
+        - containerPort: {{ .Values.service.frontend.port }} 

@@ -112,9 +112,11 @@ async def demo_status() -> dict[str, Any]:
             "status": "available" if demo_data_exists else "not_loaded",
             "demo_data_file": str(DEMO_CSV),
             "file_exists": demo_data_exists,
-            "message": "Demo data ready for sync"
-            if demo_data_exists
-            else "Demo data file not found",
+            "message": (
+                "Demo data ready for sync"
+                if demo_data_exists
+                else "Demo data file not found"
+            ),
         }
 
     except Exception as e:
