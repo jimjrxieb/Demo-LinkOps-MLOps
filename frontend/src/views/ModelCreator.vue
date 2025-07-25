@@ -120,6 +120,51 @@
           <span v-if="!isTraining">🚀 Train Model</span>
           <span v-else>🔄 Training... Please wait</span>
         </button>
+
+        <!-- Enhanced Training Options -->
+        <div class="training-options">
+          <button
+            :disabled="isTraining || !canTrain"
+            class="train-now-btn"
+            @click="trainNow"
+          >
+            ⚡ Train Now (Quick)
+          </button>
+
+          <button
+            :disabled="isTraining || !canTrain"
+            class="retrain-btn"
+            @click="retrainModel"
+          >
+            🔄 Retrain Existing
+          </button>
+        </div>
+
+        <!-- Advanced Training Settings -->
+        <div class="advanced-settings">
+          <h4>🔧 Advanced Settings</h4>
+          <div class="settings-grid">
+            <div class="setting-item">
+              <label>
+                <input v-model="advancedConfig.autoSync" type="checkbox" />
+                Enable Auto-Sync
+              </label>
+              <span class="setting-hint"
+                >Automatically retrain on new data</span
+              >
+            </div>
+            <div class="setting-item">
+              <label>
+                <input
+                  v-model="advancedConfig.includeDemoData"
+                  type="checkbox"
+                />
+                Include Demo Data
+              </label>
+              <span class="setting-hint">Use demo_data/ for training</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Training Progress -->
@@ -297,6 +342,12 @@ export default {
       features: [],
     });
 
+    // Advanced configuration
+    const advancedConfig = ref({
+      autoSync: false,
+      includeDemoData: true,
+    });
+
     // Training state
     const isTraining = ref(false);
     const trainingProgress = ref(0);
@@ -454,6 +505,101 @@ export default {
     const resetTraining = () => {
       trainingError.value = null;
       trainingResult.value = null;
+    };
+
+    // Enhanced training functions
+    const trainNow = async () => {
+      if (!canTrain.value) return;
+
+      isTraining.value = true;
+      trainingProgress.value = 0;
+      trainingStatus.value = 'Quick training mode...';
+      trainingResult.value = null;
+      trainingError.value = null;
+
+      try {
+        // Quick training with demo data if enabled
+        trainingProgress.value = 30;
+        trainingStatus.value = 'Loading demo data...';
+
+        const trainResponse = await fetch('/api/train-model/quick', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model_name: modelConfig.value.name || 'quick_model',
+            include_demo_data: advancedConfig.value.includeDemoData,
+            auto_sync: advancedConfig.value.autoSync,
+          }),
+        });
+
+        if (!trainResponse.ok) {
+          const errorData = await trainResponse.json();
+          throw new Error(errorData.detail || 'Quick training failed');
+        }
+
+        trainingProgress.value = 100;
+        trainingStatus.value = 'Quick training complete!';
+
+        const result = await trainResponse.json();
+        trainingResult.value = result;
+
+        // Reload model history
+        await loadModelHistory();
+      } catch (error) {
+        console.error('Quick training error:', error);
+        trainingError.value = error.message;
+      } finally {
+        isTraining.value = false;
+      }
+    };
+
+    const retrainModel = async () => {
+      if (!canTrain.value) return;
+
+      isTraining.value = true;
+      trainingProgress.value = 0;
+      trainingStatus.value = 'Retraining existing model...';
+      trainingResult.value = null;
+      trainingError.value = null;
+
+      try {
+        // Retrain existing model with new data
+        trainingProgress.value = 40;
+        trainingStatus.value = 'Loading existing model...';
+
+        const retrainResponse = await fetch('/api/train-model/retrain', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model_name: modelConfig.value.name,
+            include_demo_data: advancedConfig.value.includeDemoData,
+            auto_sync: advancedConfig.value.autoSync,
+          }),
+        });
+
+        if (!retrainResponse.ok) {
+          const errorData = await retrainResponse.json();
+          throw new Error(errorData.detail || 'Retraining failed');
+        }
+
+        trainingProgress.value = 100;
+        trainingStatus.value = 'Retraining complete!';
+
+        const result = await retrainResponse.json();
+        trainingResult.value = result;
+
+        // Reload model history
+        await loadModelHistory();
+      } catch (error) {
+        console.error('Retraining error:', error);
+        trainingError.value = error.message;
+      } finally {
+        isTraining.value = false;
+      }
     };
 
     const downloadSummary = () => {

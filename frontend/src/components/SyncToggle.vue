@@ -8,7 +8,7 @@
           <span class="status-text">{{ statusText }}</span>
         </div>
       </div>
-      
+
       <div class="toggle-controls">
         <label class="toggle-switch">
           <input
@@ -20,15 +20,21 @@
           />
           <span class="toggle-slider"></span>
         </label>
-        
+
         <div class="toggle-labels">
-          <span class="toggle-label">{{ enabled ? 'Enabled' : 'Disabled' }}</span>
+          <span class="toggle-label">{{
+            enabled ? 'Enabled' : 'Disabled'
+          }}</span>
           <span class="toggle-description">
-            {{ enabled ? 'Automatically process new files' : 'Manual processing only' }}
+            {{
+              enabled
+                ? 'Automatically process new files'
+                : 'Manual processing only'
+            }}
           </span>
         </div>
       </div>
-      
+
       <div v-if="enabled" class="sync-info">
         <div class="info-grid">
           <div class="info-item">
@@ -37,7 +43,9 @@
           </div>
           <div class="info-item">
             <span class="info-label">📄 Supported Files:</span>
-            <span class="info-value">{{ config.supported_extensions.join(', ') }}</span>
+            <span class="info-value">{{
+              config.supported_extensions.join(', ')
+            }}</span>
           </div>
           <div class="info-item">
             <span class="info-label">📊 Today Processed:</span>
@@ -49,7 +57,7 @@
           </div>
         </div>
       </div>
-      
+
       <div v-if="error" class="error-message">
         <span class="error-icon">⚠️</span>
         <span class="error-text">{{ error }}</span>
@@ -87,11 +95,10 @@ const fetchSetting = async () => {
   try {
     loading.value = true;
     error.value = null;
-    
+
     const response = await axios.get('/api/sync/setting');
     enabled.value = response.data.enabled;
     config.value = response.data.config || {};
-    
   } catch (err) {
     console.error('Failed to fetch sync setting:', err);
     error.value = 'Failed to load sync settings';
@@ -113,14 +120,13 @@ const toggleSync = async () => {
   try {
     loading.value = true;
     error.value = null;
-    
-    await axios.post('/api/sync/setting', { 
-      enabled: enabled.value 
+
+    await axios.post('/api/sync/setting', {
+      enabled: enabled.value,
     });
-    
+
     // Refresh stats after toggle
     await fetchStats();
-    
   } catch (err) {
     console.error('Failed to update sync setting:', err);
     error.value = 'Failed to update sync settings';
@@ -134,7 +140,7 @@ const toggleSync = async () => {
 const startStatsPolling = () => {
   // Fetch stats immediately
   fetchStats();
-  
+
   // Then poll every 30 seconds
   statsInterval = setInterval(fetchStats, 30000);
 };
@@ -238,8 +244,13 @@ onUnmounted(() => {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .toggle-controls {
@@ -275,7 +286,7 @@ onUnmounted(() => {
 
 .toggle-slider:before {
   position: absolute;
-  content: "";
+  content: '';
   height: 26px;
   width: 26px;
   left: 4px;
@@ -380,19 +391,19 @@ onUnmounted(() => {
     align-items: flex-start;
     gap: 0.5rem;
   }
-  
+
   .info-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .info-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
   }
-  
+
   .info-value {
     max-width: none;
   }
 }
-</style> 
+</style>

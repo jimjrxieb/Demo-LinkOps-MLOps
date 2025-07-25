@@ -1,0 +1,11 @@
+name,amount_due,property_address,due_date,status
+IronMan,2500,10880 Malibu Point,2024-01-15,overdue
+BlackWidow,1500,123 Red Room Blvd,2024-01-20,overdue
+Hulk,3000,742 Evergreen Terrace,2024-01-10,overdue
+Thor,2000,1 Asgard Palace,2024-01-25,overdue
+Hawkeye,1000,456 Archer Lane,2024-01-30,overdue
+CaptainAmerica,1800,789 Brooklyn Heights,2024-02-01,pending
+SpiderMan,1200,321 Queens Blvd,2024-02-05,pending
+BlackPanther,3500,1 Wakanda Way,2024-02-10,pending
+ScarletWitch,2200,555 Westview Ave,2024-02-15,pending
+Vision,2800,777 Mind Stone Dr,2024-02-20,pending 

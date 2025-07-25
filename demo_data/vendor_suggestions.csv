@@ -1,0 +1,16 @@
+contractor,quality_of_work,response_time,completion_time,cost,repaired,new_install,cost_threshold,emergency_work,warranty_available,insurance_verified,specialties,availability,estimated_cost,estimated_time
+Stark Industries,9.5,12.0,36.0,2500.0,False,True,1000.0,False,True,True,"HVAC,Electrical,Emergency",Available,2500.0,36.0
+Wayne Enterprises,9.2,8.0,24.0,2200.0,False,True,1000.0,False,True,True,"Plumbing,General,Maintenance",Available,2200.0,24.0
+Oscorp Industries,8.8,18.0,48.0,2800.0,True,False,1500.0,True,True,True,"HVAC,Plumbing,Emergency",Available,2800.0,48.0
+Parker Contracting,9.0,6.0,18.0,1900.0,False,True,800.0,False,True,True,"Electrical,General",Available,1900.0,18.0
+Daily Bugle Services,7.5,24.0,72.0,3200.0,True,False,2000.0,True,False,True,"General,Maintenance",Limited,3200.0,72.0
+Stark Security Systems,9.8,4.0,12.0,3500.0,False,True,2000.0,False,True,True,"Security,Electrical,Smart Home",Available,3500.0,12.0
+Wayne Manor Maintenance,9.3,10.0,30.0,2400.0,False,True,1200.0,False,True,True,"General,Landscaping,Maintenance",Available,2400.0,30.0
+Oscorp Emergency,8.5,2.0,8.0,4500.0,False,False,3000.0,True,True,True,"Emergency,HVAC,Plumbing",Available,4500.0,8.0
+Parker Electrical Co,9.1,14.0,42.0,2100.0,False,True,1000.0,False,True,True,"Electrical,Lighting,Smart Home",Available,2100.0,42.0
+Bugle Maintenance,7.8,20.0,60.0,2800.0,True,False,1500.0,False,False,True,"General,Cleaning,Maintenance",Limited,2800.0,60.0
+Stark Innovations,9.7,8.0,24.0,3800.0,False,True,2500.0,False,True,True,"Smart Home,Automation,Electrical",Available,3800.0,24.0
+Wayne Property Services,9.4,12.0,36.0,2600.0,False,True,1200.0,False,True,True,"Property Management,General,Maintenance",Available,2600.0,36.0
+Oscorp Solutions,8.9,16.0,48.0,3000.0,True,False,1800.0,True,True,True,"HVAC,Plumbing,General",Available,3000.0,48.0
+Parker & Associates,9.2,10.0,30.0,2300.0,False,True,1100.0,False,True,True,"Electrical,Plumbing,General",Available,2300.0,30.0
+Bugle Quick Fix,7.2,30.0,90.0,3500.0,True,False,2000.0,True,False,False,"Emergency,General",Limited,3500.0,90.0 

@@ -341,7 +341,7 @@ class TenantSyncEngine:
                 )
                 conn.commit()
                 conn.close()
-            except:
+            except Exception:
                 pass
 
             return False

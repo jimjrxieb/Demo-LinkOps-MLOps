@@ -44,7 +44,7 @@ async def upload_csv(file: UploadFile = File(...)):
         if file.size and file.size > MAX_FILE_SIZE:
             raise HTTPException(
                 status_code=400,
-                detail=f"File too large. Maximum size: {MAX_FILE_SIZE // (1024*1024)}MB",
+                detail=f"File too large. Maximum size: {MAX_FILE_SIZE // (1024 * 1024)}MB",
             )
 
         logger.info(f"📤 Processing CSV upload: {file.filename}")

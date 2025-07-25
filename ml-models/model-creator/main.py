@@ -193,7 +193,8 @@ async def list_models():
 
 @app.post("/predict")
 async def predict(
-    model_id: str = Form(...), features: str = Form(...)  # JSON string of features
+    model_id: str = Form(...),
+    features: str = Form(...),  # JSON string of features
 ):
     """
     Make predictions using a trained model.

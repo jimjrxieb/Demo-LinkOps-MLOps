@@ -138,7 +138,7 @@ def demo_workflow():
     print("\n3️⃣ Executing tools...")
 
     for tool in tools:
-        print(f"\n{'='*50}")
+        print(f"\n{'=' * 50}")
         result = execute_tool(tool["name"])
 
         if result and result["success"]:
@@ -149,7 +149,7 @@ def demo_workflow():
         time.sleep(1)  # Brief pause between executions
 
     # Step 4: Demonstrate command validation
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("4️⃣ Testing command validation...")
 
     test_commands = [
@@ -167,7 +167,7 @@ def demo_workflow():
             print(f"      Blocked: {validation['error']}")
 
     # Step 5: Show command analysis
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("5️⃣ Command analysis examples...")
 
     for cmd in ["echo 'test'", "ls -la /tmp", "grep -r 'pattern' ."]:
@@ -177,7 +177,7 @@ def demo_workflow():
         print(f"      Complexity: {info['estimated_complexity']}")
         print(f"      Length: {info['command_length']} chars")
 
-    print(f"\n{'='*50}")
+    print(f"\n{'=' * 50}")
     print("🎉 Demo completed successfully!")
     print("\n📋 What you've seen:")
     print("   ✅ MCP tool creation and storage")

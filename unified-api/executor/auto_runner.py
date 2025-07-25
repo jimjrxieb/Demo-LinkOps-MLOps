@@ -182,7 +182,7 @@ class AutoRunner:
             # Kill the process group if timeout
             try:
                 os.killpg(os.getpgid(result.pid), signal.SIGTERM)
-            except:
+            except Exception:
                 pass
             execution_time = (datetime.datetime.now() - start_time).total_seconds()
             return (

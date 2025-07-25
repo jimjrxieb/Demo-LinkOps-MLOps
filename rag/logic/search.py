@@ -240,7 +240,6 @@ class RAGSearchEngine:
     def _load_index(self):
         """Load existing FAISS index and documents."""
         try:
-
             with open(self.vectorstore_path, "rb") as f:
                 data = pickle.load(f)
 
@@ -634,7 +633,7 @@ class RAGSearchEngine:
                         content=doc.page_content,
                         score=1.0 - (i * 0.1),  # Approximate score
                         metadata={
-                            "source": f"Document {i+1}",
+                            "source": f"Document {i + 1}",
                             "chunk_id": i,
                             "llm_source": True,
                         },

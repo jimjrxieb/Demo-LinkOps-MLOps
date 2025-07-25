@@ -282,7 +282,7 @@ async def get_system_status():
                         tool_data = json.load(f)
                         if tool_data.get("auto", False):
                             auto_tools.append(tool_data["name"])
-                except:
+                except Exception:
                     continue
 
         status = {

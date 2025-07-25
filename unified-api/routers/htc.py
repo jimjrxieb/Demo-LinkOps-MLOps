@@ -4,7 +4,6 @@ import shutil
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import List
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, UploadFile
 from pydantic import BaseModel
@@ -211,7 +210,7 @@ async def health_check():
 # Retrain endpoints
 @router.post("/htc/retrain", status_code=202)
 async def retrain_htc(
-    background_tasks: BackgroundTasks, files: List[UploadFile] = UploadFile(...)
+    background_tasks: BackgroundTasks, files: list[UploadFile] = UploadFile(...)
 ):
     """
     Upload feedback files and trigger a background retrain job.
@@ -240,7 +239,7 @@ async def retrain_htc(
     return {"job_id": job_id, "status": "queued"}
 
 
-@router.get("/htc/history", response_model=List[RetrainRecord])
+@router.get("/htc/history", response_model=list[RetrainRecord])
 def get_retrain_history(limit: int = 50):
     """
     List recent retrain jobs.

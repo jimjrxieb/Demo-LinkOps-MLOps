@@ -1,14 +1,15 @@
-name: LinkOps CI
+name: DEMO-LinkOps CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
-    branches: [main]
+    branches: [main, develop]
 
 env:
   PYTHON_VERSION: "3.11"
   NODE_VERSION: "20"
+  DOCKER_REGISTRY: "linksrobot"
 
 permissions:
   contents: write  # For ArgoCD updates
@@ -294,6 +295,7 @@ jobs:
           echo "✅ ml-models/ (ML model services)"
           echo "✅ pipeline/ (Data processing pipeline)"
           echo "✅ rag/ (RAG search service)"
+          echo "✅ sync_engine/ (Data synchronization service)"
           echo ""
           echo "Checking Dockerfiles exist:"
           for service in frontend unified-api ml-models pipeline rag; do

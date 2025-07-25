@@ -271,7 +271,7 @@ class LoRATrainer:
                 json.dump(results, f, indent=2)
 
             logger.info("🎉 LoRA training completed successfully!")
-            logger.info(f"   Training time: {training_time/3600:.2f} hours")
+            logger.info(f"   Training time: {training_time / 3600:.2f} hours")
             logger.info(f"   Final loss: {train_result.training_loss:.4f}")
             logger.info(f"   Model saved to: {self.output_dir}")
 

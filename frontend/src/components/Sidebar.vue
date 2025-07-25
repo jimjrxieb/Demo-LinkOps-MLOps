@@ -73,6 +73,11 @@ const menuItems = [
     icon: '🔍',
   },
   {
+    title: 'Demo Sync',
+    path: '/demo-sync',
+    icon: '🔄',
+  },
+  {
     title: 'ML Builder',
     path: '/ml-builder',
     icon: '📊',

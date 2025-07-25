@@ -86,14 +86,14 @@ class CSVTEmbedder:
             rent_formatted = rent_amount
 
         content = f"""Tenant Record:
-- Name: {row.get('tenant_name', 'N/A')}
-- Unit: {row.get('unit', 'N/A')}
-- Status: {row.get('status', 'N/A')}
+- Name: {row.get("tenant_name", "N/A")}
+- Unit: {row.get("unit", "N/A")}
+- Status: {row.get("status", "N/A")}
 - Lease Start: {lease_start}
 - Lease End: {lease_end}
 - Monthly Rent: {rent_formatted}
-- Email: {row.get('email', 'N/A')}
-- Phone: {row.get('phone', 'N/A')}
+- Email: {row.get("email", "N/A")}
+- Phone: {row.get("phone", "N/A")}
 
 This tenant record contains information about the rental unit, lease terms, and contact details."""
 

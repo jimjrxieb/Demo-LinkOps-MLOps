@@ -27,6 +27,7 @@ import AutoRunner from '../views/AutoRunner.vue';
 import MCPExecution from '../views/MCPExecution.vue';
 import MCPLogs from '../views/MCPLogs.vue';
 import LLMChat from '../views/LLMChat.vue';
+import DemoSync from '../views/DemoSync.vue';
 
 // Import demo components
 import DemoRAG from '../components/DemoRAG.vue';
@@ -153,6 +154,11 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: SyncDashboard,
+  },
+  {
+    path: '/demo-sync',
+    name: 'DemoSync',
+    component: DemoSync,
   },
   {
     path: '/tool-executor',

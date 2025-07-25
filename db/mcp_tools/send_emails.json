@@ -1,0 +1,8 @@
+{
+  "name": "send_emails",
+  "description": "Send reminder emails to delinquent tenants (demo)",
+  "task_type": "communication",
+  "command": "echo 'Sending reminder emails to tenants...'",
+  "tags": ["email", "demo"],
+  "auto": true
+} 

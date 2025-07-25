@@ -260,6 +260,39 @@
                             >
                           </div>
                         </div>
+
+                        <!-- Demo Q&A follow-up -->
+                        <div
+                          v-if="message.content === fallbackMessage"
+                          class="mt-4"
+                        >
+                          <router-link
+                            to="/demo-sync"
+                            class="inline-block bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                          >
+                            ⏳ Go Sync Demo Data
+                          </router-link>
+                        </div>
+
+                        <div
+                          v-else-if="shouldShowSendEmails(message)"
+                          class="mt-4 space-y-2"
+                        >
+                          <button
+                            @click="confirmAndSendEmails"
+                            :disabled="emailLoading"
+                            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                          >
+                            {{
+                              emailLoading
+                                ? 'Sending…'
+                                : '📧 Send Reminder Emails'
+                            }}
+                          </button>
+                          <div v-if="emailResult" class="text-green-600">
+                            {{ emailResult }}
+                          </div>
+                        </div>
                       </div>
                     </div>
                     <div class="text-xs text-gray-500 mt-1">
@@ -510,6 +543,26 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, nextTick } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+
+// Demo fallback prompt exactly matches:
+const fallbackMessage =
+  "I don't have data on this topic. Go to the HTC tab and upload files to demo_data/ and press Sync.";
+
+// track if we've synced demo data
+const demoSynced = ref(false);
+
+// email sending state
+const emailLoading = ref(false);
+const emailResult = ref('');
+
+// computed: only show send-emails if we have data and asked about delinquencies
+const shouldShowSendEmails = (message) => {
+  const isSynced = localStorage.getItem('demoSynced') === 'true';
+  const hasDelinquentQuery =
+    message.userQuery && message.userQuery.toLowerCase().includes('delinqu');
+  return isSynced && hasDelinquentQuery && message.content !== fallbackMessage;
+};
 
 // Reactive data
 const messages = ref([]);
@@ -587,6 +640,7 @@ const sendMessage = async (messageText = null) => {
     timestamp: new Date().toISOString(),
     sources: [],
     queryInfo: null,
+    userQuery: text, // Track the user's query for demo logic
   };
 
   messages.value.push(userMessage, aiMessage);
@@ -635,6 +689,9 @@ const sendMessage = async (messageText = null) => {
         },
       };
     }
+
+    // check if we hit fallback or actual data
+    demoSynced.value = localStorage.getItem('demoSynced') === 'true';
 
     await nextTick();
     scrollToBottom();
@@ -739,6 +796,31 @@ const formatTime = (timestamp) => {
     });
   } catch {
     return 'Unknown';
+  }
+};
+
+// Send reminder emails via preloaded MCP tool
+const sendEmails = async () => {
+  emailLoading.value = true;
+  emailResult.value = '';
+  try {
+    await axios.post('/api/mcp-tool/execute/send_emails');
+    emailResult.value = 'Fake emails sent! Task complete.';
+  } catch (e) {
+    emailResult.value = 'Failed to send emails.';
+  } finally {
+    emailLoading.value = false;
+  }
+};
+
+// Wrap with a confirmation dialog:
+const confirmAndSendEmails = () => {
+  if (
+    confirm(
+      'Are you sure you want to send reminder emails to these delinquent tenants? (Requires manager approval)'
+    )
+  ) {
+    sendEmails();
   }
 };
 

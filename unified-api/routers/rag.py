@@ -82,6 +82,18 @@ async def query_rag(request: QueryRequest):
                 status_code=503, detail="RAG search engine not available"
             )
 
+        # Check if any documents are loaded
+        doc_count = search_engine.get_document_count()
+        if doc_count == 0:
+            return {
+                "query": request.query,
+                "results": [],
+                "total_results": 0,
+                "timestamp": datetime.now().isoformat(),
+                "message": "I don't have data on this topic. Go to the HTC tab and upload files to demo_data/ and press Sync.",
+                "demo_mode": True,
+            }
+
         # Perform search using the actual service
         search_results = search_engine.search(
             query=request.query,
@@ -124,6 +136,21 @@ async def query_rag_with_llm(request: QueryRequest):
                 status_code=503, detail="RAG search engine not available"
             )
 
+        # Check if any documents are loaded
+        doc_count = search_engine.get_document_count()
+        if doc_count == 0:
+            return {
+                "query": request.query,
+                "answer": "I don't have data on this topic. Go to the HTC tab and upload files to demo_data/ and press Sync.",
+                "sources": [],
+                "citations": [],
+                "total_sources": 0,
+                "llm_used": False,
+                "model": "demo_mode",
+                "timestamp": datetime.now().isoformat(),
+                "demo_mode": True,
+            }
+
         # Perform LLM-enhanced search
         llm_result = search_engine.search_with_llm(
             query=request.query,
@@ -162,7 +189,7 @@ async def query_rag_with_llm(request: QueryRequest):
 
 @router.get("/memory-log")
 async def get_rag_memory_log(
-    limit: int = Query(50, description="Number of entries to return")
+    limit: int = Query(50, description="Number of entries to return"),
 ):
     """Get recent RAG memory log entries."""
     try:

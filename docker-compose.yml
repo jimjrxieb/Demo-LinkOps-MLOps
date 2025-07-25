@@ -1,17 +1,19 @@
 version: '3.8'
 
 services:
-  # Unified API Service
+  # Unified API Service - Main orchestration service
   unified-api:
     build:
       context: ./unified-api
       dockerfile: Dockerfile
-    container_name: ai-box-api
+    image: ${DOCKER_REGISTRY:-linksrobot}/demo-unified-api:${IMAGE_TAG:-latest}
+    container_name: demo-linkops-api
     env_file:
       - .env
     environment:
       - PYTHONPATH=/app
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=unified-api
     ports:
       - "${API_PORT:-8000}:8000"
     volumes:
@@ -26,19 +28,21 @@ services:
       start_period: 40s
     restart: unless-stopped
     networks:
-      - ai-box-network
+      - demo-linkops-network
 
-  # Frontend Service
+  # Frontend Service - Vue.js Interface
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: ai-box-ui
+    image: ${DOCKER_REGISTRY:-linksrobot}/demo-frontend:${IMAGE_TAG:-latest}
+    container_name: demo-linkops-ui
     env_file:
       - .env
     environment:
       - VITE_API_URL=http://localhost:${API_PORT:-8000}
       - NODE_ENV=production
+      - SERVICE_NAME=frontend
     ports:
       - "${FRONTEND_PORT:-3000}:3000"
     volumes:
@@ -49,20 +53,22 @@ services:
         condition: service_healthy
     restart: unless-stopped
     networks:
-      - ai-box-network
+      - demo-linkops-network
 
-  # RAG Service
+  # RAG Service - Search & Retrieval
   rag:
     build:
       context: ./rag
       dockerfile: Dockerfile
-    container_name: ai-box-rag
+    image: ${DOCKER_REGISTRY:-linksrobot}/demo-rag:${IMAGE_TAG:-latest}
+    container_name: demo-linkops-rag
     env_file:
       - .env
     environment:
       - PYTHONPATH=/app
       - RAG_MODEL=${RAG_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=rag
     volumes:
       - ./db:/app/db
       - ./rag_data:/app/rag_data
@@ -73,19 +79,69 @@ services:
       - unified-api
     restart: unless-stopped
     networks:
-      - ai-box-network
+      - demo-linkops-network
 
-  # Sync Engine Service
-  sync-engine:
+  # ML Models Service - Machine Learning Operations
+  ml-models:
     build:
-      context: ./sync_engine
+      context: ./ml-models
       dockerfile: Dockerfile
-    container_name: ai-box-sync
+    image: ${DOCKER_REGISTRY:-linksrobot}/demo-ml-models:${IMAGE_TAG:-latest}
+    container_name: demo-linkops-ml
     env_file:
       - .env
     environment:
       - PYTHONPATH=/app
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=ml-models
+    volumes:
+      - ./db:/app/db
+      - ./ml-models:/app
+    ports:
+      - "8002:8002"
+    depends_on:
+      - unified-api
+    restart: unless-stopped
+    networks:
+      - demo-linkops-network
+
+  # Pipeline Service - Data Processing
+  pipeline:
+    build:
+      context: ./pipeline
+      dockerfile: Dockerfile
+    image: ${DOCKER_REGISTRY:-linksrobot}/demo-pipeline:${IMAGE_TAG:-latest}
+    container_name: demo-linkops-pipeline
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=pipeline
+    volumes:
+      - ./db:/app/db
+      - ./pipeline:/app
+    ports:
+      - "8003:8003"
+    depends_on:
+      - unified-api
+    restart: unless-stopped
+    networks:
+      - demo-linkops-network
+
+  # Sync Engine Service - Data Synchronization (Optional)
+  sync-engine:
+    build:
+      context: ./sync_engine
+      dockerfile: Dockerfile
+    image: ${DOCKER_REGISTRY:-linksrobot}/demo-sync-engine:${IMAGE_TAG:-latest}
+    container_name: demo-linkops-sync
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - SERVICE_NAME=sync-engine
     volumes:
       - ./db:/app/db
       - ./sync_engine:/app
@@ -95,7 +151,9 @@ services:
       - rag
     restart: unless-stopped
     networks:
-      - ai-box-network
+      - demo-linkops-network
+    profiles:
+      - sync
 
   # Optional: Redis for caching (uncomment if needed)
   # redis:
@@ -143,15 +201,19 @@ services:
   #     - ai-box-network
 
 networks:
-  ai-box-network:
+  demo-linkops-network:
     driver: bridge
+    name: demo-linkops-network
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.30.0.0/16
 
 volumes:
   # Uncomment if using Redis
-  # redis_data: {}
+  # redis_data:
   
   # Uncomment if using PostgreSQL
-  # postgres_data: {} 
+  # postgres_data:
+  
+  # Placeholder to avoid empty volumes section
+  demo_volumes_placeholder: 

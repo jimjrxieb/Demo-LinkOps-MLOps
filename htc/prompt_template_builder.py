@@ -383,25 +383,25 @@ def validate_terms(terms: list[TermVariation]) -> list[str]:
     for i, term in enumerate(terms):
         # Check term name
         if not term.term or not term.term.strip():
-            errors.append(f"Term {i+1}: Term name is required")
+            errors.append(f"Term {i + 1}: Term name is required")
         elif len(term.term.strip()) < 2:
-            errors.append(f"Term {i+1}: Term name must be at least 2 characters")
+            errors.append(f"Term {i + 1}: Term name must be at least 2 characters")
 
         # Check variations
         if not term.variations:
-            errors.append(f"Term {i+1}: At least one variation is required")
+            errors.append(f"Term {i + 1}: At least one variation is required")
         elif len(term.variations) > 10:
-            errors.append(f"Term {i+1}: Maximum 10 variations allowed")
+            errors.append(f"Term {i + 1}: Maximum 10 variations allowed")
         else:
             # Check individual variations
             for j, variation in enumerate(term.variations):
                 if not variation or not variation.strip():
                     errors.append(
-                        f"Term {i+1}, Variation {j+1}: Variation cannot be empty"
+                        f"Term {i + 1}, Variation {j + 1}: Variation cannot be empty"
                     )
                 elif len(variation.strip()) < 2:
                     errors.append(
-                        f"Term {i+1}, Variation {j+1}: Variation must be at least 2 characters"
+                        f"Term {i + 1}, Variation {j + 1}: Variation must be at least 2 characters"
                     )
 
     return errors

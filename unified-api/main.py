@@ -22,10 +22,12 @@ from routers import (
     agent_builder,
     agent_creator,
     auto_runner,
+    demo_sync,
     executor,
     htc,
     mcp_tool,
     ml_builder,
+    ml_models,
     model_creator,
     pipeline,
     rag,
@@ -87,6 +89,10 @@ app.include_router(executor.router, prefix="/executor", tags=["MCP Tool Executor
 app.include_router(htc.router, prefix="/htc", tags=["HTC Document Memory"])
 
 app.include_router(auto_runner.router, prefix="/auto-runner", tags=["Auto Tool Runner"])
+
+app.include_router(demo_sync.router, tags=["Demo Sync"])
+
+app.include_router(ml_models.router, tags=["Enhanced ML Models"])
 
 
 # Global middleware for request logging

@@ -1,1 +1,411 @@
+.
+├── DEMO-QA-IMPLEMENTATION.md
+├── DEMO-SYNC-IMPLEMENTATION.md
+├── DEMO-Tree.txt
+├── MANAGER-CONFIRMATION-IMPLEMENTATION.md
+├── Makefile
+├── auto_runner.log
+├── db
+│   ├── execution_logs.db
+│   ├── logs
+│   │   ├── echo_test__20250724_184656.json
+│   │   ├── execution_history.json
+│   │   ├── system_status__20250724_203605.json
+│   │   └── test_tool__20250724_203605.json
+│   └── mcp_tools
+│       ├── dangerous_chmod.json
+│       ├── dangerous_dd.json
+│       ├── dangerous_reboot.json
+│       ├── dangerous_rm.json
+│       ├── dangerous_shutdown.json
+│       ├── echo_test.json
+│       ├── hello-world.json
+│       ├── interactive_confirm.json
+│       ├── interactive_prompt.json
+│       ├── interactive_read.json
+│       ├── manual_tool.json
+│       ├── network-info.json
+│       ├── network_info.json
+│       ├── process-list.json
+│       ├── sample-tool.json
+│       ├── send_emails.json
+│       ├── system-info.json
+│       ├── system-status.json
+│       ├── system_status.json
+│       ├── test_tool.json
+│       └── timeout_test.json
+├── demo_data
+│   ├── delinquency.csv
+│   └── vendor_suggestions.csv
+├── docker
+│   ├── deploy-demo.sh
+│   └── overrides
+│       ├── compose.demo.yml
+│       └── compose.override.yml
+├── docker-compose.yml
+├── docs
+│   ├── ARISE-README.md
+│   ├── CD-README.md
+│   ├── CHECKLIST-CI-CD.md
+│   ├── CHECKLIST-CURSOR-PLATFORM-READINESS.md
+│   ├── CHECKLIST-HELM-ARGO-GITOPS.md
+│   ├── CHECKLIST-K8S-NETWORKING.md
+│   ├── CHECKLIST-SECURITY.md
+│   ├── CI-CD-SETUP.md
+│   ├── COMPLETE-PIPELINE-README.md
+│   ├── DEPLOYMENT_AUTOMATION.md
+│   ├── NEW-SAHDOW.MD
+│   ├── PLATFORM_COMPLETE.md
+│   ├── README.md
+│   ├── api
+│   ├── architecture
+│   │   ├── DATA_FLOW_DIAGRAM.md
+│   │   ├── WHIS_MICROSERVICES_REFACTOR.md
+│   │   └── WHIS_TRAINING_SYSTEM.md
+│   ├── archive
+│   │   ├── ml
+│   │   │   ├── routes.py
+│   │   │   └── train_model.py
+│   │   ├── ml_models
+│   │   │   ├── models
+│   │   │   ├── test_trainer.py
+│   │   │   └── trainer.py
+│   │   ├── structure
+│   │   │   ├── -Tree.txt
+│   │   │   ├── DEMO-Tree.txt
+│   │   │   └── NEW-STRUCTURE.txt
+│   │   └── train_model.py
+│   ├── demo-build
+│   │   ├── AUTO-RUNNER-FRONTEND-INTEGRATION.md
+│   │   ├── AUTO-RUNNER-IMPLEMENTATION.md
+│   │   ├── DEPLOYABLE-PACKAGE-IMPLEMENTATION.md
+│   │   ├── DEPLOYMENT-INSTRUCTIONS.md
+│   │   ├── DEPLOYMENT-READY.md
+│   │   ├── FRONTEND-EXECUTION-INTEGRATION.md
+│   │   ├── FRONTEND-EXECUTION-SUMMARY.md
+│   │   ├── HTC-TRAINER-UI-ENHANCEMENT.md
+│   │   ├── MCP-LOGS-IMPLEMENTATION.md
+│   │   ├── MCP-TOOL-EXECUTOR-README.md
+│   │   ├── MCP-TOOL-SCHEMA-IMPLEMENTATION.md
+│   │   ├── MODEL-CREATOR-POLISH-IMPLEMENTATION.md
+│   │   ├── OPTIMIZED-STRUCTURE.md
+│   │   ├── RAG-CHAT-IMPLEMENTATION.md
+│   │   ├── RAG-INTEGRATION.md
+│   │   ├── README-HTC-CSV-RAG.md
+│   │   ├── README-HTC-FEEDBACK-LOOP.md
+│   │   ├── README-HTC-PROMPT-EDITOR.md
+│   │   ├── README-MULTI-QUERY.md
+│   │   ├── README-OCI.md
+│   │   ├── README-TENANT-SYNC.md
+│   │   ├── README.md
+│   │   ├── SQLITE-LOGGING-README.md
+│   │   └── SYNC-ENGINE-AUTO-EMBED-IMPLEMENTATION.md
+│   ├── demo-flow.md
+│   ├── deployment
+│   │   ├── CI-CD-SETUP.md
+│   │   ├── ENVIRONMENT_SETUP.md
+│   │   ├── GITHUB_ACTIONS_SETUP.md
+│   │   ├── GITHUB_ACTIONS_SUMMARY.md
+│   │   ├── GITHUB_SECRETS_SETUP.md
+│   │   ├── IGRIS_DEPLOYMENT_READY.md
+│   │   ├── README_COMPOSE_MODES.md
+│   │   ├── SECURE_DEPLOYMENT_GUIDE.md
+│   │   └── shadow-agents.md
+│   ├── development
+│   │   └── README.md
+│   ├── examples
+│   │   ├── company_documents.txt
+│   │   ├── data_processing.txt
+│   │   ├── employee_data.csv
+│   │   ├── kubernetes_basics.txt
+│   │   ├── mlops_pipeline.txt
+│   │   ├── sample_tenants.csv
+│   │   ├── security_policy.txt
+│   │   └── tenant_management.txt
+│   ├── guides
+│   ├── legacy
+│   │   ├── archive
+│   │   │   ├── CONFIGURATION.md
+│   │   │   ├── DEMO_CHANGES.md
+│   │   │   ├── DOCKER-COMPOSE-BUILD.md
+│   │   │   ├── INTERVIEW_PLATFORM_ENGINEER.md
+│   │   │   ├── PHASE3_4_SUMMARY.md
+│   │   │   ├── demo-db
+│   │   │   ├── deployment-fixed.md
+│   │   │   ├── docker-hub-setup.md
+│   │   │   └── phase5-6-summary.md
+│   │   └── backups.tar.gz
+│   ├── sec-cve
+│   │   ├── CVE-2023-4863-RESPONSE.md
+│   │   ├── CVE-2025-6556-RESPONSE.md
+│   │   ├── SECURITY-ACTIONS.md
+│   │   ├── SECURITY-FIXES-JULY-2025.md
+│   │   └── SECURITY-SUMMARY-JULY-2025.md
+│   └── services
+│       ├── auditguard
+│       │   └── README.md
+│       ├── igris-logic
+│       │   └── README.md
+│       ├── james-logic
+│       │   └── README.md
+│       ├── katie-logic
+│       │   └── README.md
+│       └── whis-webscraper
+│           └── README.md
+├── frontend
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── create-htpasswd.sh
+│   ├── dist
+│   │   ├── assets
+│   │   │   ├── index-D6QKePG0.js
+│   │   │   ├── index-D6QKePG0.js.map
+│   │   │   ├── index-RPDlWDuc.css
+│   │   │   ├── utils-Dq7h7Pqt.js
+│   │   │   ├── utils-Dq7h7Pqt.js.map
+│   │   │   ├── vendor-wbHgyyZa.js
+│   │   │   └── vendor-wbHgyyZa.js.map
+│   │   ├── audio
+│   │   │   └── arise-activation.mp3
+│   │   ├── index.html
+│   │   └── manifest.json
+│   ├── docker-entrypoint.sh
+│   ├── env.production
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── index.js
+│   ├── nginx.conf.template
+│   ├── npm-install.sh
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── postcss.config.cjs
+│   ├── postcss.config.js
+│   ├── public
+│   │   ├── audio
+│   │   │   └── arise-activation.mp3
+│   │   └── manifest.json
+│   ├── src
+│   │   ├── App.vue
+│   │   ├── assets
+│   │   │   ├── holo-theme.css
+│   │   │   └── tailwind.css
+│   │   ├── components
+│   │   │   ├── DemoPipeline.vue
+│   │   │   ├── DemoRAG.vue
+│   │   │   ├── DropZone.vue
+│   │   │   ├── MLCreator.vue
+│   │   │   ├── ModelPredictor.vue
+│   │   │   ├── OrbResultCard.vue
+│   │   │   ├── Sidebar.vue
+│   │   │   ├── SyncToggle.vue
+│   │   │   └── WhisPipeline.vue
+│   │   ├── main.js
+│   │   ├── router
+│   │   │   └── index.js
+│   │   ├── store
+│   │   │   ├── index.js
+│   │   │   ├── train_model.js
+│   │   │   ├── useAgentStore.js
+│   │   │   ├── useMainStore.js
+│   │   │   ├── useTaskStore.js
+│   │   │   └── useUserStore.js
+│   │   ├── utils
+│   │   │   └── uploadToServer.js
+│   │   └── views
+│   │       ├── AboutDemo.vue
+│   │       ├── AddKeys.vue
+│   │       ├── AgentBuilder.vue
+│   │       ├── AgentCreator.vue
+│   │       ├── AutoRunner.vue
+│   │       ├── Demo.vue
+│   │       ├── DemoDashboard.vue
+│   │       ├── DemoSync.vue
+│   │       ├── HTC.vue
+│   │       ├── HTCFeedback.vue
+│   │       ├── HTCPromptEditor.vue
+│   │       ├── LLMChat.vue
+│   │       ├── MCPExecution.vue
+│   │       ├── MCPLogs.vue
+│   │       ├── MCPToolCreator.vue
+│   │       ├── MLBuilder.vue
+│   │       ├── MLCreator.vue
+│   │       ├── ModelCreator.vue
+│   │       ├── OrbLibrary.vue
+│   │       ├── RAGSearch.vue
+│   │       ├── Reports.vue
+│   │       ├── SearchMemory.vue
+│   │       ├── SyncDashboard.vue
+│   │       ├── ToolExecutor.vue
+│   │       └── WhisPipeline.vue
+│   ├── tailwind.config.js
+│   ├── tsconfig.json
+│   ├── validate-configs.js
+│   └── vite.config.js
+├── htc
+│   ├── feedback_collector.py
+│   ├── prompt_template_builder.py
+│   ├── routes
+│   │   ├── feedback.py
+│   │   └── prompt_editor.py
+│   └── train_lora.py
+├── ml-models
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── agent-creator
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── api
+│   │   │   └── __init__.py
+│   │   ├── logic
+│   │   │   └── agent_generator.py
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   ├── sample_tasks.md
+│   │   ├── templates
+│   │   │   ├── assistant.py.jinja
+│   │   │   ├── base_agent.py.jinja
+│   │   │   ├── commandbot.py.jinja
+│   │   │   ├── taskbot.py.jinja
+│   │   │   └── workflow.py.jinja
+│   │   └── test_agent_creator.py
+│   ├── api
+│   │   ├── __init__.py
+│   │   ├── agent_generator.py
+│   │   ├── main.py
+│   │   └── model_generator.py
+│   ├── config.yaml
+│   ├── model-creator
+│   │   ├── Dockerfile
+│   │   ├── README.md
+│   │   ├── api
+│   │   │   └── __init__.py
+│   │   ├── logic
+│   │   │   └── model_generator.py
+│   │   ├── main.py
+│   │   ├── requirements.txt
+│   │   ├── sample_data
+│   │   │   └── employee_data.csv
+│   │   ├── templates
+│   │   │   ├── classification_model.py.jinja
+│   │   │   ├── clustering_model.py.jinja
+│   │   │   ├── regression_model.py.jinja
+│   │   │   ├── task_evaluator_agent.py.jinja
+│   │   │   └── time_series_model.py.jinja
+│   │   └── test_model_creator.py
+│   ├── requirements.txt
+│   └── templates
+│       ├── agent_backlog_scanner.py.jinja
+│       ├── classification_model.py.jinja
+│       └── regression_model.py.jinja
+├── pipeline
+│   ├── Dockerfile
+│   ├── README.md
+│   ├── __init__.py
+│   ├── data-intake
+│   │   └── intake.py
+│   ├── data-sanitize
+│   │   └── sanitizer.py
+│   ├── embedder
+│   │   └── embedder.py
+│   ├── main.py
+│   ├── requirements.txt
+│   └── trainer
+│       └── trainer.py
+├── pyproject.toml
+├── rag
+│   ├── Dockerfile
+│   ├── README-UPLOAD-QA.md
+│   ├── README.md
+│   ├── chroma_db
+│   ├── config
+│   │   ├── llm_config.yaml
+│   │   └── rag_config.json
+│   ├── embed.py
+│   ├── llm_weights
+│   │   ├── README.md
+│   │   └── mistral.gguf
+│   ├── loaders
+│   │   ├── csv_embedder.py
+│   │   └── delinquency_embedder.py
+│   ├── logic
+│   │   ├── __init__.py
+│   │   ├── embed.py
+│   │   ├── llm_runner.py
+│   │   └── search.py
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── routes
+│   │   └── upload_csv.py
+│   ├── schemas
+│   │   ├── __init__.py
+│   │   └── query_schema.py
+│   ├── tests
+│   │   ├── test
+│   │   │   ├── __init__.py
+│   │   │   └── test_query.py
+│   │   ├── test_multi_query.py
+│   │   └── test_upload_qa.py
+│   └── uploads
+├── releases
+│   └── demo-linkops-v1.0.0.tar.gz
+├── scripts
+│   ├── README.md
+│   ├── auto-runner.service
+│   ├── bin
+│   │   ├── deploy-simple.sh
+│   │   ├── install-auto-runner-service.sh
+│   │   ├── package.sh
+│   │   ├── start-auto-runner.sh
+│   │   ├── start-tenant-sync.sh
+│   │   └── start-upload-qa.sh
+│   ├── demo_executor_workflow.py
+│   ├── test_auto_runner.py
+│   ├── test_executor.py
+│   ├── test_mcp_schema.py
+│   └── test_sqlite_logger.py
+├── sync_engine
+│   ├── auto_embed.py
+│   ├── config.py
+│   └── watcher.py
+├── unified-api
+│   ├── Dockerfile
+│   ├── db
+│   │   ├── execution_logs
+│   │   └── mcp_tools
+│   ├── executor
+│   │   └── auto_runner.py
+│   ├── logic
+│   │   ├── __init__.py
+│   │   ├── execution_logger.py
+│   │   └── executor.py
+│   ├── main.py
+│   ├── rag
+│   │   └── uploads
+│   ├── requirements-light.txt
+│   ├── requirements.txt
+│   ├── routers
+│   │   ├── __init__.py
+│   │   ├── agent_builder.py
+│   │   ├── agent_creator.py
+│   │   ├── auto_runner.py
+│   │   ├── demo_sync.py
+│   │   ├── executor.py
+│   │   ├── htc.py
+│   │   ├── mcp_tool.py
+│   │   ├── ml_builder.py
+│   │   ├── ml_models.py
+│   │   ├── model_creator.py
+│   │   ├── models.py
+│   │   ├── pipeline.py
+│   │   ├── rag.py
+│   │   ├── status.py
+│   │   ├── sync.py
+│   │   ├── tenant_sync.py
+│   │   └── train_model.py
+│   ├── schemas
+│   │   ├── mcp_tool_schema.py
+│   │   └── models.py
+│   └── test_unified_api.py
+└── vectorstore
 
+87 directories, 321 files

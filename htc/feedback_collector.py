@@ -210,7 +210,7 @@ class FeedbackCollector:
             timestamp = datetime.fromisoformat(entry.get("timestamp", ""))
             days_ago = datetime.now().timestamp() - (days * 24 * 60 * 60)
             return timestamp.timestamp() > days_ago
-        except:
+        except Exception:
             return False
 
     def build_training_dataset(self) -> str:
