@@ -10,12 +10,11 @@ fine-tuning based on user corrections.
 
 import json
 import logging
-import os
 import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 # Add parent directory to path for imports
 sys.path.append(str(Path(__file__).parent))
@@ -55,7 +54,7 @@ class LoRATrainer:
         if not self.model_path.exists():
             raise FileNotFoundError(f"Model file not found: {self.model_path}")
 
-        logger.info(f"🧠 LoRA Trainer initialized")
+        logger.info("🧠 LoRA Trainer initialized")
         logger.info(f"   Model: {self.model_path}")
         logger.info(f"   Output: {self.output_dir}")
 
@@ -76,7 +75,7 @@ class LoRATrainer:
             dataset_path = collector.build_training_dataset()
 
             # Read and validate the dataset
-            with open(dataset_path, "r", encoding="utf-8") as f:
+            with open(dataset_path, encoding="utf-8") as f:
                 content = f.read()
 
             # Count examples
@@ -94,7 +93,7 @@ class LoRATrainer:
             logger.error(f"❌ Failed to prepare training data: {e}")
             raise
 
-    def create_training_config(self, dataset_path: str) -> Dict[str, Any]:
+    def create_training_config(self, dataset_path: str) -> dict[str, Any]:
         """
         Create training configuration.
 
@@ -106,7 +105,7 @@ class LoRATrainer:
         """
         try:
             # Count examples in dataset
-            with open(dataset_path, "r", encoding="utf-8") as f:
+            with open(dataset_path, encoding="utf-8") as f:
                 content = f.read()
             examples = [ex for ex in content.split("\n\n") if ex.strip()]
 
@@ -147,7 +146,7 @@ class LoRATrainer:
             logger.error(f"❌ Failed to create training config: {e}")
             raise
 
-    def train_lora(self, dataset_path: str) -> Dict[str, Any]:
+    def train_lora(self, dataset_path: str) -> dict[str, Any]:
         """
         Train LoRA model using the prepared dataset.
 
@@ -203,7 +202,7 @@ class LoRATrainer:
                 return self._fallback_training(dataset_path, config)
 
             # Create LoRA configuration
-            peft_config = LoraConfig(
+            LoraConfig(
                 task_type=TaskType.CAUSAL_LM,
                 r=config["lora_r"],
                 lora_alpha=config["lora_alpha"],
@@ -295,8 +294,8 @@ class LoRATrainer:
             raise
 
     def _fallback_training(
-        self, dataset_path: str, config: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, dataset_path: str, config: dict[str, Any]
+    ) -> dict[str, Any]:
         """
         Fallback training method when full training dependencies aren't available.
 
@@ -359,7 +358,7 @@ class LoRATrainer:
                     self.tokenizer = tokenizer
                     self.max_length = max_length
 
-                    with open(file_path, "r", encoding="utf-8") as f:
+                    with open(file_path, encoding="utf-8") as f:
                         content = f.read()
 
                     self.examples = [
@@ -416,7 +415,7 @@ class LoRATrainer:
         except Exception as e:
             logger.error(f"❌ Failed to update feedback status: {e}")
 
-    def get_training_status(self) -> Dict[str, Any]:
+    def get_training_status(self) -> dict[str, Any]:
         """
         Get current training status.
 
@@ -436,7 +435,7 @@ class LoRATrainer:
             # Check for recent training results
             results_path = self.output_dir / "training_results.json"
             if results_path.exists():
-                with open(results_path, "r") as f:
+                with open(results_path) as f:
                     status["training_results"] = json.load(f)
                     status["last_training"] = status["training_results"].get(
                         "completion_time"
@@ -445,7 +444,7 @@ class LoRATrainer:
             # Check for training config
             config_path = self.output_dir / "training_config.json"
             if config_path.exists():
-                with open(config_path, "r") as f:
+                with open(config_path) as f:
                     status["training_config"] = json.load(f)
 
             return status
@@ -455,7 +454,7 @@ class LoRATrainer:
             return {"error": str(e)}
 
 
-def train_lora_model() -> Dict[str, Any]:
+def train_lora_model() -> dict[str, Any]:
     """
     Convenience function to train LoRA model.
 
@@ -481,7 +480,7 @@ def train_lora_model() -> Dict[str, Any]:
         raise
 
 
-def get_training_status() -> Dict[str, Any]:
+def get_training_status() -> dict[str, Any]:
     """
     Get LoRA training status.
 
@@ -509,7 +508,7 @@ if __name__ == "__main__":
     try:
         # Check training status
         status = get_training_status()
-        print(f"📊 Training Status:")
+        print("📊 Training Status:")
         print(f"   Model exists: {status.get('model_exists', False)}")
         print(f"   Output directory: {status.get('output_dir', 'N/A')}")
         print(f"   Last training: {status.get('last_training', 'Never')}")
@@ -518,7 +517,7 @@ if __name__ == "__main__":
         print("\n🚀 Starting LoRA training...")
         results = train_lora_model()
 
-        print(f"\n✅ Training completed!")
+        print("\n✅ Training completed!")
         print(f"   Success: {results.get('training_successful', False)}")
         print(f"   Time: {results.get('training_time_hours', 0):.2f} hours")
         print(f"   Final loss: {results.get('final_loss', 'N/A')}")

@@ -1,24 +1,16 @@
 <template>
-  <div
-    class="sidebar"
-    :class="{ 'sidebar-collapsed': collapsed }"
-  >
+  <div class="sidebar" :class="{ 'sidebar-collapsed': collapsed }">
     <!-- Sidebar Header -->
     <div class="sidebar-header">
       <div class="logo-container">
-        <div class="logo-icon">
-          🛡️
-        </div>
-        <div
-          v-if="!collapsed"
-          class="logo-text"
-        >
+        <div class="logo-icon">🛡️</div>
+        <div v-if="!collapsed" class="logo-text">
           <h3>LinkOps</h3>
           <p>DevSecOps Demo</p>
         </div>
       </div>
-      <button 
-        class="collapse-btn" 
+      <button
+        class="collapse-btn"
         :title="collapsed ? 'Expand' : 'Collapse'"
         @click="toggleCollapse"
       >
@@ -30,21 +22,15 @@
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
       <ul class="nav-list">
-        <li
-          v-for="item in menuItems"
-          :key="item.path"
-        >
-          <router-link 
-            :to="item.path" 
+        <li v-for="item in menuItems" :key="item.path">
+          <router-link
+            :to="item.path"
             class="nav-item"
-            :class="{ 'active': $route.path === item.path }"
+            :class="{ active: $route.path === item.path }"
             :title="collapsed ? item.title : ''"
           >
             <span class="nav-icon">{{ item.icon }}</span>
-            <span
-              v-if="!collapsed"
-              class="nav-text"
-            >{{ item.title }}</span>
+            <span v-if="!collapsed" class="nav-text">{{ item.title }}</span>
           </router-link>
         </li>
       </ul>
@@ -54,111 +40,128 @@
     <div class="sidebar-footer">
       <div class="demo-status">
         <span class="status-dot" />
-        <span
-          v-if="!collapsed"
-          class="status-text"
-        >Demo Mode</span>
+        <span v-if="!collapsed" class="status-text">Demo Mode</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-const collapsed = ref(false)
+const collapsed = ref(false);
 
 const menuItems = [
   {
     title: 'Demo Dashboard',
     path: '/',
-    icon: '🧠'
+    icon: '🧠',
   },
   {
     title: 'Task Processing',
     path: '/demo',
-    icon: '🎯'
+    icon: '🎯',
   },
   {
     title: 'Whis Pipeline',
     path: '/pipeline',
-    icon: '⚙️'
+    icon: '⚙️',
   },
   {
     title: 'RAG Search',
     path: '/rag-search',
-    icon: '🔍'
+    icon: '🔍',
   },
   {
     title: 'ML Builder',
     path: '/ml-builder',
-    icon: '📊'
+    icon: '📊',
   },
   {
     title: 'Model Creator',
     path: '/model-creator',
-    icon: '🤖'
+    icon: '🤖',
   },
   {
     title: 'MCP Tool Creator',
     path: '/mcp-tool-creator',
-    icon: '🔧'
+    icon: '🔧',
   },
   {
     title: 'Tool Executor',
     path: '/execute-tool',
-    icon: '⚡'
+    icon: '⚡',
+  },
+  {
+    title: 'Auto Runner',
+    path: '/auto-runner',
+    icon: '🚀',
+  },
+  {
+    title: 'MCP Execution',
+    path: '/mcp-execution',
+    icon: '🛠️',
+  },
+  {
+    title: 'Execution Logs',
+    path: '/mcp-logs',
+    icon: '🗒️',
+  },
+  {
+    title: 'AI Chat',
+    path: '/ai-chat',
+    icon: '💬',
   },
   {
     title: 'HTC Feedback',
     path: '/htc',
-    icon: '🧠'
+    icon: '🧠',
   },
   {
     title: 'Reports',
     path: '/reports',
-    icon: '📈'
+    icon: '📈',
   },
   {
     title: 'Orb Library',
     path: '/orbs',
-    icon: '📚'
+    icon: '📚',
   },
   {
     title: 'Document Q&A',
     path: '/search-memory',
-    icon: '📄'
+    icon: '📄',
   },
   {
     title: 'AI Feedback',
     path: '/htc-feedback',
-    icon: '📝'
+    icon: '📝',
   },
   {
     title: 'AI Keywords',
     path: '/htc-prompt-editor',
-    icon: '📓'
+    icon: '📓',
   },
   {
     title: 'Agent Builder',
     path: '/agent-builder',
-    icon: '⚒️'
+    icon: '⚒️',
   },
   {
     title: 'Add API Keys',
     path: '/keys',
-    icon: '🔑'
+    icon: '🔑',
   },
   {
     title: 'About Demo',
     path: '/about',
-    icon: 'ℹ️'
-  }
-]
+    icon: 'ℹ️',
+  },
+];
 
 const toggleCollapse = () => {
-  collapsed.value = !collapsed.value
-}
+  collapsed.value = !collapsed.value;
+};
 </script>
 
 <style scoped>
@@ -310,7 +313,8 @@ const toggleCollapse = () => {
 }
 
 @keyframes pulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
   50% {
@@ -323,9 +327,9 @@ const toggleCollapse = () => {
   .sidebar {
     transform: translateX(-100%);
   }
-  
+
   .sidebar.mobile-open {
     transform: translateX(0);
   }
 }
-</style> 
+</style>

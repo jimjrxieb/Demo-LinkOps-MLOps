@@ -11,7 +11,7 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -32,7 +32,7 @@ class DocumentEmbedder:
         self.model = None
         self.embedding_dimension = 384  # Default for all-MiniLM-L6-v2
 
-        logger.info(f"📄 Document embedder initialized")
+        logger.info("📄 Document embedder initialized")
         logger.info(f"   Model: {self.model_name}")
         logger.info(f"   Dimension: {self.embedding_dimension}")
 
@@ -56,8 +56,8 @@ class DocumentEmbedder:
         file_path: str,
         chunk_size: int = 1000,
         chunk_overlap: int = 200,
-        metadata: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        metadata: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Embed a document file into the vector store.
 
@@ -82,7 +82,7 @@ class DocumentEmbedder:
                 raise FileNotFoundError(f"File not found: {file_path}")
 
             # Read file content
-            with open(file_path_obj, "r", encoding="utf-8") as f:
+            with open(file_path_obj, encoding="utf-8") as f:
                 text = f.read()
 
             # Split text into chunks
@@ -122,7 +122,7 @@ class DocumentEmbedder:
 
     def _split_text_into_chunks(
         self, text: str, chunk_size: int, chunk_overlap: int
-    ) -> List[str]:
+    ) -> list[str]:
         """
         Split text into overlapping chunks.
 
@@ -170,9 +170,9 @@ class DocumentEmbedder:
 
     def _save_to_vectorstore(
         self,
-        chunks: List[str],
+        chunks: list[str],
         embeddings: np.ndarray,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ):
         """
         Save chunks and embeddings to the vector store.
@@ -259,8 +259,8 @@ class DocumentEmbedder:
         text: str,
         chunk_size: int = 1000,
         chunk_overlap: int = 200,
-        metadata: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        metadata: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Embed text directly into the vector store.
 
@@ -317,8 +317,8 @@ class DocumentEmbedder:
             raise
 
     def embed_batch(
-        self, file_paths: List[str], chunk_size: int = 1000, chunk_overlap: int = 200
-    ) -> List[Dict[str, Any]]:
+        self, file_paths: list[str], chunk_size: int = 1000, chunk_overlap: int = 200
+    ) -> list[dict[str, Any]]:
         """
         Embed multiple files in batch.
 
@@ -344,7 +344,7 @@ class DocumentEmbedder:
 
         return results
 
-    def get_embedding_info(self, text: str) -> Dict[str, Any]:
+    def get_embedding_info(self, text: str) -> dict[str, Any]:
         """
         Get information about embedding a text without saving it.
 
@@ -374,7 +374,7 @@ class DocumentEmbedder:
             raise
 
 
-def embed_file(file_path: str) -> Dict[str, Any]:
+def embed_file(file_path: str) -> dict[str, Any]:
     """
     Convenience function to embed a file.
 
@@ -396,11 +396,11 @@ if __name__ == "__main__":
     # Create example text file
     example_text = """
     The zero trust model is a security framework that requires all users to be authenticated and authorized before accessing any resources.
-    
+
     Machine learning is a subset of artificial intelligence that enables computers to learn without being explicitly programmed.
-    
+
     Docker is a platform for developing, shipping, and running applications in containers.
-    
+
     Kubernetes is an open-source container orchestration platform for automating deployment, scaling, and management of containerized applications.
     """
 

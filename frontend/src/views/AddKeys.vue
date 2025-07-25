@@ -4,21 +4,21 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🔑 API Key Management
-          </h2>
+          <h2 class="card-title">🔑 API Key Management</h2>
           <p class="text-gray-600">
-            Configure AI API keys to enable enhanced features and real AI processing
+            Configure AI API keys to enable enhanced features and real AI
+            processing
           </p>
         </div>
         <div class="card-body">
           <div class="demo-notice">
-            <div class="notice-icon">
-              🎯
-            </div>
+            <div class="notice-icon">🎯</div>
             <div class="notice-content">
               <h4>Demo Mode Active</h4>
-              <p>Currently running in demo mode with simulated responses. Add API keys to enable real AI processing.</p>
+              <p>
+                Currently running in demo mode with simulated responses. Add API
+                keys to enable real AI processing.
+              </p>
             </div>
           </div>
         </div>
@@ -29,45 +29,40 @@
     <div class="keys-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">
-            Configure API Keys
-          </h3>
+          <h3 class="card-title">Configure API Keys</h3>
         </div>
         <div class="card-body">
-          <form
-            class="keys-form"
-            @submit.prevent="saveKeys"
-          >
+          <form class="keys-form" @submit.prevent="saveKeys">
             <div class="form-row">
               <div class="form-group">
                 <label class="form-label">
                   <span class="label-icon">🤖</span>
                   OpenAI API Key
                 </label>
-                <input 
-                  v-model="apiKeys.openai" 
-                  type="password" 
-                  class="form-input" 
+                <input
+                  v-model="apiKeys.openai"
+                  type="password"
+                  class="form-input"
                   placeholder="sk-..."
                   :disabled="isDemoMode"
-                >
+                />
                 <p class="form-help">
                   Used for GPT-4 task processing and code generation
                 </p>
               </div>
-              
+
               <div class="form-group">
                 <label class="form-label">
                   <span class="label-icon">🧠</span>
                   Grok API Key
                 </label>
-                <input 
-                  v-model="apiKeys.grok" 
-                  type="password" 
-                  class="form-input" 
+                <input
+                  v-model="apiKeys.grok"
+                  type="password"
+                  class="form-input"
                   placeholder="grok_..."
                   :disabled="isDemoMode"
-                >
+                />
                 <p class="form-help">
                   Used for advanced reasoning and complex task analysis
                 </p>
@@ -80,30 +75,30 @@
                   <span class="label-icon">🔍</span>
                   Anthropic API Key
                 </label>
-                <input 
-                  v-model="apiKeys.anthropic" 
-                  type="password" 
-                  class="form-input" 
+                <input
+                  v-model="apiKeys.anthropic"
+                  type="password"
+                  class="form-input"
                   placeholder="sk-ant-..."
                   :disabled="isDemoMode"
-                >
+                />
                 <p class="form-help">
                   Used for Claude-based reasoning and analysis
                 </p>
               </div>
-              
+
               <div class="form-group">
                 <label class="form-group">
                   <span class="label-icon">⚡</span>
                   Custom Endpoint
                 </label>
-                <input 
-                  v-model="apiKeys.customEndpoint" 
-                  type="url" 
-                  class="form-input" 
+                <input
+                  v-model="apiKeys.customEndpoint"
+                  type="url"
+                  class="form-input"
                   placeholder="https://api.example.com/v1"
                   :disabled="isDemoMode"
-                >
+                />
                 <p class="form-help">
                   Custom API endpoint for specialized services
                 </p>
@@ -111,17 +106,17 @@
             </div>
 
             <div class="form-actions">
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 class="btn btn-primary"
                 :disabled="isDemoMode"
               >
                 <span class="btn-icon">💾</span>
                 Save API Keys
               </button>
-              
-              <button 
-                type="button" 
+
+              <button
+                type="button"
                 class="btn btn-secondary"
                 :disabled="isDemoMode"
                 @click="clearKeys"
@@ -129,9 +124,9 @@
                 <span class="btn-icon">🗑️</span>
                 Clear All Keys
               </button>
-              
-              <button 
-                type="button" 
+
+              <button
+                type="button"
                 class="btn btn-success"
                 :disabled="isDemoMode || !hasAnyKey"
                 @click="testConnection"
@@ -140,9 +135,10 @@
                 Test Connection
               </button>
             </div>
-            
+
             <p class="text-sm text-blue-300 mt-2 italic">
-              Add your API key to unlock full LLM-powered pipeline experience (via Grok or OpenAI).
+              Add your API key to unlock full LLM-powered pipeline experience
+              (via Grok or OpenAI).
             </p>
           </form>
         </div>
@@ -153,75 +149,45 @@
     <div class="status-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">
-            Connection Status
-          </h3>
+          <h3 class="card-title">Connection Status</h3>
         </div>
         <div class="card-body">
           <div class="status-grid">
             <div class="status-item">
-              <div class="status-icon">
-                🤖
-              </div>
+              <div class="status-icon">🤖</div>
               <div class="status-info">
-                <div class="status-name">
-                  OpenAI
-                </div>
-                <div
-                  class="status-value"
-                  :class="getStatusClass('openai')"
-                >
+                <div class="status-name">OpenAI</div>
+                <div class="status-value" :class="getStatusClass('openai')">
                   {{ getStatusText('openai') }}
                 </div>
               </div>
             </div>
-            
+
             <div class="status-item">
-              <div class="status-icon">
-                🧠
-              </div>
+              <div class="status-icon">🧠</div>
               <div class="status-info">
-                <div class="status-name">
-                  Grok
-                </div>
-                <div
-                  class="status-value"
-                  :class="getStatusClass('grok')"
-                >
+                <div class="status-name">Grok</div>
+                <div class="status-value" :class="getStatusClass('grok')">
                   {{ getStatusText('grok') }}
                 </div>
               </div>
             </div>
-            
+
             <div class="status-item">
-              <div class="status-icon">
-                🔍
-              </div>
+              <div class="status-icon">🔍</div>
               <div class="status-info">
-                <div class="status-name">
-                  Anthropic
-                </div>
-                <div
-                  class="status-value"
-                  :class="getStatusClass('anthropic')"
-                >
+                <div class="status-name">Anthropic</div>
+                <div class="status-value" :class="getStatusClass('anthropic')">
                   {{ getStatusText('anthropic') }}
                 </div>
               </div>
             </div>
-            
+
             <div class="status-item">
-              <div class="status-icon">
-                ⚡
-              </div>
+              <div class="status-icon">⚡</div>
               <div class="status-info">
-                <div class="status-name">
-                  Custom
-                </div>
-                <div
-                  class="status-value"
-                  :class="getStatusClass('custom')"
-                >
+                <div class="status-name">Custom</div>
+                <div class="status-value" :class="getStatusClass('custom')">
                   {{ getStatusText('custom') }}
                 </div>
               </div>
@@ -235,49 +201,46 @@
     <div class="instructions-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">
-            📖 Getting Started
-          </h3>
+          <h3 class="card-title">📖 Getting Started</h3>
         </div>
         <div class="card-body">
           <div class="instructions-grid">
             <div class="instruction-item">
-              <div class="instruction-number">
-                1
-              </div>
+              <div class="instruction-number">1</div>
               <div class="instruction-content">
                 <h4>Get API Keys</h4>
-                <p>Sign up for OpenAI, Grok, or Anthropic to get your API keys</p>
+                <p>
+                  Sign up for OpenAI, Grok, or Anthropic to get your API keys
+                </p>
               </div>
             </div>
-            
+
             <div class="instruction-item">
-              <div class="instruction-number">
-                2
-              </div>
+              <div class="instruction-number">2</div>
               <div class="instruction-content">
                 <h4>Add Keys Securely</h4>
-                <p>Enter your API keys above. They're stored locally in your browser</p>
+                <p>
+                  Enter your API keys above. They're stored locally in your
+                  browser
+                </p>
               </div>
             </div>
-            
+
             <div class="instruction-item">
-              <div class="instruction-number">
-                3
-              </div>
+              <div class="instruction-number">3</div>
               <div class="instruction-content">
                 <h4>Test Connection</h4>
                 <p>Verify your keys work by testing the connection</p>
               </div>
             </div>
-            
+
             <div class="instruction-item">
-              <div class="instruction-number">
-                4
-              </div>
+              <div class="instruction-number">4</div>
               <div class="instruction-content">
                 <h4>Start Using AI</h4>
-                <p>Go to the Home page and submit tasks for real AI processing</p>
+                <p>
+                  Go to the Home page and submit tasks for real AI processing
+                </p>
               </div>
             </div>
           </div>
@@ -288,51 +251,59 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue';
 
 const apiKeys = ref({
   openai: '',
   grok: '',
   anthropic: '',
-  customEndpoint: ''
-})
+  customEndpoint: '',
+});
 
-const isDemoMode = ref(true) // Always demo mode for now
+const isDemoMode = ref(true); // Always demo mode for now
 const connectionStatus = ref({
   openai: 'demo',
   grok: 'demo',
   anthropic: 'demo',
-  custom: 'demo'
-})
+  custom: 'demo',
+});
 
 const hasAnyKey = computed(() => {
-  return Object.values(apiKeys.value).some(key => key.trim() !== '')
-})
+  return Object.values(apiKeys.value).some((key) => key.trim() !== '');
+});
 
 const getStatusClass = (service) => {
-  const status = connectionStatus.value[service]
+  const status = connectionStatus.value[service];
   switch (status) {
-    case 'connected': return 'status-connected'
-    case 'error': return 'status-error'
-    case 'demo': return 'status-demo'
-    default: return 'status-disconnected'
+    case 'connected':
+      return 'status-connected';
+    case 'error':
+      return 'status-error';
+    case 'demo':
+      return 'status-demo';
+    default:
+      return 'status-disconnected';
   }
-}
+};
 
 const getStatusText = (service) => {
-  const status = connectionStatus.value[service]
+  const status = connectionStatus.value[service];
   switch (status) {
-    case 'connected': return 'Connected'
-    case 'error': return 'Error'
-    case 'demo': return 'Demo Mode'
-    default: return 'Not Configured'
+    case 'connected':
+      return 'Connected';
+    case 'error':
+      return 'Error';
+    case 'demo':
+      return 'Demo Mode';
+    default:
+      return 'Not Configured';
   }
-}
+};
 
 const saveKeys = () => {
-  localStorage.setItem('linkops-api-keys', JSON.stringify(apiKeys.value))
-  alert('API keys saved successfully!')
-}
+  localStorage.setItem('linkops-api-keys', JSON.stringify(apiKeys.value));
+  alert('API keys saved successfully!');
+};
 
 const clearKeys = () => {
   if (confirm('Are you sure you want to clear all API keys?')) {
@@ -340,31 +311,33 @@ const clearKeys = () => {
       openai: '',
       grok: '',
       anthropic: '',
-      customEndpoint: ''
-    }
-    localStorage.removeItem('linkops-api-keys')
-    alert('API keys cleared!')
+      customEndpoint: '',
+    };
+    localStorage.removeItem('linkops-api-keys');
+    alert('API keys cleared!');
   }
-}
+};
 
 const testConnection = async () => {
-  alert('Connection testing is available in production mode with valid API keys.')
-}
+  alert(
+    'Connection testing is available in production mode with valid API keys.'
+  );
+};
 
 const loadKeys = () => {
-  const saved = localStorage.getItem('linkops-api-keys')
+  const saved = localStorage.getItem('linkops-api-keys');
   if (saved) {
     try {
-      apiKeys.value = { ...apiKeys.value, ...JSON.parse(saved) }
+      apiKeys.value = { ...apiKeys.value, ...JSON.parse(saved) };
     } catch (error) {
-      console.error('Failed to load saved API keys:', error)
+      console.error('Failed to load saved API keys:', error);
     }
   }
-}
+};
 
 onMounted(() => {
-  loadKeys()
-})
+  loadKeys();
+});
 </script>
 
 <style scoped>
@@ -567,17 +540,17 @@ onMounted(() => {
   .form-row {
     grid-template-columns: 1fr;
   }
-  
+
   .form-actions {
     flex-direction: column;
   }
-  
+
   .status-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .instructions-grid {
     grid-template-columns: 1fr;
   }
 }
-</style> 
+</style>

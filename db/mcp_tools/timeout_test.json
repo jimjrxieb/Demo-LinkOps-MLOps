@@ -1,0 +1,11 @@
+{
+  "name": "timeout_test",
+  "description": "Test tool: timeout_test",
+  "task_type": "test",
+  "command": "sleep 35",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

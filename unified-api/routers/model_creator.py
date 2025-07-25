@@ -9,11 +9,8 @@ Integrates with the actual model-creator service.
 
 import logging
 import os
-import shutil
 import sys
-import tempfile
 from datetime import datetime
-from typing import Any, Dict, Optional
 
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
@@ -96,7 +93,7 @@ async def generate_model(
         )
 
         # Read generated code
-        with open(output_path, "r") as f:
+        with open(output_path) as f:
             generated_code = f.read()
 
         # Clean up temp file
@@ -139,7 +136,7 @@ async def generate_agent(
         )
 
         # Read generated code
-        with open(output_path, "r") as f:
+        with open(output_path) as f:
             generated_code = f.read()
 
         return {

@@ -7,15 +7,11 @@ FastAPI service for training and managing machine learning models from CSV data.
 """
 
 import logging
-import os
-import tempfile
 from pathlib import Path
-from typing import Any, Dict, List
 
 import uvicorn
-from fastapi import BackgroundTasks, FastAPI, Form, HTTPException, UploadFile
+from fastapi import FastAPI, Form, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
 from logic.model_generator import ModelGenerator
 
 # Configure logging

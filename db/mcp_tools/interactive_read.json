@@ -1,0 +1,11 @@
+{
+  "name": "interactive_read",
+  "description": "Test tool: interactive_read",
+  "task_type": "test",
+  "command": "read -p 'Enter value: ' value",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

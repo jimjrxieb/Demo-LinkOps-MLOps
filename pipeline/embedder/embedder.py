@@ -12,9 +12,7 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
-
-import numpy as np
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +22,7 @@ class DocumentEmbedder:
     Document embedder component for creating vector embeddings.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """
         Initialize the document embedder.
 
@@ -47,7 +45,7 @@ class DocumentEmbedder:
         logger.info(f"   Embeddings directory: {self.embeddings_dir}")
 
     def embed_document(
-        self, file_path: str, params: Optional[Dict[str, Any]] = None
+        self, file_path: str, params: Optional[dict[str, Any]] = None
     ) -> str:
         """
         Embed a document and store the embeddings.
@@ -85,7 +83,7 @@ class DocumentEmbedder:
         else:
             raise ValueError(f"Unsupported file format: {input_path.suffix}")
 
-    def _embed_csv_document(self, file_path: Path, params: Dict[str, Any]) -> str:
+    def _embed_csv_document(self, file_path: Path, params: dict[str, Any]) -> str:
         """Embed CSV document."""
         logger.info(f"📊 Embedding CSV document: {file_path}")
 
@@ -108,7 +106,7 @@ class DocumentEmbedder:
         logger.info(f"✅ CSV embeddings saved: {output_path}")
         return output_path
 
-    def _embed_excel_document(self, file_path: Path, params: Dict[str, Any]) -> str:
+    def _embed_excel_document(self, file_path: Path, params: dict[str, Any]) -> str:
         """Embed Excel document."""
         logger.info(f"📊 Embedding Excel document: {file_path}")
 
@@ -131,12 +129,12 @@ class DocumentEmbedder:
         logger.info(f"✅ Excel embeddings saved: {output_path}")
         return output_path
 
-    def _embed_json_document(self, file_path: Path, params: Dict[str, Any]) -> str:
+    def _embed_json_document(self, file_path: Path, params: dict[str, Any]) -> str:
         """Embed JSON document."""
         logger.info(f"📊 Embedding JSON document: {file_path}")
 
         try:
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 data = json.load(f)
         except Exception as e:
             raise ValueError(f"Failed to read JSON file: {e}")
@@ -153,12 +151,12 @@ class DocumentEmbedder:
         logger.info(f"✅ JSON embeddings saved: {output_path}")
         return output_path
 
-    def _embed_text_document(self, file_path: Path, params: Dict[str, Any]) -> str:
+    def _embed_text_document(self, file_path: Path, params: dict[str, Any]) -> str:
         """Embed text document."""
         logger.info(f"📊 Embedding text document: {file_path}")
 
         try:
-            with open(file_path, "r") as f:
+            with open(file_path) as f:
                 text = f.read()
         except Exception as e:
             raise ValueError(f"Failed to read text file: {e}")
@@ -175,7 +173,7 @@ class DocumentEmbedder:
         logger.info(f"✅ Text embeddings saved: {output_path}")
         return output_path
 
-    def _get_text_columns(self, df, params: Dict[str, Any]) -> List[str]:
+    def _get_text_columns(self, df, params: dict[str, Any]) -> list[str]:
         """Get text columns from DataFrame."""
         # Use specified columns or auto-detect
         specified_columns = params.get("text_columns", [])
@@ -205,8 +203,8 @@ class DocumentEmbedder:
         return filtered_columns[:3]  # Limit to 3 columns
 
     def _create_embeddings_from_dataframe(
-        self, df, text_columns: List[str], params: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, df, text_columns: list[str], params: dict[str, Any]
+    ) -> dict[str, Any]:
         """Create embeddings from DataFrame."""
         logger.info(f"   Creating embeddings from {len(text_columns)} text columns")
 
@@ -246,7 +244,7 @@ class DocumentEmbedder:
         logger.info(f"   Created {len(embeddings_data['embeddings'])} embeddings")
         return embeddings_data
 
-    def _extract_text_from_json(self, data: Any, params: Dict[str, Any]) -> List[str]:
+    def _extract_text_from_json(self, data: Any, params: dict[str, Any]) -> list[str]:
         """Extract text from JSON data."""
         texts = []
 
@@ -265,7 +263,7 @@ class DocumentEmbedder:
         extract_recursive(data)
         return texts
 
-    def _split_text_into_chunks(self, text: str, params: Dict[str, Any]) -> List[str]:
+    def _split_text_into_chunks(self, text: str, params: dict[str, Any]) -> list[str]:
         """Split text into chunks for embedding."""
         chunk_size = params.get("chunk_size", 1000)
         chunk_overlap = params.get("chunk_overlap", 200)
@@ -293,8 +291,8 @@ class DocumentEmbedder:
         return chunks
 
     def _create_embeddings_from_texts(
-        self, texts: List[str], params: Dict[str, Any]
-    ) -> Dict[str, Any]:
+        self, texts: list[str], params: dict[str, Any]
+    ) -> dict[str, Any]:
         """Create embeddings from list of texts."""
         logger.info(f"   Creating embeddings from {len(texts)} text chunks")
 
@@ -322,8 +320,8 @@ class DocumentEmbedder:
         return embeddings_data
 
     def _create_single_embedding(
-        self, text: str, params: Dict[str, Any]
-    ) -> List[float]:
+        self, text: str, params: dict[str, Any]
+    ) -> list[float]:
         """
         Create a single embedding for text.
 
@@ -359,7 +357,7 @@ class DocumentEmbedder:
         return embedding
 
     def _save_embeddings(
-        self, embeddings_data: Dict[str, Any], source_file: Path, params: Dict[str, Any]
+        self, embeddings_data: dict[str, Any], source_file: Path, params: dict[str, Any]
     ) -> str:
         """Save embeddings to file."""
         # Generate output filename
@@ -379,7 +377,7 @@ class DocumentEmbedder:
         logger.info(f"💾 Embeddings saved: {output_path}")
         return str(output_path)
 
-    def _get_default_config(self) -> Dict[str, Any]:
+    def _get_default_config(self) -> dict[str, Any]:
         """Get default configuration."""
         return {
             "embeddings_dir": "/tmp/embeddings",
@@ -391,7 +389,7 @@ class DocumentEmbedder:
             "max_text_length": 512,
         }
 
-    def get_embedding_info(self, embedding_path: str) -> Dict[str, Any]:
+    def get_embedding_info(self, embedding_path: str) -> dict[str, Any]:
         """
         Get information about stored embeddings.
 
@@ -407,7 +405,7 @@ class DocumentEmbedder:
             raise FileNotFoundError(f"Embedding file not found: {embedding_path}")
 
         try:
-            with open(embedding_file, "r") as f:
+            with open(embedding_file) as f:
                 data = json.load(f)
 
             info = {
@@ -429,7 +427,7 @@ class DocumentEmbedder:
         except Exception as e:
             raise ValueError(f"Failed to read embedding file: {e}")
 
-    def list_embeddings(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+    def list_embeddings(self, limit: Optional[int] = None) -> list[dict[str, Any]]:
         """
         List stored embeddings.
 
@@ -458,7 +456,7 @@ class DocumentEmbedder:
         return embeddings
 
 
-def embed_document(file_path: str, params: Optional[Dict[str, Any]] = None) -> str:
+def embed_document(file_path: str, params: Optional[dict[str, Any]] = None) -> str:
     """
     Convenience function to embed a document.
 
@@ -509,7 +507,7 @@ if __name__ == "__main__":
 
     # Show embedding info
     info = embedder.get_embedding_info(output_file)
-    print(f"\n📊 Embedding Info:")
+    print("\n📊 Embedding Info:")
     print(f"   Total embeddings: {info['total_embeddings']}")
     print(f"   Dimension: {info['embedding_dimension']}")
     print(f"   Model: {info['model_name']}")

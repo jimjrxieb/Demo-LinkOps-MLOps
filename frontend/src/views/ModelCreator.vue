@@ -8,9 +8,9 @@
     <!-- CSV Upload Section -->
     <div class="upload-section">
       <h2>📁 Step 1: Upload Your Data</h2>
-      <div 
+      <div
         class="upload-dropzone"
-        :class="{ 'dragover': isDragOver, 'has-file': uploadedFile }"
+        :class="{ dragover: isDragOver, 'has-file': uploadedFile }"
         @drop="handleDrop"
         @dragover.prevent="isDragOver = true"
         @dragleave.prevent="isDragOver = false"
@@ -20,23 +20,25 @@
           ref="fileInput"
           type="file"
           accept=".csv"
-          @change="handleFileSelect"
           style="display: none"
+          @change="handleFileSelect"
         />
-        
+
         <div v-if="!uploadedFile" class="upload-placeholder">
           <div class="upload-icon">📄</div>
           <p>Drop your CSV file here or click to browse</p>
           <p class="upload-hint">Supports .csv files with headers</p>
         </div>
-        
+
         <div v-else class="upload-success">
           <div class="file-info">
             <span class="file-icon">✅</span>
             <span class="file-name">{{ uploadedFile.name }}</span>
-            <span class="file-size">({{ formatFileSize(uploadedFile.size) }})</span>
+            <span class="file-size"
+              >({{ formatFileSize(uploadedFile.size) }})</span
+            >
           </div>
-          <button @click.stop="removeFile" class="remove-btn">Remove</button>
+          <button class="remove-btn" @click.stop="removeFile">Remove</button>
         </div>
       </div>
     </div>
@@ -44,7 +46,7 @@
     <!-- Model Configuration Section -->
     <div v-if="uploadedFile && csvHeaders.length > 0" class="config-section">
       <h2>⚙️ Step 2: Configure Your Model</h2>
-      
+
       <div class="config-grid">
         <!-- Model Name -->
         <div class="config-item">
@@ -67,11 +69,7 @@
             class="form-select"
           >
             <option value="">Select target column...</option>
-            <option
-              v-for="header in csvHeaders"
-              :key="header"
-              :value="header"
-            >
+            <option v-for="header in csvHeaders" :key="header" :value="header">
               {{ header }}
             </option>
           </select>
@@ -88,14 +86,17 @@
             >
               <input
                 :id="`feature-${header}`"
+                v-model="modelConfig.features"
                 type="checkbox"
                 :value="header"
-                v-model="modelConfig.features"
                 :disabled="header === modelConfig.targetColumn"
               />
               <label :for="`feature-${header}`">
                 {{ header }}
-                <span v-if="header === modelConfig.targetColumn" class="target-indicator">
+                <span
+                  v-if="header === modelConfig.targetColumn"
+                  class="target-indicator"
+                >
                   (target)
                 </span>
               </label>
@@ -108,13 +109,13 @@
     <!-- Training Section -->
     <div v-if="canTrain" class="training-section">
       <h2>🚀 Step 3: Train Your Model</h2>
-      
+
       <div class="training-controls">
         <button
-          @click="trainModel"
           :disabled="isTraining"
           class="train-btn"
-          :class="{ 'training': isTraining }"
+          :class="{ training: isTraining }"
+          @click="trainModel"
         >
           <span v-if="!isTraining">🚀 Train Model</span>
           <span v-else>🔄 Training... Please wait</span>
@@ -124,16 +125,23 @@
       <!-- Training Progress -->
       <div v-if="isTraining" class="training-progress">
         <div class="progress-bar">
-          <div class="progress-fill" :style="{ width: trainingProgress + '%' }"></div>
+          <div
+            class="progress-fill"
+            :style="{ width: trainingProgress + '%' }"
+          />
         </div>
-        <p class="progress-text">{{ trainingStatus }}</p>
+        <p class="progress-text">
+          {{ trainingStatus }}
+        </p>
       </div>
 
       <!-- Training Results -->
       <div v-if="trainingResult" class="training-results">
         <div class="result-header">
           <h3>✅ Training Complete!</h3>
-          <button @click="downloadSummary" class="download-btn">📥 Download Summary</button>
+          <button class="download-btn" @click="downloadSummary">
+            📥 Download Summary
+          </button>
         </div>
 
         <div class="result-grid">
@@ -142,11 +150,15 @@
             <div class="metrics">
               <div class="metric">
                 <span class="metric-label">Mean Absolute Error:</span>
-                <span class="metric-value">{{ trainingResult.mae.toFixed(2) }}</span>
+                <span class="metric-value">{{
+                  trainingResult.mae.toFixed(2)
+                }}</span>
               </div>
               <div class="metric">
                 <span class="metric-label">R² Score:</span>
-                <span class="metric-value">{{ trainingResult.r2.toFixed(3) }}</span>
+                <span class="metric-value">{{
+                  trainingResult.r2.toFixed(3)
+                }}</span>
               </div>
             </div>
           </div>
@@ -155,13 +167,18 @@
             <h4>🏗️ Top Contractors</h4>
             <div class="contractors-list">
               <div
-                v-for="(contractor, index) in trainingResult.contractor_recommendations.slice(0, 5)"
+                v-for="(
+                  contractor, index
+                ) in trainingResult.contractor_recommendations.slice(0, 5)"
                 :key="contractor.contractor"
                 class="contractor-item"
               >
                 <span class="rank">#{{ index + 1 }}</span>
                 <span class="name">{{ contractor.contractor }}</span>
-                <span class="score">Score: {{ contractor.quality_score?.toFixed(1) || 'N/A' }}</span>
+                <span class="score"
+                  >Score:
+                  {{ contractor.quality_score?.toFixed(1) || 'N/A' }}</span
+                >
               </div>
             </div>
           </div>
@@ -172,7 +189,7 @@
       <div v-if="trainingError" class="training-error">
         <h3>❌ Training Failed</h3>
         <p>{{ trainingError }}</p>
-        <button @click="resetTraining" class="retry-btn">🔄 Try Again</button>
+        <button class="retry-btn" @click="resetTraining">🔄 Try Again</button>
       </div>
     </div>
 
@@ -180,34 +197,71 @@
     <div class="history-section">
       <h2>📋 Trained Models History</h2>
       <div class="history-controls">
-        <button @click="loadModelHistory" class="refresh-btn">🔄 Refresh</button>
+        <button class="refresh-btn" @click="loadModelHistory">
+          🔄 Refresh
+        </button>
       </div>
-      
+
       <div v-if="modelHistory.length === 0" class="no-models">
         <p>No trained models found. Train your first model above!</p>
       </div>
-      
+
       <div v-else class="models-grid">
-        <div
-          v-for="model in modelHistory"
-          :key="model.name"
-          class="model-card"
-        >
+        <div v-for="model in modelHistory" :key="model.name" class="model-card">
           <div class="model-header">
             <h4>{{ model.name }}</h4>
             <span class="model-date">{{ formatDate(model.date) }}</span>
           </div>
-          <div class="model-details">
-            <p><strong>Target:</strong> {{ model.target }}</p>
-            <p><strong>Features:</strong> {{ model.features.length }}</p>
-            <p><strong>MAE:</strong> {{ model.mae?.toFixed(2) || 'N/A' }}</p>
-            <p><strong>R²:</strong> {{ model.r2?.toFixed(3) || 'N/A' }}</p>
+
+          <!-- Model Metrics -->
+          <div class="model-metrics">
+            <div class="metric-item">
+              <span class="metric-label">🎯 Target:</span>
+              <span class="metric-value">{{ model.target }}</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">🔧 Features:</span>
+              <span class="metric-value">{{ model.features.length }}</span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">📊 MAE:</span>
+              <span
+                class="metric-value"
+                :class="getMetricClass(model.mae, 'mae')"
+              >
+                {{ model.mae?.toFixed(2) || 'N/A' }}
+              </span>
+            </div>
+            <div class="metric-item">
+              <span class="metric-label">📈 R² Score:</span>
+              <span
+                class="metric-value"
+                :class="getMetricClass(model.r2, 'r2')"
+              >
+                {{ model.r2?.toFixed(3) || 'N/A' }}
+              </span>
+            </div>
+            <div v-if="model.accuracy" class="metric-item">
+              <span class="metric-label">✅ Accuracy:</span>
+              <span
+                class="metric-value"
+                :class="getMetricClass(model.accuracy, 'accuracy')"
+              >
+                {{ (model.accuracy * 100).toFixed(1) }}%
+              </span>
+            </div>
           </div>
+
+          <!-- Model Actions -->
           <div class="model-actions">
-            <button @click="downloadModelSummary(model.name)" class="action-btn">
+            <ModelPredictor :model="model.name" />
+            <button
+              class="action-btn"
+              @click="downloadModelSummary(model.name)"
+            >
               📥 Summary
             </button>
-            <button @click="deleteModel(model.name)" class="action-btn delete">
+            <button class="action-btn delete" @click="deleteModel(model.name)">
               🗑️ Delete
             </button>
           </div>
@@ -218,258 +272,305 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue'
-import { useTrainModelStore } from '../store/train_model.js'
+import { ref, computed, onMounted } from 'vue';
+import { useTrainModelStore } from '../store/train_model.js';
+import ModelPredictor from '../components/ModelPredictor.vue';
 
 export default {
   name: 'ModelCreator',
+  components: {
+    ModelPredictor,
+  },
   setup() {
-    const trainModelStore = useTrainModelStore()
-    
+    const trainModelStore = useTrainModelStore();
+
     // File upload state
-    const fileInput = ref(null)
-    const uploadedFile = ref(null)
-    const isDragOver = ref(false)
-    const csvHeaders = ref([])
-    
+    const fileInput = ref(null);
+    const uploadedFile = ref(null);
+    const isDragOver = ref(false);
+    const csvHeaders = ref([]);
+
     // Model configuration
     const modelConfig = ref({
       name: '',
       targetColumn: '',
-      features: []
-    })
-    
+      features: [],
+    });
+
     // Training state
-    const isTraining = ref(false)
-    const trainingProgress = ref(0)
-    const trainingStatus = ref('')
-    const trainingResult = ref(null)
-    const trainingError = ref(null)
-    
+    const isTraining = ref(false);
+    const trainingProgress = ref(0);
+    const trainingStatus = ref('');
+    const trainingResult = ref(null);
+    const trainingError = ref(null);
+
     // Model history
-    const modelHistory = ref([])
-    
+    const modelHistory = ref([]);
+
     // Computed properties
     const canTrain = computed(() => {
-      return uploadedFile.value && 
-             modelConfig.value.name && 
-             modelConfig.value.targetColumn && 
-             modelConfig.value.features.length > 0
-    })
-    
+      return (
+        uploadedFile.value &&
+        modelConfig.value.name &&
+        modelConfig.value.targetColumn &&
+        modelConfig.value.features.length > 0
+      );
+    });
+
     // Methods
     const triggerFileInput = () => {
-      fileInput.value?.click()
-    }
-    
+      fileInput.value?.click();
+    };
+
     const handleFileSelect = (event) => {
-      const file = event.target.files[0]
+      const file = event.target.files[0];
       if (file) {
-        processFile(file)
+        processFile(file);
       }
-    }
-    
+    };
+
     const handleDrop = (event) => {
-      event.preventDefault()
-      isDragOver.value = false
-      
-      const file = event.dataTransfer.files[0]
+      event.preventDefault();
+      isDragOver.value = false;
+
+      const file = event.dataTransfer.files[0];
       if (file && file.type === 'text/csv') {
-        processFile(file)
+        processFile(file);
       }
-    }
-    
+    };
+
     const processFile = async (file) => {
-      uploadedFile.value = file
-      
+      uploadedFile.value = file;
+
       try {
-        const text = await file.text()
-        const lines = text.split('\n')
-        const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''))
-        
-        csvHeaders.value = headers
-        modelConfig.value.features = headers.filter(h => h !== modelConfig.value.targetColumn)
-        
+        const text = await file.text();
+        const lines = text.split('\n');
+        const headers = lines[0]
+          .split(',')
+          .map((h) => h.trim().replace(/"/g, ''));
+
+        csvHeaders.value = headers;
+        modelConfig.value.features = headers.filter(
+          (h) => h !== modelConfig.value.targetColumn
+        );
+
         // Auto-generate model name if empty
         if (!modelConfig.value.name) {
-          modelConfig.value.name = `${file.name.replace('.csv', '')}_predictor`
+          modelConfig.value.name = `${file.name.replace('.csv', '')}_predictor`;
         }
       } catch (error) {
-        console.error('Error processing CSV:', error)
-        alert('Error reading CSV file. Please check the file format.')
+        console.error('Error processing CSV:', error);
+        alert('Error reading CSV file. Please check the file format.');
       }
-    }
-    
+    };
+
     const removeFile = () => {
-      uploadedFile.value = null
-      csvHeaders.value = []
+      uploadedFile.value = null;
+      csvHeaders.value = [];
       modelConfig.value = {
         name: '',
         targetColumn: '',
-        features: []
-      }
-      trainingResult.value = null
-      trainingError.value = null
-    }
-    
+        features: [],
+      };
+      trainingResult.value = null;
+      trainingError.value = null;
+    };
+
     const formatFileSize = (bytes) => {
-      if (bytes === 0) return '0 Bytes'
-      const k = 1024
-      const sizes = ['Bytes', 'KB', 'MB', 'GB']
-      const i = Math.floor(Math.log(bytes) / Math.log(k))
-      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
-    
+      if (bytes === 0) return '0 Bytes';
+      const k = 1024;
+      const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
+
     const trainModel = async () => {
-      if (!canTrain.value) return
-      
-      isTraining.value = true
-      trainingProgress.value = 0
-      trainingStatus.value = 'Preparing data...'
-      trainingResult.value = null
-      trainingError.value = null
-      
+      if (!canTrain.value) return;
+
+      isTraining.value = true;
+      trainingProgress.value = 0;
+      trainingStatus.value = 'Preparing data...';
+      trainingResult.value = null;
+      trainingError.value = null;
+
       try {
         // Upload file first
-        trainingProgress.value = 20
-        trainingStatus.value = 'Uploading data...'
-        
-        const formData = new FormData()
-        formData.append('file', uploadedFile.value)
-        
+        trainingProgress.value = 20;
+        trainingStatus.value = 'Uploading data...';
+
+        const formData = new FormData();
+        formData.append('file', uploadedFile.value);
+
         const uploadResponse = await fetch('/api/upload-csv', {
           method: 'POST',
-          body: formData
-        })
-        
+          body: formData,
+        });
+
         if (!uploadResponse.ok) {
-          throw new Error('Failed to upload file')
+          throw new Error('Failed to upload file');
         }
-        
-        const uploadResult = await uploadResponse.json()
-        const csvPath = uploadResult.path
-        
+
+        const uploadResult = await uploadResponse.json();
+        const csvPath = uploadResult.path;
+
         // Train model
-        trainingProgress.value = 50
-        trainingStatus.value = 'Training model...'
-        
+        trainingProgress.value = 50;
+        trainingStatus.value = 'Training model...';
+
         const trainResponse = await fetch('/api/train-model', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             model_name: modelConfig.value.name,
             target_column: modelConfig.value.targetColumn,
             features: modelConfig.value.features,
-            csv_path: csvPath
-          })
-        })
-        
+            csv_path: csvPath,
+          }),
+        });
+
         if (!trainResponse.ok) {
-          const errorData = await trainResponse.json()
-          throw new Error(errorData.detail || 'Training failed')
+          const errorData = await trainResponse.json();
+          throw new Error(errorData.detail || 'Training failed');
         }
-        
-        trainingProgress.value = 100
-        trainingStatus.value = 'Training complete!'
-        
-        const result = await trainResponse.json()
-        trainingResult.value = result
-        
+
+        trainingProgress.value = 100;
+        trainingStatus.value = 'Training complete!';
+
+        const result = await trainResponse.json();
+        trainingResult.value = result;
+
         // Reload model history
-        await loadModelHistory()
-        
+        await loadModelHistory();
       } catch (error) {
-        console.error('Training error:', error)
-        trainingError.value = error.message
+        console.error('Training error:', error);
+        trainingError.value = error.message;
       } finally {
-        isTraining.value = false
+        isTraining.value = false;
       }
-    }
-    
+    };
+
     const resetTraining = () => {
-      trainingError.value = null
-      trainingResult.value = null
-    }
-    
+      trainingError.value = null;
+      trainingResult.value = null;
+    };
+
     const downloadSummary = () => {
-      if (!trainingResult.value) return
-      
-      const dataStr = JSON.stringify(trainingResult.value, null, 2)
-      const dataBlob = new Blob([dataStr], { type: 'application/json' })
-      const url = URL.createObjectURL(dataBlob)
-      
-      const link = document.createElement('a')
-      link.href = url
-      link.download = `${modelConfig.value.name}_summary.json`
-      link.click()
-      
-      URL.revokeObjectURL(url)
-    }
-    
+      if (!trainingResult.value) return;
+
+      const dataStr = JSON.stringify(trainingResult.value, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `${modelConfig.value.name}_summary.json`;
+      link.click();
+
+      URL.revokeObjectURL(url);
+    };
+
     const loadModelHistory = async () => {
       try {
-        const response = await fetch('/api/train-model/models')
+        const response = await fetch('/api/train-model/models');
         if (response.ok) {
-          modelHistory.value = await response.json()
+          modelHistory.value = await response.json();
         }
       } catch (error) {
-        console.error('Error loading model history:', error)
+        console.error('Error loading model history:', error);
       }
-    }
-    
+    };
+
     const downloadModelSummary = async (modelName) => {
       try {
-        const response = await fetch(`/api/train-model/models/${modelName}/summary`)
+        const response = await fetch(
+          `/api/train-model/models/${modelName}/summary`
+        );
         if (response.ok) {
-          const summary = await response.json()
-          const dataStr = JSON.stringify(summary, null, 2)
-          const dataBlob = new Blob([dataStr], { type: 'application/json' })
-          const url = URL.createObjectURL(dataBlob)
-          
-          const link = document.createElement('a')
-          link.href = url
-          link.download = `${modelName}_summary.json`
-          link.click()
-          
-          URL.revokeObjectURL(url)
+          const summary = await response.json();
+          const dataStr = JSON.stringify(summary, null, 2);
+          const dataBlob = new Blob([dataStr], { type: 'application/json' });
+          const url = URL.createObjectURL(dataBlob);
+
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `${modelName}_summary.json`;
+          link.click();
+
+          URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Error downloading summary:', error)
+        console.error('Error downloading summary:', error);
       }
-    }
-    
+    };
+
     const deleteModel = async (modelName) => {
       if (!confirm(`Are you sure you want to delete model "${modelName}"?`)) {
-        return
+        return;
       }
-      
+
       try {
         const response = await fetch(`/api/train-model/${modelName}`, {
-          method: 'DELETE'
-        })
-        
+          method: 'DELETE',
+        });
+
         if (response.ok) {
-          await loadModelHistory()
+          await loadModelHistory();
         } else {
-          alert('Failed to delete model')
+          alert('Failed to delete model');
         }
       } catch (error) {
-        console.error('Error deleting model:', error)
-        alert('Error deleting model')
+        console.error('Error deleting model:', error);
+        alert('Error deleting model');
       }
-    }
-    
+    };
+
+    const getMetricClass = (value, metricType) => {
+      if (!value || isNaN(value)) return '';
+
+      switch (metricType) {
+        case 'mae':
+          // Lower MAE is better
+          return value < 0.1
+            ? 'metric-excellent'
+            : value < 0.3
+            ? 'metric-good'
+            : value < 0.5
+            ? 'metric-fair'
+            : 'metric-poor';
+        case 'r2':
+          // Higher R² is better
+          return value > 0.9
+            ? 'metric-excellent'
+            : value > 0.7
+            ? 'metric-good'
+            : value > 0.5
+            ? 'metric-fair'
+            : 'metric-poor';
+        case 'accuracy':
+          // Higher accuracy is better
+          return value > 0.9
+            ? 'metric-excellent'
+            : value > 0.8
+            ? 'metric-good'
+            : value > 0.7
+            ? 'metric-fair'
+            : 'metric-poor';
+        default:
+          return '';
+      }
+    };
+
     const formatDate = (dateString) => {
-      return new Date(dateString).toLocaleDateString()
-    }
-    
+      return new Date(dateString).toLocaleDateString();
+    };
+
     // Load model history on mount
     onMounted(() => {
-      loadModelHistory()
-    })
-    
+      loadModelHistory();
+    });
+
     return {
       fileInput,
       uploadedFile,
@@ -494,10 +595,11 @@ export default {
       loadModelHistory,
       downloadModelSummary,
       deleteModel,
-      formatDate
-    }
-  }
-}
+      formatDate,
+      getMetricClass,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -676,7 +778,7 @@ export default {
   gap: 0.5rem;
 }
 
-.feature-item input[type="checkbox"] {
+.feature-item input[type='checkbox'] {
   width: 18px;
   height: 18px;
 }
@@ -945,17 +1047,49 @@ export default {
   font-size: 0.9rem;
 }
 
-.model-details {
+.model-metrics {
   margin-bottom: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
 }
 
-.model-details p {
-  margin: 0.25rem 0;
-  color: #7f8c8d;
+.metric-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border-left: 4px solid #3498db;
 }
 
-.model-details strong {
+.metric-label {
+  font-weight: 500;
   color: #2c3e50;
+  font-size: 0.9rem;
+}
+
+.metric-value {
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+.metric-excellent {
+  color: #27ae60;
+}
+
+.metric-good {
+  color: #f39c12;
+}
+
+.metric-fair {
+  color: #e67e22;
+}
+
+.metric-poor {
+  color: #e74c3c;
 }
 
 .model-actions {
@@ -991,27 +1125,27 @@ export default {
   .model-creator {
     padding: 1rem;
   }
-  
+
   .config-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .result-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .models-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .upload-dropzone {
     padding: 2rem;
   }
-  
+
   .result-header {
     flex-direction: column;
     gap: 1rem;
     align-items: stretch;
   }
 }
-</style> 
+</style>

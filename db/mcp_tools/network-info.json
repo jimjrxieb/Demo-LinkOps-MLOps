@@ -3,6 +3,7 @@
   "description": "Display network information",
   "task_type": "command",
   "command": "echo '=== Network Interfaces ===' && ip addr show && echo '=== Routing ===' && ip route show",
+  "auto": true,
   "tags": [
     "network",
     "info",

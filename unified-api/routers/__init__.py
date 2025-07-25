@@ -10,6 +10,7 @@ This package contains router modules for each service:
 - train_model: ML model training
 - mcp_tool: MCP tool creation and management
 - htc: Document memory and embedding system
+- auto_runner: Auto Tool Runner status and control
 """
 
 __version__ = "1.0.0"

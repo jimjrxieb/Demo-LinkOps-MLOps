@@ -3,7 +3,6 @@
 Test script for the ML Model Creator service.
 """
 
-import json
 import time
 
 import requests

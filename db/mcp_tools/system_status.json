@@ -1,0 +1,10 @@
+{
+  "name": "system_status",
+  "description": "Display system status and resource usage information",
+  "task_type": "monitoring",
+  "command": "echo '=== System Status ===' && uptime && echo '=== Memory Usage ===' && free -h && echo '=== Disk Usage ===' && df -h . && echo '=== System Info ===' && uname -a",
+  "tags": ["system", "monitoring", "status"],
+  "auto": true,
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+} 

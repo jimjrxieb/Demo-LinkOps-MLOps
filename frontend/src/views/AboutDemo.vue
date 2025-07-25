@@ -4,14 +4,11 @@
     <div class="hero-section">
       <div class="card">
         <div class="card-body text-center">
-          <div class="hero-icon">
-            🚀
-          </div>
-          <h1 class="hero-title">
-            Kubernetes/CD Platform Engineering Demo
-          </h1>
+          <div class="hero-icon">🚀</div>
+          <h1 class="hero-title">Kubernetes/CD Platform Engineering Demo</h1>
           <p class="hero-subtitle">
-            A full-stack platform engineering showcase demonstrating DevOps, Kubernetes, AI/ML, and MLOps skills
+            A full-stack platform engineering showcase demonstrating DevOps,
+            Kubernetes, AI/ML, and MLOps skills
           </p>
           <div class="hero-badges">
             <span class="hero-badge">🎯 Recruiter Ready</span>
@@ -27,33 +24,42 @@
     <div class="story-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            👨‍💻 My Platform Engineering Journey
-          </h2>
+          <h2 class="card-title">👨‍💻 My Platform Engineering Journey</h2>
         </div>
         <div class="card-body">
           <div class="story-content">
             <p class="story-text">
-              I built this AI-powered Kubernetes/CD platform from the ground up using industry-standard tools like OpenAI, LangChain, FastAPI, and Cursor. 
-              Every Kubernetes-related Jira task I'm assigned — or errors I've encountered and solved using tools like ChatGPT and K8sGPT — 
-              gets entered into this system, where it is structured, learned from, and versioned.
+              I built this AI-powered Kubernetes/CD platform from the ground up
+              using industry-standard tools like OpenAI, LangChain, FastAPI, and
+              Cursor. Every Kubernetes-related Jira task I'm assigned — or
+              errors I've encountered and solved using tools like ChatGPT and
+              K8sGPT — gets entered into this system, where it is structured,
+              learned from, and versioned.
             </p>
             <p class="story-text">
-              Over time, it becomes a reflection of my real-world experience, industry best practices, and troubleshooting patterns. 
-              The long-term goal is to reach a state where this system can autonomously complete any Kubernetes or CD-related task I receive.
+              Over time, it becomes a reflection of my real-world experience,
+              industry best practices, and troubleshooting patterns. The
+              long-term goal is to reach a state where this system can
+              autonomously complete any Kubernetes or CD-related task I receive.
             </p>
             <div class="story-highlights">
               <div class="highlight-item">
                 <span class="highlight-icon">🔧</span>
-                <span class="highlight-text">Custom Python and Bash scripts to auto-fix issues</span>
+                <span class="highlight-text"
+                  >Custom Python and Bash scripts to auto-fix issues</span
+                >
               </div>
               <div class="highlight-item">
                 <span class="highlight-icon">🎯</span>
-                <span class="highlight-text">Industry-standard linters and formatters</span>
+                <span class="highlight-text"
+                  >Industry-standard linters and formatters</span
+                >
               </div>
               <div class="highlight-item">
                 <span class="highlight-icon">🚀</span>
-                <span class="highlight-text">Streamlined development workflow</span>
+                <span class="highlight-text"
+                  >Streamlined development workflow</span
+                >
               </div>
             </div>
           </div>
@@ -65,33 +71,29 @@
     <div class="skills-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🎯 Skills Demonstrated
-          </h2>
+          <h2 class="card-title">🎯 Skills Demonstrated</h2>
         </div>
         <div class="card-body">
           <div class="skills-grid">
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">
-                  🔧
-                </div>
+                <div class="skill-icon">🔧</div>
                 <h3>DevOps Engineering</h3>
               </div>
               <ul class="skill-list">
                 <li>GitHub Actions CI/CD pipeline with security scanning</li>
-                <li>Trivy vulnerability scanning and GitGuardian secret detection</li>
+                <li>
+                  Trivy vulnerability scanning and GitGuardian secret detection
+                </li>
                 <li>Docker containerization with multi-stage builds</li>
                 <li>Automated versioning and deployment workflows</li>
                 <li>Infrastructure as Code with Terraform</li>
               </ul>
             </div>
-            
+
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">
-                  ☸️
-                </div>
+                <div class="skill-icon">☸️</div>
                 <h3>Kubernetes Expertise</h3>
               </div>
               <ul class="skill-list">
@@ -102,12 +104,10 @@
                 <li>Resource management and scaling strategies</li>
               </ul>
             </div>
-            
+
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">
-                  ☁️
-                </div>
+                <div class="skill-icon">☁️</div>
                 <h3>Cloud/Platform Engineering</h3>
               </div>
               <ul class="skill-list">
@@ -118,12 +118,10 @@
                 <li>Observability and monitoring setup</li>
               </ul>
             </div>
-            
+
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">
-                  🧠
-                </div>
+                <div class="skill-icon">🧠</div>
                 <h3>AI/ML Engineering</h3>
               </div>
               <ul class="skill-list">
@@ -134,12 +132,10 @@
                 <li>Training Orbs with versioned model management</li>
               </ul>
             </div>
-            
+
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">
-                  💻
-                </div>
+                <div class="skill-icon">💻</div>
                 <h3>Full-Stack Development</h3>
               </div>
               <ul class="skill-list">
@@ -150,12 +146,10 @@
                 <li>Responsive design with Tailwind CSS</li>
               </ul>
             </div>
-            
+
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">
-                  🛡️
-                </div>
+                <div class="skill-icon">🛡️</div>
                 <h3>Security & Quality</h3>
               </div>
               <ul class="skill-list">
@@ -175,90 +169,96 @@
     <div class="pipeline-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🧠 The Whis Learning Pipeline
-          </h2>
+          <h2 class="card-title">🧠 The Whis Learning Pipeline</h2>
         </div>
         <div class="card-body">
           <div class="pipeline-content">
             <p class="pipeline-intro">
-              The core innovation is the <strong>Whis Pipeline</strong> - an AI-powered system that learns from Kubernetes/CD tasks 
-              and continuously improves through human feedback and automated retraining.
+              The core innovation is the <strong>Whis Pipeline</strong> - an
+              AI-powered system that learns from Kubernetes/CD tasks and
+              continuously improves through human feedback and automated
+              retraining.
             </p>
-            
+
             <div class="pipeline-stages">
               <div class="stage-item">
-                <div class="stage-number">
-                  1
-                </div>
+                <div class="stage-number">1</div>
                 <div class="stage-content">
                   <h4>Data Input</h4>
-                  <p>Collects tasks from UI, Q&A, image OCR, and transcript tools using FastAPI and JSON Schema</p>
+                  <p>
+                    Collects tasks from UI, Q&A, image OCR, and transcript tools
+                    using FastAPI and JSON Schema
+                  </p>
                   <div class="stage-tools">
                     📦 FastAPI, JSON Schema, CLI agent intake
                   </div>
                 </div>
               </div>
-              
+
               <div class="stage-item">
-                <div class="stage-number">
-                  2
-                </div>
+                <div class="stage-number">2</div>
                 <div class="stage-content">
                   <h4>Sanitization</h4>
-                  <p>Cleans and validates input data, removes sensitive information, and standardizes format</p>
+                  <p>
+                    Cleans and validates input data, removes sensitive
+                    information, and standardizes format
+                  </p>
                   <div class="stage-tools">
                     🧹 Data validation, PII detection, format standardization
                   </div>
                 </div>
               </div>
-              
+
               <div class="stage-item">
-                <div class="stage-number">
-                  3a
-                </div>
+                <div class="stage-number">3a</div>
                 <div class="stage-content">
                   <h4>ML Classification</h4>
-                  <p>TensorFlow model classifies task type with confidence scoring. Falls back to LLM if confidence is low</p>
+                  <p>
+                    TensorFlow model classifies task type with confidence
+                    scoring. Falls back to LLM if confidence is low
+                  </p>
                   <div class="stage-tools">
                     🤖 TensorFlow, Keras, scikit-learn, pandas
                   </div>
                 </div>
               </div>
-              
+
               <div class="stage-item">
-                <div class="stage-number">
-                  3b
-                </div>
+                <div class="stage-number">3b</div>
                 <div class="stage-content">
                   <h4>LLM Processing</h4>
-                  <p>OpenAI/LangChain generates execution plans and best practices when ML confidence is insufficient</p>
+                  <p>
+                    OpenAI/LangChain generates execution plans and best
+                    practices when ML confidence is insufficient
+                  </p>
                   <div class="stage-tools">
                     🧠 LangChain, OpenAI, prompt engineering
                   </div>
                 </div>
               </div>
-              
+
               <div class="stage-item">
-                <div class="stage-number">
-                  4
-                </div>
+                <div class="stage-number">4</div>
                 <div class="stage-content">
                   <h4>Human Approval</h4>
-                  <p>Manual approval workflow with feedback collection for continuous learning and improvement</p>
+                  <p>
+                    Manual approval workflow with feedback collection for
+                    continuous learning and improvement
+                  </p>
                   <div class="stage-tools">
                     👥 Manual approval + Vue.js tagging
                   </div>
                 </div>
               </div>
-              
+
               <div class="stage-item">
-                <div class="stage-number">
-                  5
-                </div>
+                <div class="stage-number">5</div>
                 <div class="stage-content">
                   <h4>Execution & Scoring</h4>
-                  <p>Semantic retrieval, scoring, and execution using scikit-learn, TF-IDF, and cosine similarity</p>
+                  <p>
+                    Semantic retrieval, scoring, and execution using
+                    scikit-learn, TF-IDF, and cosine similarity
+                  </p>
                   <div class="stage-tools">
                     📊 scikit-learn, TF-IDF, cosine similarity
                   </div>
@@ -274,9 +274,7 @@
     <div class="tech-stack-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🛠️ Technology Stack
-          </h2>
+          <h2 class="card-title">🛠️ Technology Stack</h2>
         </div>
         <div class="card-body">
           <div class="tech-grid">
@@ -290,7 +288,7 @@
                 <span class="tech-item">Axios</span>
               </div>
             </div>
-            
+
             <div class="tech-category">
               <h3>Backend</h3>
               <div class="tech-items">
@@ -301,7 +299,7 @@
                 <span class="tech-item">REST APIs</span>
               </div>
             </div>
-            
+
             <div class="tech-category">
               <h3>AI & ML</h3>
               <div class="tech-items">
@@ -312,7 +310,7 @@
                 <span class="tech-item">Pandas</span>
               </div>
             </div>
-            
+
             <div class="tech-category">
               <h3>DevOps & Infrastructure</h3>
               <div class="tech-items">
@@ -323,7 +321,7 @@
                 <span class="tech-item">ArgoCD</span>
               </div>
             </div>
-            
+
             <div class="tech-category">
               <h3>Security & Quality</h3>
               <div class="tech-items">
@@ -334,7 +332,7 @@
                 <span class="tech-item">ESLint</span>
               </div>
             </div>
-            
+
             <div class="tech-category">
               <h3>Cloud & Platform</h3>
               <div class="tech-items">
@@ -354,45 +352,78 @@
     <div class="interview-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🎯 Interview-Ready Talking Points
-          </h2>
+          <h2 class="card-title">🎯 Interview-Ready Talking Points</h2>
         </div>
         <div class="card-body">
           <div class="interview-grid">
             <div class="interview-category">
               <h3>For DevOps Engineers</h3>
               <ul>
-                <li>"I built a complete CI/CD pipeline with GitHub Actions, including security scanning with Trivy and GitGuardian"</li>
-                <li>"The system uses Docker for containerization and can deploy to any Kubernetes cluster"</li>
-                <li>"I implemented proper secret management and infrastructure as code"</li>
+                <li>
+                  "I built a complete CI/CD pipeline with GitHub Actions,
+                  including security scanning with Trivy and GitGuardian"
+                </li>
+                <li>
+                  "The system uses Docker for containerization and can deploy to
+                  any Kubernetes cluster"
+                </li>
+                <li>
+                  "I implemented proper secret management and infrastructure as
+                  code"
+                </li>
               </ul>
             </div>
-            
+
             <div class="interview-category">
               <h3>For Kubernetes Engineers</h3>
               <ul>
-                <li>"I designed a multi-service architecture with Helm charts for easy deployment"</li>
-                <li>"The system integrates with ArgoCD for GitOps-style deployments"</li>
-                <li>"I earned my CKA and this demo shows real-world Kubernetes patterns"</li>
+                <li>
+                  "I designed a multi-service architecture with Helm charts for
+                  easy deployment"
+                </li>
+                <li>
+                  "The system integrates with ArgoCD for GitOps-style
+                  deployments"
+                </li>
+                <li>
+                  "I earned my CKA and this demo shows real-world Kubernetes
+                  patterns"
+                </li>
               </ul>
             </div>
-            
+
             <div class="interview-category">
               <h3>For AI/ML Engineers</h3>
               <ul>
-                <li>"I built a custom TensorFlow classifier that learns from engineering tasks"</li>
-                <li>"The system includes proper MLOps practices like model versioning and retraining"</li>
-                <li>"I implemented human-in-loop workflows for continuous learning"</li>
+                <li>
+                  "I built a custom TensorFlow classifier that learns from
+                  engineering tasks"
+                </li>
+                <li>
+                  "The system includes proper MLOps practices like model
+                  versioning and retraining"
+                </li>
+                <li>
+                  "I implemented human-in-loop workflows for continuous
+                  learning"
+                </li>
               </ul>
             </div>
-            
+
             <div class="interview-category">
               <h3>For Platform Engineers</h3>
               <ul>
-                <li>"This demonstrates end-to-end platform engineering from frontend to infrastructure"</li>
-                <li>"I used microservices architecture with proper API design and documentation"</li>
-                <li>"The system is designed for scalability and maintainability"</li>
+                <li>
+                  "This demonstrates end-to-end platform engineering from
+                  frontend to infrastructure"
+                </li>
+                <li>
+                  "I used microservices architecture with proper API design and
+                  documentation"
+                </li>
+                <li>
+                  "The system is designed for scalability and maintainability"
+                </li>
               </ul>
             </div>
           </div>
@@ -404,58 +435,62 @@
     <div class="features-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            ✨ Demo Features
-          </h2>
+          <h2 class="card-title">✨ Demo Features</h2>
         </div>
         <div class="card-body">
           <div class="features-grid">
             <div class="feature-item">
-              <div class="feature-icon">
-                🎯
-              </div>
+              <div class="feature-icon">🎯</div>
               <h3>Task Processing</h3>
-              <p>Submit Kubernetes/CD tasks and watch real-time processing through the Whis pipeline with AI-powered matching</p>
+              <p>
+                Submit Kubernetes/CD tasks and watch real-time processing
+                through the Whis pipeline with AI-powered matching
+              </p>
             </div>
-            
+
             <div class="feature-item">
-              <div class="feature-icon">
-                📚
-              </div>
+              <div class="feature-icon">📚</div>
               <h3>Orb Library</h3>
-              <p>Browse categorized best practices and solutions, including Training Orbs with ML model versioning</p>
+              <p>
+                Browse categorized best practices and solutions, including
+                Training Orbs with ML model versioning
+              </p>
             </div>
-            
+
             <div class="feature-item">
-              <div class="feature-icon">
-                🧠
-              </div>
+              <div class="feature-icon">🧠</div>
               <h3>Learning System</h3>
-              <p>Human-in-loop approval workflow with continuous learning from approved tasks and model retraining</p>
+              <p>
+                Human-in-loop approval workflow with continuous learning from
+                approved tasks and model retraining
+              </p>
             </div>
-            
+
             <div class="feature-item">
-              <div class="feature-icon">
-                🔍
-              </div>
+              <div class="feature-icon">🔍</div>
               <h3>Intelligent Matching</h3>
-              <p>Advanced algorithms using TensorFlow and semantic search to match tasks with relevant solutions</p>
+              <p>
+                Advanced algorithms using TensorFlow and semantic search to
+                match tasks with relevant solutions
+              </p>
             </div>
-            
+
             <div class="feature-item">
-              <div class="feature-icon">
-                ⚡
-              </div>
+              <div class="feature-icon">⚡</div>
               <h3>Real-time Pipeline</h3>
-              <p>Visual representation of the Whis pipeline with step-by-step processing and tool details</p>
+              <p>
+                Visual representation of the Whis pipeline with step-by-step
+                processing and tool details
+              </p>
             </div>
-            
+
             <div class="feature-item">
-              <div class="feature-icon">
-                🛡️
-              </div>
+              <div class="feature-icon">🛡️</div>
               <h3>Professional UI</h3>
-              <p>Modern, responsive design with real-time updates and interactive components</p>
+              <p>
+                Modern, responsive design with real-time updates and interactive
+                components
+              </p>
             </div>
           </div>
         </div>
@@ -466,30 +501,40 @@
     <div class="getting-started-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🚀 Getting Started
-          </h2>
+          <h2 class="card-title">🚀 Getting Started</h2>
         </div>
         <div class="card-body">
           <div class="started-grid">
             <div class="started-item">
               <h3>1. Try the Demo</h3>
-              <p>Submit Kubernetes tasks like "create a pod named test with image nginx" and watch the AI processing</p>
+              <p>
+                Submit Kubernetes tasks like "create a pod named test with image
+                nginx" and watch the AI processing
+              </p>
             </div>
-            
+
             <div class="started-item">
               <h3>2. Explore the Pipeline</h3>
-              <p>Navigate to the Whis Pipeline page to see the step-by-step processing with tool details</p>
+              <p>
+                Navigate to the Whis Pipeline page to see the step-by-step
+                processing with tool details
+              </p>
             </div>
-            
+
             <div class="started-item">
               <h3>3. Browse Orbs</h3>
-              <p>Check out the Orb Library to see both execution Orbs and Training Orbs with ML models</p>
+              <p>
+                Check out the Orb Library to see both execution Orbs and
+                Training Orbs with ML models
+              </p>
             </div>
-            
+
             <div class="started-item">
               <h3>4. Add API Keys</h3>
-              <p>Configure AI API keys in the Keys page to enable real AI processing instead of demo mode</p>
+              <p>
+                Configure AI API keys in the Keys page to enable real AI
+                processing instead of demo mode
+              </p>
             </div>
           </div>
         </div>
@@ -500,20 +545,22 @@
     <div class="contact-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            📞 About This Demo
-          </h2>
+          <h2 class="card-title">📞 About This Demo</h2>
         </div>
         <div class="card-body">
           <div class="contact-content">
             <p class="contact-text">
-              This demo represents the kind of systems I'd build and maintain in a real platform engineering role. 
-              It showcases my ability to work across the entire stack - from frontend development to infrastructure automation, 
-              from AI/ML integration to DevOps best practices.
+              This demo represents the kind of systems I'd build and maintain in
+              a real platform engineering role. It showcases my ability to work
+              across the entire stack - from frontend development to
+              infrastructure automation, from AI/ML integration to DevOps best
+              practices.
             </p>
             <p class="contact-text">
-              The platform demonstrates real-world skills that are directly applicable to modern engineering teams: 
-              microservices architecture, containerization, CI/CD automation, security scanning, and AI/ML integration.
+              The platform demonstrates real-world skills that are directly
+              applicable to modern engineering teams: microservices
+              architecture, containerization, CI/CD automation, security
+              scanning, and AI/ML integration.
             </p>
             <div class="contact-badges">
               <span class="contact-badge">🎯 Production Ready</span>
@@ -665,7 +712,7 @@
 }
 
 .skill-list li::before {
-  content: "✓";
+  content: '✓';
   position: absolute;
   left: 0;
   color: #10b981;
@@ -905,7 +952,7 @@
   .hero-title {
     font-size: 2rem;
   }
-  
+
   .skills-grid,
   .tech-grid,
   .interview-grid,
@@ -913,20 +960,20 @@
   .started-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .hero-badges,
   .contact-badges {
     flex-direction: column;
     align-items: center;
   }
-  
+
   .stage-item {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .stage-number {
     align-self: center;
   }
 }
-</style> 
+</style>

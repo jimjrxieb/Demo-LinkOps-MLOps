@@ -12,26 +12,18 @@
       <div class="tool-selection">
         <h2 class="section-title">Select Tool</h2>
         <div class="tool-selector">
-          <select 
-            v-model="selectedTool" 
+          <select
+            v-model="selectedTool"
             class="tool-select"
             @change="onToolSelect"
           >
             <option value="" disabled>Choose a saved tool...</option>
-            <option 
-              v-for="tool in tools" 
-              :key="tool.name" 
-              :value="tool"
-            >
+            <option v-for="tool in tools" :key="tool.name" :value="tool">
               {{ tool.name }} - {{ tool.description }}
             </option>
           </select>
-          
-          <button 
-            @click="refreshTools" 
-            class="refresh-btn"
-            :disabled="loading"
-          >
+
+          <button class="refresh-btn" :disabled="loading" @click="refreshTools">
             🔄 Refresh
           </button>
         </div>
@@ -47,7 +39,7 @@
               <strong>Type:</strong> {{ selectedTool.task_type }}
             </div>
             <div class="info-item">
-              <strong>Tags:</strong> 
+              <strong>Tags:</strong>
               <span v-for="tag in selectedTool.tags" :key="tag" class="tag">
                 {{ tag }}
               </span>
@@ -69,20 +61,20 @@
         <div class="controls">
           <div class="timeout-control">
             <label for="timeout">Timeout (seconds):</label>
-            <input 
+            <input
               id="timeout"
-              v-model.number="timeout" 
-              type="number" 
-              min="5" 
-              max="300" 
+              v-model.number="timeout"
+              type="number"
+              min="5"
+              max="300"
               class="timeout-input"
             />
           </div>
-          
-          <button 
-            @click="runTool" 
+
+          <button
             class="run-btn"
             :disabled="!selectedTool || executing"
+            @click="runTool"
           >
             {{ executing ? '🔄 Running...' : '▶️ Run Tool' }}
           </button>
@@ -92,9 +84,15 @@
       <!-- Results -->
       <div v-if="executionResult" class="results">
         <h2 class="section-title">Execution Results</h2>
-        
+
         <!-- Status -->
-        <div class="status-bar" :class="{ success: executionResult.success, error: !executionResult.success }">
+        <div
+          class="status-bar"
+          :class="{
+            success: executionResult.success,
+            error: !executionResult.success,
+          }"
+        >
           <span class="status-icon">
             {{ executionResult.success ? '✅' : '❌' }}
           </span>
@@ -112,24 +110,24 @@
         <!-- Output -->
         <div class="output-section">
           <div class="output-tabs">
-            <button 
-              @click="activeTab = 'stdout'" 
+            <button
               class="tab-btn"
               :class="{ active: activeTab === 'stdout' }"
+              @click="activeTab = 'stdout'"
             >
               Standard Output
             </button>
-            <button 
-              @click="activeTab = 'stderr'" 
+            <button
               class="tab-btn"
               :class="{ active: activeTab === 'stderr' }"
+              @click="activeTab = 'stderr'"
             >
               Error Output
             </button>
-            <button 
-              @click="activeTab = 'details'" 
+            <button
               class="tab-btn"
               :class="{ active: activeTab === 'details' }"
+              @click="activeTab = 'details'"
             >
               Details
             </button>
@@ -138,12 +136,16 @@
           <div class="output-content">
             <!-- Standard Output -->
             <div v-if="activeTab === 'stdout'" class="output-panel">
-              <pre class="output-text">{{ executionResult.stdout || '(No output)' }}</pre>
+              <pre class="output-text">{{
+                executionResult.stdout || '(No output)'
+              }}</pre>
             </div>
 
             <!-- Error Output -->
             <div v-if="activeTab === 'stderr'" class="output-panel">
-              <pre class="output-text error">{{ executionResult.stderr || '(No errors)' }}</pre>
+              <pre class="output-text error">{{
+                executionResult.stderr || '(No errors)'
+              }}</pre>
             </div>
 
             <!-- Details -->
@@ -180,15 +182,21 @@
         <h2 class="section-title">Execution Statistics</h2>
         <div v-if="stats" class="stats-grid">
           <div class="stat-card">
-            <div class="stat-number">{{ stats.total_executions }}</div>
+            <div class="stat-number">
+              {{ stats.total_executions }}
+            </div>
             <div class="stat-label">Total Executions</div>
           </div>
           <div class="stat-card">
-            <div class="stat-number success">{{ stats.successful_executions }}</div>
+            <div class="stat-number success">
+              {{ stats.successful_executions }}
+            </div>
             <div class="stat-label">Successful</div>
           </div>
           <div class="stat-card">
-            <div class="stat-number error">{{ stats.failed_executions }}</div>
+            <div class="stat-number error">
+              {{ stats.failed_executions }}
+            </div>
             <div class="stat-label">Failed</div>
           </div>
           <div class="stat-card">
@@ -206,79 +214,81 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
 // Reactive data
-const tools = ref([])
-const selectedTool = ref('')
-const timeout = ref(30)
-const executing = ref(false)
-const executionResult = ref(null)
-const activeTab = ref('stdout')
-const stats = ref(null)
-const loading = ref(false)
+const tools = ref([]);
+const selectedTool = ref('');
+const timeout = ref(30);
+const executing = ref(false);
+const executionResult = ref(null);
+const activeTab = ref('stdout');
+const stats = ref(null);
+const loading = ref(false);
 
 // Load tools on mount
 onMounted(async () => {
-  await loadTools()
-  await loadStats()
-})
+  await loadTools();
+  await loadStats();
+});
 
 // Methods
 const loadTools = async () => {
   try {
-    loading.value = true
-    const response = await axios.get('/mcp-tool/mcp-tool/list')
-    tools.value = response.data
+    loading.value = true;
+    const response = await axios.get('/mcp-tool/mcp-tool/list');
+    tools.value = response.data;
   } catch (error) {
-    console.error('Failed to load tools:', error)
-    tools.value = []
+    console.error('Failed to load tools:', error);
+    tools.value = [];
   } finally {
-    loading.value = false
+    loading.value = false;
   }
-}
+};
 
 const loadStats = async () => {
   try {
-    const response = await axios.get('/executor/tool-stats')
-    stats.value = response.data
+    const response = await axios.get('/executor/tool-stats');
+    stats.value = response.data;
   } catch (error) {
-    console.error('Failed to load stats:', error)
-    stats.value = null
+    console.error('Failed to load stats:', error);
+    stats.value = null;
   }
-}
+};
 
 const refreshTools = async () => {
-  await loadTools()
-  await loadStats()
-}
+  await loadTools();
+  await loadStats();
+};
 
 const onToolSelect = () => {
   // Clear previous results when selecting a new tool
-  executionResult.value = null
-  activeTab.value = 'stdout'
-}
+  executionResult.value = null;
+  activeTab.value = 'stdout';
+};
 
 const runTool = async () => {
-  if (!selectedTool.value) return
+  if (!selectedTool.value) return;
 
   try {
-    executing.value = true
-    executionResult.value = null
+    executing.value = true;
+    executionResult.value = null;
 
-    const response = await axios.post('/executor/execute-saved-tool/' + selectedTool.value.name, {
-      timeout: timeout.value
-    })
+    const response = await axios.post(
+      '/executor/execute-saved-tool/' + selectedTool.value.name,
+      {
+        timeout: timeout.value,
+      }
+    );
 
-    executionResult.value = response.data
-    activeTab.value = 'stdout'
+    executionResult.value = response.data;
+    activeTab.value = 'stdout';
 
     // Refresh stats after execution
-    await loadStats()
-
+    await loadStats();
   } catch (error) {
-    console.error('Tool execution failed:', error)
+    console.error('Tool execution failed:', error);
     executionResult.value = {
       success: false,
       stdout: '',
@@ -286,17 +296,17 @@ const runTool = async () => {
       returncode: -1,
       execution_time: 0,
       command: selectedTool.value?.command || '',
-      timestamp: new Date().toISOString()
-    }
+      timestamp: new Date().toISOString(),
+    };
   } finally {
-    executing.value = false
+    executing.value = false;
   }
-}
+};
 
 const formatTimestamp = (timestamp) => {
-  if (!timestamp) return 'Unknown'
-  return new Date(timestamp).toLocaleString()
-}
+  if (!timestamp) return 'Unknown';
+  return new Date(timestamp).toLocaleString();
+};
 </script>
 
 <style scoped>
@@ -642,18 +652,18 @@ const formatTimestamp = (timestamp) => {
   .tool-executor {
     padding: 1rem;
   }
-  
+
   .tool-selector {
     flex-direction: column;
   }
-  
+
   .controls {
     flex-direction: column;
     align-items: stretch;
   }
-  
+
   .stats-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
-</style> 
+</style>

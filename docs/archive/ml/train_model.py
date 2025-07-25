@@ -14,16 +14,14 @@ import uuid
 import warnings
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
-    classification_report,
     f1_score,
     mean_squared_error,
     precision_score,
@@ -31,7 +29,7 @@ from sklearn.metrics import (
     recall_score,
 )
 from sklearn.model_selection import cross_val_score, train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import StandardScaler
 
 warnings.filterwarnings("ignore")
 
@@ -51,13 +49,13 @@ class ModelTrainer:
     def __init__(self):
         self.model_registry = self._load_model_registry()
 
-    def _load_model_registry(self) -> Dict[str, Any]:
+    def _load_model_registry(self) -> dict[str, Any]:
         """Load model registry from file."""
         try:
             if MODEL_REGISTRY_FILE.exists():
                 import json
 
-                with open(MODEL_REGISTRY_FILE, "r") as f:
+                with open(MODEL_REGISTRY_FILE) as f:
                     return json.load(f)
         except Exception as e:
             logger.warning(f"Failed to load model registry: {e}")
@@ -82,7 +80,7 @@ class ModelTrainer:
         test_split: float = 0.2,
         random_state: int = 42,
         algorithm: str = "auto",
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Train a machine learning model from CSV data.
 
@@ -163,7 +161,7 @@ class ModelTrainer:
             self.model_registry[model_id] = results
             self._save_model_registry()
 
-            logger.info(f"✅ Model training completed successfully")
+            logger.info("✅ Model training completed successfully")
             logger.info(f"   Model ID: {model_id}")
             logger.info(f"   Accuracy: {results['accuracy']:.4f}")
             logger.info(f"   Training time: {training_time}s")
@@ -233,7 +231,7 @@ class ModelTrainer:
 
     def _prepare_features_target(
         self, df: pd.DataFrame, target_column: str
-    ) -> Tuple[pd.DataFrame, pd.Series]:
+    ) -> tuple[pd.DataFrame, pd.Series]:
         """Prepare features and target for training."""
         # Separate features and target
         X = df.drop(columns=[target_column])
@@ -330,7 +328,7 @@ class ModelTrainer:
 
     def _evaluate_model(
         self, model: Any, X_test: pd.DataFrame, y_test: pd.Series, model_type: str
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """Evaluate model performance."""
         y_pred = model.predict(X_test)
 
@@ -385,7 +383,7 @@ class ModelTrainer:
         model: Any,
         model_path: Path,
         target_column: str,
-        feature_columns: List[str],
+        feature_columns: list[str],
     ):
         """Save trained model to disk."""
         model_data = {
@@ -403,7 +401,7 @@ class ModelTrainer:
 
         logger.info(f"   Model saved to: {model_path}")
 
-    def load_model(self, model_id: str) -> Optional[Dict[str, Any]]:
+    def load_model(self, model_id: str) -> Optional[dict[str, Any]]:
         """Load a trained model."""
         if model_id not in self.model_registry:
             logger.error(f"Model {model_id} not found in registry")
@@ -431,7 +429,7 @@ class ModelTrainer:
             logger.error(f"Failed to load model {model_id}: {e}")
             return None
 
-    def predict(self, model_id: str, features: Dict[str, Any]) -> Dict[str, Any]:
+    def predict(self, model_id: str, features: dict[str, Any]) -> dict[str, Any]:
         """Make predictions using a trained model."""
         model_data = self.load_model(model_id)
         if not model_data:
@@ -460,7 +458,7 @@ class ModelTrainer:
         }
 
     def _prepare_prediction_features(
-        self, features: Dict[str, Any], feature_columns: List[str]
+        self, features: dict[str, Any], feature_columns: list[str]
     ) -> pd.DataFrame:
         """Prepare features for prediction."""
         # Create DataFrame with expected columns
@@ -476,7 +474,7 @@ class ModelTrainer:
 
         return X
 
-    def list_models(self) -> List[Dict[str, Any]]:
+    def list_models(self) -> list[dict[str, Any]]:
         """List all trained models."""
         return list(self.model_registry.values())
 
@@ -503,7 +501,7 @@ class ModelTrainer:
             logger.error(f"Failed to delete model {model_id}: {e}")
             return False
 
-    def get_model_info(self, model_id: str) -> Optional[Dict[str, Any]]:
+    def get_model_info(self, model_id: str) -> Optional[dict[str, Any]]:
         """Get information about a specific model."""
         return self.model_registry.get(model_id)
 
@@ -520,7 +518,7 @@ def train_from_csv(
     test_split: float = 0.2,
     random_state: int = 42,
     algorithm: str = "auto",
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Convenience function to train a model from CSV.
 
@@ -547,12 +545,12 @@ def train_from_csv(
     )
 
 
-def predict(model_id: str, features: Dict[str, Any]) -> Dict[str, Any]:
+def predict(model_id: str, features: dict[str, Any]) -> dict[str, Any]:
     """Make predictions using a trained model."""
     return trainer.predict(model_id, features)
 
 
-def list_models() -> List[Dict[str, Any]]:
+def list_models() -> list[dict[str, Any]]:
     """List all trained models."""
     return trainer.list_models()
 
@@ -562,7 +560,7 @@ def delete_model(model_id: str) -> bool:
     return trainer.delete_model(model_id)
 
 
-def get_model_info(model_id: str) -> Optional[Dict[str, Any]]:
+def get_model_info(model_id: str) -> Optional[dict[str, Any]]:
     """Get information about a specific model."""
     return trainer.get_model_info(model_id)
 
@@ -594,7 +592,7 @@ if __name__ == "__main__":
             model_name="Sample Eviction Predictor",
         )
 
-        print(f"✅ Model trained successfully!")
+        print("✅ Model trained successfully!")
         print(f"   Model ID: {result['model_id']}")
         print(f"   Accuracy: {result['accuracy']}%")
         print(f"   Training time: {result['training_time']}s")

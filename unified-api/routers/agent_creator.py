@@ -11,7 +11,6 @@ import logging
 import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, Form, HTTPException
 from fastapi.responses import FileResponse
@@ -105,7 +104,7 @@ async def generate_agent(
         )
 
         # Read generated code
-        with open(output_path, "r") as f:
+        with open(output_path) as f:
             generated_code = f.read()
 
         return {
@@ -165,7 +164,7 @@ async def generate_workflow_agent(
         )
 
         # Read generated code
-        with open(output_path, "r") as f:
+        with open(output_path) as f:
             generated_code = f.read()
 
         return {
@@ -387,7 +386,7 @@ async def validate_agent_config(
     try:
         import json
 
-        capabilities_list = json.loads(capabilities) if capabilities else []
+        json.loads(capabilities) if capabilities else []
 
         # Validation rules
         errors = []

@@ -6,14 +6,11 @@ RAG Search Engine
 Core search functionality for retrieval-augmented generation.
 """
 
-import hashlib
 import logging
-import os
 import pickle
-import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Optional
 
 import numpy as np
 
@@ -89,7 +86,7 @@ class RAGSearchEngine:
         if self.use_multi_query and self.use_llm:
             self._initialize_multi_query_retriever()
 
-        logger.info(f"🔍 RAG search engine initialized")
+        logger.info("🔍 RAG search engine initialized")
         logger.info(f"   Model: {self.model_name}")
         logger.info(f"   Vector store: {self.vectorstore_path}")
         logger.info(f"   Documents loaded: {len(self.documents)}")
@@ -243,7 +240,6 @@ class RAGSearchEngine:
     def _load_index(self):
         """Load existing FAISS index and documents."""
         try:
-            import faiss
 
             with open(self.vectorstore_path, "rb") as f:
                 data = pickle.load(f)
@@ -290,7 +286,7 @@ class RAGSearchEngine:
         top_k: int = 5,
         similarity_threshold: float = 0.5,
         include_metadata: bool = True,
-    ) -> List[SearchResult]:
+    ) -> list[SearchResult]:
         """
         Search for similar documents.
 
@@ -329,7 +325,7 @@ class RAGSearchEngine:
 
             # Prepare results
             results = []
-            for i, (distance, idx) in enumerate(zip(distances[0], indices[0])):
+            for i, (_distance, idx) in enumerate(zip(distances[0], indices[0])):
                 if idx < len(self.documents):
                     similarity_score = similarity_scores[i]
 
@@ -367,7 +363,7 @@ class RAGSearchEngine:
         top_k: int = 5,
         similarity_threshold: float = 0.5,
         include_metadata: bool = True,
-    ) -> List[SearchResult]:
+    ) -> list[SearchResult]:
         """
         Search using MultiQueryRetriever for smarter results.
 
@@ -435,7 +431,7 @@ class RAGSearchEngine:
         return f"doc_{chunk_index // 10}"  # Assume 10 chunks per document
 
     def add_documents(
-        self, documents: List[str], metadata: Optional[Dict[str, Any]] = None
+        self, documents: list[str], metadata: Optional[dict[str, Any]] = None
     ):
         """
         Add documents to the vector store.
@@ -459,7 +455,7 @@ class RAGSearchEngine:
                 self.index.add(embeddings)
 
             # Add to documents list
-            start_idx = len(self.documents)
+            len(self.documents)
             self.documents.extend(documents)
 
             # Add metadata
@@ -485,7 +481,7 @@ class RAGSearchEngine:
         self._initialize_index()
         logger.info("🗑️ Index cleared")
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get search engine status."""
         return {
             "index_loaded": self.index is not None,
@@ -549,7 +545,7 @@ class RAGSearchEngine:
             pass
         return datetime.now().isoformat()
 
-    def list_documents(self) -> List[Dict[str, Any]]:
+    def list_documents(self) -> list[dict[str, Any]]:
         """List all documents in the index."""
         documents = []
 
@@ -577,7 +573,7 @@ class RAGSearchEngine:
 
         return documents
 
-    def get_document(self, doc_id: str) -> Optional[Dict[str, Any]]:
+    def get_document(self, doc_id: str) -> Optional[dict[str, Any]]:
         """Get a specific document by ID."""
         documents = self.list_documents()
         for doc in documents:
@@ -597,7 +593,7 @@ class RAGSearchEngine:
         query: str,
         top_k: int = 3,
         similarity_threshold: float = 0.5,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Search with LLM-generated answer using RetrievalQA chain.
 
@@ -672,7 +668,7 @@ class RAGSearchEngine:
                 "error": str(e),
             }
 
-    def _save_to_memory(self, query: str, answer: str, citations: List[str]):
+    def _save_to_memory(self, query: str, answer: str, citations: list[str]):
         """
         Save query, answer, and citations to JSON log file.
 
@@ -683,7 +679,6 @@ class RAGSearchEngine:
         """
         try:
             import json
-            import os
             from datetime import datetime
 
             record = {
@@ -711,7 +706,7 @@ class RAGSearchEngine:
             logger.error(f"Failed to save to memory log: {e}")
 
     def update_langchain_vectorstore(
-        self, documents: List[str], metadata: Optional[Dict[str, Any]] = None
+        self, documents: list[str], metadata: Optional[dict[str, Any]] = None
     ):
         """
         Update the LangChain vectorstore with new documents.
@@ -766,7 +761,7 @@ def search_query(query: str) -> str:
         return "No relevant documents found."
 
 
-def retrieve_chunks(query: str, use_multi_query: bool = True) -> List[SearchResult]:
+def retrieve_chunks(query: str, use_multi_query: bool = True) -> list[SearchResult]:
     """
     Convenience function for retrieving document chunks with optional MultiQueryRetriever.
 

@@ -11,7 +11,7 @@ import logging
 # Add parent directory to path for imports
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel
@@ -33,7 +33,7 @@ class FeedbackRequest(BaseModel):
     context: str = ""
     category: str = "incorrect_answer"
     user_notes: str = ""
-    tenant_data: Optional[Dict[str, Any]] = None
+    tenant_data: Optional[dict[str, Any]] = None
 
 
 class FeedbackResponse(BaseModel):
@@ -48,8 +48,8 @@ class FeedbackStats(BaseModel):
     pending_training: int
     trained: int
     recent_feedback: int
-    categories: Dict[str, int]
-    status: Dict[str, int]
+    categories: dict[str, int]
+    status: dict[str, int]
 
 
 class FeedbackEntry(BaseModel):
@@ -104,7 +104,7 @@ async def collect_feedback(data: FeedbackRequest):
         )
 
 
-@router.get("/htc/feedback", response_model=Dict[str, Any])
+@router.get("/htc/feedback", response_model=dict[str, Any])
 async def get_feedback_entries(
     limit: int = Query(default=50, ge=1, le=100),
     category: Optional[str] = Query(default=None),
@@ -290,7 +290,6 @@ async def delete_feedback(feedback_id: str):
             raise HTTPException(status_code=404, detail="Feedback entry not found")
 
         # Delete the file
-        import os
 
         file_path = collector.log_dir / f"{feedback_id}.json"
         if file_path.exists():

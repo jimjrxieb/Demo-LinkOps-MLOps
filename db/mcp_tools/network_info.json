@@ -1,0 +1,10 @@
+{
+  "name": "network_info",
+  "description": "Display network interface and connectivity information",
+  "task_type": "monitoring",
+  "command": "echo '=== Network Interfaces ===' && ip addr show && echo '=== Routing Table ===' && ip route show && echo '=== DNS Configuration ===' && cat /etc/resolv.conf",
+  "tags": ["network", "monitoring", "connectivity"],
+  "auto": false,
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+} 

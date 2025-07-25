@@ -2,12 +2,9 @@
   <div class="admin-app">
     <!-- Sidebar -->
     <Sidebar />
-    
+
     <!-- Main Content Area -->
-    <div
-      class="main-content"
-      :class="{ 'sidebar-collapsed': false }"
-    >
+    <div class="main-content" :class="{ 'sidebar-collapsed': false }">
       <!-- Top Header -->
       <header class="top-header">
         <div class="header-content">
@@ -35,11 +32,11 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
-import Sidebar from './components/Sidebar.vue'
+import { computed } from 'vue';
+import { useRoute } from 'vue-router';
+import Sidebar from './components/Sidebar.vue';
 
-const route = useRoute()
+const route = useRoute();
 
 const currentPageTitle = computed(() => {
   const routeTitles = {
@@ -53,10 +50,10 @@ const currentPageTitle = computed(() => {
     '/demo/rag': 'Demo RAG: Kubernetes Model Interaction',
     '/demo/pipeline': 'Demo Pipeline: Model Training',
     '/demo/ml-creator': 'ML Creator: Build Your ML Model',
-    '/about': 'About This Demo'
-  }
-  return routeTitles[route.path] || 'LinkOps Demo'
-})
+    '/about': 'About This Demo',
+  };
+  return routeTitles[route.path] || 'LinkOps Demo';
+});
 
 const currentPageSubtitle = computed(() => {
   const routeSubtitles = {
@@ -65,31 +62,37 @@ const currentPageSubtitle = computed(() => {
       'I incorporated industry-standard linters, formatters, and wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.',
       '',
       'For DevOps: I used GitHub Actions, Trivy, SonarQube, and GitGuardian.',
-      'For Kubernetes: I earned my CKA and use ArgoCD to sync this platform into Docker Desktop\'s K8s environment.',
+      "For Kubernetes: I earned my CKA and use ArgoCD to sync this platform into Docker Desktop's K8s environment.",
       'For Cloud Engineering: I deployed this demo into an Azure VM provisioned using Terraform.',
-      'For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps pipeline.'
+      'For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps pipeline.',
     ].join('\n'),
     '/pipeline': 'Visualize the Whis MLOps learning process',
     '/orbs': 'Browse the Kubernetes/CD best practices library',
-    '/rag-search': 'Upload documents and ask questions. Get intelligent answers based on your uploaded content.',
-    '/ml-builder': 'Train machine learning models from CSV data - fully offline, no cloud required',
-    '/agent-builder': 'Create AI agents and tools from natural language - fully offline, powered by local LLM',
+    '/rag-search':
+      'Upload documents and ask questions. Get intelligent answers based on your uploaded content.',
+    '/ml-builder':
+      'Train machine learning models from CSV data - fully offline, no cloud required',
+    '/agent-builder':
+      'Create AI agents and tools from natural language - fully offline, powered by local LLM',
     '/keys': 'Configure AI API keys for enhanced features',
-    '/demo/rag': 'Ask questions or assign tasks about the Kubernetes ML model. Experience intelligent task ranking and execution.',
-    '/demo/pipeline': 'Experience a simplified, animated visualization of the Kubernetes ML model training pipeline.',
-    '/demo/ml-creator': 'Easily create machine learning models without coding expertise. Perfect for non-data scientists.',
+    '/demo/rag':
+      'Ask questions or assign tasks about the Kubernetes ML model. Experience intelligent task ranking and execution.',
+    '/demo/pipeline':
+      'Experience a simplified, animated visualization of the Kubernetes ML model training pipeline.',
+    '/demo/ml-creator':
+      'Easily create machine learning models without coding expertise. Perfect for non-data scientists.',
     '/about': [
       'I built this AI-powered Kubernetes/CD platform from the ground up using top tools like OpenAI, LangChain, FastAPI, and Cursor.',
       'I incorporated industry-standard linters, formatters, and wrote custom Python and Bash scripts to auto-fix issues and streamline my workflow.',
       '',
       'For DevOps: I used GitHub Actions, Trivy, SonarQube, and GitGuardian.',
-      'For Kubernetes: I earned my CKA and use ArgoCD to sync this platform into Docker Desktop\'s K8s environment.',
+      "For Kubernetes: I earned my CKA and use ArgoCD to sync this platform into Docker Desktop's K8s environment.",
       'For Platform Engineering: I deployed this demo into an Azure VM provisioned using Terraform.',
-      'For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps pipeline.'
-    ].join('\n')
-  }
-  return routeSubtitles[route.path] || 'LinkOps MLOps Platform'
-})
+      'For AI/ML: I use microservices for data collection, sanitation, and a custom learning model (Whis Smithing) with feedback loops — simulating a true MLOps pipeline.',
+    ].join('\n'),
+  };
+  return routeSubtitles[route.path] || 'LinkOps MLOps Platform';
+});
 </script>
 
 <style>
@@ -101,7 +104,13 @@ const currentPageSubtitle = computed(() => {
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
   background: #f8fafc;
   color: #1e293b;
   line-height: 1.6;
@@ -342,11 +351,11 @@ body {
   .main-content {
     margin-left: 0;
   }
-  
+
   .page-content {
     padding: 1rem;
   }
-  
+
   .header-content {
     flex-direction: column;
     align-items: flex-start;
@@ -358,11 +367,11 @@ body {
   .top-header {
     padding: 1rem;
   }
-  
+
   .page-title h1 {
     font-size: 1.5rem;
   }
-  
+
   .page-content {
     padding: 0.75rem;
   }

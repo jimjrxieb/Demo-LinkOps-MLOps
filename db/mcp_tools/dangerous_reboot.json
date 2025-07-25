@@ -1,0 +1,11 @@
+{
+  "name": "dangerous_reboot",
+  "description": "Test tool: dangerous_reboot",
+  "task_type": "test",
+  "command": "reboot",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

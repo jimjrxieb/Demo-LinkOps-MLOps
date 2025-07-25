@@ -6,15 +6,13 @@ Data Sanitizer Component
 Handles data cleaning, PII redaction, and sanitization.
 """
 
-import hashlib
 import json
 import logging
 import re
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
-import numpy as np
 import pandas as pd
 
 logger = logging.getLogger(__name__)
@@ -25,7 +23,7 @@ class DataSanitizer:
     Data sanitizer component for cleaning and redacting sensitive data.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """
         Initialize the data sanitizer.
 
@@ -125,7 +123,7 @@ class DataSanitizer:
 
         # Read JSON
         try:
-            with open(input_path, "r") as f:
+            with open(input_path) as f:
                 data = json.load(f)
         except Exception as e:
             raise ValueError(f"Failed to read JSON file: {e}")
@@ -152,7 +150,7 @@ class DataSanitizer:
 
         # Read text
         try:
-            with open(input_path, "r") as f:
+            with open(input_path) as f:
                 text = f.read()
         except Exception as e:
             raise ValueError(f"Failed to read text file: {e}")
@@ -268,7 +266,7 @@ class DataSanitizer:
         redacted_text = text
 
         # Apply redaction patterns
-        for pattern_name, pattern_info in self.redaction_patterns.items():
+        for _pattern_name, pattern_info in self.redaction_patterns.items():
             pattern = pattern_info["pattern"]
             replacement = pattern_info["replacement"]
 
@@ -333,7 +331,7 @@ class DataSanitizer:
 
         return df
 
-    def _get_default_config(self) -> Dict[str, Any]:
+    def _get_default_config(self) -> dict[str, Any]:
         """Get default configuration."""
         return {
             "remove_duplicates": True,
@@ -343,7 +341,7 @@ class DataSanitizer:
             "log_level": "INFO",
         }
 
-    def _load_redaction_patterns(self) -> Dict[str, Dict[str, Any]]:
+    def _load_redaction_patterns(self) -> dict[str, dict[str, Any]]:
         """Load redaction patterns."""
         return {
             "email": {
@@ -404,7 +402,7 @@ class DataSanitizer:
 
     def get_sanitization_report(
         self, input_path: str, output_path: str
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate a sanitization report.
 

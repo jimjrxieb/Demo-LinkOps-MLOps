@@ -1,0 +1,10 @@
+{
+  "name": "test_tool",
+  "description": "A simple test tool for frontend execution testing",
+  "task_type": "testing",
+  "command": "echo 'Hello from MCP Tool Execution!' && date && echo 'Test completed successfully'",
+  "tags": ["test", "frontend", "execution"],
+  "auto": true,
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-15T10:30:00Z"
+} 

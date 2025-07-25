@@ -11,10 +11,8 @@ import logging
 import os
 import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
-from fastapi.responses import FileResponse
 
 # Add the RAG service to the path
 sys.path.append("/app/rag")
@@ -295,7 +293,7 @@ async def embed_document(
 
 @router.post("/embed-batch")
 async def embed_documents_batch(
-    files: List[UploadFile] = File(...),
+    files: list[UploadFile] = File(...),
     chunk_size: int = Form(1000),
     chunk_overlap: int = Form(200),
 ):

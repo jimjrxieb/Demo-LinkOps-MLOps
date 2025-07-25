@@ -9,10 +9,8 @@ API endpoints for uploading and embedding CSV files into the RAG system.
 import logging
 import shutil
 from pathlib import Path
-from typing import Dict, List
 
 from fastapi import APIRouter, File, HTTPException, UploadFile
-from fastapi.responses import JSONResponse
 
 # Import CSV embedder
 from loaders.csv_embedder import embed_csv_content, get_csv_embedder
@@ -57,7 +55,7 @@ async def upload_csv(file: UploadFile = File(...)):
             shutil.copyfileobj(file.file, buffer)
 
         # Read file content for embedding
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             csv_content = f.read()
 
         # Embed CSV content
@@ -89,7 +87,7 @@ async def upload_csv(file: UploadFile = File(...)):
 
 
 @router.post("/upload-csv-batch")
-async def upload_csv_batch(files: List[UploadFile] = File(...)):
+async def upload_csv_batch(files: list[UploadFile] = File(...)):
     """Upload multiple CSV files in batch."""
     try:
         results = []
@@ -114,7 +112,7 @@ async def upload_csv_batch(files: List[UploadFile] = File(...)):
                     shutil.copyfileobj(file.file, buffer)
 
                 # Read and embed content
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     csv_content = f.read()
 
                 success = embed_csv_content(csv_content, file.filename)

@@ -1,0 +1,27 @@
+[Unit]
+Description=LinkOps Auto Tool Runner
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=jimjrxieb
+Group=jimjrxieb
+WorkingDirectory=/home/jimjrxieb/shadow-link-industries/DEMO-LinkOps
+ExecStart=/usr/bin/python3 /home/jimjrxieb/shadow-link-industries/DEMO-LinkOps/scripts/auto_runner.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+# Environment variables
+Environment=PYTHONPATH=/home/jimjrxieb/shadow-link-industries/DEMO-LinkOps
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ReadWritePaths=/home/jimjrxieb/shadow-link-industries/DEMO-LinkOps
+
+[Install]
+WantedBy=multi-user.target 

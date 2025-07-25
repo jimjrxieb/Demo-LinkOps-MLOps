@@ -1,0 +1,11 @@
+{
+  "name": "manual_tool",
+  "description": "Test tool: manual_tool",
+  "task_type": "test",
+  "command": "echo 'Manual tool'",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": false
+}

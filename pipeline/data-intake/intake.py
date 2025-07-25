@@ -8,12 +8,11 @@ Handles file uploads and initial data processing.
 
 import hashlib
 import logging
-import os
 import shutil
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -38,7 +37,7 @@ class DataIntake:
         )
 
     def save_upload(
-        self, file_path: str, metadata: Optional[Dict[str, Any]] = None
+        self, file_path: str, metadata: Optional[dict[str, Any]] = None
     ) -> str:
         """
         Save uploaded file to the intake directory.
@@ -92,7 +91,7 @@ class DataIntake:
         file_path: str,
         allowed_extensions: Optional[list] = None,
         max_size_mb: Optional[int] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[dict[str, Any]] = None,
     ) -> str:
         """
         Save uploaded file with validation.
@@ -129,7 +128,7 @@ class DataIntake:
         # Save the file
         return self.save_upload(file_path, metadata)
 
-    def get_upload_info(self, file_path: str) -> Dict[str, Any]:
+    def get_upload_info(self, file_path: str) -> dict[str, Any]:
         """
         Get information about an uploaded file.
 
@@ -163,7 +162,7 @@ class DataIntake:
             try:
                 import json
 
-                with open(metadata_path, "r") as f:
+                with open(metadata_path) as f:
                     info["metadata"] = json.load(f)
             except Exception as e:
                 logger.warning(f"Failed to load metadata: {e}")
@@ -254,7 +253,7 @@ class DataIntake:
 
         return hash_sha256.hexdigest()
 
-    def _save_metadata(self, file_path: Path, metadata: Dict[str, Any]):
+    def _save_metadata(self, file_path: Path, metadata: dict[str, Any]):
         """
         Save metadata for an uploaded file.
 

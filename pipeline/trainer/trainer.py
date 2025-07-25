@@ -12,7 +12,7 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Optional
 
 import requests
 
@@ -24,7 +24,7 @@ class ModelTrainer:
     Model trainer component for ML model training and generation.
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """
         Initialize the model trainer.
 
@@ -53,7 +53,7 @@ class ModelTrainer:
         data_path: str,
         model_type: str,
         target_col: Optional[str] = None,
-        params: Optional[Dict[str, Any]] = None,
+        params: Optional[dict[str, Any]] = None,
     ) -> str:
         """
         Train a machine learning model.
@@ -98,7 +98,7 @@ class ModelTrainer:
         )
 
         # Save training metadata
-        metadata_path = self._save_training_metadata(
+        self._save_training_metadata(
             input_path, model_type, target_col, training_params, model_path
         )
 
@@ -154,7 +154,7 @@ class ModelTrainer:
             return "target"  # Default fallback
 
     def _generate_model_via_service(
-        self, data_path: Path, model_type: str, target_col: str, params: Dict[str, Any]
+        self, data_path: Path, model_type: str, target_col: str, params: dict[str, Any]
     ) -> str:
         """
         Generate model using the model creator service.
@@ -212,7 +212,7 @@ class ModelTrainer:
             )
 
     def _generate_model_locally(
-        self, data_path: Path, model_type: str, target_col: str, params: Dict[str, Any]
+        self, data_path: Path, model_type: str, target_col: str, params: dict[str, Any]
     ) -> str:
         """
         Generate model locally (fallback method).
@@ -247,7 +247,7 @@ class ModelTrainer:
         return str(model_path)
 
     def _create_model_template(
-        self, model_type: str, target_col: str, data_path: str, params: Dict[str, Any]
+        self, model_type: str, target_col: str, data_path: str, params: dict[str, Any]
     ) -> str:
         """
         Create a model template based on type.
@@ -289,18 +289,18 @@ class {model_type.title()}Model:
     """
     Generated {model_type} model for {target_col} prediction.
     """
-    
+
     def __init__(self):
         self.model = None
         self.feature_columns = None
         self.target_column = "{target_col}"
         self.data_path = "{data_path}"
         self.algorithm = "{algorithm}"
-        
+
     def load_data(self):
         """Load and prepare data."""
         logger.info(f"📊 Loading data from {{self.data_path}}")
-        
+
         # Load data
         if self.data_path.endswith('.csv'):
             df = pd.read_csv(self.data_path)
@@ -308,34 +308,34 @@ class {model_type.title()}Model:
             df = pd.read_excel(self.data_path)
         else:
             raise ValueError(f"Unsupported file format: {{self.data_path}}")
-        
+
         # Prepare features and target
         if self.target_column not in df.columns:
             raise ValueError(f"Target column '{{self.target_column}}' not found in data")
-        
+
         X = df.drop(columns=[self.target_column])
         y = df[self.target_column]
-        
+
         # Handle categorical features
         categorical_columns = X.select_dtypes(include=['object']).columns
         if len(categorical_columns) > 0:
             X = pd.get_dummies(X, columns=categorical_columns)
-        
+
         self.feature_columns = X.columns.tolist()
-        
+
         return X, y
-    
+
     def train(self):
         """Train the model."""
         logger.info(f"🤖 Training {model_type} model with {{self.algorithm}}")
-        
+
         X, y = self.load_data()
-        
+
         # Split data
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42
         )
-        
+
         # Select and train model
         if "{model_type}" == "classifier":
             from sklearn.ensemble import RandomForestClassifier
@@ -348,7 +348,7 @@ class {model_type.title()}Model:
             self.model = KMeans(n_clusters=3, random_state=42)
         else:
             raise ValueError(f"Unsupported model type: {{model_type}}")
-        
+
         # Train model
         if "{model_type}" == "clustering":
             self.model.fit(X_train)
@@ -356,12 +356,12 @@ class {model_type.title()}Model:
         else:
             self.model.fit(X_train, y_train)
             predictions = self.model.predict(X_test)
-        
+
         # Evaluate model
         self._evaluate_model(y_test, predictions)
-        
+
         logger.info("✅ Model training completed")
-    
+
     def _evaluate_model(self, y_true, y_pred):
         """Evaluate model performance."""
         if "{model_type}" == "classifier":
@@ -375,34 +375,34 @@ class {model_type.title()}Model:
             logger.info(f"📊 R² Score: {{r2:.4f}}")
         elif "{model_type}" == "clustering":
             logger.info(f"📊 Clustering completed with {{len(set(y_pred))}} clusters")
-    
+
     def predict(self, X):
         """Make predictions."""
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
-        
+
         # Handle categorical features
         categorical_columns = X.select_dtypes(include=['object']).columns
         if len(categorical_columns) > 0:
             X = pd.get_dummies(X, columns=categorical_columns)
-        
+
         return self.model.predict(X)
-    
+
     def save_model(self, filepath):
         """Save the trained model."""
         if self.model is None:
             raise ValueError("Model not trained. Call train() first.")
-        
+
         model_data = {{
             'model': self.model,
             'feature_columns': self.feature_columns,
             'target_column': self.target_column,
             'algorithm': self.algorithm
         }}
-        
+
         joblib.dump(model_data, filepath)
         logger.info(f"💾 Model saved to {{filepath}}")
-    
+
     def load_model(self, filepath):
         """Load a trained model."""
         model_data = joblib.load(filepath)
@@ -416,15 +416,15 @@ def main():
     """Demo function to train and test the model."""
     print("🤖 {model_type.title()} Model Demo")
     print("=" * 40)
-    
+
     # Create and train model
     model = {model_type.title()}Model()
     model.train()
-    
+
     # Save model
     model_path = "trained_{model_type}_model.pkl"
     model.save_model(model_path)
-    
+
     print(f"✅ Model training completed and saved to {{model_path}}")
     return model
 
@@ -439,7 +439,7 @@ if __name__ == "__main__":
         data_path: Path,
         model_type: str,
         target_col: str,
-        params: Dict[str, Any],
+        params: dict[str, Any],
         model_path: str,
     ) -> str:
         """
@@ -478,7 +478,7 @@ if __name__ == "__main__":
         logger.info(f"📝 Training metadata saved: {metadata_path}")
         return str(metadata_path)
 
-    def _get_default_config(self) -> Dict[str, Any]:
+    def _get_default_config(self) -> dict[str, Any]:
         """Get default configuration."""
         return {
             "models_dir": "/tmp/models",
@@ -490,7 +490,7 @@ if __name__ == "__main__":
             "timeout": 60,
         }
 
-    def get_model_info(self, model_path: str) -> Dict[str, Any]:
+    def get_model_info(self, model_path: str) -> dict[str, Any]:
         """
         Get information about a trained model.
 
@@ -521,7 +521,7 @@ if __name__ == "__main__":
         metadata_files = list(self.models_dir.glob("*_metadata_*.json"))
         for metadata_file in metadata_files:
             try:
-                with open(metadata_file, "r") as f:
+                with open(metadata_file) as f:
                     metadata = json.load(f)
 
                 if metadata.get("model_path") == model_path:
@@ -532,7 +532,7 @@ if __name__ == "__main__":
 
         return info
 
-    def list_models(self, limit: Optional[int] = None) -> List[Dict[str, Any]]:
+    def list_models(self, limit: Optional[int] = None) -> list[dict[str, Any]]:
         """
         List trained models.
 
@@ -629,7 +629,7 @@ def train_model(
     data_path: str,
     model_type: str,
     target_col: Optional[str] = None,
-    params: Optional[Dict[str, Any]] = None,
+    params: Optional[dict[str, Any]] = None,
 ) -> str:
     """
     Convenience function to train a model.
@@ -682,7 +682,7 @@ if __name__ == "__main__":
 
     # Show model info
     info = trainer.get_model_info(model_path)
-    print(f"\n📊 Model Info:")
+    print("\n📊 Model Info:")
     print(f"   File size: {info['file_size_mb']:.2f}MB")
     print(f"   Created: {info['created_time']}")
 

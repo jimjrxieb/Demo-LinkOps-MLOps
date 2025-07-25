@@ -12,7 +12,7 @@ import hashlib
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from logic.embed import DocumentEmbedder
 
@@ -32,12 +32,12 @@ class CSVTEmbedder:
 
         logger.info("🔄 CSV Embedder initialized")
 
-    def parse_csv_to_documents(self, csv_path: Path) -> List[Dict]:
+    def parse_csv_to_documents(self, csv_path: Path) -> list[dict]:
         """Parse CSV file and convert to structured documents."""
         try:
             documents = []
 
-            with open(csv_path, "r", encoding="utf-8") as f:
+            with open(csv_path, encoding="utf-8") as f:
                 reader = csv.DictReader(f)
 
                 for row_num, row in enumerate(reader, start=2):  # Start at 2 for header
@@ -69,7 +69,7 @@ class CSVTEmbedder:
             logger.error(f"❌ CSV parsing failed for {csv_path.name}: {e}")
             return []
 
-    def _create_tenant_content(self, row: Dict) -> str:
+    def _create_tenant_content(self, row: dict) -> str:
         """Create structured content for tenant record."""
         # Format dates nicely
         lease_start = row.get("lease_start", "N/A")
@@ -99,7 +99,7 @@ This tenant record contains information about the rental unit, lease terms, and 
 
         return content
 
-    def _create_tenant_metadata(self, row: Dict, csv_path: Path) -> Dict:
+    def _create_tenant_metadata(self, row: dict, csv_path: Path) -> dict:
         """Create metadata for tenant record."""
         # Calculate days until lease expires
         days_until_expiry = None
@@ -222,7 +222,7 @@ This tenant record contains information about the rental unit, lease terms, and 
             logger.error(f"❌ Failed to embed CSV content: {e}")
             return False
 
-    def get_embedded_tenants(self) -> List[Dict]:
+    def get_embedded_tenants(self) -> list[dict]:
         """Get list of embedded tenant records."""
         try:
             # This would need to be implemented based on your vector store
@@ -232,7 +232,7 @@ This tenant record contains information about the rental unit, lease terms, and 
             logger.error(f"❌ Failed to get embedded tenants: {e}")
             return []
 
-    def search_tenants(self, query: str, top_k: int = 5) -> List[Dict]:
+    def search_tenants(self, query: str, top_k: int = 5) -> list[dict]:
         """Search tenant records using the RAG system."""
         try:
             results = self.search_engine.search(

@@ -6,8 +6,7 @@ Query Schemas for RAG Service
 Pydantic models for request/response validation.
 """
 
-from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -42,7 +41,7 @@ class SearchResult(BaseModel):
     similarity_score: float = Field(..., ge=0.0, le=1.0, description="Similarity score")
     document_id: str = Field(..., description="ID of the source document")
     chunk_index: int = Field(..., description="Index of the text chunk")
-    metadata: Optional[Dict[str, Any]] = Field(None, description="Document metadata")
+    metadata: Optional[dict[str, Any]] = Field(None, description="Document metadata")
 
     class Config:
         schema_extra = {
@@ -60,11 +59,11 @@ class QueryResponse(BaseModel):
     """Response model for RAG queries."""
 
     query: str = Field(..., description="The original query")
-    results: List[SearchResult] = Field(..., description="Search results")
+    results: list[SearchResult] = Field(..., description="Search results")
     execution_time: float = Field(..., description="Query execution time in seconds")
     timestamp: str = Field(..., description="Query timestamp")
     total_results: int = Field(..., description="Total number of results")
-    search_metadata: Dict[str, Any] = Field(..., description="Search engine metadata")
+    search_metadata: dict[str, Any] = Field(..., description="Search engine metadata")
 
     class Config:
         schema_extra = {
@@ -97,7 +96,7 @@ class EmbedRequest(BaseModel):
     file_path: str = Field(..., description="Path to the document file")
     chunk_size: int = Field(1000, ge=100, le=5000, description="Size of text chunks")
     chunk_overlap: int = Field(200, ge=0, le=1000, description="Overlap between chunks")
-    metadata: Optional[Dict[str, Any]] = Field(None, description="Document metadata")
+    metadata: Optional[dict[str, Any]] = Field(None, description="Document metadata")
 
     class Config:
         schema_extra = {
@@ -178,7 +177,7 @@ class DocumentInfo(BaseModel):
     chunks_count: int = Field(..., description="Number of text chunks")
     embedding_model: str = Field(..., description="Model used for embeddings")
     created_at: str = Field(..., description="Document creation timestamp")
-    metadata: Optional[Dict[str, Any]] = Field(None, description="Document metadata")
+    metadata: Optional[dict[str, Any]] = Field(None, description="Document metadata")
 
     class Config:
         schema_extra = {
@@ -231,7 +230,7 @@ class HealthResponse(BaseModel):
     status: str = Field(..., description="Service status")
     service: str = Field(..., description="Service name")
     timestamp: str = Field(..., description="Health check timestamp")
-    vectorstore_status: Dict[str, Any] = Field(..., description="Vector store status")
+    vectorstore_status: dict[str, Any] = Field(..., description="Vector store status")
 
     class Config:
         schema_extra = {

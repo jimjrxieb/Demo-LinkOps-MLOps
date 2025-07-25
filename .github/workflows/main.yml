@@ -31,7 +31,7 @@ jobs:
       - name: Check Black Formatting
         run: |
           echo "🎨 Checking Python formatting..."
-          ruff format --check mlops/ shadows/ || {
+          ruff format --check unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ || {
             echo "❌ Black formatting issues found"
             echo "⚠️ Continuing despite formatting issues"
           }
@@ -40,7 +40,7 @@ jobs:
       - name: Check isort Imports
         run: |
           echo "📦 Checking Python imports..."
-          isort --check-only --diff mlops/ shadows/ || {
+          isort --check-only --diff unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ || {
             echo "❌ isort issues found"
             echo "⚠️ Continuing despite import issues"
           }
@@ -49,7 +49,7 @@ jobs:
       - name: Run Ruff Linting
         run: |
           echo "🔍 Running Ruff linting..."
-          ruff check --ignore E402 mlops/ shadows/ || {
+          ruff check --ignore E402 unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ || {
             echo "❌ Ruff linting errors found"
             echo "⚠️ Continuing despite linting issues"
           }
@@ -58,7 +58,7 @@ jobs:
       - name: Run Bandit Security Scan
         run: |
           echo "🔒 Running security scan..."
-          bandit -r mlops/ shadows/ -f json || echo "⚠️ Security issues found but continuing"
+          bandit -r unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ -f json || echo "⚠️ Security issues found but continuing"
         continue-on-error: true
 
   lint-frontend:
@@ -118,8 +118,7 @@ jobs:
       - name: Check Prettier Formatting (YAML)
         run: |
           echo "🎨 Checking YAML formatting..."
-          prettier --check "helm/argocd/**/*.yaml" "helm/linkops/values.yaml" "helm/linkops/Chart.yaml" \
-            ".github/**/*.yml" || {
+          prettier --check ".github/**/*.yml" "docker/**/*.yml" "*.yml" || {
             echo "❌ YAML formatting issues found"
             echo "⚠️ Continuing despite YAML formatting issues"
           }
@@ -128,41 +127,52 @@ jobs:
       - name: Run yamllint
         run: |
           echo "🔍 Running YAML linting..."
-          yamllint helm/ .github/ || {
+          yamllint .github/ docker/ . || {
             echo "❌ YAML linting errors found"
             echo "⚠️ Continuing despite YAML linting issues"
           }
         continue-on-error: true
 
-  helm-validate:
+  docker-validate:
     runs-on: ubuntu-latest
-    name: Helm Chart Lint
+    name: Docker Compose Validation
     needs: [lint-yaml]
     if: always()
     steps:
       - uses: actions/checkout@v4
 
-      - uses: azure/setup-helm@v3
-        with:
-          version: v3.12.0
-
-      - name: Helm Validation
+      - name: Validate Docker Compose Files
         run: |
-          cd helm/linkops
-          echo "📦 Updating Helm dependencies..."
-          helm dependency update || {
-            echo "⚠️ Dependency update failed - trying without cache"
-            rm -rf charts/ Chart.lock
-            helm dependency update || echo "Dependencies may be outdated"
+          echo "🐳 Validating Docker Compose files..."
+          
+          echo "📋 Checking main docker-compose.yml..."
+          docker-compose -f docker-compose.yml config --quiet || {
+            echo "❌ Main docker-compose.yml validation failed"
+            echo "⚠️ Continuing despite validation issues"
           }
-          echo "🔍 Linting Helm charts..."
-          helm lint . || echo "⚠️ Helm lint issues found but continuing"
+          
+          echo "📋 Checking override files..."
+          if [[ -f "docker/overrides/compose.override.yml" ]]; then
+            docker-compose -f docker-compose.yml -f docker/overrides/compose.override.yml config --quiet || {
+              echo "❌ Override compose validation failed"
+              echo "⚠️ Continuing despite validation issues"
+            }
+          fi
+          
+          if [[ -f "docker/overrides/compose.demo.yml" ]]; then
+            docker-compose -f docker-compose.yml -f docker/overrides/compose.demo.yml config --quiet || {
+              echo "❌ Demo compose validation failed"
+              echo "⚠️ Continuing despite validation issues"
+            }
+          fi
+          
+          echo "✅ Docker Compose validation completed"
         continue-on-error: true
 
   trivy-scan:
     runs-on: ubuntu-latest
     name: "🔍 Trivy Security Scan"
-    needs: [lint-python, lint-frontend, lint-yaml]
+    needs: [lint-python, lint-frontend, lint-yaml, docker-validate]
     if: always()
     steps:
       - name: "📥 Checkout code"
@@ -191,7 +201,7 @@ jobs:
   gitguardian-secrets-scan:
     runs-on: ubuntu-latest
     name: "🛡 GitGuardian Secret Scan"
-    needs: [lint-python, lint-frontend, lint-yaml]
+    needs: [lint-python, lint-frontend, lint-yaml, docker-validate]
     if: always() && github.event_name == 'push'
     steps:
       - name: "📥 Checkout code"
@@ -280,15 +290,13 @@ jobs:
           echo ""
           echo "Demo services to build:"
           echo "✅ frontend/ (Vue.js frontend)"
-          echo "✅ mlops/mlops-platform/ (Main API orchestration)"
-          echo "✅ mlops/whis-data-input/ (Data input service)"
-          echo "✅ mlops/whis-sanitize/ (Data sanitization service)"
-          echo "✅ mlops/whis-logic/ (ML logic service)"
-          echo "✅ mlops/whis-ml/ (ML training and inference service)"
-          echo "✅ shadows/ficknury-evaluator/ (Task evaluation service)"
+          echo "✅ unified-api/ (Main API orchestration)"
+          echo "✅ ml-models/ (ML model services)"
+          echo "✅ pipeline/ (Data processing pipeline)"
+          echo "✅ rag/ (RAG search service)"
           echo ""
           echo "Checking Dockerfiles exist:"
-          for service in frontend mlops/mlops-platform mlops/whis-data-input mlops/whis-sanitize mlops/whis-logic mlops/whis-ml shadows/ficknury-evaluator; do
+          for service in frontend unified-api ml-models pipeline rag; do
             if [[ -f "$service/Dockerfile" ]]; then
               echo "✅ $service/Dockerfile exists"
             else
@@ -328,69 +336,47 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build + Push MLOps Platform
+      - name: Build + Push Unified API
         uses: docker/build-push-action@v4
         with:
-          context: ./mlops/mlops-platform
+          context: ./unified-api
           push: true
           tags: |
-            linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}
-            linksrobot/demo-mlops-platform:latest
+            linksrobot/demo-unified-api:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-unified-api:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build + Push Whis Data Input
+      - name: Build + Push ML Models
         uses: docker/build-push-action@v4
         with:
-          context: ./mlops/whis-data-input
+          context: ./ml-models
           push: true
           tags: |
-            linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
-            linksrobot/demo-whis-data-input:latest
+            linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-ml-models:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build + Push Whis Sanitize
+      - name: Build + Push Pipeline
         uses: docker/build-push-action@v4
         with:
-          context: ./mlops/whis-sanitize
+          context: ./pipeline
           push: true
           tags: |
-            linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
-            linksrobot/demo-whis-sanitize:latest
+            linksrobot/demo-pipeline:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-pipeline:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build + Push Whis Logic
+      - name: Build + Push RAG Service
         uses: docker/build-push-action@v4
         with:
-          context: ./mlops/whis-logic
+          context: ./rag
           push: true
           tags: |
-            linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
-            linksrobot/demo-whis-logic:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build + Push Ficknury Evaluator
-        uses: docker/build-push-action@v4
-        with:
-          context: ./shadows/ficknury-evaluator
-          push: true
-          tags: |
-            linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
-            linksrobot/demo-ficknury-evaluator:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build + Push Whis ML
-        uses: docker/build-push-action@v4
-        with:
-          context: ./mlops/whis-ml
-          push: true
-          tags: |
-            linksrobot/demo-whis-ml:${{ steps.version.outputs.TAG }}
-            linksrobot/demo-whis-ml:latest
+            linksrobot/demo-rag:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-rag:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -401,14 +387,12 @@ jobs:
           echo ""
           echo "✅ Successfully built and pushed:"
           echo "  - linksrobot/demo-frontend:${{ steps.version.outputs.TAG }} (and :latest)"
-          echo "  - linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }} (and :latest)"
-          echo "  - linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }} (and :latest)"
-          echo "  - linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }} (and :latest)"
-          echo "  - linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }} (and :latest)"
-          echo "  - linksrobot/demo-whis-ml:${{ steps.version.outputs.TAG }} (and :latest)"
-          echo "  - linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-unified-api:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-pipeline:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-rag:${{ steps.version.outputs.TAG }} (and :latest)"
           echo ""
-          echo "🚀 Ready for deployment on Azure VM!"
+          echo "🚀 Ready for deployment!"
           echo "Run: docker-compose pull && docker-compose up -d"
           echo ""
           echo "📋 Version Info:"
@@ -429,12 +413,10 @@ jobs:
           
           # Service Images
           FRONTEND_IMAGE=linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}
-          MLOPS_PLATFORM_IMAGE=linksrobot/demo-mlops-platform:${{ steps.version.outputs.TAG }}
-          WHIS_DATA_INPUT_IMAGE=linksrobot/demo-whis-data-input:${{ steps.version.outputs.TAG }}
-          WHIS_SANITIZE_IMAGE=linksrobot/demo-whis-sanitize:${{ steps.version.outputs.TAG }}
-          WHIS_LOGIC_IMAGE=linksrobot/demo-whis-logic:${{ steps.version.outputs.TAG }}
-          WHIS_ML_IMAGE=linksrobot/demo-whis-ml:${{ steps.version.outputs.TAG }}
-          FICKNURY_EVALUATOR_IMAGE=linksrobot/demo-ficknury-evaluator:${{ steps.version.outputs.TAG }}
+          UNIFIED_API_IMAGE=linksrobot/demo-unified-api:${{ steps.version.outputs.TAG }}
+          ML_MODELS_IMAGE=linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }}
+          PIPELINE_IMAGE=linksrobot/demo-pipeline:${{ steps.version.outputs.TAG }}
+          RAG_IMAGE=linksrobot/demo-rag:${{ steps.version.outputs.TAG }}
           
           # Docker Compose Command
           # docker-compose pull && docker-compose up -d
@@ -452,26 +434,31 @@ jobs:
           git commit -m "chore: update version to ${{ steps.version.outputs.TAG }} - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
           git push || echo "No push needed"
 
-  update-argocd:
+  deploy-notify:
     runs-on: ubuntu-latest
-    name: "Update ArgoCD Pull Config"
+    name: "Deployment Notification"
     needs: [docker-build-push]
     if: always() && github.ref == 'refs/heads/main'
     steps:
-      - uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update ArgoCD sync trigger
+      - name: Deployment Summary
         run: |
-          if [[ -f "helm/argocd/application.yaml" ]]; then
-            echo "# Last updated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> helm/argocd/application.yaml
-            git config user.name "github-actions[bot]"
-            git config user.email "actions@github.com"
-            git add helm/argocd/application.yaml
-            git commit -m "chore: trigger ArgoCD sync - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
-            git push || echo "No push needed"
-          else
-            echo "ArgoCD application.yaml not found, skipping sync trigger"
-          fi
-        continue-on-error: true
+          echo "🚀 DEMO-LinkOps Deployment Ready!"
+          echo "=================================="
+          echo ""
+          echo "📦 All Docker images have been built and pushed to registry"
+          echo "📋 VERSION file has been updated with image tags"
+          echo "🐳 Ready for docker-compose deployment"
+          echo ""
+          echo "🔧 Next Steps:"
+          echo "  1. Pull latest images: docker-compose pull"
+          echo "  2. Deploy services: docker-compose up -d"
+          echo "  3. Check service health: docker-compose ps"
+          echo ""
+          echo "📁 Repository Structure:"
+          echo "  - frontend/ → Vue.js UI"
+          echo "  - unified-api/ → Main API backend"
+          echo "  - ml-models/ → ML model services"
+          echo "  - pipeline/ → Data processing"
+          echo "  - rag/ → Search & retrieval"
+          echo ""
+          echo "✅ Build Status: ${{ needs.docker-build-push.result }}"

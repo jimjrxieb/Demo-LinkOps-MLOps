@@ -117,7 +117,7 @@ def test_trainer():
                 print(f"✅ Summary file created: {summary_path}")
 
                 # Read and display summary
-                with open(summary_path, "r") as f:
+                with open(summary_path) as f:
                     summary = json.load(f)
 
                 print("\n📊 Training Summary:")

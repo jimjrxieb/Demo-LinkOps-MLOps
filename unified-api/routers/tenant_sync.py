@@ -9,14 +9,12 @@ Watches for new CSV files and automatically processes them.
 
 import csv
 import hashlib
-import json
 import logging
 import sqlite3
 import threading
 import time
-from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 # Configure logging
 logging.basicConfig(
@@ -173,7 +171,7 @@ class TenantSyncEngine:
                 return False
 
             # Validate CSV structure
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 reader = csv.DictReader(f)
 
                 # Check required columns
@@ -184,7 +182,7 @@ class TenantSyncEngine:
 
                 # Check if file has data
                 row_count = 0
-                for row in reader:
+                for _row in reader:
                     row_count += 1
                     if row_count > 1:  # Just check first few rows
                         break
@@ -199,11 +197,11 @@ class TenantSyncEngine:
             logger.error(f"❌ CSV validation failed for {file_path.name}: {e}")
             return False
 
-    def parse_csv_data(self, file_path: Path) -> List[Dict]:
+    def parse_csv_data(self, file_path: Path) -> list[dict]:
         """Parse CSV file and return structured data."""
         try:
             data = []
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 reader = csv.DictReader(f)
 
                 for row_num, row in enumerate(reader, start=2):  # Start at 2 for header
@@ -390,7 +388,7 @@ class TenantSyncEngine:
         self.running = False
         logger.info("🛑 Tenant sync engine stopped")
 
-    def get_stats(self) -> Dict:
+    def get_stats(self) -> dict:
         """Get sync engine statistics."""
         try:
             conn = sqlite3.connect(DB_PATH)
@@ -407,9 +405,9 @@ class TenantSyncEngine:
             # Get recent syncs
             cur.execute(
                 """
-                SELECT file_name, status, records_processed, synced_at 
-                FROM sync_log 
-                ORDER BY synced_at DESC 
+                SELECT file_name, status, records_processed, synced_at
+                FROM sync_log
+                ORDER BY synced_at DESC
                 LIMIT 10
             """
             )

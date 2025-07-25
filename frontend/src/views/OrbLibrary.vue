@@ -4,9 +4,7 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            📚 Kubernetes/CD Orb Library
-          </h2>
+          <h2 class="card-title">📚 Kubernetes/CD Orb Library</h2>
           <p class="text-gray-600">
             Browse the collection of automated best practices and solutions
           </p>
@@ -17,25 +15,17 @@
               <div class="stat-number">
                 {{ orbs.length }}
               </div>
-              <div class="stat-label">
-                Total Orbs
-              </div>
+              <div class="stat-label">Total Orbs</div>
             </div>
             <div class="stat-card">
               <div class="stat-number">
                 {{ categories.length }}
               </div>
-              <div class="stat-label">
-                Categories
-              </div>
+              <div class="stat-label">Categories</div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">
-                {{ averageConfidence }}%
-              </div>
-              <div class="stat-label">
-                Avg Confidence
-              </div>
+              <div class="stat-number">{{ averageConfidence }}%</div>
+              <div class="stat-label">Avg Confidence</div>
             </div>
           </div>
         </div>
@@ -49,20 +39,25 @@
           <div class="filter-controls">
             <div class="form-group">
               <label class="form-label">Search Orbs</label>
-              <input 
-                v-model="searchQuery" 
-                type="text" 
-                class="form-input" 
+              <input
+                v-model="searchQuery"
+                type="text"
+                class="form-input"
                 placeholder="Search by title, keywords, or category..."
-              >
+              />
             </div>
-            
+
             <!-- Category Buttons -->
             <div class="form-group">
               <label class="form-label">Filter by Category</label>
               <div class="category-buttons">
                 <button
-                  :class="['category-btn', selectedCategory === '' ? 'category-btn-active' : 'category-btn-inactive']"
+                  :class="[
+                    'category-btn',
+                    selectedCategory === ''
+                      ? 'category-btn-active'
+                      : 'category-btn-inactive',
+                  ]"
                   @click="selectedCategory = ''"
                 >
                   All Categories
@@ -70,7 +65,12 @@
                 <button
                   v-for="category in categories"
                   :key="category"
-                  :class="['category-btn', selectedCategory === category ? 'category-btn-active' : 'category-btn-inactive']"
+                  :class="[
+                    'category-btn',
+                    selectedCategory === category
+                      ? 'category-btn-active'
+                      : 'category-btn-inactive',
+                  ]"
                   @click="selectedCategory = category"
                 >
                   {{ category }}
@@ -86,9 +86,7 @@
     <div class="training-orbs-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">
-            🧠 Training Orbs (AI/ML)
-          </h3>
+          <h3 class="card-title">🧠 Training Orbs (AI/ML)</h3>
           <p class="card-subtitle">
             Machine learning models that learn from your tasks
           </p>
@@ -97,22 +95,16 @@
           <div class="training-orbs-grid">
             <div class="training-orb-card">
               <div class="orb-header">
-                <div class="orb-icon">
-                  🤖
-                </div>
+                <div class="orb-icon">🤖</div>
                 <div class="orb-meta">
-                  <h4 class="orb-title">
-                    ML Task Classifier
-                  </h4>
-                  <p class="orb-category">
-                    AI/ML Engineer
-                  </p>
+                  <h4 class="orb-title">ML Task Classifier</h4>
+                  <p class="orb-category">AI/ML Engineer</p>
                 </div>
               </div>
               <div class="orb-content">
                 <p class="orb-description">
-                  Predicts the type of engineering task using a local TensorFlow model. 
-                  Used in whis_smithing to reduce LLM reliance.
+                  Predicts the type of engineering task using a local TensorFlow
+                  model. Used in whis_smithing to reduce LLM reliance.
                 </p>
                 <div class="orb-stats">
                   <div class="stat-item">
@@ -121,7 +113,9 @@
                   </div>
                   <div class="stat-item">
                     <span class="stat-label">Tools:</span>
-                    <span class="stat-value">TensorFlow, Keras, scikit-learn</span>
+                    <span class="stat-value"
+                      >TensorFlow, Keras, scikit-learn</span
+                    >
                   </div>
                   <div class="stat-item">
                     <span class="stat-label">Status:</span>
@@ -129,9 +123,7 @@
                   </div>
                 </div>
                 <div class="orb-actions">
-                  <button class="btn btn-primary btn-sm">
-                    View Details
-                  </button>
+                  <button class="btn btn-primary btn-sm">View Details</button>
                   <button class="btn btn-secondary btn-sm">
                     Retrain Model
                   </button>
@@ -150,7 +142,7 @@
         :key="orb.rune || orb.title"
         :class="[
           'orb-card',
-          orb.type === 'training' ? 'training-orb-card' : 'regular-orb-card'
+          orb.type === 'training' ? 'training-orb-card' : 'regular-orb-card',
         ]"
         @click="openOrbModal(orb)"
       >
@@ -167,10 +159,9 @@
             </h3>
             <p class="orb-category">
               {{ orb.category }}
-              <span
-                v-if="orb.type === 'training'"
-                class="training-badge"
-              >Training Orb</span>
+              <span v-if="orb.type === 'training'" class="training-badge"
+                >Training Orb</span
+              >
             </p>
           </div>
         </div>
@@ -185,37 +176,33 @@
                 v-for="keyword in orb.keywords"
                 :key="keyword"
                 class="keyword-tag"
-              >#{{ keyword }}</span>
+                >#{{ keyword }}</span
+              >
             </div>
           </div>
-          <div
-            v-if="orb.type === 'training'"
-            class="training-stats"
-          >
+          <div v-if="orb.type === 'training'" class="training-stats">
             <div class="stat-item">
               <span class="stat-label">Version:</span>
               <span class="stat-value">{{ orb.version }}</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">Confidence:</span>
-              <span class="stat-value">{{ Math.round((orb.confidence || 0.85) * 100) }}%</span>
+              <span class="stat-value"
+                >{{ Math.round((orb.confidence || 0.85) * 100) }}%</span
+              >
             </div>
           </div>
           <div class="orb-footer">
             <span class="click-hint">Click to view details →</span>
-            <div
-              v-if="orb.type === 'training'"
-              class="retrain-section"
-            >
-              <button
-                class="retrain-btn"
-                @click.stop="$emit('retrain')"
-              >
+            <div v-if="orb.type === 'training'" class="retrain-section">
+              <button class="retrain-btn" @click.stop="$emit('retrain')">
                 🔁 Retrain Model
               </button>
               <div class="last-trained-info">
                 <span class="last-trained-label">Last trained:</span>
-                <span class="last-trained-timestamp">{{ orb.last_trained }}</span>
+                <span class="last-trained-timestamp">{{
+                  orb.last_trained
+                }}</span>
               </div>
             </div>
           </div>
@@ -224,15 +211,10 @@
     </div>
 
     <!-- No Results -->
-    <div
-      v-if="filteredOrbs.length === 0"
-      class="no-results"
-    >
+    <div v-if="filteredOrbs.length === 0" class="no-results">
       <div class="card">
         <div class="card-body text-center">
-          <div class="no-results-icon">
-            🔍
-          </div>
+          <div class="no-results-icon">🔍</div>
           <h3>No Orbs Found</h3>
           <p>Try adjusting your search criteria or category filter.</p>
         </div>
@@ -240,78 +222,64 @@
     </div>
 
     <!-- Orb Detail Modal -->
-    <div
-      v-if="showModal"
-      class="modal-overlay"
-      @click="closeModal"
-    >
-      <div
-        class="modal-content"
-        @click.stop
-      >
+    <div v-if="showModal" class="modal-overlay" @click="closeModal">
+      <div class="modal-content" @click.stop>
         <div class="modal-header">
-          <h2 class="modal-title">
-            📚 {{ selectedOrb?.title }}
-          </h2>
-          <button
-            class="modal-close"
-            @click="closeModal"
-          >
-            ×
-          </button>
+          <h2 class="modal-title">📚 {{ selectedOrb?.title }}</h2>
+          <button class="modal-close" @click="closeModal">×</button>
         </div>
         <div class="modal-body">
           <div class="orb-detail-grid">
             <div class="detail-section">
-              <h3 class="detail-label">
-                Category
-              </h3>
+              <h3 class="detail-label">Category</h3>
               <p class="detail-value">
                 {{ selectedOrb?.category }}
               </p>
             </div>
-            
+
             <div class="detail-section">
-              <h3 class="detail-label">
-                Description
-              </h3>
+              <h3 class="detail-label">Description</h3>
               <p class="detail-value">
                 {{ selectedOrb?.orb }}
               </p>
             </div>
-            
+
             <div class="detail-section">
-              <h3 class="detail-label">
-                Keywords
-              </h3>
+              <h3 class="detail-label">Keywords</h3>
               <div class="keyword-tags">
-                <span 
-                  v-for="keyword in selectedOrb?.keywords" 
-                  :key="keyword" 
+                <span
+                  v-for="keyword in selectedOrb?.keywords"
+                  :key="keyword"
                   class="keyword-tag"
                 >
                   #{{ keyword }}
                 </span>
               </div>
             </div>
-            
+
             <div class="detail-section">
-              <h3 class="detail-label">
-                Rune ID
-              </h3>
-              <code class="rune-code">{{ selectedOrb?.rune || 'R-' + Math.floor(Math.random() * 1000) }}</code>
+              <h3 class="detail-label">Rune ID</h3>
+              <code class="rune-code">{{
+                selectedOrb?.rune || 'R-' + Math.floor(Math.random() * 1000)
+              }}</code>
             </div>
-            
+
             <div class="detail-section">
-              <h3 class="detail-label">
-                Confidence Score
-              </h3>
+              <h3 class="detail-label">Confidence Score</h3>
               <div class="confidence-score">
-                <span class="score-value">{{ Math.round((selectedOrb?.confidence || 0.85) * 100) }}%</span>
+                <span class="score-value"
+                  >{{
+                    Math.round((selectedOrb?.confidence || 0.85) * 100)
+                  }}%</span
+                >
                 <div class="confidence-bar">
-                  <div 
-                    class="confidence-fill" 
-                    :style="{ width: Math.round((selectedOrb?.confidence || 0.85) * 100) + '%' }"
+                  <div
+                    class="confidence-fill"
+                    :style="{
+                      width:
+                        Math.round((selectedOrb?.confidence || 0.85) * 100) +
+                        '%',
+                    }"
                   />
                 </div>
               </div>
@@ -319,15 +287,8 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button
-            class="btn btn-secondary"
-            @click="closeModal"
-          >
-            Close
-          </button>
-          <button class="btn btn-primary">
-            Use This Orb
-          </button>
+          <button class="btn btn-secondary" @click="closeModal">Close</button>
+          <button class="btn btn-primary">Use This Orb</button>
         </div>
       </div>
     </div>
@@ -335,190 +296,193 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import axios from 'axios'
+import { ref, computed, onMounted } from 'vue';
+import axios from 'axios';
 
 // Props for external orb data
 const props = defineProps({
   orbs: {
     type: Array,
-    default: () => []
-  }
-})
+    default: () => [],
+  },
+});
 
 // Emits
-const emit = defineEmits(['retrain'])
+const emit = defineEmits(['retrain']);
 
-const searchQuery = ref('')
-const selectedCategory = ref('')
-const selectedOrb = ref(null)
-const showModal = ref(false)
+const searchQuery = ref('');
+const selectedCategory = ref('');
+const selectedOrb = ref(null);
+const showModal = ref(false);
 
 // Use props.orbs if provided, otherwise load from API
-const orbs = ref([])
+const orbs = ref([]);
 
 const categories = computed(() => {
-  const cats = [...new Set(orbs.value.map(orb => orb.category))]
-  return cats.sort()
-})
+  const cats = [...new Set(orbs.value.map((orb) => orb.category))];
+  return cats.sort();
+});
 
 const averageConfidence = computed(() => {
-  if (orbs.value.length === 0) return 0
-  const total = orbs.value.reduce((sum, orb) => sum + orb.confidence, 0)
-  return Math.round((total / orbs.value.length) * 100)
-})
+  if (orbs.value.length === 0) return 0;
+  const total = orbs.value.reduce((sum, orb) => sum + orb.confidence, 0);
+  return Math.round((total / orbs.value.length) * 100);
+});
 
 const filteredOrbs = computed(() => {
-  let filtered = orbs.value
+  let filtered = orbs.value;
 
   // Filter by search query
   if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(orb => 
-      orb.title.toLowerCase().includes(query) ||
-      orb.category.toLowerCase().includes(query) ||
-      orb.keywords.some(keyword => keyword.toLowerCase().includes(query))
-    )
+    const query = searchQuery.value.toLowerCase();
+    filtered = filtered.filter(
+      (orb) =>
+        orb.title.toLowerCase().includes(query) ||
+        orb.category.toLowerCase().includes(query) ||
+        orb.keywords.some((keyword) => keyword.toLowerCase().includes(query))
+    );
   }
 
   // Filter by category
   if (selectedCategory.value) {
-    filtered = filtered.filter(orb => orb.category === selectedCategory.value)
+    filtered = filtered.filter(
+      (orb) => orb.category === selectedCategory.value
+    );
   }
 
-  return filtered
-})
+  return filtered;
+});
 
 const getCategoryIcon = (category) => {
   const icons = {
-    'DevOps': '⚙️',
-    'Security': '🛡️',
-    'Kubernetes': '☸️',
+    DevOps: '⚙️',
+    Security: '🛡️',
+    Kubernetes: '☸️',
     'CI/CD': '🔄',
-    'GitOps': '📦',
-    'Infrastructure': '🏗️',
-    'Observability': '📊'
-  }
-  return icons[category] || '📋'
-}
+    GitOps: '📦',
+    Infrastructure: '🏗️',
+    Observability: '📊',
+  };
+  return icons[category] || '📋';
+};
 
 const getConfidenceClass = (confidence) => {
-  if (confidence >= 0.9) return 'confidence-high'
-  if (confidence >= 0.7) return 'confidence-medium'
-  return 'confidence-low'
-}
+  if (confidence >= 0.9) return 'confidence-high';
+  if (confidence >= 0.7) return 'confidence-medium';
+  return 'confidence-low';
+};
 
 const openOrbModal = (orb) => {
-  selectedOrb.value = orb
-  showModal.value = true
-}
+  selectedOrb.value = orb;
+  showModal.value = true;
+};
 
 const closeModal = () => {
-  showModal.value = false
-  selectedOrb.value = null
-}
+  showModal.value = false;
+  selectedOrb.value = null;
+};
 
 const loadOrbs = async () => {
   // If orbs are provided via props, use them
   if (props.orbs && props.orbs.length > 0) {
-    orbs.value = props.orbs
-    return
+    orbs.value = props.orbs;
+    return;
   }
-  
+
   try {
-    const response = await axios.get('/api/demo/orbs')
-    orbs.value = response.data.orbs || []
+    const response = await axios.get('/api/demo/orbs');
+    orbs.value = response.data.orbs || [];
   } catch (error) {
-    console.error('Failed to load orbs:', error)
+    console.error('Failed to load orbs:', error);
     // Fallback to hardcoded orbs for demo
     orbs.value = [
       {
-        title: "CI/CD Pipeline Linting",
-        keywords: ["ci", "cd", "pipeline", "lint", "yaml", "gha"],
-        orb: "Ensure your CI/CD pipeline is linted using yamllint and GitHub Actions workflow syntax validation.",
-        rune: "R-101",
+        title: 'CI/CD Pipeline Linting',
+        keywords: ['ci', 'cd', 'pipeline', 'lint', 'yaml', 'gha'],
+        orb: 'Ensure your CI/CD pipeline is linted using yamllint and GitHub Actions workflow syntax validation.',
+        rune: 'R-101',
         confidence: 0.96,
-        category: "DevOps"
+        category: 'DevOps',
       },
       {
-        title: "Container Image Vulnerability Scanning",
-        keywords: ["trivy", "container", "image", "vulnerability", "scan"],
-        orb: "Scan container images with Trivy to identify OS and dependency vulnerabilities.",
-        rune: "R-102",
+        title: 'Container Image Vulnerability Scanning',
+        keywords: ['trivy', 'container', 'image', 'vulnerability', 'scan'],
+        orb: 'Scan container images with Trivy to identify OS and dependency vulnerabilities.',
+        rune: 'R-102',
         confidence: 0.94,
-        category: "Security"
+        category: 'Security',
       },
       {
-        title: "Helm Chart Best Practices",
-        keywords: ["helm", "chart", "values.yaml", "templates"],
-        orb: "Follow Helm chart conventions: use `values.yaml`, document templates, and validate with `helm lint`.",
-        rune: "R-103",
+        title: 'Helm Chart Best Practices',
+        keywords: ['helm', 'chart', 'values.yaml', 'templates'],
+        orb: 'Follow Helm chart conventions: use `values.yaml`, document templates, and validate with `helm lint`.',
+        rune: 'R-103',
         confidence: 0.93,
-        category: "Kubernetes"
+        category: 'Kubernetes',
       },
       {
-        title: "GitOps Compliance Check",
-        keywords: ["gitops", "argocd", "flux", "manifests"],
-        orb: "Ensure Kubernetes manifests follow GitOps principles and are managed via tools like ArgoCD or Flux.",
-        rune: "R-104",
+        title: 'GitOps Compliance Check',
+        keywords: ['gitops', 'argocd', 'flux', 'manifests'],
+        orb: 'Ensure Kubernetes manifests follow GitOps principles and are managed via tools like ArgoCD or Flux.',
+        rune: 'R-104',
         confidence: 0.91,
-        category: "GitOps"
+        category: 'GitOps',
       },
       {
-        title: "Secrets Management with Kubernetes",
-        keywords: ["secret", "kubernetes", "sealed-secrets", "vault"],
-        orb: "Use Sealed Secrets or HashiCorp Vault for secure Kubernetes secret management.",
-        rune: "R-105",
+        title: 'Secrets Management with Kubernetes',
+        keywords: ['secret', 'kubernetes', 'sealed-secrets', 'vault'],
+        orb: 'Use Sealed Secrets or HashiCorp Vault for secure Kubernetes secret management.',
+        rune: 'R-105',
         confidence: 0.92,
-        category: "Security"
+        category: 'Security',
       },
       {
-        title: "Shift Left Security",
-        keywords: ["shift", "left", "security", "snyk", "bandit"],
-        orb: "Integrate Snyk, Bandit, and Checkov into CI pipeline for early security checks.",
-        rune: "R-106",
+        title: 'Shift Left Security',
+        keywords: ['shift', 'left', 'security', 'snyk', 'bandit'],
+        orb: 'Integrate Snyk, Bandit, and Checkov into CI pipeline for early security checks.',
+        rune: 'R-106',
         confidence: 0.93,
-        category: "Security"
+        category: 'Security',
       },
       {
-        title: "Terraform Code Quality",
-        keywords: ["terraform", "tfsec", "lint", "infrastructure"],
-        orb: "Use `tflint`, `tfsec`, and `checkov` to audit infrastructure as code.",
-        rune: "R-107",
+        title: 'Terraform Code Quality',
+        keywords: ['terraform', 'tfsec', 'lint', 'infrastructure'],
+        orb: 'Use `tflint`, `tfsec`, and `checkov` to audit infrastructure as code.',
+        rune: 'R-107',
         confidence: 0.94,
-        category: "Infrastructure"
+        category: 'Infrastructure',
       },
       {
-        title: "Kubernetes Pod Security",
-        keywords: ["pod", "security", "psa", "policy", "kubernetes"],
-        orb: "Apply Pod Security Standards (restricted, baseline, privileged) via PSA admission controller.",
-        rune: "R-108",
+        title: 'Kubernetes Pod Security',
+        keywords: ['pod', 'security', 'psa', 'policy', 'kubernetes'],
+        orb: 'Apply Pod Security Standards (restricted, baseline, privileged) via PSA admission controller.',
+        rune: 'R-108',
         confidence: 0.95,
-        category: "Kubernetes"
+        category: 'Kubernetes',
       },
       {
-        title: "API Security Guidelines",
-        keywords: ["api", "security", "authentication", "authorization"],
-        orb: "Enforce authentication, rate limiting, and secure headers for REST APIs.",
-        rune: "R-109",
+        title: 'API Security Guidelines',
+        keywords: ['api', 'security', 'authentication', 'authorization'],
+        orb: 'Enforce authentication, rate limiting, and secure headers for REST APIs.',
+        rune: 'R-109',
         confidence: 0.91,
-        category: "Security"
+        category: 'Security',
       },
       {
-        title: "Log Aggregation for Debugging",
-        keywords: ["logs", "debug", "grafana", "prometheus", "loki"],
-        orb: "Centralize logs using Loki or ELK to enable efficient debugging and alerting.",
-        rune: "R-110",
-        confidence: 0.90,
-        category: "Observability"
-      }
-    ]
+        title: 'Log Aggregation for Debugging',
+        keywords: ['logs', 'debug', 'grafana', 'prometheus', 'loki'],
+        orb: 'Centralize logs using Loki or ELK to enable efficient debugging and alerting.',
+        rune: 'R-110',
+        confidence: 0.9,
+        category: 'Observability',
+      },
+    ];
   }
-}
+};
 
 onMounted(() => {
-  loadOrbs()
-})
+  loadOrbs();
+});
 </script>
 
 <style scoped>
@@ -932,21 +896,21 @@ onMounted(() => {
   .filter-controls {
     grid-template-columns: 1fr;
   }
-  
+
   .orbs-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .orb-header {
     flex-direction: column;
     text-align: center;
   }
-  
+
   .modal-content {
     width: 95%;
     margin: 1rem;
   }
-  
+
   .modal-footer {
     flex-direction: column;
   }
@@ -1297,4 +1261,4 @@ onMounted(() => {
   color: #94a3b8;
   background: rgba(255, 255, 255, 0.1);
 }
-</style> 
+</style>

@@ -12,7 +12,7 @@ import json
 import logging
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +48,8 @@ class FeedbackCollector:
         source: Optional[str] = None,
         category: str = "incorrect_answer",
         user_notes: str = "",
-        tenant_data: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        tenant_data: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Log feedback for an AI answer correction.
 
@@ -111,7 +111,7 @@ class FeedbackCollector:
             f"feedback_{timestamp.strftime('%Y%m%d_%H%M%S')}_{hash_obj.hexdigest()[:8]}"
         )
 
-    def get_feedback_entries(self, limit: int = 50) -> List[Dict[str, Any]]:
+    def get_feedback_entries(self, limit: int = 50) -> list[dict[str, Any]]:
         """Get recent feedback entries."""
         try:
             entries = []
@@ -123,7 +123,7 @@ class FeedbackCollector:
 
             for file_path in files[:limit]:
                 try:
-                    with open(file_path, "r", encoding="utf-8") as f:
+                    with open(file_path, encoding="utf-8") as f:
                         entry = json.load(f)
                         entries.append(entry)
                 except Exception as e:
@@ -136,12 +136,12 @@ class FeedbackCollector:
             logger.error(f"Failed to get feedback entries: {e}")
             return []
 
-    def get_feedback_by_id(self, feedback_id: str) -> Optional[Dict[str, Any]]:
+    def get_feedback_by_id(self, feedback_id: str) -> Optional[dict[str, Any]]:
         """Get specific feedback entry by ID."""
         try:
             file_path = self.log_dir / f"{feedback_id}.json"
             if file_path.exists():
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     return json.load(f)
             return None
         except Exception as e:
@@ -155,7 +155,7 @@ class FeedbackCollector:
         try:
             file_path = self.log_dir / f"{feedback_id}.json"
             if file_path.exists():
-                with open(file_path, "r", encoding="utf-8") as f:
+                with open(file_path, encoding="utf-8") as f:
                     entry = json.load(f)
 
                 entry["status"] = status
@@ -172,7 +172,7 @@ class FeedbackCollector:
             logger.error(f"Failed to update feedback status: {e}")
             return False
 
-    def get_feedback_stats(self) -> Dict[str, Any]:
+    def get_feedback_stats(self) -> dict[str, Any]:
         """Get feedback statistics."""
         try:
             entries = self.get_feedback_entries(limit=1000)  # Get all entries
@@ -204,7 +204,7 @@ class FeedbackCollector:
             logger.error(f"Failed to get feedback stats: {e}")
             return {"total_feedback": 0, "error": str(e)}
 
-    def _is_recent(self, entry: Dict[str, Any], days: int = 7) -> bool:
+    def _is_recent(self, entry: dict[str, Any], days: int = 7) -> bool:
         """Check if feedback entry is recent."""
         try:
             timestamp = datetime.fromisoformat(entry.get("timestamp", ""))
@@ -241,7 +241,7 @@ class FeedbackCollector:
             logger.error(f"Failed to build training dataset: {e}")
             raise
 
-    def _create_training_prompt(self, entry: Dict[str, Any]) -> str:
+    def _create_training_prompt(self, entry: dict[str, Any]) -> str:
         """Create training prompt from feedback entry."""
         query = entry.get("query", "")
         context = entry.get("context", "")
@@ -300,8 +300,8 @@ def log_feedback(
     source: Optional[str] = None,
     category: str = "incorrect_answer",
     user_notes: str = "",
-    tenant_data: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    tenant_data: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """Convenience function to log feedback."""
     collector = get_feedback_collector()
     return collector.log_feedback(

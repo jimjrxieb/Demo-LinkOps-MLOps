@@ -11,7 +11,6 @@ endpoint on port 9000.
 import logging
 import time
 from datetime import datetime
-from typing import Any, Dict
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -22,6 +21,7 @@ from fastapi.responses import JSONResponse
 from routers import (
     agent_builder,
     agent_creator,
+    auto_runner,
     executor,
     htc,
     mcp_tool,
@@ -85,6 +85,8 @@ app.include_router(mcp_tool.router, prefix="/mcp-tool", tags=["MCP Tool Creator"
 app.include_router(executor.router, prefix="/executor", tags=["MCP Tool Executor"])
 
 app.include_router(htc.router, prefix="/htc", tags=["HTC Document Memory"])
+
+app.include_router(auto_runner.router, prefix="/auto-runner", tags=["Auto Tool Runner"])
 
 
 # Global middleware for request logging

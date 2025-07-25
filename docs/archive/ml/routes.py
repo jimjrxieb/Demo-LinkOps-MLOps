@@ -7,12 +7,11 @@ FastAPI routes for the ML Model Builder system.
 Provides endpoints for data preview, model training, prediction, and management.
 """
 
-import json
 import logging
 import os
 import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
@@ -239,7 +238,7 @@ async def delete_model_endpoint(model_id: str):
 
 
 @router.post("/ml/predict/{model_id}")
-async def make_prediction(model_id: str, features: Dict[str, Any]):
+async def make_prediction(model_id: str, features: dict[str, Any]):
     """
     Make predictions using a trained model.
 

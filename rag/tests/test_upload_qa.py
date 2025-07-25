@@ -6,7 +6,6 @@ Test Script for Upload and Q&A Functionality
 This script tests the drag-and-drop upload and local RAG Q&A functionality.
 """
 
-import json
 import time
 from pathlib import Path
 
@@ -74,7 +73,7 @@ def test_query():
 
         if response.status_code == 200:
             result = response.json()
-            print(f"✅ Query successful")
+            print("✅ Query successful")
             print(f"   Answer: {result['answer'][:100]}...")
             print(f"   Execution time: {result['execution_time']:.2f}s")
             print(f"   Results: {result['total_results']}")
@@ -96,7 +95,7 @@ def test_documents_list():
 
         if response.status_code == 200:
             result = response.json()
-            print(f"✅ Documents listed successfully")
+            print("✅ Documents listed successfully")
             print(f"   Total documents: {result['total_documents']}")
             return True
         else:
@@ -116,7 +115,7 @@ def test_stats():
 
         if response.status_code == 200:
             result = response.json()
-            print(f"✅ Statistics retrieved")
+            print("✅ Statistics retrieved")
             print(f"   Documents: {result['total_documents']}")
             print(f"   Chunks: {result['total_chunks']}")
             print(f"   Vector store size: {result['vectorstore_size_mb']:.2f} MB")

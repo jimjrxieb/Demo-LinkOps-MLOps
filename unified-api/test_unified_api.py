@@ -6,8 +6,6 @@ Test Unified API
 Simple test script to verify all unified API endpoints are working.
 """
 
-import json
-import time
 from datetime import datetime
 
 import requests
@@ -109,7 +107,7 @@ def test_system_info():
         response = requests.get(f"{BASE_URL}/system", timeout=TIMEOUT)
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ System info retrieved")
+            print("✅ System info retrieved")
             print(f"   Platform: {data['system']['platform']}")
             print(f"   Version: {data['system']['version']}")
             print(f"   Services: {len(data['services'])}")

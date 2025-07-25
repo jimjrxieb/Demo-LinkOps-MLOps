@@ -3,6 +3,7 @@
   "description": "Check system status and resources",
   "task_type": "command",
   "command": "echo '=== System Status ===' && uptime && echo '=== Memory ===' && free -h && echo '=== Disk ===' && df -h .",
+  "auto": true,
   "tags": [
     "system",
     "monitoring",

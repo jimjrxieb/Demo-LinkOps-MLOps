@@ -14,7 +14,6 @@ import sys
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
 
 from fastapi import FastAPI, File, HTTPException, Query, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
@@ -28,13 +27,11 @@ from schemas.query_schema import (
     EmbedResponse,
     QueryRequest,
     QueryResponse,
-    SearchResult,
 )
 
 sys.path.append("../backend")
 # Import HTC feedback routes
 import sys
-from pathlib import Path
 
 from routes.status import router as status_router
 
@@ -310,7 +307,7 @@ async def get_memory_log(limit: int = 50):
             return {"entries": [], "total": 0}
 
         entries = []
-        with open(log_path, "r", encoding="utf-8") as f:
+        with open(log_path, encoding="utf-8") as f:
             for line in f:
                 if line.strip():
                     try:
@@ -384,9 +381,9 @@ async def embed_document(request: EmbedRequest):
         raise HTTPException(status_code=500, detail=f"Embedding failed: {str(e)}")
 
 
-@app.post("/embed-batch/", response_model=List[EmbedResponse])
+@app.post("/embed-batch/", response_model=list[EmbedResponse])
 async def embed_documents_batch(
-    file_paths: List[str], chunk_size: int = 1000, chunk_overlap: int = 200
+    file_paths: list[str], chunk_size: int = 1000, chunk_overlap: int = 200
 ):
     """
     Embed multiple documents in batch.

@@ -7,20 +7,18 @@ Core logic for generating AI agents and tools from natural language tasks.
 Uses LangChain with local LLM to create scripts, YAML, and commands.
 """
 
-import json
 import logging
 import os
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackManager
 from langchain.chains import LLMChain
 from langchain.llms import LlamaCpp
 from langchain.prompts import PromptTemplate
-from langchain.schema import HumanMessage, SystemMessage
 
 logger = logging.getLogger(__name__)
 
@@ -217,7 +215,7 @@ Output the Terraform configuration:""",
 
     def generate_tool(
         self, task: str, category: Optional[str] = None
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Generate a tool/script from a natural language task.
 
@@ -311,7 +309,7 @@ Output the Terraform configuration:""",
         else:
             return "complex"
 
-    def _get_usage_suggestions(self, category: str, task: str) -> List[str]:
+    def _get_usage_suggestions(self, category: str, task: str) -> list[str]:
         """Get usage suggestions for the generated tool."""
         suggestions = {
             "kubernetes": [
@@ -345,7 +343,7 @@ Output the Terraform configuration:""",
             ["Review the code before execution", "Test in a safe environment first"],
         )
 
-    def list_tools(self) -> List[Dict[str, Any]]:
+    def list_tools(self) -> list[dict[str, Any]]:
         """
         List all generated tools.
 
@@ -363,7 +361,7 @@ Output the Terraform configuration:""",
                 tool_id = parts[1].split(".")[0] if len(parts) > 1 else "unknown"
 
                 # Read file content
-                with open(tool_file, "r") as f:
+                with open(tool_file) as f:
                     content = f.read()
 
                 tools.append(
@@ -386,7 +384,7 @@ Output the Terraform configuration:""",
 
         return sorted(tools, key=lambda x: x["created_at"], reverse=True)
 
-    def get_tool(self, tool_id: str) -> Dict[str, Any]:
+    def get_tool(self, tool_id: str) -> dict[str, Any]:
         """
         Get a specific tool by ID.
 
@@ -405,7 +403,7 @@ Output the Terraform configuration:""",
             tool_file = tool_files[0]
 
             # Read content
-            with open(tool_file, "r") as f:
+            with open(tool_file) as f:
                 content = f.read()
 
             # Extract info
@@ -429,7 +427,7 @@ Output the Terraform configuration:""",
             logger.error(f"Failed to get tool: {e}")
             return {"error": f"Failed to get tool: {str(e)}"}
 
-    def delete_tool(self, tool_id: str) -> Dict[str, Any]:
+    def delete_tool(self, tool_id: str) -> dict[str, Any]:
         """
         Delete a tool by ID.
 
@@ -457,7 +455,7 @@ Output the Terraform configuration:""",
             logger.error(f"Failed to delete tool: {e}")
             return {"error": f"Failed to delete tool: {str(e)}"}
 
-    def get_categories(self) -> Dict[str, Any]:
+    def get_categories(self) -> dict[str, Any]:
         """
         Get available tool categories and their descriptions.
 
@@ -501,7 +499,7 @@ Output the Terraform configuration:""",
 
 
 # Convenience function for backward compatibility
-def generate_tool(task: str, category: Optional[str] = None) -> Dict[str, Any]:
+def generate_tool(task: str, category: Optional[str] = None) -> dict[str, Any]:
     """
     Convenience function for generating a tool.
 

@@ -6,9 +6,7 @@ RAG Service Test Suite
 Test the RAG service functionality.
 """
 
-import json
 import time
-from pathlib import Path
 
 import requests
 
@@ -44,11 +42,11 @@ def test_embed_document():
     # Create test document
     test_content = """
     The zero trust model is a security framework that requires all users to be authenticated and authorized before accessing any resources.
-    
+
     Machine learning is a subset of artificial intelligence that enables computers to learn without being explicitly programmed.
-    
+
     Docker is a platform for developing, shipping, and running applications in containers.
-    
+
     Kubernetes is an open-source container orchestration platform for automating deployment, scaling, and management of containerized applications.
     """
 
@@ -69,7 +67,7 @@ def test_embed_document():
 
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Document embedded successfully")
+            print("✅ Document embedded successfully")
             print(f"   Chunks created: {data['embedding_stats']['chunks_created']}")
             print(f"   Processing time: {data['execution_time']:.2f}s")
             return True
@@ -99,7 +97,7 @@ def test_search_query():
 
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Search completed successfully")
+            print("✅ Search completed successfully")
             print(f"   Query: {data['query']}")
             print(f"   Results found: {data['total_results']}")
             print(f"   Execution time: {data['execution_time']:.3f}s")
@@ -137,7 +135,7 @@ def test_simple_search():
 
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Simple search completed")
+            print("✅ Simple search completed")
             print(f"   Results found: {data['total_results']}")
             return True
         else:
@@ -158,7 +156,7 @@ def test_list_documents():
 
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Document listing completed")
+            print("✅ Document listing completed")
             print(f"   Total documents: {data['total_documents']}")
 
             for doc in data["documents"]:
@@ -183,7 +181,7 @@ def test_system_stats():
 
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ System stats retrieved")
+            print("✅ System stats retrieved")
             print(f"   Total documents: {data['total_documents']}")
             print(f"   Total chunks: {data['total_chunks']}")
             print(f"   Vector store size: {data['vectorstore_size_mb']:.2f}MB")
@@ -208,7 +206,7 @@ def test_available_models():
 
         if response.status_code == 200:
             data = response.json()
-            print(f"✅ Available models retrieved")
+            print("✅ Available models retrieved")
             print(f"   Current model: {data['current_model']}")
             print(f"   Available models: {len(data['available_models'])}")
             return True

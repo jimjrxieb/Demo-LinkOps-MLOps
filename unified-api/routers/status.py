@@ -10,7 +10,7 @@ import logging
 import sqlite3
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -88,7 +88,7 @@ async def get_summary():
         )
         cur.execute(
             """
-            SELECT COUNT(*) FROM tenants 
+            SELECT COUNT(*) FROM tenants
             WHERE lease_end <= ? AND status = 'active'
         """,
             (thirty_days_from_now,),
@@ -103,9 +103,9 @@ async def get_summary():
         # Get source files summary
         cur.execute(
             """
-            SELECT source_file, COUNT(*) 
-            FROM tenants 
-            GROUP BY source_file 
+            SELECT source_file, COUNT(*)
+            FROM tenants
+            GROUP BY source_file
             ORDER BY COUNT(*) DESC
         """
         )
@@ -114,10 +114,10 @@ async def get_summary():
         # Get expiring leases details
         cur.execute(
             """
-            SELECT tenant_name, unit, lease_end, status 
-            FROM tenants 
+            SELECT tenant_name, unit, lease_end, status
+            FROM tenants
             WHERE lease_end <= ? AND status = 'active'
-            ORDER BY lease_end ASC 
+            ORDER BY lease_end ASC
             LIMIT 10
         """,
             (thirty_days_from_now,),
@@ -130,9 +130,9 @@ async def get_summary():
         # Get recent sync operations
         cur.execute(
             """
-            SELECT file_name, status, records_processed, synced_at 
-            FROM sync_log 
-            ORDER BY synced_at DESC 
+            SELECT file_name, status, records_processed, synced_at
+            FROM sync_log
+            ORDER BY synced_at DESC
             LIMIT 5
         """
         )
@@ -243,9 +243,9 @@ async def get_sync_log(limit: int = 20):
         # Get recent sync log
         cur.execute(
             """
-            SELECT file_name, file_hash, status, records_processed, error_message, synced_at 
-            FROM sync_log 
-            ORDER BY synced_at DESC 
+            SELECT file_name, file_hash, status, records_processed, error_message, synced_at
+            FROM sync_log
+            ORDER BY synced_at DESC
             LIMIT ?
         """,
             (limit,),
@@ -285,8 +285,8 @@ async def get_analytics():
         # Get status distribution
         cur.execute(
             """
-            SELECT status, COUNT(*) 
-            FROM tenants 
+            SELECT status, COUNT(*)
+            FROM tenants
             GROUP BY status
         """
         )
@@ -295,15 +295,15 @@ async def get_analytics():
         # Get monthly rent distribution
         cur.execute(
             """
-            SELECT 
-                CASE 
+            SELECT
+                CASE
                     WHEN rent_amount < 1000 THEN 'Under $1K'
                     WHEN rent_amount < 2000 THEN '$1K-$2K'
                     WHEN rent_amount < 3000 THEN '$2K-$3K'
                     ELSE 'Over $3K'
                 END as rent_range,
                 COUNT(*) as count
-            FROM tenants 
+            FROM tenants
             WHERE rent_amount IS NOT NULL AND status = 'active'
             GROUP BY rent_range
         """
@@ -313,8 +313,8 @@ async def get_analytics():
         # Get lease expiration timeline
         cur.execute(
             """
-            SELECT 
-                CASE 
+            SELECT
+                CASE
                     WHEN lease_end <= date('now') THEN 'Expired'
                     WHEN lease_end <= date('now', '+30 days') THEN '30 days'
                     WHEN lease_end <= date('now', '+60 days') THEN '60 days'
@@ -322,7 +322,7 @@ async def get_analytics():
                     ELSE '90+ days'
                 END as timeline,
                 COUNT(*) as count
-            FROM tenants 
+            FROM tenants
             WHERE lease_end IS NOT NULL AND status = 'active'
             GROUP BY timeline
         """

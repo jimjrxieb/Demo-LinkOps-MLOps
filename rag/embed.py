@@ -2,7 +2,6 @@ import os
 
 import chromadb
 from langchain.document_loaders import PDFPlumberLoader, TextLoader
-from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import CharacterTextSplitter
 
 UPLOAD_DIR = "rag/uploads"

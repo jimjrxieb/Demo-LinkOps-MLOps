@@ -9,8 +9,7 @@ Supports multiple local LLM backends.
 
 import logging
 import os
-from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -257,7 +256,7 @@ Answer: [/INST]"""
 
         return "I found some relevant information, but I'm unable to generate a comprehensive answer at the moment."
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get the status of the LLM runner."""
         return {
             "model_type": self.model_type,

@@ -1,0 +1,11 @@
+{
+  "name": "interactive_prompt",
+  "description": "Test tool: interactive_prompt",
+  "task_type": "test",
+  "command": "echo 'Do you want to continue?' && read response",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

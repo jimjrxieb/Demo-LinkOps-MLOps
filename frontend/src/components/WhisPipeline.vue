@@ -1,18 +1,17 @@
 <template>
   <div class="whis-pipeline">
     <div class="pipeline-header">
-      <h2 class="pipeline-title">
-        Whis Pipeline Flow
-      </h2>
-      <p class="pipeline-subtitle">
-        Data Processing & Enhancement Workflow
-      </p>
+      <h2 class="pipeline-title">Whis Pipeline Flow</h2>
+      <p class="pipeline-subtitle">Data Processing & Enhancement Workflow</p>
     </div>
 
     <!-- Flowchart Container -->
     <div class="flowchart-container">
       <!-- Step 1: Input Processing -->
-      <div class="flowchart-step input-step" :class="{ active: currentStep === 0 }">
+      <div
+        class="flowchart-step input-step"
+        :class="{ active: currentStep === 0 }"
+      >
         <div class="step-icon">📥</div>
         <div class="step-content">
           <h3 class="step-title">1. Input Processing</h3>
@@ -22,22 +21,28 @@
       </div>
 
       <!-- Arrow Down -->
-      <div class="flow-arrow vertical"></div>
+      <div class="flow-arrow vertical" />
 
       <!-- Step 2: Orb Library Search -->
-      <div class="flowchart-step search-step" :class="{ active: currentStep === 1 }">
+      <div
+        class="flowchart-step search-step"
+        :class="{ active: currentStep === 1 }"
+      >
         <div class="step-icon">🔍</div>
         <div class="step-content">
           <h3 class="step-title">2. Orb Library Search</h3>
           <p class="step-description">Search existing solution patterns</p>
-          <div class="step-status" :class="currentStep >= 1 ? 'active' : 'pending'">
+          <div
+            class="step-status"
+            :class="currentStep >= 1 ? 'active' : 'pending'"
+          >
             {{ currentStep >= 1 ? 'Searching...' : 'Pending' }}
           </div>
         </div>
       </div>
 
       <!-- Decision Diamond -->
-      <div class="flow-arrow vertical"></div>
+      <div class="flow-arrow vertical" />
       <div class="decision-diamond" :class="{ active: currentStep === 2 }">
         <div class="diamond-content">
           <div class="diamond-text">
@@ -50,7 +55,7 @@
       <div class="split-container">
         <!-- Left Path: High Confidence -->
         <div class="flow-path left-path">
-          <div class="flow-arrow horizontal-right"></div>
+          <div class="flow-arrow horizontal-right" />
           <div class="flowchart-step solution-step high-confidence">
             <div class="step-icon">✅</div>
             <div class="step-content">
@@ -63,14 +68,19 @@
 
         <!-- Right Path: Low Confidence - Whis Pipeline -->
         <div class="flow-path right-path">
-          <div class="flow-arrow horizontal-left"></div>
+          <div class="flow-arrow horizontal-left" />
           <div class="whis-section">
             <!-- 3. Sanitization with TensorFlow -->
-            <div class="flowchart-step sanitize-step" :class="{ active: currentStep === 3 }">
+            <div
+              class="flowchart-step sanitize-step"
+              :class="{ active: currentStep === 3 }"
+            >
               <div class="step-icon">🧹</div>
               <div class="step-content">
                 <h3 class="step-title">3. Sanitization</h3>
-                <p class="step-description">TensorFlow USE embeddings generation</p>
+                <p class="step-description">
+                  TensorFlow USE embeddings generation
+                </p>
                 <div class="tensorflow-info">
                   <div class="tf-badge">TensorFlow v2.15+</div>
                   <div class="embedding-details">
@@ -79,20 +89,28 @@
                     <span>• Semantic similarity matching</span>
                   </div>
                 </div>
-                <div class="step-status" :class="currentStep >= 3 ? 'processing' : 'pending'">
+                <div
+                  class="step-status"
+                  :class="currentStep >= 3 ? 'processing' : 'pending'"
+                >
                   {{ currentStep >= 3 ? 'Processing' : 'Pending' }}
                 </div>
               </div>
             </div>
 
-            <div class="flow-arrow vertical small"></div>
+            <div class="flow-arrow vertical small" />
 
             <!-- 4. Smithing with ML -->
-            <div class="flowchart-step smithing-step" :class="{ active: currentStep === 4 }">
+            <div
+              class="flowchart-step smithing-step"
+              :class="{ active: currentStep === 4 }"
+            >
               <div class="step-icon">⚒️</div>
               <div class="step-content">
                 <h3 class="step-title">4. Smithing</h3>
-                <p class="step-description">AI processing and solution crafting</p>
+                <p class="step-description">
+                  AI processing and solution crafting
+                </p>
                 <div class="ml-details">
                   <div class="ml-components">
                     <span>• LangChain orchestration</span>
@@ -100,8 +118,13 @@
                     <span>• Custom ML classifiers</span>
                   </div>
                 </div>
-                <div class="step-status" :class="currentStep >= 4 ? 'processing' : 'pending'">
-                  {{ currentStep >= 4 ? 'Smithing Process Includes:' : 'Pending' }}
+                <div
+                  class="step-status"
+                  :class="currentStep >= 4 ? 'processing' : 'pending'"
+                >
+                  {{
+                    currentStep >= 4 ? 'Smithing Process Includes:' : 'Pending'
+                  }}
                 </div>
                 <div v-if="currentStep >= 4" class="smithing-process">
                   <ul>
@@ -115,15 +138,21 @@
               </div>
             </div>
 
-            <div class="flow-arrow vertical small"></div>
+            <div class="flow-arrow vertical small" />
 
             <!-- 5. Evaluation -->
-            <div class="flowchart-step evaluation-step" :class="{ active: currentStep === 5 }">
+            <div
+              class="flowchart-step evaluation-step"
+              :class="{ active: currentStep === 5 }"
+            >
               <div class="step-icon">📊</div>
               <div class="step-content">
                 <h3 class="step-title">5. Evaluation</h3>
                 <p class="step-description">Quality assessment and scoring</p>
-                <div class="step-status" :class="currentStep >= 5 ? 'processing' : 'pending'">
+                <div
+                  class="step-status"
+                  :class="currentStep >= 5 ? 'processing' : 'pending'"
+                >
                   {{ currentStep >= 5 ? 'Evaluating' : 'Pending' }}
                 </div>
               </div>
@@ -131,7 +160,7 @@
 
             <!-- Approval Decision -->
             <div v-if="currentStep >= 5" class="approval-section">
-              <div class="flow-arrow vertical small"></div>
+              <div class="flow-arrow vertical small" />
               <div class="approval-diamond">
                 <div class="diamond-content">
                   <div class="diamond-text">
@@ -139,7 +168,7 @@
                   </div>
                 </div>
               </div>
-              
+
               <div class="approval-buttons">
                 <button class="approve-btn" @click="approveSolution">
                   ✅ Approve & Save to Orb Library
@@ -156,9 +185,16 @@
       <!-- Progress Indicator -->
       <div class="progress-section">
         <div class="progress-bar-container">
-          <div class="progress-title">Step {{ Math.min(currentStep + 1, 5) }} of 5 ({{ Math.round(progressPercentage) }}% complete)</div>
+          <div class="progress-title">
+            Step {{ Math.min(currentStep + 1, 5) }} of 5 ({{
+              Math.round(progressPercentage)
+            }}% complete)
+          </div>
           <div class="progress-bar">
-            <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
+            <div
+              class="progress-fill"
+              :style="{ width: progressPercentage + '%' }"
+            />
           </div>
         </div>
       </div>
@@ -525,7 +561,8 @@ const rejectSolution = () => {
   margin-top: 1rem;
 }
 
-.approve-btn, .reject-btn {
+.approve-btn,
+.reject-btn {
   padding: 0.75rem 1.5rem;
   border-radius: 8px;
   border: none;
@@ -590,22 +627,24 @@ const rejectSolution = () => {
     flex-direction: column;
     align-items: center;
   }
-  
-  .left-path, .right-path {
+
+  .left-path,
+  .right-path {
     margin: 1rem 0;
   }
-  
+
   .flowchart-step {
     min-width: 250px;
     max-width: 280px;
   }
-  
+
   .approval-buttons {
     flex-direction: column;
     width: 100%;
   }
-  
-  .approve-btn, .reject-btn {
+
+  .approve-btn,
+  .reject-btn {
     width: 100%;
   }
 }

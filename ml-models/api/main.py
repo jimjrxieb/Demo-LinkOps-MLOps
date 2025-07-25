@@ -1,5 +1,3 @@
-from typing import Optional
-
 from demo_db.db import init_db
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from ml_creator.api.agent_generator import generate_agent

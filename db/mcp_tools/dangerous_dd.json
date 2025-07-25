@@ -1,0 +1,11 @@
+{
+  "name": "dangerous_dd",
+  "description": "Test tool: dangerous_dd",
+  "task_type": "test",
+  "command": "dd if=/dev/zero of=/dev/null",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

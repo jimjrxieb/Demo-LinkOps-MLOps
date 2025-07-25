@@ -1,31 +1,23 @@
 <template>
   <div class="orb-result-card">
     <div class="card-header">
-      <h2 class="card-title">
-        ✅ Orb Match Found!
-      </h2>
+      <h2 class="card-title">✅ Orb Match Found!</h2>
     </div>
     <div class="card-body">
       <h3 class="orb-title">
         {{ orb.title }}
       </h3>
-      <p class="orb-category">
-        Category: {{ orb.category }}
-      </p>
+      <p class="orb-category">Category: {{ orb.category }}</p>
       <p class="orb-description">
         {{ orb.orb }}
       </p>
-      <p class="confidence-score">
-        Confidence: {{ confidence }}%
-      </p>
+      <p class="confidence-score">Confidence: {{ confidence }}%</p>
       <div class="orb-keywords">
         <span class="keywords-label">Tags:</span>
         <div class="keyword-tags">
-          <span
-            v-for="tag in orb.keywords"
-            :key="tag"
-            class="keyword-tag"
-          >#{{ tag }}</span>
+          <span v-for="tag in orb.keywords" :key="tag" class="keyword-tag"
+            >#{{ tag }}</span
+          >
         </div>
       </div>
 
@@ -36,21 +28,38 @@
       </div>
 
       <!-- Best Practice Checklist Section -->
-      <div v-if="orb.best_practice_checklist && orb.best_practice_checklist.length" class="checklist-section">
+      <div
+        v-if="orb.best_practice_checklist && orb.best_practice_checklist.length"
+        class="checklist-section"
+      >
         <h4 class="section-title">✅ Best Practice Checklist</h4>
         <div class="checklist-container">
-          <div 
-            v-for="(item, index) in orb.best_practice_checklist" 
-            :key="index" 
+          <div
+            v-for="(item, index) in orb.best_practice_checklist"
+            :key="index"
             class="checklist-item"
-            :class="{ 
-              'header': item.startsWith('📋') || item.startsWith('🔧') || item.startsWith('🔐') || item.startsWith('⚙️') || item.startsWith('🚀') || item.startsWith('🔄') || item.startsWith('🔒') || item.startsWith('✅'),
-              'empty': item.trim() === ''
+            :class="{
+              header:
+                item.startsWith('📋') ||
+                item.startsWith('🔧') ||
+                item.startsWith('🔐') ||
+                item.startsWith('⚙️') ||
+                item.startsWith('🚀') ||
+                item.startsWith('🔄') ||
+                item.startsWith('🔒') ||
+                item.startsWith('✅'),
+              empty: item.trim() === '',
             }"
           >
-            <span v-if="item.trim() !== ''" v-html="formatChecklistItem(item)"></span>
+            <span
+              v-if="item.trim() !== ''"
+              v-html="formatChecklistItem(item)"
+            />
           </div>
-          <button class="copy-btn checklist-copy" @click="copyCommand(orb.best_practice_checklist.join('\\n'))">
+          <button
+            class="copy-btn checklist-copy"
+            @click="copyCommand(orb.best_practice_checklist.join('\\n'))"
+          >
             📋 Copy Full Checklist
           </button>
         </div>
@@ -68,22 +77,28 @@
       <div v-if="orb.imperative_commands" class="commands-section">
         <h4 class="section-title">⚡ Imperative Commands</h4>
         <div class="commands-list">
-          <div 
-            v-for="(command, index) in orb.imperative_commands" 
+          <div
+            v-for="(command, index) in orb.imperative_commands"
             :key="index"
             class="command-item"
-            :class="{ 
-              'comment': command.startsWith('#'), 
-              'empty': command.trim() === '' 
+            :class="{
+              comment: command.startsWith('#'),
+              empty: command.trim() === '',
             }"
           >
-            <span v-if="command.trim() !== '' && !command.startsWith('#')" class="command-number">{{ getCommandNumber(index) }}.</span>
-            <code v-if="command.trim() !== ''" class="command-code">{{ command }}</code>
-            <button 
+            <span
               v-if="command.trim() !== '' && !command.startsWith('#')"
-              class="copy-btn" 
-              @click="copyCommand(command)"
+              class="command-number"
+              >{{ getCommandNumber(index) }}.</span
+            >
+            <code v-if="command.trim() !== ''" class="command-code">{{
+              command
+            }}</code>
+            <button
+              v-if="command.trim() !== '' && !command.startsWith('#')"
+              class="copy-btn"
               title="Copy command"
+              @click="copyCommand(command)"
             >
               📋
             </button>
@@ -93,13 +108,14 @@
 
       <!-- Training Required Status -->
       <div v-if="orb.needsTraining" class="training-status">
-        <div class="training-badge">
-          🧠 Training Required
-        </div>
+        <div class="training-badge">🧠 Training Required</div>
         <div class="training-message">
           <h4>{{ orb.trainingMessage.title }}</h4>
           <p>{{ orb.trainingMessage.message }}</p>
-          <button class="btn btn-primary training-btn" @click="goToWhisTraining">
+          <button
+            class="btn btn-primary training-btn"
+            @click="goToWhisTraining"
+          >
             {{ orb.trainingMessage.action }}
           </button>
         </div>
@@ -107,18 +123,15 @@
 
       <!-- Approval Status -->
       <div v-else-if="orb.needsApproval" class="approval-status">
-        <div class="approval-badge pending">
-          ⏳ Awaiting Approval
-        </div>
+        <div class="approval-badge pending">⏳ Awaiting Approval</div>
         <p class="approval-text">
-          This solution was generated by the Whis pipeline and needs your approval before being saved to the Orb Library.
+          This solution was generated by the Whis pipeline and needs your
+          approval before being saved to the Orb Library.
         </p>
       </div>
-      
+
       <div v-else-if="orb.approved" class="approval-status">
-        <div class="approval-badge approved">
-          ✅ Approved & Saved
-        </div>
+        <div class="approval-badge approved">✅ Approved & Saved</div>
         <p class="approval-text">
           This solution has been approved and saved to the Orb Library.
         </p>
@@ -126,9 +139,9 @@
 
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button 
-          v-if="!orb.needsApproval" 
-          class="btn btn-primary" 
+        <button
+          v-if="!orb.needsApproval"
+          class="btn btn-primary"
           @click="useOrb"
         >
           🚀 Use This Orb
@@ -144,7 +157,7 @@
 <script setup>
 const props = defineProps({
   orb: Object,
-  confidence: [String, Number]
+  confidence: [String, Number],
 });
 
 const copyCommand = (command) => {
@@ -156,11 +169,11 @@ const copyCommand = (command) => {
 const formatChecklistItem = (item) => {
   // Format markdown-style text with code blocks and bold text
   let formatted = item
-    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')  // Bold text
-    .replace(/`(.*?)`/g, '<code>$1</code>')            // Inline code
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') // Bold text
+    .replace(/`(.*?)`/g, '<code>$1</code>') // Inline code
     .replace(/□/g, '<input type="checkbox" disabled>') // Checkboxes
-    .replace(/- /g, '• ');                             // Bullet points
-    
+    .replace(/- /g, '• '); // Bullet points
+
   return formatted;
 };
 
@@ -290,7 +303,8 @@ const viewDetails = () => {
   gap: 0.5rem;
 }
 
-.template-section, .commands-section {
+.template-section,
+.commands-section {
   margin: 1.5rem 0;
 }
 
@@ -465,7 +479,7 @@ const viewDetails = () => {
   height: 0.25rem;
 }
 
-.checklist-item input[type="checkbox"] {
+.checklist-item input[type='checkbox'] {
   margin-right: 0.5rem;
   accent-color: #10b981;
 }
@@ -554,4 +568,4 @@ const viewDetails = () => {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
 }
-</style> 
+</style>

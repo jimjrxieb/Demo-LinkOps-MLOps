@@ -8,11 +8,10 @@ Supports classification and regression with scikit-learn.
 """
 
 import logging
-import os
 import uuid
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any
 
 import joblib
 import numpy as np
@@ -22,7 +21,6 @@ from sklearn.impute import SimpleImputer
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
-    classification_report,
     f1_score,
     mean_squared_error,
     precision_score,
@@ -30,7 +28,7 @@ from sklearn.metrics import (
     recall_score,
 )
 from sklearn.model_selection import cross_val_score, train_test_split
-from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.preprocessing import LabelEncoder
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +63,7 @@ class ModelGenerator:
             f"🧠 Model Generator initialized with models directory: {self.models_dir}"
         )
 
-    def analyze_dataset(self, file_path: str) -> Dict[str, Any]:
+    def analyze_dataset(self, file_path: str) -> dict[str, Any]:
         """
         Analyze CSV dataset and return column information.
 
@@ -133,7 +131,7 @@ class ModelGenerator:
 
     def preprocess_data(
         self, df: pd.DataFrame, target_column: str
-    ) -> Tuple[pd.DataFrame, pd.Series]:
+    ) -> tuple[pd.DataFrame, pd.Series]:
         """
         Preprocess the dataset for training.
 
@@ -153,7 +151,7 @@ class ModelGenerator:
 
         # Handle categorical features
         categorical_columns = X.select_dtypes(include=["object", "category"]).columns
-        numerical_columns = X.select_dtypes(include=["int64", "float64"]).columns
+        X.select_dtypes(include=["int64", "float64"]).columns
 
         # Encode categorical variables
         label_encoders = {}
@@ -180,7 +178,7 @@ class ModelGenerator:
         model_type: str = "classification",
         model_name: str = "random_forest",
         test_size: float = 0.2,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Train a machine learning model from CSV data.
 
@@ -228,9 +226,8 @@ class ModelGenerator:
 
             # Make predictions
             y_pred = model.predict(X_test)
-            y_pred_proba = None
             if hasattr(model, "predict_proba"):
-                y_pred_proba = model.predict_proba(X_test)
+                model.predict_proba(X_test)
 
             # Calculate metrics
             metrics = self._calculate_metrics(y_test, y_pred, model_type)
@@ -298,7 +295,7 @@ class ModelGenerator:
 
     def _calculate_metrics(
         self, y_true: np.ndarray, y_pred: np.ndarray, model_type: str
-    ) -> Dict[str, float]:
+    ) -> dict[str, float]:
         """
         Calculate model performance metrics.
 
@@ -324,7 +321,7 @@ class ModelGenerator:
                 "r2_score": r2_score(y_true, y_pred),
             }
 
-    def list_models(self) -> List[Dict[str, Any]]:
+    def list_models(self) -> list[dict[str, Any]]:
         """
         List all trained models.
 
@@ -355,7 +352,7 @@ class ModelGenerator:
 
         return sorted(models, key=lambda x: x["training_timestamp"], reverse=True)
 
-    def predict(self, model_id: str, features: Dict[str, Any]) -> Dict[str, Any]:
+    def predict(self, model_id: str, features: dict[str, Any]) -> dict[str, Any]:
         """
         Make predictions using a trained model.
 
@@ -420,7 +417,7 @@ class ModelGenerator:
 # Convenience function for backward compatibility
 def train_model(
     file_path: str, target_column: str, model_type: str = "classification"
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """
     Convenience function for training a model.
 

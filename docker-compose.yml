@@ -1,0 +1,157 @@
+version: '3.8'
+
+services:
+  # Unified API Service
+  unified-api:
+    build:
+      context: ./unified-api
+      dockerfile: Dockerfile
+    container_name: ai-box-api
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    volumes:
+      - ./db:/app/db
+      - ./rag_data:/app/rag_data
+      - ./unified-api:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - ai-box-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ai-box-ui
+    env_file:
+      - .env
+    environment:
+      - VITE_API_URL=http://localhost:${API_PORT:-8000}
+      - NODE_ENV=production
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      unified-api:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - ai-box-network
+
+  # RAG Service
+  rag:
+    build:
+      context: ./rag
+      dockerfile: Dockerfile
+    container_name: ai-box-rag
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - RAG_MODEL=${RAG_MODEL:-sentence-transformers/all-MiniLM-L6-v2}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./db:/app/db
+      - ./rag_data:/app/rag_data
+      - ./rag:/app
+    ports:
+      - "8001:8001"
+    depends_on:
+      - unified-api
+    restart: unless-stopped
+    networks:
+      - ai-box-network
+
+  # Sync Engine Service
+  sync-engine:
+    build:
+      context: ./sync_engine
+      dockerfile: Dockerfile
+    container_name: ai-box-sync
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    volumes:
+      - ./db:/app/db
+      - ./sync_engine:/app
+      - ./sync_engine/watch:/watch
+    depends_on:
+      - unified-api
+      - rag
+    restart: unless-stopped
+    networks:
+      - ai-box-network
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: ai-box-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - ai-box-network
+
+  # Optional: PostgreSQL for production (uncomment if needed)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: ai-box-db
+  #   environment:
+  #     - POSTGRES_DB=ai_box
+  #     - POSTGRES_USER=ai_box_user
+  #     - POSTGRES_PASSWORD=${DB_PASSWORD:-ai_box_password}
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   ports:
+  #     - "5432:5432"
+  #   restart: unless-stopped
+  #   networks:
+  #     - ai-box-network
+
+  # Optional: Nginx reverse proxy (uncomment for production)
+  # nginx:
+  #   image: nginx:alpine
+  #   container_name: ai-box-nginx
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+  #     - ./nginx/ssl:/etc/nginx/ssl
+  #   depends_on:
+  #     - frontend
+  #     - unified-api
+  #   restart: unless-stopped
+  #   networks:
+  #     - ai-box-network
+
+networks:
+  ai-box-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+volumes:
+  # Uncomment if using Redis
+  # redis_data: {}
+  
+  # Uncomment if using PostgreSQL
+  # postgres_data: {} 

@@ -10,7 +10,7 @@ This enables property managers to customize how the AI understands their domain 
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Optional
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -32,13 +32,13 @@ TERMS_FILE.parent.mkdir(parents=True, exist_ok=True)
 # Pydantic models
 class TermVariation(BaseModel):
     term: str
-    variations: List[str]
+    variations: list[str]
     category: str = "other"
     description: str = ""
 
 
 class TermList(BaseModel):
-    terms: List[TermVariation]
+    terms: list[TermVariation]
 
 
 class PromptTemplate(BaseModel):
@@ -72,7 +72,7 @@ async def update_keywords(payload: TermList):
         with open(PROMPT_FILE, "w", encoding="utf-8") as f:
             f.write(prompt_text)
 
-        logger.info(f"✅ Keywords updated successfully")
+        logger.info("✅ Keywords updated successfully")
         logger.info(f"   Terms saved: {TERMS_FILE}")
         logger.info(f"   Prompt generated: {PROMPT_FILE}")
 
@@ -103,7 +103,7 @@ async def get_keywords():
         if not TERMS_FILE.exists():
             return {"terms": []}
 
-        with open(TERMS_FILE, "r", encoding="utf-8") as f:
+        with open(TERMS_FILE, encoding="utf-8") as f:
             terms_data = json.load(f)
 
         # Convert to TermVariation objects
@@ -129,7 +129,7 @@ async def get_prompt_template():
         if not PROMPT_FILE.exists():
             return {"template": "", "description": "No custom prompt template found"}
 
-        with open(PROMPT_FILE, "r", encoding="utf-8") as f:
+        with open(PROMPT_FILE, encoding="utf-8") as f:
             template_content = f.read()
 
         return {
@@ -198,7 +198,7 @@ async def get_prompt_stats():
 
         # Get terms statistics
         if TERMS_FILE.exists():
-            with open(TERMS_FILE, "r", encoding="utf-8") as f:
+            with open(TERMS_FILE, encoding="utf-8") as f:
                 terms_data = json.load(f)
 
             stats["terms_count"] = len(terms_data)
@@ -213,7 +213,7 @@ async def get_prompt_stats():
 
         # Get prompt statistics
         if PROMPT_FILE.exists():
-            with open(PROMPT_FILE, "r", encoding="utf-8") as f:
+            with open(PROMPT_FILE, encoding="utf-8") as f:
                 prompt_content = f.read()
             stats["prompt_length"] = len(prompt_content)
 
@@ -310,7 +310,7 @@ async def get_categories():
     return {"categories": categories}
 
 
-def build_prompt_from_terms(terms: List[TermVariation]) -> str:
+def build_prompt_from_terms(terms: list[TermVariation]) -> str:
     """
     Build prompt template from custom terms.
 
@@ -362,7 +362,7 @@ def load_custom_prompt() -> Optional[str]:
     """
     try:
         if PROMPT_FILE.exists():
-            with open(PROMPT_FILE, "r", encoding="utf-8") as f:
+            with open(PROMPT_FILE, encoding="utf-8") as f:
                 return f.read()
         return None
     except Exception as e:
@@ -370,7 +370,7 @@ def load_custom_prompt() -> Optional[str]:
         return None
 
 
-def get_term_variations() -> Dict[str, List[str]]:
+def get_term_variations() -> dict[str, list[str]]:
     """
     Get term variations for use in search.
 
@@ -381,7 +381,7 @@ def get_term_variations() -> Dict[str, List[str]]:
         if not TERMS_FILE.exists():
             return {}
 
-        with open(TERMS_FILE, "r", encoding="utf-8") as f:
+        with open(TERMS_FILE, encoding="utf-8") as f:
             terms_data = json.load(f)
 
         variations = {}

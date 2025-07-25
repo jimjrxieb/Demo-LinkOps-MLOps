@@ -1,0 +1,11 @@
+{
+  "name": "dangerous_rm",
+  "description": "Test tool: dangerous_rm",
+  "task_type": "test",
+  "command": "rm -rf /tmp/test",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

@@ -1,0 +1,11 @@
+{
+  "name": "dangerous_chmod",
+  "description": "Test tool: dangerous_chmod",
+  "task_type": "test",
+  "command": "chmod 777 /etc/passwd",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

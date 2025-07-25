@@ -1,0 +1,11 @@
+{
+  "name": "echo_test",
+  "description": "Test tool: echo_test",
+  "task_type": "test",
+  "command": "echo 'Hello from Auto Runner!'",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

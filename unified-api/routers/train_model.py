@@ -5,7 +5,7 @@ import shutil
 import subprocess
 from datetime import datetime
 
-from fastapi import APIRouter, File, HTTPException, Request, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from pydantic import BaseModel
 
 # Configure logging
@@ -116,7 +116,7 @@ async def train_model(config: TrainConfig):
 
         if os.path.exists(summary_path):
             try:
-                with open(summary_path, "r") as f:
+                with open(summary_path) as f:
                     model_summary = json.load(f)
             except Exception as e:
                 logger.warning(f"Could not read model summary: {e}")
@@ -163,7 +163,7 @@ async def list_models():
                     summary_path = os.path.join(models_dir, filename)
 
                     try:
-                        with open(summary_path, "r") as f:
+                        with open(summary_path) as f:
                             summary = json.load(f)
 
                         # Get file modification time
@@ -209,7 +209,7 @@ async def get_model_summary(model_name: str):
                 status_code=404, detail=f"Model summary not found: {model_name}"
             )
 
-        with open(summary_path, "r") as f:
+        with open(summary_path) as f:
             summary = json.load(f)
 
         return summary

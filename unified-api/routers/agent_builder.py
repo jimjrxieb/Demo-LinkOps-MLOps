@@ -8,14 +8,10 @@ Proxies requests to the agent-builder service.
 """
 
 import logging
-import os
-import sys
 from datetime import datetime
-from typing import Any, Dict, List, Optional
 
 import httpx
-from fastapi import APIRouter, File, Form, HTTPException, Query, UploadFile
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, Form, HTTPException
 
 logger = logging.getLogger(__name__)
 

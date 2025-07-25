@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia'
+import { defineStore } from 'pinia';
 
 export const useMainStore = defineStore('main', {
   state: () => ({
@@ -8,60 +8,60 @@ export const useMainStore = defineStore('main', {
     isAuthenticated: false,
     currentView: 'dashboard',
     notifications: [],
-    systemStatus: 'operational'
+    systemStatus: 'operational',
   }),
-  
+
   getters: {
     getUserName: (state) => state.user,
     isAgentModeActive: (state) => state.agentMode,
     isDarkMode: (state) => state.darkMode,
     getSystemStatus: (state) => state.systemStatus,
-    getCurrentView: (state) => state.currentView
+    getCurrentView: (state) => state.currentView,
   },
-  
+
   actions: {
     toggleDarkMode() {
-      this.darkMode = !this.darkMode
+      this.darkMode = !this.darkMode;
     },
-    
+
     toggleAgentMode() {
-      this.agentMode = !this.agentMode
+      this.agentMode = !this.agentMode;
     },
-    
+
     setUser(userName) {
-      this.user = userName
+      this.user = userName;
     },
-    
+
     setAuthenticationStatus(status) {
-      this.isAuthenticated = status
+      this.isAuthenticated = status;
     },
-    
+
     setCurrentView(view) {
-      this.currentView = view
+      this.currentView = view;
     },
-    
+
     addNotification(message, type = 'info') {
       this.notifications.push({
         id: Date.now(),
         message,
         type,
-        timestamp: new Date().toISOString()
-      })
+        timestamp: new Date().toISOString(),
+      });
     },
-    
+
     removeNotification(id) {
-      const index = this.notifications.findIndex(n => n.id === id)
+      const index = this.notifications.findIndex((n) => n.id === id);
       if (index > -1) {
-        this.notifications.splice(index, 1)
+        this.notifications.splice(index, 1);
       }
     },
-    
+
     clearNotifications() {
-      this.notifications = []
+      this.notifications = [];
     },
-    
+
     setSystemStatus(status) {
-      this.systemStatus = status
-    }
-  }
-}) 
+      this.systemStatus = status;
+    },
+  },
+});

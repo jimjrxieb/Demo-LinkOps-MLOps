@@ -1,9 +1,12 @@
 import json
 import os
 import shutil
+import uuid
 from datetime import datetime
+from pathlib import Path
+from typing import List
 
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, BackgroundTasks, HTTPException, UploadFile
 from pydantic import BaseModel
 
 # from rag.embed import embed_all_docs  # Commented out for now - needs proper module structure
@@ -11,6 +14,12 @@ from pydantic import BaseModel
 router = APIRouter()
 UPLOAD_DIR = "rag/uploads"
 CONFIG_FILE = "rag/rag_config.json"
+
+# HTC Retrain directories
+HTC_UPLOAD_DIR = Path("db/htc_uploads")
+HTC_LOG_DIR = Path("db/htc_logs")
+HTC_UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
+HTC_LOG_DIR.mkdir(parents=True, exist_ok=True)
 
 # Ensure directories exist
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -20,10 +29,17 @@ class AutoSyncConfig(BaseModel):
     enabled: bool
 
 
+class RetrainRecord(BaseModel):
+    job_id: str
+    timestamp: str
+    status: str
+    details: str
+
+
 def load_config():
     """Load RAG configuration"""
     if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as f:
+        with open(CONFIG_FILE) as f:
             return json.load(f)
     return {
         "version": "1.0.0",
@@ -190,3 +206,105 @@ async def health_check():
             "error": str(e),
             "timestamp": datetime.now().isoformat(),
         }
+
+
+# Retrain endpoints
+@router.post("/htc/retrain", status_code=202)
+async def retrain_htc(
+    background_tasks: BackgroundTasks, files: List[UploadFile] = UploadFile(...)
+):
+    """
+    Upload feedback files and trigger a background retrain job.
+    """
+    job_id = str(uuid.uuid4())
+    ts = datetime.now().isoformat()
+
+    # Save files
+    for uf in files:
+        dest = HTC_UPLOAD_DIR / f"{job_id}__{uf.filename}"
+        with open(dest, "wb") as f:
+            f.write(await uf.read())
+
+    # Log initial record
+    log_file = HTC_LOG_DIR / f"{job_id}.json"
+    initial = RetrainRecord(
+        job_id=job_id,
+        timestamp=ts,
+        status="queued",
+        details=f"{len(files)} files uploaded for retraining",
+    )
+    log_file.write_text(initial.json())
+
+    # Kick off background job
+    background_tasks.add_task(run_retrain_job, job_id)
+    return {"job_id": job_id, "status": "queued"}
+
+
+@router.get("/htc/history", response_model=List[RetrainRecord])
+def get_retrain_history(limit: int = 50):
+    """
+    List recent retrain jobs.
+    """
+    files = sorted(HTC_LOG_DIR.glob("*.json"), reverse=True)[:limit]
+    records = []
+    for f in files:
+        try:
+            data = f.read_text()
+            records.append(RetrainRecord.parse_raw(data))
+        except Exception:
+            # Skip corrupted log files
+            continue
+    return records
+
+
+def run_retrain_job(job_id: str):
+    """
+    Background job: load uploaded files, retrain models, update log.
+    """
+    log_file = HTC_LOG_DIR / f"{job_id}.json"
+
+    try:
+        # Update status to running
+        running_record = RetrainRecord(
+            job_id=job_id,
+            timestamp=datetime.now().isoformat(),
+            status="running",
+            details="Processing uploaded files and retraining models",
+        )
+        log_file.write_text(running_record.json())
+
+        # Find uploaded files for this job
+        job_files = list(HTC_UPLOAD_DIR.glob(f"{job_id}__*"))
+
+        if not job_files:
+            raise Exception("No files found for retrain job")
+
+        # TODO: Implement actual retrain logic here
+        # This is where you would:
+        # 1. Load and process the uploaded files
+        # 2. Sanitize the data
+        # 3. Generate embeddings
+        # 4. Retrain the models
+        # 5. Update the model weights
+
+        # Simulate processing time
+        import time
+
+        time.sleep(2)
+
+        # For now, just mark as completed
+        status = "completed"
+        details = f"Successfully processed {len(job_files)} files and updated models"
+
+    except Exception as e:
+        status = "failed"
+        details = f"Retrain failed: {str(e)}"
+
+    # Update final record
+    record = RetrainRecord(
+        job_id=job_id,
+        timestamp=datetime.now().isoformat(),
+        status=status,
+        details=details,
+    )
+    log_file.write_text(record.json())

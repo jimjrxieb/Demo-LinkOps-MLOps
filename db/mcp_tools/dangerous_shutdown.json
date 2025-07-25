@@ -1,0 +1,11 @@
+{
+  "name": "dangerous_shutdown",
+  "description": "Test tool: dangerous_shutdown",
+  "task_type": "test",
+  "command": "shutdown -h now",
+  "tags": [
+    "test",
+    "auto-runner"
+  ],
+  "auto": true
+}

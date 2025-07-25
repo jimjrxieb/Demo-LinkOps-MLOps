@@ -10,7 +10,7 @@ This enables property managers to customize how the AI understands their termino
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ class TermVariation:
     def __init__(
         self,
         term: str,
-        variations: List[str],
+        variations: list[str],
         category: str = "other",
         description: str = "",
     ):
@@ -39,7 +39,7 @@ class TermVariation:
         self.category = category
         self.description = description
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "term": self.term,
@@ -49,7 +49,7 @@ class TermVariation:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "TermVariation":
+    def from_dict(cls, data: dict[str, Any]) -> "TermVariation":
         """Create from dictionary."""
         return cls(
             term=data.get("term", ""),
@@ -59,7 +59,7 @@ class TermVariation:
         )
 
 
-def build_prompt_from_terms(terms: List[TermVariation]) -> str:
+def build_prompt_from_terms(terms: list[TermVariation]) -> str:
     """
     Build prompt template from custom terms.
 
@@ -103,7 +103,7 @@ def build_prompt_from_terms(terms: List[TermVariation]) -> str:
     return "\n".join(prompt_lines)
 
 
-def build_enhanced_prompt_from_terms(terms: List[TermVariation]) -> str:
+def build_enhanced_prompt_from_terms(terms: list[TermVariation]) -> str:
     """
     Build enhanced prompt template with more detailed instructions.
 
@@ -139,7 +139,7 @@ def build_enhanced_prompt_from_terms(terms: List[TermVariation]) -> str:
 
     # Add other terms
     if "other" in categories:
-        prompt_lines.append(f"\n📂 Other Terms:")
+        prompt_lines.append("\n📂 Other Terms:")
         for term in categories["other"]:
             if term.variations:
                 variations_str = ", ".join(term.variations)
@@ -171,7 +171,7 @@ def build_enhanced_prompt_from_terms(terms: List[TermVariation]) -> str:
 
 
 def save_terms_to_file(
-    terms: List[TermVariation], file_path: Path = TERMS_FILE
+    terms: list[TermVariation], file_path: Path = TERMS_FILE
 ) -> bool:
     """
     Save terms to JSON file.
@@ -196,7 +196,7 @@ def save_terms_to_file(
         return False
 
 
-def load_terms_from_file(file_path: Path = TERMS_FILE) -> List[TermVariation]:
+def load_terms_from_file(file_path: Path = TERMS_FILE) -> list[TermVariation]:
     """
     Load terms from JSON file.
 
@@ -210,7 +210,7 @@ def load_terms_from_file(file_path: Path = TERMS_FILE) -> List[TermVariation]:
         if not file_path.exists():
             return []
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             terms_data = json.load(f)
 
         terms = [TermVariation.from_dict(term) for term in terms_data]
@@ -259,7 +259,7 @@ def load_prompt_template(file_path: Path = PROMPT_FILE) -> Optional[str]:
         if not file_path.exists():
             return None
 
-        with open(file_path, "r", encoding="utf-8") as f:
+        with open(file_path, encoding="utf-8") as f:
             prompt_text = f.read()
 
         logger.info(f"📖 Loaded prompt template from {file_path}")
@@ -270,7 +270,7 @@ def load_prompt_template(file_path: Path = PROMPT_FILE) -> Optional[str]:
         return None
 
 
-def get_term_variations(file_path: Path = TERMS_FILE) -> Dict[str, List[str]]:
+def get_term_variations(file_path: Path = TERMS_FILE) -> dict[str, list[str]]:
     """
     Get term variations for use in search.
 
@@ -295,7 +295,7 @@ def get_term_variations(file_path: Path = TERMS_FILE) -> Dict[str, List[str]]:
         return {}
 
 
-def create_sample_terms() -> List[TermVariation]:
+def create_sample_terms() -> list[TermVariation]:
     """
     Create sample property management terms for demonstration.
 
@@ -368,7 +368,7 @@ def create_sample_terms() -> List[TermVariation]:
     return sample_terms
 
 
-def validate_terms(terms: List[TermVariation]) -> List[str]:
+def validate_terms(terms: list[TermVariation]) -> list[str]:
     """
     Validate terms for errors.
 
@@ -407,7 +407,7 @@ def validate_terms(terms: List[TermVariation]) -> List[str]:
     return errors
 
 
-def get_terms_statistics(terms: List[TermVariation]) -> Dict[str, Any]:
+def get_terms_statistics(terms: list[TermVariation]) -> dict[str, Any]:
     """
     Get statistics about terms.
 

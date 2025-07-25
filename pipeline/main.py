@@ -6,13 +6,11 @@ Training Pipeline - Secure AI Training + Embedding Flow
 This module orchestrates the complete pipeline from data upload to model training or embedding.
 """
 
-import json
 import logging
 import os
 import time
 from datetime import datetime
-from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 # Configure logging
 logging.basicConfig(
@@ -34,7 +32,7 @@ class TrainingPipeline:
     Orchestrates the complete flow: upload → sanitize → embed/train → store
     """
 
-    def __init__(self, config: Optional[Dict[str, Any]] = None):
+    def __init__(self, config: Optional[dict[str, Any]] = None):
         """Initialize the training pipeline."""
         self.config = config or {}
         self.pipeline_id = None
@@ -63,9 +61,9 @@ class TrainingPipeline:
         upload_file: str,
         task_type: str,
         target_col: Optional[str] = None,
-        model_params: Optional[Dict[str, Any]] = None,
-        embedding_params: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        model_params: Optional[dict[str, Any]] = None,
+        embedding_params: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Run the complete training pipeline.
 
@@ -143,8 +141,8 @@ class TrainingPipeline:
             return self._prepare_error_results(str(e))
 
     def run_rag_pipeline(
-        self, upload_file: str, embedding_params: Optional[Dict[str, Any]] = None
-    ) -> Dict[str, Any]:
+        self, upload_file: str, embedding_params: Optional[dict[str, Any]] = None
+    ) -> dict[str, Any]:
         """
         Run RAG-specific pipeline.
 
@@ -162,8 +160,8 @@ class TrainingPipeline:
         upload_file: str,
         task_type: str,
         target_col: str,
-        model_params: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        model_params: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """
         Run ML training pipeline.
 
@@ -180,7 +178,7 @@ class TrainingPipeline:
             upload_file, task_type, target_col, model_params=model_params
         )
 
-    def _prepare_results(self) -> Dict[str, Any]:
+    def _prepare_results(self) -> dict[str, Any]:
         """Prepare pipeline results."""
         execution_time = (self.end_time - self.start_time).total_seconds()
 
@@ -210,7 +208,7 @@ class TrainingPipeline:
             },
         }
 
-    def _prepare_error_results(self, error_message: str) -> Dict[str, Any]:
+    def _prepare_error_results(self, error_message: str) -> dict[str, Any]:
         """Prepare error results."""
         execution_time = (self.end_time - self.start_time).total_seconds()
 
@@ -240,7 +238,7 @@ class TrainingPipeline:
         else:
             return "unknown"
 
-    def get_status(self) -> Dict[str, Any]:
+    def get_status(self) -> dict[str, Any]:
         """Get current pipeline status."""
         return {
             "pipeline_id": self.pipeline_id,
@@ -256,9 +254,9 @@ def run_pipeline(
     upload_file: str,
     task_type: str,
     target_col: Optional[str] = None,
-    model_params: Optional[Dict[str, Any]] = None,
-    embedding_params: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    model_params: Optional[dict[str, Any]] = None,
+    embedding_params: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """
     Convenience function to run the training pipeline.
 
@@ -279,8 +277,8 @@ def run_pipeline(
 
 
 def run_rag_pipeline(
-    upload_file: str, embedding_params: Optional[Dict[str, Any]] = None
-) -> Dict[str, Any]:
+    upload_file: str, embedding_params: Optional[dict[str, Any]] = None
+) -> dict[str, Any]:
     """Run RAG-specific pipeline."""
     return run_pipeline(upload_file, "rag", embedding_params=embedding_params)
 
@@ -289,8 +287,8 @@ def run_ml_pipeline(
     upload_file: str,
     task_type: str,
     target_col: str,
-    model_params: Optional[Dict[str, Any]] = None,
-) -> Dict[str, Any]:
+    model_params: Optional[dict[str, Any]] = None,
+) -> dict[str, Any]:
     """Run ML training pipeline."""
     return run_pipeline(upload_file, task_type, target_col, model_params=model_params)
 

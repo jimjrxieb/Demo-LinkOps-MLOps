@@ -4,25 +4,30 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">
-            🧠 Whis Learning Pipeline
-          </h2>
+          <h2 class="card-title">🧠 Whis Learning Pipeline</h2>
           <p class="card-subtitle">
-            Train and improve AI models using tasks that need additional learning
+            Train and improve AI models using tasks that need additional
+            learning
           </p>
         </div>
         <div class="card-body">
           <div class="pipeline-stats">
             <div class="stat-item">
-              <div class="stat-value">{{ pendingTasks.length }}</div>
+              <div class="stat-value">
+                {{ pendingTasks.length }}
+              </div>
               <div class="stat-label">Pending Training</div>
             </div>
             <div class="stat-item">
-              <div class="stat-value">{{ completedTraining.length }}</div>
+              <div class="stat-value">
+                {{ completedTraining.length }}
+              </div>
               <div class="stat-label">Completed</div>
             </div>
             <div class="stat-item">
-              <div class="stat-value">{{ isTraining ? 'Active' : 'Idle' }}</div>
+              <div class="stat-value">
+                {{ isTraining ? 'Active' : 'Idle' }}
+              </div>
               <div class="stat-label">Status</div>
             </div>
           </div>
@@ -34,35 +39,39 @@
     <div v-if="pendingTasks.length > 0" class="training-queue-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">
-            📋 Training Queue
-          </h3>
+          <h3 class="card-title">📋 Training Queue</h3>
           <p class="card-subtitle">
             Tasks with confidence ≤ 70% requiring additional training
           </p>
         </div>
         <div class="card-body">
           <div class="training-tasks">
-            <div 
-              v-for="task in pendingTasks" 
+            <div
+              v-for="task in pendingTasks"
               :key="task.id"
               class="training-task-card"
-              :class="{ 'selected': selectedTask?.id === task.id }"
+              :class="{ selected: selectedTask?.id === task.id }"
               @click="selectTask(task)"
             >
               <div class="task-header">
                 <div class="task-info">
-                  <h4 class="task-title">{{ task.originalInput }}</h4>
+                  <h4 class="task-title">
+                    {{ task.originalInput }}
+                  </h4>
                   <div class="task-meta">
-                    <span class="confidence-score">{{ task.confidence }}% confidence</span>
-                    <span class="task-time">{{ formatTime(task.timestamp) }}</span>
+                    <span class="confidence-score"
+                      >{{ task.confidence }}% confidence</span
+                    >
+                    <span class="task-time">{{
+                      formatTime(task.timestamp)
+                    }}</span>
                   </div>
                 </div>
                 <div class="task-actions">
-                  <button 
+                  <button
                     class="btn btn-primary start-training-btn"
-                    @click.stop="startTraining(task)"
                     :disabled="isTraining"
+                    @click.stop="startTraining(task)"
                   >
                     🚀 Start Training
                   </button>
@@ -75,63 +84,92 @@
     </div>
 
     <!-- Active Training Process -->
-    <div v-if="isTraining && currentTrainingTask" class="training-process-section">
+    <div
+      v-if="isTraining && currentTrainingTask"
+      class="training-process-section"
+    >
       <div class="card">
         <div class="card-header">
           <h3 class="card-title">
             ⚒️ Active Training: {{ currentTrainingTask.originalInput }}
           </h3>
           <p class="card-subtitle">
-            Step {{ currentTrainingStep + 1 }} of 5 - {{ trainingSteps[currentTrainingStep]?.name }}
+            Step {{ currentTrainingStep + 1 }} of 5 -
+            {{ trainingSteps[currentTrainingStep]?.name }}
           </p>
         </div>
         <div class="card-body">
           <!-- Training Progress -->
           <div class="training-progress">
             <div class="progress-bar">
-              <div 
-                class="progress-fill" 
-                :style="{ width: ((currentTrainingStep + 1) / trainingSteps.length) * 100 + '%' }"
-              ></div>
+              <div
+                class="progress-fill"
+                :style="{
+                  width:
+                    ((currentTrainingStep + 1) / trainingSteps.length) * 100 +
+                    '%',
+                }"
+              />
             </div>
             <div class="progress-text">
-              {{ Math.round(((currentTrainingStep + 1) / trainingSteps.length) * 100) }}% Complete
+              {{
+                Math.round(
+                  ((currentTrainingStep + 1) / trainingSteps.length) * 100
+                )
+              }}% Complete
             </div>
           </div>
 
           <!-- Training Steps -->
           <div class="training-steps">
-            <div 
-              v-for="(step, index) in trainingSteps" 
+            <div
+              v-for="(step, index) in trainingSteps"
               :key="index"
               class="training-step"
-              :class="{ 
-                'active': index === currentTrainingStep,
-                'completed': index < currentTrainingStep,
-                'pending': index > currentTrainingStep
+              :class="{
+                active: index === currentTrainingStep,
+                completed: index < currentTrainingStep,
+                pending: index > currentTrainingStep,
               }"
             >
               <div class="step-indicator">
-                <div class="step-number">{{ index + 1 }}</div>
-                <div class="step-icon">{{ step.icon }}</div>
+                <div class="step-number">
+                  {{ index + 1 }}
+                </div>
+                <div class="step-icon">
+                  {{ step.icon }}
+                </div>
               </div>
               <div class="step-content">
-                <h4 class="step-name">{{ step.name }}</h4>
-                <p class="step-description">{{ step.description }}</p>
-                
+                <h4 class="step-name">
+                  {{ step.name }}
+                </h4>
+                <p class="step-description">
+                  {{ step.description }}
+                </p>
+
                 <!-- Step Details -->
                 <div v-if="index === currentTrainingStep" class="step-details">
                   <div v-if="step.tools" class="tools-section">
                     <h5>🔧 Tools & Models Used:</h5>
                     <ul class="tools-list">
-                      <li v-for="tool in step.tools" :key="tool">{{ tool }}</li>
+                      <li v-for="tool in step.tools" :key="tool">
+                        {{ tool }}
+                      </li>
                     </ul>
                   </div>
-                  
-                  <div v-if="step.process && currentStepResults[index]" class="process-section">
+
+                  <div
+                    v-if="step.process && currentStepResults[index]"
+                    class="process-section"
+                  >
                     <h5>📊 Processing Results:</h5>
                     <div class="process-results">
-                      <div class="result-item" v-for="(result, key) in currentStepResults[index]" :key="key">
+                      <div
+                        v-for="(result, key) in currentStepResults[index]"
+                        :key="key"
+                        class="result-item"
+                      >
                         <strong>{{ key }}:</strong> {{ result }}
                       </div>
                     </div>
@@ -169,19 +207,33 @@
                   </div>
                 </div>
 
-                <div v-if="generatedOrb.declarative_template" class="template-preview">
+                <div
+                  v-if="generatedOrb.declarative_template"
+                  class="template-preview"
+                >
                   <h6>📄 Declarative Template:</h6>
                   <pre><code>{{ generatedOrb.declarative_template }}</code></pre>
                 </div>
-                <div v-if="generatedOrb.imperative_commands" class="commands-preview">
+                <div
+                  v-if="generatedOrb.imperative_commands"
+                  class="commands-preview"
+                >
                   <h6>⚡ Imperative Commands:</h6>
                   <ul>
-                    <li v-for="cmd in generatedOrb.imperative_commands.slice(0, 3)" :key="cmd">{{ cmd }}</li>
+                    <li
+                      v-for="cmd in generatedOrb.imperative_commands.slice(
+                        0,
+                        3
+                      )"
+                      :key="cmd"
+                    >
+                      {{ cmd }}
+                    </li>
                   </ul>
                 </div>
               </div>
             </div>
-            
+
             <!-- Approval Section -->
             <div class="approval-section">
               <h4>🎯 Training Complete - Review & Approve</h4>
@@ -200,13 +252,19 @@
     </div>
 
     <!-- No Training Tasks -->
-    <div v-if="pendingTasks.length === 0 && !isTraining" class="no-tasks-section">
+    <div
+      v-if="pendingTasks.length === 0 && !isTraining"
+      class="no-tasks-section"
+    >
       <div class="card">
         <div class="card-body">
           <div class="no-tasks-content">
             <div class="no-tasks-icon">🎯</div>
             <h3>No Training Tasks</h3>
-            <p>Submit tasks with low confidence from the main Demo page to start training new orbs.</p>
+            <p>
+              Submit tasks with low confidence from the main Demo page to start
+              training new orbs.
+            </p>
             <button class="btn btn-secondary" @click="goToDemo">
               🚀 Go to Demo Page
             </button>
@@ -219,14 +277,12 @@
     <div v-if="completedTraining.length > 0" class="history-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">
-            📚 Training History
-          </h3>
+          <h3 class="card-title">📚 Training History</h3>
         </div>
         <div class="card-body">
           <div class="history-list">
-            <div 
-              v-for="item in completedTraining.slice(0, 5)" 
+            <div
+              v-for="item in completedTraining.slice(0, 5)"
               :key="item.id"
               class="history-item"
             >
@@ -235,10 +291,15 @@
                 <p>{{ item.originalInput }}</p>
               </div>
               <div class="history-meta">
-                <span class="history-status" :class="item.approved ? 'approved' : 'rejected'">
+                <span
+                  class="history-status"
+                  :class="item.approved ? 'approved' : 'rejected'"
+                >
                   {{ item.approved ? '✅ Approved' : '❌ Rejected' }}
                 </span>
-                <span class="history-time">{{ formatTime(item.completedAt) }}</span>
+                <span class="history-time">{{
+                  formatTime(item.completedAt)
+                }}</span>
               </div>
             </div>
           </div>
@@ -249,57 +310,60 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue';
 
 // State
-const pendingTasks = ref([])
-const completedTraining = ref([])
-const selectedTask = ref(null)
-const isTraining = ref(false)
-const currentTrainingTask = ref(null)
-const currentTrainingStep = ref(0)
-const currentStepResults = ref({})
-const generatedOrb = ref(null)
+const pendingTasks = ref([]);
+const completedTraining = ref([]);
+const selectedTask = ref(null);
+const isTraining = ref(false);
+const currentTrainingTask = ref(null);
+const currentTrainingStep = ref(0);
+const currentStepResults = ref({});
+const generatedOrb = ref(null);
 
 // Training steps configuration
 const trainingSteps = ref([
   {
     name: 'Input Sanitization',
     icon: '🧹',
-    description: 'Clean and normalize input, replace specific values with placeholders',
+    description:
+      'Clean and normalize input, replace specific values with placeholders',
     tools: [
       'TensorFlow Universal Sentence Encoder v4',
       'Custom PII detection algorithms',
       'Regex pattern matching for placeholders',
-      'Data validation and normalization'
+      'Data validation and normalization',
     ],
-    process: true
+    process: true,
   },
   {
-    name: 'Semantic Analysis', 
+    name: 'Semantic Analysis',
     icon: '🧠',
-    description: 'Generate embeddings and analyze semantic meaning using TensorFlow',
+    description:
+      'Generate embeddings and analyze semantic meaning using TensorFlow',
     tools: [
       'TensorFlow USE embeddings (512-dimensional)',
       'Semantic similarity calculations',
       'Intent classification models',
-      'Contextual understanding pipelines'
+      'Contextual understanding pipelines',
     ],
-    process: true
+    process: true,
   },
   {
     name: 'Smithing Process',
-    icon: '⚒️', 
-    description: 'Generate Orbs (detailed human walkthroughs) and Runes (executable scripts)',
+    icon: '⚒️',
+    description:
+      'Generate Orbs (detailed human walkthroughs) and Runes (executable scripts)',
     tools: [
       'LangChain orchestration framework',
-      'GPT-4 language model integration', 
+      'GPT-4 language model integration',
       'Custom ML classifiers (TensorFlow/Keras)',
       'Best practices knowledge base',
       '🧿 Orb Generator: Step-by-step walkthroughs with checklists, warnings & troubleshooting',
-      '🔮 Rune Generator: Production-ready scripts (.sh/.py) with error handling & cleanup'
+      '🔮 Rune Generator: Production-ready scripts (.sh/.py) with error handling & cleanup',
     ],
-    process: true
+    process: true,
   },
   {
     name: 'Quality Evaluation',
@@ -309,168 +373,186 @@ const trainingSteps = ref([
       'Security compliance checkers',
       'Performance impact analysis',
       'Best practices validation',
-      'Confidence scoring algorithms'
+      'Confidence scoring algorithms',
     ],
-    process: true
+    process: true,
   },
   {
     name: 'Orb & Rune Packaging',
     icon: '🔮',
-    description: 'Package detailed human walkthrough (Orb) and production-ready script (Rune) together',
+    description:
+      'Package detailed human walkthrough (Orb) and production-ready script (Rune) together',
     tools: [
       'YAML template generators',
       'Markdown documentation formatting',
       'Bash script optimization with error handling',
       'Python script generation with logging',
       'Rune ID assignment system',
-      'Quality assurance validation'
+      'Quality assurance validation',
     ],
-    process: true
-  }
-])
+    process: true,
+  },
+]);
 
 // Computed
 const formatTime = (timestamp) => {
-  return new Date(timestamp).toLocaleString()
-}
+  return new Date(timestamp).toLocaleString();
+};
 
 // Methods
 const loadTrainingQueue = () => {
-  const queue = JSON.parse(localStorage.getItem('whisTrainingQueue') || '[]')
-  pendingTasks.value = queue.filter(task => task.status === 'pending_training')
-  
-  const completed = JSON.parse(localStorage.getItem('whisCompletedTraining') || '[]')
-  completedTraining.value = completed
-}
+  const queue = JSON.parse(localStorage.getItem('whisTrainingQueue') || '[]');
+  pendingTasks.value = queue.filter(
+    (task) => task.status === 'pending_training'
+  );
+
+  const completed = JSON.parse(
+    localStorage.getItem('whisCompletedTraining') || '[]'
+  );
+  completedTraining.value = completed;
+};
 
 const selectTask = (task) => {
-  selectedTask.value = task
-}
+  selectedTask.value = task;
+};
 
 const startTraining = async (task) => {
-  if (isTraining.value) return
-  
-  isTraining.value = true
-  currentTrainingTask.value = task
-  currentTrainingStep.value = 0
-  currentStepResults.value = {}
-  generatedOrb.value = null
-  
+  if (isTraining.value) return;
+
+  isTraining.value = true;
+  currentTrainingTask.value = task;
+  currentTrainingStep.value = 0;
+  currentStepResults.value = {};
+  generatedOrb.value = null;
+
   // Process each training step
   for (let i = 0; i < trainingSteps.value.length; i++) {
-    currentTrainingStep.value = i
-    await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate processing time
-    
+    currentTrainingStep.value = i;
+    await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate processing time
+
     // Generate step results
-    const results = await processTrainingStep(i, task)
-    currentStepResults.value[i] = results
+    const results = await processTrainingStep(i, task);
+    currentStepResults.value[i] = results;
   }
-  
+
   // Generate final orb
-  generatedOrb.value = await generateOrbFromTraining(task)
-}
+  generatedOrb.value = await generateOrbFromTraining(task);
+};
 
 const processTrainingStep = async (stepIndex, task) => {
   switch (stepIndex) {
     case 0: // Sanitization
-      const sanitized = sanitizeInput(task.originalInput)
+      const sanitized = sanitizeInput(task.originalInput);
       return {
         'Original Input': task.originalInput,
         'Sanitized Input': sanitized,
-        'Placeholders Created': Object.keys(extractPlaceholders(task.originalInput)).length,
-        'PII Removed': 'Names, specific values replaced with placeholders'
-      }
-      
+        'Placeholders Created': Object.keys(
+          extractPlaceholders(task.originalInput)
+        ).length,
+        'PII Removed': 'Names, specific values replaced with placeholders',
+      };
+
     case 1: // Semantic Analysis
       return {
         'Embedding Dimensions': '512',
         'Semantic Categories': 'Kubernetes, Infrastructure, DevOps',
         'Intent Confidence': '94%',
-        'Similar Patterns': '23 related patterns found'
-      }
-      
+        'Similar Patterns': '23 related patterns found',
+      };
+
     case 2: // Smithing
       return {
-        'Orb Generated': 'Detailed walkthrough with step-by-step checklist, warnings & troubleshooting',
-        'Rune Generated': 'Production-ready executable script with error handling & cleanup',
+        'Orb Generated':
+          'Detailed walkthrough with step-by-step checklist, warnings & troubleshooting',
+        'Rune Generated':
+          'Production-ready executable script with error handling & cleanup',
         'Best Practices Applied': '12',
         'Security Checks': 'Passed',
-        'Human Guidance Features': 'UI locations, naming tips, common mistake warnings',
-        'Script Features': 'Pre-flight checks, trap handlers, colored logging, auto-cleanup'
-      }
-      
+        'Human Guidance Features':
+          'UI locations, naming tips, common mistake warnings',
+        'Script Features':
+          'Pre-flight checks, trap handlers, colored logging, auto-cleanup',
+      };
+
     case 3: // Evaluation
       return {
         'Quality Score': '87%',
         'Security Rating': 'High',
         'Performance Impact': 'Low',
-        'Compliance': 'SOC2, PCI-DSS'
-      }
-      
+        Compliance: 'SOC2, PCI-DSS',
+      };
+
     case 4: // Orb & Rune Packaging
       return {
         'Rune ID': `R-${Math.floor(Math.random() * 900) + 100}`,
-        'Orb Content': 'Detailed human walkthrough with 8-step checklist & troubleshooting guide',
-        'Rune Content': 'Production-ready script (127 lines) with full error handling & cleanup',
-        'Documentation': 'Auto-generated with security warnings, tips & best practices',
-        'Script Features': 'Colored logging, trap handlers, pre-flight validation, auto-recovery'
-      }
-      
+        'Orb Content':
+          'Detailed human walkthrough with 8-step checklist & troubleshooting guide',
+        'Rune Content':
+          'Production-ready script (127 lines) with full error handling & cleanup',
+        Documentation:
+          'Auto-generated with security warnings, tips & best practices',
+        'Script Features':
+          'Colored logging, trap handlers, pre-flight validation, auto-recovery',
+      };
+
     default:
-      return {}
+      return {};
   }
-}
+};
 
 const sanitizeInput = (input) => {
-  let sanitized = input
-  const placeholders = extractPlaceholders(input)
-  
-  Object.keys(placeholders).forEach(key => {
-    sanitized = sanitized.replace(new RegExp(key, 'gi'), placeholders[key])
-  })
-  
-  return sanitized
-}
+  let sanitized = input;
+  const placeholders = extractPlaceholders(input);
+
+  Object.keys(placeholders).forEach((key) => {
+    sanitized = sanitized.replace(new RegExp(key, 'gi'), placeholders[key]);
+  });
+
+  return sanitized;
+};
 
 const extractPlaceholders = (input) => {
-  const placeholders = {}
-  
+  const placeholders = {};
+
   // Replace pod names
   if (input.includes('testpod') || input.includes('test-pod')) {
-    placeholders['testpod'] = 'POD-NAME'
-    placeholders['test-pod'] = 'POD-NAME'
+    placeholders['testpod'] = 'POD-NAME';
+    placeholders['test-pod'] = 'POD-NAME';
   }
-  
+
   // Replace image names
   if (input.includes('busybox')) {
-    placeholders['busybox'] = 'IMAGE-NAME'
+    placeholders['busybox'] = 'IMAGE-NAME';
   }
   if (input.includes('nginx')) {
-    placeholders['nginx'] = 'IMAGE-NAME'
+    placeholders['nginx'] = 'IMAGE-NAME';
   }
-  
+
   // Replace common service names
   if (input.includes('myapp') || input.includes('my-app')) {
-    placeholders['myapp'] = 'SERVICE-NAME'
-    placeholders['my-app'] = 'SERVICE-NAME'
+    placeholders['myapp'] = 'SERVICE-NAME';
+    placeholders['my-app'] = 'SERVICE-NAME';
   }
-  
-  return placeholders
-}
+
+  return placeholders;
+};
 
 const generateOrbFromTraining = async (task) => {
-  const sanitized = sanitizeInput(task.originalInput)
-  const placeholders = extractPlaceholders(task.originalInput)
-  const category = determineCategory(task.originalInput)
-  
+  const sanitized = sanitizeInput(task.originalInput);
+  const placeholders = extractPlaceholders(task.originalInput);
+  const category = determineCategory(task.originalInput);
+
   // Generate Orb (human-friendly walkthrough)
-  const orb = generateOrbWalkthrough(sanitized, placeholders, category)
-  
-  // Generate Rune (executable script)  
-  const rune = generateRuneScript(sanitized, placeholders, category)
-  
+  const orb = generateOrbWalkthrough(sanitized, placeholders, category);
+
+  // Generate Rune (executable script)
+  const rune = generateRuneScript(sanitized, placeholders, category);
+
   return {
-    title: `${task.originalInput.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')} - AI Generated`,
+    title: `${task.originalInput
+      .split(' ')
+      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+      .join(' ')} - AI Generated`,
     category: category,
     orb: orb, // Human-friendly walkthrough
     rune: rune, // Executable script
@@ -480,32 +562,42 @@ const generateOrbFromTraining = async (task) => {
     declarative_template: generateTemplate(sanitized, placeholders),
     imperative_commands: generateCommands(sanitized, placeholders),
     needsApproval: true,
-    trainingSource: task.id
-  }
-}
+    trainingSource: task.id,
+  };
+};
 
 const determineCategory = (input) => {
-  if (input.includes('pod')) return 'Kubernetes'
-  if (input.includes('service')) return 'Kubernetes'
-  if (input.includes('deploy')) return 'CI/CD'
-  if (input.includes('pipeline')) return 'CI/CD'
-  if (input.includes('security') || input.includes('secret')) return 'Security'
-  return 'DevOps'
-}
+  if (input.includes('pod')) return 'Kubernetes';
+  if (input.includes('service')) return 'Kubernetes';
+  if (input.includes('deploy')) return 'CI/CD';
+  if (input.includes('pipeline')) return 'CI/CD';
+  if (input.includes('security') || input.includes('secret')) return 'Security';
+  return 'DevOps';
+};
 
 const extractKeywords = (input) => {
-  const keywords = []
-  const commonKeywords = ['kubernetes', 'pod', 'deployment', 'service', 'secret', 'configmap', 'pipeline', 'ci', 'cd']
-  
-  commonKeywords.forEach(keyword => {
+  const keywords = [];
+  const commonKeywords = [
+    'kubernetes',
+    'pod',
+    'deployment',
+    'service',
+    'secret',
+    'configmap',
+    'pipeline',
+    'ci',
+    'cd',
+  ];
+
+  commonKeywords.forEach((keyword) => {
     if (input.toLowerCase().includes(keyword)) {
-      keywords.push(keyword)
+      keywords.push(keyword);
     }
-  })
-  
-  keywords.push('ai-generated', 'training')
-  return keywords
-}
+  });
+
+  keywords.push('ai-generated', 'training');
+  return keywords;
+};
 
 const generateTemplate = (sanitizedInput, placeholders) => {
   if (sanitizedInput.includes('pod')) {
@@ -521,23 +613,24 @@ spec:
     image: ${placeholders['busybox'] || placeholders['nginx'] || 'IMAGE-NAME'}
     ports:
     - containerPort: 80
-  restartPolicy: Always`
+  restartPolicy: Always`;
   }
-  
+
   return `# Generated template for: ${sanitizedInput}
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: config
 data:
-  key: value`
-}
+  key: value`;
+};
 
 const generateCommands = (sanitizedInput, placeholders) => {
   if (sanitizedInput.includes('pod')) {
-    const podName = placeholders['testpod'] || 'POD-NAME'
-    const imageName = placeholders['busybox'] || placeholders['nginx'] || 'IMAGE-NAME'
-    
+    const podName = placeholders['testpod'] || 'POD-NAME';
+    const imageName =
+      placeholders['busybox'] || placeholders['nginx'] || 'IMAGE-NAME';
+
     return [
       `# Create pod with specified image`,
       `kubectl run ${podName} --image=${imageName}`,
@@ -548,22 +641,23 @@ const generateCommands = (sanitizedInput, placeholders) => {
       ``,
       `# Check logs and cleanup`,
       `kubectl logs ${podName}`,
-      `kubectl delete pod ${podName}`
-    ]
+      `kubectl delete pod ${podName}`,
+    ];
   }
-  
+
   return [
     '# Generated commands',
     'kubectl apply -f manifest.yaml',
-    'kubectl get all'
-  ]
-}
+    'kubectl get all',
+  ];
+};
 
 const generateOrbWalkthrough = (sanitizedInput, placeholders, category) => {
   if (sanitizedInput.includes('pod')) {
-    const podName = placeholders['testpod'] || 'my-app-pod'
-    const imageName = placeholders['busybox'] || placeholders['nginx'] || 'nginx:latest'
-    
+    const podName = placeholders['testpod'] || 'my-app-pod';
+    const imageName =
+      placeholders['busybox'] || placeholders['nginx'] || 'nginx:latest';
+
     return `# 🧿 ORB: \`kubernetes.pod_creation.orb.v1\`
 
 **Title**: Kubernetes Pod Creation with Security Best Practices
@@ -588,7 +682,10 @@ const generateOrbWalkthrough = (sanitizedInput, placeholders, category) => {
 
 ### 🧩 Tips & Guidance
 
-* ✅ **Pod Naming**: Use lowercase, hyphens only (e.g., \`${podName}\` not \`${podName.replace(/-/g, '_')}\`)
+* ✅ **Pod Naming**: Use lowercase, hyphens only (e.g., \`${podName}\` not \`${podName.replace(
+      /-/g,
+      '_'
+    )}\`)
 * 🌐 **Image Selection**: Always use specific tags, not 'latest' (e.g., \`${imageName}\`)  
 * 🛑 **Common Mistake**: Avoid underscore (_) in names - Kubernetes doesn't allow it
 * 📌 **Resource Limits**: Always set memory/CPU limits to prevent resource exhaustion
@@ -697,9 +794,9 @@ const generateOrbWalkthrough = (sanitizedInput, placeholders, category) => {
 * **Sidecar Patterns**: Include logging or monitoring sidecars
 * **Volume Mounts**: Add persistent storage or configuration volumes
 * **Health Checks**: Configure liveness and readiness probes
-* **Service Mesh**: Integrate with Istio or Linkerd for advanced networking`
+* **Service Mesh**: Integrate with Istio or Linkerd for advanced networking`;
   }
-  
+
   if (sanitizedInput.includes('deployment')) {
     return `# 🧿 ORB: \`kubernetes.deployment.orb.v1\`
 
@@ -784,11 +881,13 @@ const generateOrbWalkthrough = (sanitizedInput, placeholders, category) => {
 * 🚫 **Immutable Images**: Use specific image tags and signatures
 * 📁 **Secret Management**: Use external secret management systems
 * 🔍 **Image Scanning**: Continuous vulnerability scanning
-* 🌐 **Network Policies**: Implement micro-segmentation`
+* 🌐 **Network Policies**: Implement micro-segmentation`;
   }
-  
+
   // Default fallback for other categories
-  return `# 🧿 ORB: \`${category.toLowerCase()}.${sanitizedInput.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase()}.orb.v1\`
+  return `# 🧿 ORB: \`${category.toLowerCase()}.${sanitizedInput
+    .replace(/[^a-zA-Z0-9]/g, '_')
+    .toLowerCase()}.orb.v1\`
 
 **Title**: ${category} Best Practices - ${sanitizedInput}
 **Goal**: Implement ${sanitizedInput} following industry best practices and security standards
@@ -872,14 +971,15 @@ const generateOrbWalkthrough = (sanitizedInput, placeholders, category) => {
 * 📁 **Data Protection**: Encrypt data in transit and at rest
 * 🔍 **Monitoring**: Implement security event monitoring
 * 🌐 **Network Security**: Use network segmentation and firewalls
-* 📊 **Audit Logging**: Maintain comprehensive audit trails`
-}
+* 📊 **Audit Logging**: Maintain comprehensive audit trails`;
+};
 
 const generateRuneScript = (sanitizedInput, placeholders, category) => {
   if (sanitizedInput.includes('pod')) {
-    const podName = placeholders['testpod'] || 'my-app-pod'
-    const imageName = placeholders['busybox'] || placeholders['nginx'] || 'nginx:latest'
-    
+    const podName = placeholders['testpod'] || 'my-app-pod';
+    const imageName =
+      placeholders['busybox'] || placeholders['nginx'] || 'nginx:latest';
+
     return `#!/bin/bash
 # 🔮 RUNE: kubernetes_pod_creation_secure.sh
 # Title: Secure Kubernetes Pod Creation with Resource Management
@@ -1190,9 +1290,9 @@ log_info "🔄 This script can be re-run safely - it includes cleanup and valida
 log_info "\\n🧹 Cleanup will run automatically when script exits"
 log_info "🚀 Deployment completed successfully at \$(date)"
 
-exit 0`
+exit 0`;
   }
-  
+
   if (sanitizedInput.includes('deployment')) {
     return `#!/bin/bash
 # 🔮 RUNE: kubernetes_deployment_rolling.sh  
@@ -1329,10 +1429,10 @@ log_success "🎉 Deployment '\$APP_NAME' rolled out successfully!"
 kubectl get deployment \$APP_NAME --namespace=\$NAMESPACE -o wide
 
 log_success "🎉 Deployment completed successfully at $(date)"
-exit 0`
+exit 0`;
   }
-  
-  // Default fallback for other categories  
+
+  // Default fallback for other categories
   return `#!/bin/bash
 # 🔮 RUNE: ${category.toLowerCase()}_automation.sh
 # Title: ${category} Task Automation - ${sanitizedInput}
@@ -1474,93 +1574,101 @@ echo "  🔧 Temporary files cleaned up automatically"
 log_success "🚀 Automation completed successfully!"
 
 # Note: cleanup() will run automatically when script exits
-exit 0`
-}
+exit 0`;
+};
 
 const approveOrb = () => {
-  if (!generatedOrb.value || !currentTrainingTask.value) return
-  
+  if (!generatedOrb.value || !currentTrainingTask.value) return;
+
   // Create rune and save to orb library
   const rune = {
     ...generatedOrb.value,
     approved: true,
     savedAt: new Date().toISOString(),
-    runeCreated: true
-  }
-  
+    runeCreated: true,
+  };
+
   // Save to completed training
   const trainingRecord = {
     id: Date.now(),
     originalInput: currentTrainingTask.value.originalInput,
     generatedOrb: rune,
     approved: true,
-    completedAt: new Date().toISOString()
-  }
-  
-  completedTraining.value.push(trainingRecord)
-  const completed = JSON.parse(localStorage.getItem('whisCompletedTraining') || '[]')
-  completed.push(trainingRecord)
-  localStorage.setItem('whisCompletedTraining', JSON.stringify(completed))
-  
+    completedAt: new Date().toISOString(),
+  };
+
+  completedTraining.value.push(trainingRecord);
+  const completed = JSON.parse(
+    localStorage.getItem('whisCompletedTraining') || '[]'
+  );
+  completed.push(trainingRecord);
+  localStorage.setItem('whisCompletedTraining', JSON.stringify(completed));
+
   // Add to orb library (for demo)
-  const orbLibrary = JSON.parse(localStorage.getItem('orbLibrary') || '[]')
-  orbLibrary.push(rune)
-  localStorage.setItem('orbLibrary', JSON.stringify(orbLibrary))
-  
+  const orbLibrary = JSON.parse(localStorage.getItem('orbLibrary') || '[]');
+  orbLibrary.push(rune);
+  localStorage.setItem('orbLibrary', JSON.stringify(orbLibrary));
+
   // Remove from training queue
-  removeFromTrainingQueue(currentTrainingTask.value.id)
-  
-  alert(`✅ Orb approved! Rune "${rune.rune_id}" created and added to ${rune.category} category.`)
-  resetTraining()
-}
+  removeFromTrainingQueue(currentTrainingTask.value.id);
+
+  alert(
+    `✅ Orb approved! Rune "${rune.rune_id}" created and added to ${rune.category} category.`
+  );
+  resetTraining();
+};
 
 const rejectOrb = () => {
-  if (!currentTrainingTask.value) return
-  
+  if (!currentTrainingTask.value) return;
+
   const trainingRecord = {
     id: Date.now(),
     originalInput: currentTrainingTask.value.originalInput,
     generatedOrb: generatedOrb.value,
     approved: false,
     rejectionReason: 'Quality below threshold',
-    completedAt: new Date().toISOString()
-  }
-  
-  completedTraining.value.push(trainingRecord)
-  const completed = JSON.parse(localStorage.getItem('whisCompletedTraining') || '[]')
-  completed.push(trainingRecord)
-  localStorage.setItem('whisCompletedTraining', JSON.stringify(completed))
-  
-  removeFromTrainingQueue(currentTrainingTask.value.id)
-  
-  alert(`❌ Orb rejected. This is when Whis would use OpenAI as a fallback to help improve orb creation until satisfied. The task will be reprocessed with enhanced AI assistance.`)
-  resetTraining()
-}
+    completedAt: new Date().toISOString(),
+  };
+
+  completedTraining.value.push(trainingRecord);
+  const completed = JSON.parse(
+    localStorage.getItem('whisCompletedTraining') || '[]'
+  );
+  completed.push(trainingRecord);
+  localStorage.setItem('whisCompletedTraining', JSON.stringify(completed));
+
+  removeFromTrainingQueue(currentTrainingTask.value.id);
+
+  alert(
+    `❌ Orb rejected. This is when Whis would use OpenAI as a fallback to help improve orb creation until satisfied. The task will be reprocessed with enhanced AI assistance.`
+  );
+  resetTraining();
+};
 
 const removeFromTrainingQueue = (taskId) => {
-  const queue = JSON.parse(localStorage.getItem('whisTrainingQueue') || '[]')
-  const filtered = queue.filter(task => task.id !== taskId)
-  localStorage.setItem('whisTrainingQueue', JSON.stringify(filtered))
-  loadTrainingQueue()
-}
+  const queue = JSON.parse(localStorage.getItem('whisTrainingQueue') || '[]');
+  const filtered = queue.filter((task) => task.id !== taskId);
+  localStorage.setItem('whisTrainingQueue', JSON.stringify(filtered));
+  loadTrainingQueue();
+};
 
 const resetTraining = () => {
-  isTraining.value = false
-  currentTrainingTask.value = null
-  currentTrainingStep.value = 0
-  currentStepResults.value = {}
-  generatedOrb.value = null
-  selectedTask.value = null
-}
+  isTraining.value = false;
+  currentTrainingTask.value = null;
+  currentTrainingStep.value = 0;
+  currentStepResults.value = {};
+  generatedOrb.value = null;
+  selectedTask.value = null;
+};
 
 const goToDemo = () => {
-  window.location.href = '/'
-}
+  window.location.href = '/';
+};
 
 // Lifecycle
 onMounted(() => {
-  loadTrainingQueue()
-})
+  loadTrainingQueue();
+});
 </script>
 
 <style scoped>

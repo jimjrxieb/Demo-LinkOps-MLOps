@@ -1,6 +1,6 @@
 // src/store/useUserStore.js
-import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { defineStore } from 'pinia';
+import { ref, computed } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
   // State
@@ -13,30 +13,30 @@ export const useUserStore = defineStore('user', () => {
     preferences: {
       theme: 'dark',
       notifications: true,
-      autoSave: true
+      autoSave: true,
     },
-    permissions: ['read', 'write', 'admin']
-  })
+    permissions: ['read', 'write', 'admin'],
+  });
 
-  const isAuthenticated = ref(false)
-  const sessionToken = ref(null)
-  const lastActivity = ref(null)
+  const isAuthenticated = ref(false);
+  const sessionToken = ref(null);
+  const lastActivity = ref(null);
 
   // Getters
-  const getUserName = computed(() => user.value.name)
-  const getUserRole = computed(() => user.value.role)
-  const getUserPreferences = computed(() => user.value.preferences)
+  const getUserName = computed(() => user.value.name);
+  const getUserRole = computed(() => user.value.role);
+  const getUserPreferences = computed(() => user.value.preferences);
   const hasPermission = computed(() => {
-    return (permission) => user.value.permissions.includes(permission)
-  })
+    return (permission) => user.value.permissions.includes(permission);
+  });
 
   // Actions
   const login = (userData, token) => {
-    user.value = { ...user.value, ...userData }
-    sessionToken.value = token
-    isAuthenticated.value = true
-    lastActivity.value = new Date().toISOString()
-  }
+    user.value = { ...user.value, ...userData };
+    sessionToken.value = token;
+    isAuthenticated.value = true;
+    lastActivity.value = new Date().toISOString();
+  };
 
   const logout = () => {
     user.value = {
@@ -48,30 +48,30 @@ export const useUserStore = defineStore('user', () => {
       preferences: {
         theme: 'dark',
         notifications: true,
-        autoSave: true
+        autoSave: true,
       },
-      permissions: ['read', 'write', 'admin']
-    }
-    sessionToken.value = null
-    isAuthenticated.value = false
-    lastActivity.value = null
-  }
+      permissions: ['read', 'write', 'admin'],
+    };
+    sessionToken.value = null;
+    isAuthenticated.value = false;
+    lastActivity.value = null;
+  };
 
   const updateUser = (updates) => {
-    user.value = { ...user.value, ...updates }
-  }
+    user.value = { ...user.value, ...updates };
+  };
 
   const updatePreferences = (preferences) => {
-    user.value.preferences = { ...user.value.preferences, ...preferences }
-  }
+    user.value.preferences = { ...user.value.preferences, ...preferences };
+  };
 
   const updateActivity = () => {
-    lastActivity.value = new Date().toISOString()
-  }
+    lastActivity.value = new Date().toISOString();
+  };
 
   const setTheme = (theme) => {
-    user.value.preferences.theme = theme
-  }
+    user.value.preferences.theme = theme;
+  };
 
   return {
     // State
@@ -79,19 +79,19 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated,
     sessionToken,
     lastActivity,
-    
+
     // Getters
     getUserName,
     getUserRole,
     getUserPreferences,
     hasPermission,
-    
+
     // Actions
     login,
     logout,
     updateUser,
     updatePreferences,
     updateActivity,
-    setTheme
-  }
-}) 
+    setTheme,
+  };
+});
