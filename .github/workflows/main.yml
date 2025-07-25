@@ -211,6 +211,7 @@ jobs:
           fetch-depth: 0  # Full history for better secret detection
 
       - name: "🛡 Scan with GitGuardian"
+        if: vars.GITGUARDIAN_API_KEY != '' || secrets.GITGUARDIAN_API_KEY != ''
         uses: GitGuardian/ggshield-action@v1.20.0
         env:
           GITGUARDIAN_API_KEY: ${{ secrets.GITGUARDIAN_API_KEY }}
@@ -219,10 +220,18 @@ jobs:
         continue-on-error: true
 
       - name: "📊 GitGuardian Report Summary"
+        if: vars.GITGUARDIAN_API_KEY != '' || secrets.GITGUARDIAN_API_KEY != ''
         run: |
           echo "🛡️ GitGuardian secret scan completed"
           echo "🔍 Advanced secret detection performed"
           echo "📋 Check GitGuardian dashboard for detailed results"
+        continue-on-error: true
+
+      - name: "📊 GitGuardian Not Configured"
+        if: vars.GITGUARDIAN_API_KEY == '' && secrets.GITGUARDIAN_API_KEY == ''
+        run: |
+          echo "⚠️ GitGuardian secret scan skipped (API key not configured)"
+          echo "🔧 To enable GitGuardian scanning, add GITGUARDIAN_API_KEY secret"
         continue-on-error: true
 
   security-summary:
@@ -306,28 +315,33 @@ jobs:
             fi
           done
 
-      - name: Validate Docker Registry Secrets
+      - name: Check Docker Registry Secrets
+        id: check-secrets
         run: |
-          echo "🔍 Validating Docker registry configuration..."
-          if [[ -z "${{ secrets.DOCKER_USER }}" ]]; then
-            echo "❌ DOCKER_USER secret is not set"
-            exit 1
+          echo "🔍 Checking Docker registry configuration..."
+          if [[ -n "${{ secrets.DOCKER_USER }}" && -n "${{ secrets.DOCKER_CRED }}" ]]; then
+            echo "✅ Docker secrets are configured"
+            echo "secrets-available=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Docker secrets not configured - skipping push to registry"
+            echo "secrets-available=false" >> $GITHUB_OUTPUT
+            echo ""
+            echo "To enable Docker push, set these secrets in repository settings:"
+            echo "  - DOCKER_USER: Your Docker Hub username"
+            echo "  - DOCKER_CRED: Your Docker Hub access token"
           fi
-          if [[ -z "${{ secrets.DOCKER_CRED }}" ]]; then
-            echo "❌ DOCKER_CRED secret is not set"
-            exit 1
-          fi
-          echo "✅ Docker secrets are configured"
 
       - name: Docker Registry Login
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         uses: docker/login-action@v3
         with:
           registry: docker.io
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_CRED }}
 
-      # Build and push each demo service
+      # Build and conditionally push each demo service
       - name: Build + Push Frontend
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./frontend
@@ -338,7 +352,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build Frontend (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./frontend
+          push: false
+          tags: linksrobot/demo-frontend:latest
+
       - name: Build + Push Unified API
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./unified-api
@@ -349,7 +372,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build Unified API (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./unified-api
+          push: false
+          tags: linksrobot/demo-unified-api:latest
+
       - name: Build + Push ML Models
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./ml-models
@@ -360,7 +392,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build ML Models (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./ml-models
+          push: false
+          tags: linksrobot/demo-ml-models:latest
+
       - name: Build + Push Pipeline
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./pipeline
@@ -371,7 +412,16 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Build Pipeline (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./pipeline
+          push: false
+          tags: linksrobot/demo-pipeline:latest
+
       - name: Build + Push RAG Service
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         uses: docker/build-push-action@v4
         with:
           context: ./rag
@@ -382,12 +432,21 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build Summary
+      - name: Build RAG Service (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./rag
+          push: false
+          tags: linksrobot/demo-rag:latest
+
+      - name: Build Summary (With Push)
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         run: |
-          echo "🎉 Demo Docker Build Complete!"
+          echo "🎉 Demo Docker Build & Push Complete!"
           echo "=================================="
           echo ""
-          echo "✅ Successfully built and pushed:"
+          echo "✅ Successfully built and pushed to registry:"
           echo "  - linksrobot/demo-frontend:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-unified-api:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }} (and :latest)"
@@ -402,18 +461,41 @@ jobs:
           echo "  - Commit SHA: ${{ github.sha }}"
           echo "  - Run Number: ${{ github.run_number }}"
 
-      - name: Create Version File
+      - name: Build Summary (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        run: |
+          echo "🎉 Demo Docker Build Complete!"
+          echo "=================================="
+          echo ""
+          echo "✅ Successfully built images locally:"
+          echo "  - linksrobot/demo-frontend:latest"
+          echo "  - linksrobot/demo-unified-api:latest"
+          echo "  - linksrobot/demo-ml-models:latest"
+          echo "  - linksrobot/demo-pipeline:latest"
+          echo "  - linksrobot/demo-rag:latest"
+          echo ""
+          echo "⚠️  Images were not pushed to registry (Docker secrets not configured)"
+          echo ""
+          echo "🔧 To enable registry push, add these secrets to repository settings:"
+          echo "  - DOCKER_USER: Your Docker Hub username"
+          echo "  - DOCKER_CRED: Your Docker Hub access token"
+          echo ""
+          echo "🚀 For local deployment:"
+          echo "Run: docker-compose up --build -d"
+
+      - name: Create Version File (With Registry)
+        if: steps.check-secrets.outputs.secrets-available == 'true'
         run: |
           echo "📝 Creating version file for deployment tracking..."
           cat > VERSION << EOF
-          # LinkOps Demo Version
+          # DEMO-LinkOps Version (Registry Push)
           # Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
           # Commit: ${{ github.sha }}
           # Run: ${{ github.run_number }}
           
           IMAGE_TAG=${{ steps.version.outputs.TAG }}
           
-          # Service Images
+          # Service Images (Registry)
           FRONTEND_IMAGE=linksrobot/demo-frontend:${{ steps.version.outputs.TAG }}
           UNIFIED_API_IMAGE=linksrobot/demo-unified-api:${{ steps.version.outputs.TAG }}
           ML_MODELS_IMAGE=linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }}
@@ -427,13 +509,46 @@ jobs:
           echo "✅ Version file created:"
           cat VERSION
 
+      - name: Create Version File (Local Build)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        run: |
+          echo "📝 Creating version file for local deployment tracking..."
+          cat > VERSION << EOF
+          # DEMO-LinkOps Version (Local Build)
+          # Generated: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          # Commit: ${{ github.sha }}
+          # Run: ${{ github.run_number }}
+          
+          IMAGE_TAG=latest
+          
+          # Service Images (Local)
+          FRONTEND_IMAGE=linksrobot/demo-frontend:latest
+          UNIFIED_API_IMAGE=linksrobot/demo-unified-api:latest
+          ML_MODELS_IMAGE=linksrobot/demo-ml-models:latest
+          PIPELINE_IMAGE=linksrobot/demo-pipeline:latest
+          RAG_IMAGE=linksrobot/demo-rag:latest
+          
+          # Docker Compose Command (Local Build)
+          # docker-compose up --build -d
+          
+          # Note: Images were built locally, not pushed to registry
+          # To enable registry push, configure DOCKER_USER and DOCKER_CRED secrets
+          EOF
+          
+          echo "✅ Version file created:"
+          cat VERSION
+
       - name: Commit Version File
         if: github.event_name == 'push'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "actions@github.com"
           git add VERSION
-          git commit -m "chore: update version to ${{ steps.version.outputs.TAG }} - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+          if [[ "${{ steps.check-secrets.outputs.secrets-available }}" == "true" ]]; then
+            git commit -m "chore: update version to ${{ steps.version.outputs.TAG }} - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+          else
+            git commit -m "chore: update version (local build) - $(date -u +"%Y-%m-%d %H:%M:%S")" || echo "No changes to commit"
+          fi
           git push || echo "No push needed"
 
   deploy-notify:
