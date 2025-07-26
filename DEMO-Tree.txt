@@ -6,8 +6,19 @@
 ├── Makefile
 ├── PIPELINE_FIXES_SUMMARY.md
 ├── auto_runner.log
+├── build_images.py
+├── chart
+│   ├── Chart.yaml
+│   ├── README.md
+│   ├── templates
+│   │   ├── _helpers.tpl
+│   │   ├── deployment.yaml
+│   │   ├── ingress.yaml
+│   │   └── service.yaml
+│   └── values.yaml
 ├── db
 │   ├── execution_logs.db
+│   ├── init
 │   ├── logs
 │   │   ├── echo_test__20250724_184656.json
 │   │   ├── execution_history.json
@@ -43,6 +54,7 @@
 │   └── overrides
 │       ├── compose.demo.yml
 │       └── compose.override.yml
+├── docker-compose.override.yml
 ├── docker-compose.yml
 ├── docs
 │   ├── ARISE-README.md
@@ -142,17 +154,20 @@
 │   │   ├── SECURITY-ACTIONS.md
 │   │   ├── SECURITY-FIXES-JULY-2025.md
 │   │   └── SECURITY-SUMMARY-JULY-2025.md
-│   └── services
-│       ├── auditguard
-│       │   └── README.md
-│       ├── igris-logic
-│       │   └── README.md
-│       ├── james-logic
-│       │   └── README.md
-│       ├── katie-logic
-│       │   └── README.md
-│       └── whis-webscraper
-│           └── README.md
+│   ├── services
+│   │   ├── auditguard
+│   │   │   └── README.md
+│   │   ├── igris-logic
+│   │   │   └── README.md
+│   │   ├── james-logic
+│   │   │   └── README.md
+│   │   ├── katie-logic
+│   │   │   └── README.md
+│   │   └── whis-webscraper
+│   │       └── README.md
+│   └── session-management.md
+├── fix_lint_script.py
+├── fix_security_vulnerabilities.py
 ├── frontend
 │   ├── Dockerfile
 │   ├── README.md
@@ -197,6 +212,7 @@
 │   │   │   ├── MLCreator.vue
 │   │   │   ├── ModelPredictor.vue
 │   │   │   ├── OrbResultCard.vue
+│   │   │   ├── SessionTimer.vue
 │   │   │   ├── Sidebar.vue
 │   │   │   ├── SyncToggle.vue
 │   │   │   └── WhisPipeline.vue
@@ -225,6 +241,7 @@
 │   │       ├── HTCFeedback.vue
 │   │       ├── HTCPromptEditor.vue
 │   │       ├── LLMChat.vue
+│   │       ├── Login.vue
 │   │       ├── MCPExecution.vue
 │   │       ├── MCPLogs.vue
 │   │       ├── MCPToolCreator.vue
@@ -249,6 +266,26 @@
 │   │   ├── feedback.py
 │   │   └── prompt_editor.py
 │   └── train_lora.py
+├── k8s
+│   ├── README.md
+│   ├── backend-deployment.yaml
+│   ├── backend-service.yaml
+│   ├── cleanup.sh
+│   ├── configmap.yaml
+│   ├── deploy.sh
+│   ├── frontend-deployment.yaml
+│   ├── frontend-service.yaml
+│   ├── ingress.yaml
+│   ├── ml-models.yaml
+│   ├── namespace.yaml
+│   ├── pipeline.yaml
+│   ├── postgres.yaml
+│   ├── rag-deployment.yaml
+│   ├── rag-service.yaml
+│   ├── redis.yaml
+│   ├── secrets.yaml
+│   ├── sync-engine.yaml
+│   └── validate.sh
 ├── ml-models
 │   ├── Dockerfile
 │   ├── README.md
@@ -275,6 +312,12 @@
 │   │   ├── main.py
 │   │   └── model_generator.py
 │   ├── config.yaml
+│   ├── data
+│   ├── main.py
+│   ├── ml-creator
+│   │   ├── data
+│   │   ├── models
+│   │   └── temp
 │   ├── model-creator
 │   │   ├── Dockerfile
 │   │   ├── README.md
@@ -293,26 +336,35 @@
 │   │   │   ├── task_evaluator_agent.py.jinja
 │   │   │   └── time_series_model.py.jinja
 │   │   └── test_model_creator.py
+│   ├── models
 │   ├── requirements.txt
 │   └── templates
 │       ├── agent_backlog_scanner.py.jinja
 │       ├── classification_model.py.jinja
 │       └── regression_model.py.jinja
+├── monitoring
+│   └── session-metrics.yaml
+├── nginx
+│   ├── nginx.conf
+│   └── ssl
 ├── pipeline
 │   ├── Dockerfile
 │   ├── README.md
 │   ├── __init__.py
+│   ├── data
 │   ├── data-intake
 │   │   └── intake.py
 │   ├── data-sanitize
 │   │   └── sanitizer.py
 │   ├── embedder
 │   │   └── embedder.py
+│   ├── input_data
 │   ├── main.py
 │   ├── requirements.txt
 │   └── trainer
 │       └── trainer.py
 ├── pyproject.toml
+├── quick-start.sh
 ├── rag
 │   ├── Dockerfile
 │   ├── README-UPLOAD-QA.md
@@ -321,6 +373,7 @@
 │   ├── config
 │   │   ├── llm_config.yaml
 │   │   └── rag_config.json
+│   ├── data
 │   ├── embed.py
 │   ├── llm_weights
 │   │   ├── README.md
@@ -346,7 +399,8 @@
 │   │   │   └── test_query.py
 │   │   ├── test_multi_query.py
 │   │   └── test_upload_qa.py
-│   └── uploads
+│   ├── uploads
+│   └── vectorstore
 ├── releases
 │   └── demo-linkops-v1.0.0.tar.gz
 ├── scripts
@@ -368,13 +422,21 @@
 │   ├── Dockerfile
 │   ├── auto_embed.py
 │   ├── config.py
+│   ├── data
+│   ├── main.py
 │   ├── requirements.txt
+│   ├── sync
+│   ├── temp
 │   └── watcher.py
+├── tests
+│   └── e2e
+│       └── session.spec.ts
 ├── unified-api
 │   ├── Dockerfile
 │   ├── db
 │   │   ├── execution_logs
 │   │   └── mcp_tools
+│   ├── dependencies.py
 │   ├── executor
 │   │   └── auto_runner.py
 │   ├── logic
@@ -390,6 +452,7 @@
 │   │   ├── __init__.py
 │   │   ├── agent_builder.py
 │   │   ├── agent_creator.py
+│   │   ├── auth.py
 │   │   ├── auto_runner.py
 │   │   ├── demo_sync.py
 │   │   ├── executor.py
@@ -411,4 +474,4 @@
 │   └── test_unified_api.py
 └── vectorstore
 
-87 directories, 324 files
+109 directories, 365 files

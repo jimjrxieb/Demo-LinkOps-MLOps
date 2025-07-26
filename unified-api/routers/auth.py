@@ -13,8 +13,8 @@ REFRESH_TOKEN_EXPIRE_DAYS = 7
 
 # Hard-coded demo accounts; replace with DB lookup in prod
 ACCOUNTS = {
-    "demo-slim": {"password": "demo", "role": "slim"},
-    "demo-full": {"password": "arise!", "role": "full"},
+    "linkops-demo": {"password": "demo123", "role": "slim"},
+    "demo-full": {"password": "arise!", "role": "full"},  # Hidden full access account
 }
 
 

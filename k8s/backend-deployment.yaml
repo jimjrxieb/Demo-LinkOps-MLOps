@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-unified-api
-  namespace: demo-linkops
+  namespace: demo
   labels:
     app: demo-unified-api
 spec:
@@ -17,30 +17,52 @@ spec:
     spec:
       containers:
       - name: unified-api
-        image: linksrobot/demo-linkops-unified-api:latest
+        image: demo-linkops-unified-api:latest
+        imagePullPolicy: IfNotPresent
         ports:
-        - containerPort: 9000
+        - containerPort: 8000
         envFrom:
         - configMapRef:
             name: demo-linkops-config
-        - secretRef:
-            name: demo-linkops-secrets
+        volumeMounts:
+        - name: demo-db
+          mountPath: /app/db
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
         readinessProbe:
           httpGet:
             path: /health
-            port: 9000
+            port: 8000
           initialDelaySeconds: 10
-          periodSeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
         livenessProbe:
           httpGet:
             path: /health
-            port: 9000
+            port: 8000
           initialDelaySeconds: 30
-          periodSeconds: 30
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m" 
+          periodSeconds: 60
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 3
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 2
+          successThreshold: 1
+          failureThreshold: 30
+      volumes:
+      - name: demo-db
+        hostPath:
+          path: /home/jimjrxieb/shadow-link-industries/DEMO-LinkOps/db
+          type: Directory 

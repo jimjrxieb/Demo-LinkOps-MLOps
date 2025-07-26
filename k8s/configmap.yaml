@@ -2,14 +2,31 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: demo-linkops-config
-  namespace: demo-linkops
+  namespace: demo
 data:
-  ENVIRONMENT: "demo"
-  DEMO_MODE: "true"
-  POSTGRES_DB: "linkops_demo"
-  POSTGRES_USER: "linkops"
-  RAG_SERVICE_URL: "http://demo-rag:8005"
-  ML_MODELS_SERVICE_URL: "http://demo-ml-models:8002"
-  PIPELINE_SERVICE_URL: "http://demo-pipeline:8003"
-  SYNC_ENGINE_SERVICE_URL: "http://demo-sync-engine:8004"
-  VITE_API_BASE_URL: "http://demo-unified-api:9000"
+  # JWT Settings
+  JWT_SECRET_KEY: "demo-secret-key"
+  JWT_ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+  JWT_REFRESH_TOKEN_EXPIRE_DAYS: "7"
+  
+  # API Settings
+  API_HOST: "0.0.0.0"
+  API_PORT: "8000"
+  LOG_LEVEL: "INFO"
+  
+  # Frontend Settings
+  VITE_API_URL: "/api"
+  VITE_RAG_URL: "/rag"
+  NODE_ENV: "production"
+  
+  # RAG Service Settings
+  RAG_HOST: "0.0.0.0"
+  RAG_PORT: "8001"
+  VECTOR_DB_PATH: "/app/data/vectorstore"
+  
+  # Database Settings
+  DATABASE_URL: "sqlite:///app/db/execution_logs.db"
+  
+  # Monitoring Settings
+  ENABLE_METRICS: "true"
+  METRICS_PORT: "9090"
