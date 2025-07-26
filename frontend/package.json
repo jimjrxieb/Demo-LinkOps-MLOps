@@ -16,10 +16,14 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
+    "@vuelidate/core": "^2.0.3",
+    "@vuelidate/validators": "^2.0.4",
     "axios": "^1.6.8",
+    "chart.js": "^4.5.0",
     "jwt-decode": "^4.0.0",
     "pinia": "^2.1.7",
     "vue": "^3.4.21",
+    "vue-chartjs": "^5.3.2",
     "vue-router": "^4.5.1"
   },
   "devDependencies": {

@@ -58,10 +58,13 @@
       accept=".pdf,.txt,.csv,.docx"
       multiple
       @change="handleFileSelect"
-    />
+    >
 
     <!-- Upload Progress -->
-    <div v-if="uploading" class="mt-4">
+    <div
+      v-if="uploading"
+      class="mt-4"
+    >
       <div class="w-full bg-gray-200 rounded-full h-2">
         <div
           class="bg-blue-600 h-2 rounded-full transition-all duration-300"

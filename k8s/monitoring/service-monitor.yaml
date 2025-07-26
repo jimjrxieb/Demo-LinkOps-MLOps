@@ -1,0 +1,63 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: demo-linkops-monitor
+  namespace: demo-linkops
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: demo-unified-api
+  namespaceSelector:
+    matchNames:
+      - demo-linkops
+  endpoints:
+  - port: metrics
+    interval: 15s
+    path: /metrics
+  - port: http
+    interval: 15s
+    path: /health
+    metricRelabelings:
+    - sourceLabels: [__name__]
+      regex: 'http_.*'
+      action: keep
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: demo-frontend-monitor
+  namespace: demo-linkops
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: demo-frontend
+  namespaceSelector:
+    matchNames:
+      - demo-linkops
+  endpoints:
+  - port: http
+    interval: 15s
+    path: /health
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: demo-rag-monitor
+  namespace: demo-linkops
+  labels:
+    release: prometheus
+spec:
+  selector:
+    matchLabels:
+      app: demo-rag
+  namespaceSelector:
+    matchNames:
+      - demo-linkops
+  endpoints:
+  - port: metrics
+    interval: 15s
+    path: /metrics 

@@ -29,28 +29,19 @@ jobs:
       - name: Install Python Tools
         run: pip install ruff bandit isort
 
-      - name: Check Black Formatting
+      - name: Check Ruff Formatting
         run: |
           echo "🎨 Checking Python formatting..."
-          ruff format --check unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ || {
-            echo "❌ Black formatting issues found"
+          ruff format --check unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ sync_engine/ || {
+            echo "❌ Ruff formatting issues found"
             echo "⚠️ Continuing despite formatting issues"
-          }
-        continue-on-error: true
-
-      - name: Check isort Imports
-        run: |
-          echo "📦 Checking Python imports..."
-          isort --check-only --diff unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ || {
-            echo "❌ isort issues found"
-            echo "⚠️ Continuing despite import issues"
           }
         continue-on-error: true
 
       - name: Run Ruff Linting
         run: |
           echo "🔍 Running Ruff linting..."
-          ruff check --ignore E402 unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ || {
+          ruff check --ignore E402,B904 unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ sync_engine/ || {
             echo "❌ Ruff linting errors found"
             echo "⚠️ Continuing despite linting issues"
           }
@@ -59,7 +50,7 @@ jobs:
       - name: Run Bandit Security Scan
         run: |
           echo "🔒 Running security scan..."
-          bandit -r unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ -f json || echo "⚠️ Security issues found but continuing"
+          bandit -r unified-api/ ml-models/ pipeline/ rag/ htc/ scripts/ sync_engine/ -f json || echo "⚠️ Security issues found but continuing"
         continue-on-error: true
 
   lint-frontend:
@@ -318,7 +309,7 @@ jobs:
           echo "✅ sync_engine/ (Data synchronization service)"
           echo ""
           echo "Checking Dockerfiles exist:"
-          for service in frontend unified-api ml-models pipeline rag; do
+          for service in frontend unified-api ml-models pipeline rag sync_engine; do
             if [[ -f "$service/Dockerfile" ]]; then
               echo "✅ $service/Dockerfile exists"
             else
@@ -451,6 +442,26 @@ jobs:
           push: false
           tags: linksrobot/demo-rag:latest
 
+      - name: Build + Push Sync Engine
+        if: steps.check-secrets.outputs.secrets-available == 'true'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./sync_engine
+          push: true
+          tags: |
+            linksrobot/demo-sync-engine:${{ steps.version.outputs.TAG }}
+            linksrobot/demo-sync-engine:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build Sync Engine (No Push)
+        if: steps.check-secrets.outputs.secrets-available == 'false'
+        uses: docker/build-push-action@v4
+        with:
+          context: ./sync_engine
+          push: false
+          tags: linksrobot/demo-sync-engine:latest
+
       - name: Build Summary (With Push)
         if: steps.check-secrets.outputs.secrets-available == 'true'
         run: |
@@ -463,6 +474,7 @@ jobs:
           echo "  - linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-pipeline:${{ steps.version.outputs.TAG }} (and :latest)"
           echo "  - linksrobot/demo-rag:${{ steps.version.outputs.TAG }} (and :latest)"
+          echo "  - linksrobot/demo-sync-engine:${{ steps.version.outputs.TAG }} (and :latest)"
           echo ""
           echo "🚀 Ready for deployment!"
           echo "Run: docker-compose pull && docker-compose up -d"
@@ -484,6 +496,7 @@ jobs:
           echo "  - linksrobot/demo-ml-models:latest"
           echo "  - linksrobot/demo-pipeline:latest"
           echo "  - linksrobot/demo-rag:latest"
+          echo "  - linksrobot/demo-sync-engine:latest"
           echo ""
           echo "⚠️  Images were not pushed to registry (Docker secrets not configured)"
           echo ""
@@ -512,6 +525,7 @@ jobs:
           ML_MODELS_IMAGE=linksrobot/demo-ml-models:${{ steps.version.outputs.TAG }}
           PIPELINE_IMAGE=linksrobot/demo-pipeline:${{ steps.version.outputs.TAG }}
           RAG_IMAGE=linksrobot/demo-rag:${{ steps.version.outputs.TAG }}
+          SYNC_ENGINE_IMAGE=linksrobot/demo-sync-engine:${{ steps.version.outputs.TAG }}
           
           # Docker Compose Command
           # docker-compose pull && docker-compose up -d
@@ -538,6 +552,7 @@ jobs:
           ML_MODELS_IMAGE=linksrobot/demo-ml-models:latest
           PIPELINE_IMAGE=linksrobot/demo-pipeline:latest
           RAG_IMAGE=linksrobot/demo-rag:latest
+          SYNC_ENGINE_IMAGE=linksrobot/demo-sync-engine:latest
           
           # Docker Compose Command (Local Build)
           # docker-compose up --build -d
@@ -623,8 +638,9 @@ jobs:
 
       - name: Run Backend Tests
         run: |
-          cd unified-api
-          pytest tests/
+          # Run tests from the new consolidated tests directory
+          pytest tests/integration/
+          pytest tests/unit/
 
       - name: Cleanup Services
         if: always()

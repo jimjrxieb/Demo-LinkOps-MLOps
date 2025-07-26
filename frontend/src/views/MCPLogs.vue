@@ -21,31 +21,33 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
         <!-- Search -->
         <div>
-          <label class="block font-semibold mb-2 text-gray-700"
-            >🔍 Search:</label
-          >
+          <label class="block font-semibold mb-2 text-gray-700">🔍 Search:</label>
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search tool names, commands..."
             class="border border-gray-300 px-4 py-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500"
             @input="filterLogs"
-          />
+          >
         </div>
 
         <!-- Status Filter -->
         <div>
-          <label class="block font-semibold mb-2 text-gray-700"
-            >📊 Status:</label
-          >
+          <label class="block font-semibold mb-2 text-gray-700">📊 Status:</label>
           <select
             v-model="statusFilter"
             class="border border-gray-300 px-4 py-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500"
             @change="filterLogs"
           >
-            <option value="">All Status</option>
-            <option value="success">✅ Success</option>
-            <option value="failure">❌ Failure</option>
+            <option value="">
+              All Status
+            </option>
+            <option value="success">
+              ✅ Success
+            </option>
+            <option value="failure">
+              ❌ Failure
+            </option>
           </select>
         </div>
 
@@ -57,8 +59,14 @@
             class="border border-gray-300 px-4 py-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500"
             @change="filterLogs"
           >
-            <option value="">All Tools</option>
-            <option v-for="tool in uniqueTools" :key="tool" :value="tool">
+            <option value="">
+              All Tools
+            </option>
+            <option
+              v-for="tool in uniqueTools"
+              :key="tool"
+              :value="tool"
+            >
               {{ tool }}
             </option>
           </select>
@@ -72,10 +80,18 @@
             class="border border-gray-300 px-4 py-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500"
             @change="fetchLogs"
           >
-            <option value="25">Last 25</option>
-            <option value="50">Last 50</option>
-            <option value="100">Last 100</option>
-            <option value="200">Last 200</option>
+            <option value="25">
+              Last 25
+            </option>
+            <option value="50">
+              Last 50
+            </option>
+            <option value="100">
+              Last 100
+            </option>
+            <option value="200">
+              Last 200
+            </option>
           </select>
         </div>
       </div>
@@ -87,7 +103,10 @@
           class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2"
           @click="refreshLogs"
         >
-          <span v-if="loading" class="animate-spin">⏳</span>
+          <span
+            v-if="loading"
+            class="animate-spin"
+          >⏳</span>
           <span v-else>🔄</span>
           {{ loading ? 'Loading...' : 'Refresh' }}
         </button>
@@ -117,7 +136,9 @@
       <div class="bg-white rounded-lg shadow-md p-4">
         <div class="flex items-center gap-2 mb-2">
           <span class="text-2xl">📊</span>
-          <h3 class="font-semibold text-gray-700">Total Executions</h3>
+          <h3 class="font-semibold text-gray-700">
+            Total Executions
+          </h3>
         </div>
         <div class="text-2xl font-bold text-blue-600">
           {{ logs.length }}
@@ -127,29 +148,39 @@
       <div class="bg-white rounded-lg shadow-md p-4">
         <div class="flex items-center gap-2 mb-2">
           <span class="text-2xl">✅</span>
-          <h3 class="font-semibold text-gray-700">Successful</h3>
+          <h3 class="font-semibold text-gray-700">
+            Successful
+          </h3>
         </div>
         <div class="text-2xl font-bold text-green-600">
           {{ successCount }}
         </div>
-        <div class="text-sm text-gray-500">{{ successRate }}%</div>
+        <div class="text-sm text-gray-500">
+          {{ successRate }}%
+        </div>
       </div>
 
       <div class="bg-white rounded-lg shadow-md p-4">
         <div class="flex items-center gap-2 mb-2">
           <span class="text-2xl">❌</span>
-          <h3 class="font-semibold text-gray-700">Failed</h3>
+          <h3 class="font-semibold text-gray-700">
+            Failed
+          </h3>
         </div>
         <div class="text-2xl font-bold text-red-600">
           {{ failureCount }}
         </div>
-        <div class="text-sm text-gray-500">{{ failureRate }}%</div>
+        <div class="text-sm text-gray-500">
+          {{ failureRate }}%
+        </div>
       </div>
 
       <div class="bg-white rounded-lg shadow-md p-4">
         <div class="flex items-center gap-2 mb-2">
           <span class="text-2xl">⏱️</span>
-          <h3 class="font-semibold text-gray-700">Avg Time</h3>
+          <h3 class="font-semibold text-gray-700">
+            Avg Time
+          </h3>
         </div>
         <div class="text-2xl font-bold text-purple-600">
           {{ averageExecutionTime }}s
@@ -172,24 +203,45 @@
       </div>
 
       <!-- Loading State -->
-      <div v-if="loading" class="p-8 text-center">
-        <div class="animate-spin text-4xl mb-4">⏳</div>
-        <div class="text-gray-600">Loading execution logs...</div>
+      <div
+        v-if="loading"
+        class="p-8 text-center"
+      >
+        <div class="animate-spin text-4xl mb-4">
+          ⏳
+        </div>
+        <div class="text-gray-600">
+          Loading execution logs...
+        </div>
       </div>
 
       <!-- Empty State -->
-      <div v-else-if="logs.length === 0" class="p-8 text-center">
-        <div class="text-4xl mb-4">📋</div>
-        <div class="text-gray-600 mb-4">No execution logs found</div>
+      <div
+        v-else-if="logs.length === 0"
+        class="p-8 text-center"
+      >
+        <div class="text-4xl mb-4">
+          📋
+        </div>
+        <div class="text-gray-600 mb-4">
+          No execution logs found
+        </div>
         <div class="text-sm text-gray-500">
           Logs will appear here after tools are executed
         </div>
       </div>
 
       <!-- Filtered Empty State -->
-      <div v-else-if="filteredLogs.length === 0" class="p-8 text-center">
-        <div class="text-4xl mb-4">🔍</div>
-        <div class="text-gray-600 mb-4">No logs match your filters</div>
+      <div
+        v-else-if="filteredLogs.length === 0"
+        class="p-8 text-center"
+      >
+        <div class="text-4xl mb-4">
+          🔍
+        </div>
+        <div class="text-gray-600 mb-4">
+          No logs match your filters
+        </div>
         <button
           class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
           @click="clearFilters"
@@ -199,7 +251,10 @@
       </div>
 
       <!-- Logs Table -->
-      <div v-else class="overflow-x-auto">
+      <div
+        v-else
+        class="overflow-x-auto"
+      >
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
@@ -365,7 +420,9 @@
           <!-- Basic Info -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div class="bg-gray-50 p-4 rounded-lg">
-              <h4 class="font-semibold mb-2">📊 Execution Info</h4>
+              <h4 class="font-semibold mb-2">
+                📊 Execution Info
+              </h4>
               <div class="space-y-2 text-sm">
                 <div><strong>Tool:</strong> {{ selectedLog.tool_name }}</div>
                 <div>
@@ -395,7 +452,9 @@
             </div>
 
             <div class="bg-gray-50 p-4 rounded-lg">
-              <h4 class="font-semibold mb-2">🔧 Command</h4>
+              <h4 class="font-semibold mb-2">
+                🔧 Command
+              </h4>
               <div
                 class="bg-gray-900 text-green-300 p-3 rounded font-mono text-sm break-all"
               >
@@ -405,8 +464,13 @@
           </div>
 
           <!-- Output -->
-          <div v-if="selectedLog.stdout" class="mb-6">
-            <h4 class="font-semibold mb-2">📤 Standard Output</h4>
+          <div
+            v-if="selectedLog.stdout"
+            class="mb-6"
+          >
+            <h4 class="font-semibold mb-2">
+              📤 Standard Output
+            </h4>
             <div
               class="bg-gray-900 text-green-300 p-4 rounded-lg font-mono text-sm whitespace-pre-wrap max-h-64 overflow-y-auto"
             >
@@ -419,7 +483,9 @@
             v-if="selectedLog.stderr || selectedLog.error_message"
             class="mb-6"
           >
-            <h4 class="font-semibold mb-2">⚠️ Error Output</h4>
+            <h4 class="font-semibold mb-2">
+              ⚠️ Error Output
+            </h4>
             <div
               class="bg-red-900 text-red-200 p-4 rounded-lg font-mono text-sm whitespace-pre-wrap max-h-64 overflow-y-auto"
             >
@@ -428,8 +494,13 @@
           </div>
 
           <!-- Log File -->
-          <div v-if="selectedLog.log_file" class="mb-6">
-            <h4 class="font-semibold mb-2">📁 Log File</h4>
+          <div
+            v-if="selectedLog.log_file"
+            class="mb-6"
+          >
+            <h4 class="font-semibold mb-2">
+              📁 Log File
+            </h4>
             <div class="bg-blue-50 p-3 rounded-lg">
               <code class="text-sm">{{ selectedLog.log_file }}</code>
             </div>

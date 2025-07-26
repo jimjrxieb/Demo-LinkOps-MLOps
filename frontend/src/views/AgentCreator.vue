@@ -5,7 +5,9 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-6">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">AI Agent Builder</h1>
+            <h1 class="text-3xl font-bold text-gray-900">
+              AI Agent Builder
+            </h1>
             <p class="mt-1 text-sm text-gray-500">
               Create custom AI agents with drag-and-drop workflow builder
             </p>
@@ -36,7 +38,9 @@
         <!-- Toolbox Panel -->
         <div class="lg:col-span-1">
           <div class="bg-white rounded-lg shadow p-6">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Toolbox</h2>
+            <h2 class="text-lg font-medium text-gray-900 mb-4">
+              Toolbox
+            </h2>
 
             <!-- Agent Types -->
             <div class="mb-6">
@@ -123,9 +127,15 @@
                 v-model="securityLevel"
                 class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value="low">Low - Basic validation</option>
-                <option value="medium">Medium - Enhanced security</option>
-                <option value="high">High - Maximum security</option>
+                <option value="low">
+                  Low - Basic validation
+                </option>
+                <option value="medium">
+                  Medium - Enhanced security
+                </option>
+                <option value="high">
+                  High - Maximum security
+                </option>
               </select>
             </div>
           </div>
@@ -135,7 +145,9 @@
         <div class="lg:col-span-2">
           <div class="bg-white rounded-lg shadow p-6">
             <div class="flex items-center justify-between mb-6">
-              <h2 class="text-lg font-medium text-gray-900">Workflow Canvas</h2>
+              <h2 class="text-lg font-medium text-gray-900">
+                Workflow Canvas
+              </h2>
               <button
                 class="text-sm text-red-600 hover:text-red-500"
                 @click="clearCanvas"
@@ -155,7 +167,7 @@
                   type="text"
                   placeholder="Enter agent name"
                   class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
+                >
               </div>
 
               <div>
@@ -173,7 +185,9 @@
 
             <!-- Workflow Steps -->
             <div class="space-y-4">
-              <h3 class="text-sm font-medium text-gray-700">Workflow Steps</h3>
+              <h3 class="text-sm font-medium text-gray-700">
+                Workflow Steps
+              </h3>
 
               <div
                 v-for="(step, index) in workflowSteps"
@@ -213,14 +227,24 @@
                       v-model="step.action"
                       class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-xs"
                     >
-                      <option value="data_processing">Data Processing</option>
-                      <option value="file_operation">File Operation</option>
-                      <option value="network_request">Network Request</option>
+                      <option value="data_processing">
+                        Data Processing
+                      </option>
+                      <option value="file_operation">
+                        File Operation
+                      </option>
+                      <option value="network_request">
+                        Network Request
+                      </option>
                       <option value="command_execution">
                         Command Execution
                       </option>
-                      <option value="validation">Validation</option>
-                      <option value="notification">Notification</option>
+                      <option value="validation">
+                        Validation
+                      </option>
+                      <option value="notification">
+                        Notification
+                      </option>
                     </select>
                   </div>
 
@@ -244,9 +268,15 @@
                       v-model="step.errorHandling"
                       class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-xs"
                     >
-                      <option value="retry">Retry</option>
-                      <option value="skip">Skip</option>
-                      <option value="stop">Stop</option>
+                      <option value="retry">
+                        Retry
+                      </option>
+                      <option value="skip">
+                        Skip
+                      </option>
+                      <option value="stop">
+                        Stop
+                      </option>
                     </select>
                   </div>
                 </div>
@@ -271,7 +301,10 @@
                 Agent Preview
               </h3>
 
-              <div v-if="agentName" class="space-y-3">
+              <div
+                v-if="agentName"
+                class="space-y-3"
+              >
                 <div>
                   <span class="text-xs font-medium text-gray-500">Name:</span>
                   <p class="text-sm text-gray-900">
@@ -280,9 +313,7 @@
                 </div>
 
                 <div v-if="agentDescription">
-                  <span class="text-xs font-medium text-gray-500"
-                    >Description:</span
-                  >
+                  <span class="text-xs font-medium text-gray-500">Description:</span>
                   <p class="text-sm text-gray-900">
                     {{ agentDescription }}
                   </p>
@@ -296,9 +327,7 @@
                 </div>
 
                 <div>
-                  <span class="text-xs font-medium text-gray-500"
-                    >Security:</span
-                  >
+                  <span class="text-xs font-medium text-gray-500">Security:</span>
                   <p class="text-sm text-gray-900 capitalize">
                     {{ securityLevel }}
                   </p>
@@ -312,13 +341,19 @@
                 </div>
               </div>
 
-              <div v-else class="text-center py-8 text-gray-500">
+              <div
+                v-else
+                class="text-center py-8 text-gray-500"
+              >
                 Configure your agent to see preview
               </div>
             </div>
 
             <!-- Generation Results -->
-            <div v-if="generationResult" class="bg-white rounded-lg shadow p-6">
+            <div
+              v-if="generationResult"
+              class="bg-white rounded-lg shadow p-6"
+            >
               <h3 class="text-lg font-medium text-gray-900 mb-4">
                 Generation Result
               </h3>
@@ -332,17 +367,13 @@
                   </span>
                 </div>
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium text-gray-700"
-                    >Agent Path:</span
-                  >
+                  <span class="text-sm font-medium text-gray-700">Agent Path:</span>
                   <span class="text-sm text-gray-900 truncate">{{
                     generationResult.path
                   }}</span>
                 </div>
                 <div class="flex items-center justify-between">
-                  <span class="text-sm font-medium text-gray-700"
-                    >Generated At:</span
-                  >
+                  <span class="text-sm font-medium text-gray-700">Generated At:</span>
                   <span class="text-sm text-gray-900">{{
                     formatDate(generationResult.timestamp)
                   }}</span>
@@ -378,7 +409,9 @@
                   </svg>
                 </div>
                 <div class="ml-3">
-                  <h3 class="text-sm font-medium text-red-800">Error</h3>
+                  <h3 class="text-sm font-medium text-red-800">
+                    Error
+                  </h3>
                   <div class="mt-2 text-sm text-red-700">
                     {{ error }}
                   </div>

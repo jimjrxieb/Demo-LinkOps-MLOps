@@ -1,573 +1,263 @@
+<!-- DEMO-LinkOps/frontend/src/views/SyncDashboard.vue -->
 <template>
-  <div class="min-h-screen bg-gray-50">
-    <!-- Header -->
-    <div class="bg-white shadow-sm border-b">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center py-6">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900">
-              📊 System Dashboard
-            </h1>
-            <p class="mt-1 text-sm text-gray-500">
-              Real-time monitoring of tenant sync and system status
-            </p>
-          </div>
-          <div class="flex items-center space-x-4">
-            <div class="text-sm text-gray-500">
-              <span class="font-medium">{{ lastUpdate }}</span>
-            </div>
-            <button
-              class="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              :disabled="loading"
-              @click="refreshData"
-            >
-              <svg
-                v-if="loading"
-                class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  class="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  stroke-width="4"
-                />
-                <path
-                  class="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-              {{ loading ? 'Refreshing...' : 'Refresh' }}
-            </button>
-          </div>
+  <div class="p-6">
+    <h2 class="text-2xl font-bold mb-4 text-teal-300">
+      🔁 Sync Status Dashboard
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Sync Status Card -->
+      <div :class="['status-card', status.active ? 'pulse' : '']">
+        <div class="status-header">
+          🌀 Sync Engine
         </div>
+        <div class="status-details">
+          <p class="status-text">
+            Status:
+            <span :class="status.active ? 'text-green-400' : 'text-gray-400'">
+              {{ status.active ? 'Syncing...' : 'Idle' }}
+            </span>
+          </p>
+          <p class="text-sm text-gray-300">
+            Watch Folder:
+            <strong class="text-white">{{
+              status.watch_folder || 'Loading...'
+            }}</strong>
+          </p>
+          <p class="last-sync">
+            Last Sync: <strong>{{ formatDate(status.last_sync) }}</strong>
+          </p>
+          <button
+            class="mt-3 px-4 py-2 bg-black text-white rounded hover:bg-teal-600"
+            :disabled="syncing"
+            @click="triggerSync"
+          >
+            🔄 {{ syncing ? 'Syncing...' : 'Manual Sync' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Logs -->
+      <div class="glass p-4 rounded-xl shadow">
+        <h3 class="text-lg font-semibold mb-2 text-white">
+          📜 Last Sync Logs
+        </h3>
+        <ul class="text-sm text-gray-200 space-y-1 max-h-48 overflow-y-auto">
+          <li
+            v-for="(log, idx) in logs"
+            :key="idx"
+          >
+            <span class="text-teal-400">•</span> {{ log }}
+          </li>
+        </ul>
       </div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <!-- System Status Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Tenants -->
-        <div class="bg-white rounded-lg shadow-sm border p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div
-                class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-5 h-5 text-blue-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Total Tenants</p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{ summary.tenant_count || 0 }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Active Tenants -->
-        <div class="bg-white rounded-lg shadow-sm border p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div
-                class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-5 h-5 text-green-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Active Tenants</p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{ summary.active_tenants || 0 }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Expiring Leases -->
-        <div class="bg-white rounded-lg shadow-sm border p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div
-                class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-5 h-5 text-yellow-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Expiring Soon</p>
-              <p class="text-2xl font-bold text-gray-900">
-                {{ summary.expiring_leases || 0 }}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Total Rent -->
-        <div class="bg-white rounded-lg shadow-sm border p-6">
-          <div class="flex items-center">
-            <div class="flex-shrink-0">
-              <div
-                class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center"
-              >
-                <svg
-                  class="w-5 h-5 text-purple-600"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
-                  />
-                </svg>
-              </div>
-            </div>
-            <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Monthly Rent</p>
-              <p class="text-2xl font-bold text-gray-900">
-                ${{ formatCurrency(summary.total_rent || 0) }}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Left Column -->
-        <div class="lg:col-span-2 space-y-6">
-          <!-- Synced Files -->
-          <div class="bg-white rounded-lg shadow-sm border">
-            <div class="p-6 border-b border-gray-200">
-              <h2 class="text-lg font-semibold text-gray-900">
-                📂 Synced Files
-              </h2>
-              <p class="text-sm text-gray-500 mt-1">
-                Files processed by the sync engine
-              </p>
-            </div>
-            <div class="p-6">
-              <div
-                v-if="summary.source_files && summary.source_files.length > 0"
-                class="space-y-3"
-              >
-                <div
-                  v-for="file in summary.source_files"
-                  :key="file.file"
-                  class="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                >
-                  <div class="flex items-center space-x-3">
-                    <svg
-                      class="w-5 h-5 text-gray-400"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                      />
-                    </svg>
-                    <span class="text-sm font-medium text-gray-900">{{
-                      file.file
-                    }}</span>
-                  </div>
-                  <span class="text-sm text-gray-500"
-                    >{{ file.count }} tenants</span
-                  >
-                </div>
-              </div>
-              <div v-else class="text-center py-8 text-gray-500">
-                <svg
-                  class="mx-auto h-12 w-12 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                  />
-                </svg>
-                <p class="mt-2 text-sm">No files synced yet</p>
-                <p class="text-xs">
-                  Drop CSV files in the watch directory to get started
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Recent Sync Operations -->
-          <div class="bg-white rounded-lg shadow-sm border">
-            <div class="p-6 border-b border-gray-200">
-              <h2 class="text-lg font-semibold text-gray-900">
-                🔄 Recent Sync Operations
-              </h2>
-              <p class="text-sm text-gray-500 mt-1">
-                Latest file processing activities
-              </p>
-            </div>
-            <div class="p-6">
-              <div
-                v-if="summary.recent_syncs && summary.recent_syncs.length > 0"
-                class="space-y-3"
-              >
-                <div
-                  v-for="sync in summary.recent_syncs"
-                  :key="sync.synced_at"
-                  class="flex items-center justify-between p-3 border rounded-lg"
-                  :class="
-                    sync.status === 'success'
-                      ? 'border-green-200 bg-green-50'
-                      : 'border-red-200 bg-red-50'
-                  "
-                >
-                  <div class="flex items-center space-x-3">
-                    <div class="flex-shrink-0">
-                      <svg
-                        v-if="sync.status === 'success'"
-                        class="w-5 h-5 text-green-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                      <svg
-                        v-else
-                        class="w-5 h-5 text-red-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="2"
-                          d="M6 18L18 6M6 6l12 12"
-                        />
-                      </svg>
-                    </div>
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">
-                        {{ sync.file_name }}
-                      </p>
-                      <p class="text-xs text-gray-500">
-                        {{ formatDate(sync.synced_at) }}
-                      </p>
-                    </div>
-                  </div>
-                  <div class="text-right">
-                    <p
-                      class="text-sm font-medium"
-                      :class="
-                        sync.status === 'success'
-                          ? 'text-green-600'
-                          : 'text-red-600'
-                      "
-                    >
-                      {{ sync.status }}
-                    </p>
-                    <p class="text-xs text-gray-500">
-                      {{ sync.records_processed }} records
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="text-center py-8 text-gray-500">
-                <svg
-                  class="mx-auto h-12 w-12 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-                  />
-                </svg>
-                <p class="mt-2 text-sm">No sync operations yet</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Column -->
-        <div class="space-y-6">
-          <!-- System Status -->
-          <div class="bg-white rounded-lg shadow-sm border p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">
-              ⚙️ System Status
-            </h3>
-            <div class="space-y-3">
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Database</span>
-                <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                >
-                  Connected
-                </span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Sync Engine</span>
-                <span
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                >
-                  Running
-                </span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Last Sync</span>
-                <span class="text-sm font-medium text-gray-900">{{
-                  formatDate(summary.last_sync) || 'Never'
-                }}</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-sm text-gray-600">Files Processed</span>
-                <span class="text-sm font-medium text-gray-900">{{
-                  summary.file_count || 0
-                }}</span>
-              </div>
-            </div>
-          </div>
-
-          <!-- Upcoming Lease Expirations -->
-          <div class="bg-white rounded-lg shadow-sm border">
-            <div class="p-6 border-b border-gray-200">
-              <h3 class="text-lg font-semibold text-gray-900">
-                ⏳ Upcoming Lease Expirations
-              </h3>
-              <p class="text-sm text-gray-500 mt-1">
-                Leases expiring within 30 days
-              </p>
-            </div>
-            <div class="p-6">
-              <div
-                v-if="
-                  summary.expiring_leases && summary.expiring_leases.length > 0
-                "
-                class="space-y-3"
-              >
-                <div
-                  v-for="lease in summary.expiring_leases"
-                  :key="lease.unit"
-                  class="p-3 border border-yellow-200 bg-yellow-50 rounded-lg"
-                >
-                  <div class="flex items-center justify-between">
-                    <div>
-                      <p class="text-sm font-medium text-gray-900">
-                        {{ lease.name }}
-                      </p>
-                      <p class="text-xs text-gray-500">Unit {{ lease.unit }}</p>
-                    </div>
-                    <div class="text-right">
-                      <p class="text-sm font-medium text-yellow-800">
-                        {{ formatDate(lease.lease_end) }}
-                      </p>
-                      <p class="text-xs text-gray-500">
-                        {{ getDaysUntil(lease.lease_end) }}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="text-center py-8 text-gray-500">
-                <svg
-                  class="mx-auto h-12 w-12 text-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <p class="mt-2 text-sm">No expiring leases</p>
-                <p class="text-xs">All leases are current</p>
-              </div>
-            </div>
-          </div>
-
-          <!-- Quick Actions -->
-          <div class="bg-white rounded-lg shadow-sm border p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">
-              🚀 Quick Actions
-            </h3>
-            <div class="space-y-3">
-              <button
-                class="w-full px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                @click="downloadSampleCSV"
-              >
-                📥 Download Sample CSV
-              </button>
-              <button
-                class="w-full px-4 py-2 text-sm bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                @click="viewTenants"
-              >
-                👥 View All Tenants
-              </button>
-              <button
-                class="w-full px-4 py-2 text-sm bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
-                @click="viewAnalytics"
-              >
-                📊 View Analytics
-              </button>
-            </div>
-          </div>
-        </div>
+    <!-- Redactions Chart -->
+    <div class="mt-8 glass p-4 rounded-xl shadow">
+      <h3 class="text-lg font-semibold mb-4 text-teal-300">
+        📈 Redactions Over Time
+      </h3>
+      <Line
+        v-if="chartData.labels.length"
+        :data="chartData"
+        :options="chartOptions"
+        class="bg-black bg-opacity-40 rounded-lg p-4"
+      />
+      <div
+        v-else
+        class="text-center text-gray-400 py-8"
+      >
+        Loading chart data...
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { Line } from 'vue-chartjs';
+import {
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+} from 'chart.js';
 
-const summary = ref({
-  tenant_count: 0,
-  file_count: 0,
-  active_tenants: 0,
-  expiring_leases: 0,
-  total_rent: 0,
-  source_files: [],
-  expiring_leases: [],
-  recent_syncs: [],
-  last_sync: null,
-  system_status: 'no_data',
+ChartJS.register(
+  Title,
+  Tooltip,
+  Legend,
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement
+);
+
+const status = ref({});
+const logs = ref([]);
+const syncing = ref(false);
+
+const chartData = ref({
+  labels: [],
+  datasets: [
+    {
+      label: 'Redacted Entries',
+      data: [],
+      fill: false,
+      borderColor: 'rgba(45, 212, 191, 1)',
+      backgroundColor: 'rgba(45, 212, 191, 0.6)',
+      tension: 0.3,
+      pointRadius: 4,
+      pointHoverRadius: 6,
+    },
+  ],
 });
 
-const loading = ref(false);
-const lastUpdate = ref('Never');
-let refreshInterval = null;
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: { display: false },
+    tooltip: {
+      backgroundColor: 'rgba(13, 26, 34, 0.9)',
+      titleColor: '#fff',
+      bodyColor: '#fff',
+      padding: 12,
+      borderColor: 'rgba(45, 212, 191, 0.3)',
+      borderWidth: 1,
+      callbacks: {
+        label: (ctx) => `${ctx.parsed.y} entries redacted`,
+      },
+    },
+  },
+  scales: {
+    x: {
+      grid: {
+        color: 'rgba(255, 255, 255, 0.1)',
+      },
+      ticks: {
+        color: '#aaa',
+        maxRotation: 45,
+        minRotation: 45,
+      },
+    },
+    y: {
+      beginAtZero: true,
+      grid: {
+        color: 'rgba(255, 255, 255, 0.1)',
+      },
+      ticks: {
+        stepSize: 5,
+        color: '#aaa',
+      },
+    },
+  },
+};
 
 const fetchStatus = async () => {
   try {
-    loading.value = true;
-    const response = await axios.get('/api/status/summary');
-    summary.value = response.data;
-    lastUpdate.value = new Date().toLocaleTimeString();
-  } catch (error) {
-    console.error('Failed to fetch status:', error);
+    const res = await axios.get('/sync-engine/status');
+    status.value = res.data.status;
+    logs.value = res.data.logs || [];
+  } catch (err) {
+    console.error('Failed to fetch sync status', err);
+  }
+};
+
+const fetchRedactionHistory = async () => {
+  try {
+    const res = await axios.get('/sync-engine/history');
+    chartData.value.labels = res.data.map((item) =>
+      new Date(item.timestamp).toLocaleTimeString([], {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    );
+    chartData.value.datasets[0].data = res.data.map(
+      (item) => item.redacted_count
+    );
+  } catch (err) {
+    console.error('Failed to fetch redaction history', err);
+  }
+};
+
+const triggerSync = async () => {
+  syncing.value = true;
+  try {
+    await axios.post('/sync-engine/manual-sync');
+    await Promise.all([fetchStatus(), fetchRedactionHistory()]);
+  } catch (err) {
+    console.error('Manual sync failed', err);
   } finally {
-    loading.value = false;
+    syncing.value = false;
   }
 };
 
-const refreshData = () => {
-  fetchStatus();
+const formatDate = (iso) => {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString();
 };
 
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('en-US').format(amount);
-};
-
-const formatDate = (dateString) => {
-  if (!dateString) return 'N/A';
-  return new Date(dateString).toLocaleDateString();
-};
-
-const getDaysUntil = (dateString) => {
-  if (!dateString) return '';
-  const days = Math.ceil(
-    (new Date(dateString) - new Date()) / (1000 * 60 * 60 * 24)
-  );
-  return `${days} days`;
-};
-
-const downloadSampleCSV = () => {
-  const csvContent = `tenant_name,unit,status,lease_start,lease_end,rent_amount,email,phone
-John Smith,101,active,2024-01-01,2024-12-31,1500,john.smith@email.com,555-0101
-Jane Doe,102,active,2024-02-01,2024-11-30,1600,jane.doe@email.com,555-0102
-Bob Johnson,103,active,2024-03-01,2024-10-31,1400,bob.johnson@email.com,555-0103`;
-
-  const blob = new Blob([csvContent], { type: 'text/csv' });
-  const url = window.URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'sample_tenants.csv';
-  a.click();
-  window.URL.revokeObjectURL(url);
-};
-
-const viewTenants = () => {
-  // Navigate to tenants view (if implemented)
-  console.log('View tenants clicked');
-};
-
-const viewAnalytics = () => {
-  // Navigate to analytics view (if implemented)
-  console.log('View analytics clicked');
-};
-
-onMounted(() => {
-  fetchStatus();
-  // Refresh every 30 seconds
-  refreshInterval = setInterval(fetchStatus, 30000);
-});
-
-onUnmounted(() => {
-  if (refreshInterval) {
-    clearInterval(refreshInterval);
-  }
+onMounted(async () => {
+  await Promise.all([fetchStatus(), fetchRedactionHistory()]);
+  // Refresh data every 10 seconds
+  setInterval(async () => {
+    await Promise.all([fetchStatus(), fetchRedactionHistory()]);
+  }, 10000);
 });
 </script>
+
+<style scoped>
+.status-card {
+  @apply p-6 rounded-xl shadow transition-all duration-300;
+  background: rgba(0, 128, 128, 0.15);
+  border: 1px solid rgba(0, 247, 255, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.status-card.pulse {
+  animation: pulse 1.5s infinite ease-in-out;
+  box-shadow: 0 0 12px rgba(0, 247, 255, 0.33);
+  border-color: rgba(0, 247, 255, 0.33);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.status-header {
+  @apply text-xl font-semibold text-teal-300 mb-3;
+}
+
+.status-details {
+  @apply space-y-2;
+}
+
+.status-text {
+  @apply text-white;
+}
+
+.last-sync {
+  @apply text-sm text-gray-400;
+}
+
+.glass {
+  background: rgba(13, 26, 34, 0.6);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+</style>

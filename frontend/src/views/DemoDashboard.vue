@@ -4,8 +4,12 @@
     <div class="hero-section">
       <div class="card">
         <div class="card-body">
-          <h1 class="hero-title">🧠 AI Box Demo Dashboard</h1>
-          <p class="hero-subtitle">Project Summary</p>
+          <h1 class="hero-title">
+            🧠 AI Box Demo Dashboard
+          </h1>
+          <p class="hero-subtitle">
+            Project Summary
+          </p>
         </div>
       </div>
     </div>
@@ -13,7 +17,9 @@
     <!-- About This Project Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🚀 About This Project</h2>
+        <h2 class="card-title">
+          🚀 About This Project
+        </h2>
       </div>
       <div class="card-body">
         <p class="project-description">
@@ -37,7 +43,9 @@
     <!-- DevSecOps Experience Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🔐 DevSecOps Experience</h2>
+        <h2 class="card-title">
+          🔐 DevSecOps Experience
+        </h2>
       </div>
       <div class="card-body">
         <p class="section-description">
@@ -73,7 +81,9 @@
     <!-- AI/ML Experience Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🧠 AI/ML Experience</h2>
+        <h2 class="card-title">
+          🧠 AI/ML Experience
+        </h2>
       </div>
       <div class="card-body">
         <p class="section-description">
@@ -118,7 +128,9 @@
     <!-- Walkthrough Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🎥 Walkthrough of This Demo</h2>
+        <h2 class="card-title">
+          🎥 Walkthrough of This Demo
+        </h2>
       </div>
       <div class="card-body">
         <div class="walkthrough-intro">
@@ -127,7 +139,9 @@
 
         <div class="walkthrough-steps">
           <div class="step-item">
-            <div class="step-number">1</div>
+            <div class="step-number">
+              1
+            </div>
             <div class="step-content">
               <h4>📁 File Upload</h4>
               <p>
@@ -137,7 +151,9 @@
           </div>
 
           <div class="step-item">
-            <div class="step-number">2</div>
+            <div class="step-number">
+              2
+            </div>
             <div class="step-content">
               <h4>🧼 Preprocessing + Sync</h4>
               <p>
@@ -148,7 +164,9 @@
           </div>
 
           <div class="step-item">
-            <div class="step-number">3</div>
+            <div class="step-number">
+              3
+            </div>
             <div class="step-content">
               <h4>🧠 RAG Search</h4>
               <p>
@@ -158,7 +176,9 @@
           </div>
 
           <div class="step-item">
-            <div class="step-number">4</div>
+            <div class="step-number">
+              4
+            </div>
             <div class="step-content">
               <h4>📊 ML Builder Tab</h4>
               <p>
@@ -169,7 +189,9 @@
           </div>
 
           <div class="step-item">
-            <div class="step-number">5</div>
+            <div class="step-number">
+              5
+            </div>
             <div class="step-content">
               <h4>🤖 Agent Execution</h4>
               <p>
@@ -180,7 +202,9 @@
           </div>
 
           <div class="step-item">
-            <div class="step-number">6</div>
+            <div class="step-number">
+              6
+            </div>
             <div class="step-content">
               <h4>🧠 HTC Feedback Tab</h4>
               <p>Submit corrections to improve the model over time</p>
@@ -188,7 +212,9 @@
           </div>
 
           <div class="step-item">
-            <div class="step-number">7</div>
+            <div class="step-number">
+              7
+            </div>
             <div class="step-content">
               <h4>🔤 AI Keywords Tab</h4>
               <p>
@@ -203,7 +229,9 @@
     <!-- Conclusion Section -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">💡 Conclusion</h2>
+        <h2 class="card-title">
+          💡 Conclusion
+        </h2>
       </div>
       <div class="card-body">
         <p class="conclusion-text">
@@ -211,50 +239,80 @@
           <strong>how much I've learned</strong> and
           <strong>how much value I can deliver</strong>, even as someone
           breaking into tech. It's not just about theory — it's
-          <strong
-            >real DevSecOps, real AI/ML, and real client-inspired
-            engineering</strong
-          >.
+          <strong>real DevSecOps, real AI/ML, and real client-inspired
+            engineering</strong>.
         </p>
       </div>
     </div>
 
     <!-- Navigation Cards -->
     <div class="navigation-section">
-      <h3 class="navigation-title">Explore the Demo</h3>
+      <h3 class="navigation-title">
+        Explore the Demo
+      </h3>
       <div class="navigation-grid">
-        <router-link to="/demo" class="nav-card">
-          <div class="nav-card-icon">🎯</div>
+        <router-link
+          to="/demo"
+          class="nav-card"
+        >
+          <div class="nav-card-icon">
+            🎯
+          </div>
           <h4>Task Processing</h4>
           <p>Submit Kubernetes/CD tasks and see AI processing</p>
         </router-link>
 
-        <router-link to="/rag" class="nav-card">
-          <div class="nav-card-icon">🔍</div>
+        <router-link
+          to="/rag"
+          class="nav-card"
+        >
+          <div class="nav-card-icon">
+            🔍
+          </div>
           <h4>RAG Search</h4>
           <p>Search documents with AI-powered retrieval</p>
         </router-link>
 
-        <router-link to="/ml-builder" class="nav-card">
-          <div class="nav-card-icon">📊</div>
+        <router-link
+          to="/ml-builder"
+          class="nav-card"
+        >
+          <div class="nav-card-icon">
+            📊
+          </div>
           <h4>ML Builder</h4>
           <p>Train machine learning models instantly</p>
         </router-link>
 
-        <router-link to="/whis-pipeline" class="nav-card">
-          <div class="nav-card-icon">⚙️</div>
+        <router-link
+          to="/whis-pipeline"
+          class="nav-card"
+        >
+          <div class="nav-card-icon">
+            ⚙️
+          </div>
           <h4>Whis Pipeline</h4>
           <p>View the AI processing pipeline in action</p>
         </router-link>
 
-        <router-link to="/htc" class="nav-card">
-          <div class="nav-card-icon">🧠</div>
+        <router-link
+          to="/htc"
+          class="nav-card"
+        >
+          <div class="nav-card-icon">
+            🧠
+          </div>
           <h4>HTC Feedback</h4>
           <p>Improve models with human feedback</p>
         </router-link>
 
-        <router-link to="/reports" class="nav-card">
-          <div class="nav-card-icon">📈</div>
+        <router-link
+          to="/reports"
+          class="nav-card"
+        >
+          <div class="nav-card-icon">
+            📈
+          </div>
           <h4>Reports</h4>
           <p>View system analytics and performance</p>
         </router-link>

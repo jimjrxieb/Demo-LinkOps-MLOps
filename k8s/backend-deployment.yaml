@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-unified-api
-  namespace: demo
+  namespace: demo-linkops
   labels:
     app: demo-unified-api
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: unified-api
-        image: demo-linkops-unified-api:latest
+        image: localhost:5000/demo-linkops-unified-api:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8000

@@ -18,14 +18,17 @@
             placeholder="e.g., What is Kubernetes? or Deploy app to cluster"
             class="flex-1 p-3 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600"
             @keyup.enter="handleQuery"
-          />
+          >
           <button
             class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200 animate-pulse-slow"
             :disabled="!query.trim()"
             @click="handleQuery"
           >
             <span v-if="!loading">Submit Query</span>
-            <span v-else class="flex items-center">
+            <span
+              v-else
+              class="flex items-center"
+            >
               <svg
                 class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,7 +76,9 @@
         class="bg-gray-800 rounded-lg p-6 border border-gray-700 animate-slide-in"
       >
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-semibold text-green-400">Response</h3>
+          <h3 class="text-xl font-semibold text-green-400">
+            Response
+          </h3>
           <div class="flex items-center space-x-2">
             <span class="text-sm text-gray-400">Confidence:</span>
             <div class="flex items-center">
@@ -83,9 +88,7 @@
                   :style="{ width: response.rank * 100 + '%' }"
                 />
               </div>
-              <span class="text-sm font-mono"
-                >{{ (response.rank * 100).toFixed(1) }}%</span
-              >
+              <span class="text-sm font-mono">{{ (response.rank * 100).toFixed(1) }}%</span>
             </div>
           </div>
         </div>
@@ -139,8 +142,13 @@
       </div>
 
       <!-- Query History -->
-      <div v-if="queryHistory.length > 0" class="mt-8">
-        <h3 class="text-xl font-semibold mb-4 text-blue-400">Recent Queries</h3>
+      <div
+        v-if="queryHistory.length > 0"
+        class="mt-8"
+      >
+        <h3 class="text-xl font-semibold mb-4 text-blue-400">
+          Recent Queries
+        </h3>
         <div class="space-y-3">
           <div
             v-for="(item, index) in queryHistory.slice(-5)"

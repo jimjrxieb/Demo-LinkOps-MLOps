@@ -1,10 +1,18 @@
 <template>
-  <div class="sidebar" :class="{ 'sidebar-collapsed': collapsed }">
+  <div
+    class="sidebar"
+    :class="{ 'sidebar-collapsed': collapsed }"
+  >
     <!-- Sidebar Header -->
     <div class="sidebar-header">
       <div class="logo-container">
-        <div class="logo-icon">🛡️</div>
-        <div v-if="!collapsed" class="logo-text">
+        <div class="logo-icon">
+          🛡️
+        </div>
+        <div
+          v-if="!collapsed"
+          class="logo-text"
+        >
           <h3>LinkOps</h3>
           <p>DevSecOps Demo</p>
         </div>
@@ -22,7 +30,10 @@
     <!-- Navigation Menu -->
     <nav class="sidebar-nav">
       <ul class="nav-list">
-        <li v-for="item in menuItems" :key="item.path">
+        <li
+          v-for="item in menuItems"
+          :key="item.path"
+        >
           <router-link
             :to="item.path"
             class="nav-item"
@@ -30,7 +41,10 @@
             :title="collapsed ? item.title : ''"
           >
             <span class="nav-icon">{{ item.icon }}</span>
-            <span v-if="!collapsed" class="nav-text">{{ item.title }}</span>
+            <span
+              v-if="!collapsed"
+              class="nav-text"
+            >{{ item.title }}</span>
           </router-link>
         </li>
       </ul>
@@ -40,7 +54,10 @@
     <div class="sidebar-footer">
       <div class="demo-status">
         <span class="status-dot" />
-        <span v-if="!collapsed" class="status-text">Demo Mode</span>
+        <span
+          v-if="!collapsed"
+          class="status-text"
+        >Demo Mode</span>
       </div>
     </div>
   </div>

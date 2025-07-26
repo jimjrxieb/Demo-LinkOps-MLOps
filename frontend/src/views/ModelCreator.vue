@@ -22,29 +22,45 @@
           accept=".csv"
           style="display: none"
           @change="handleFileSelect"
-        />
+        >
 
-        <div v-if="!uploadedFile" class="upload-placeholder">
-          <div class="upload-icon">📄</div>
+        <div
+          v-if="!uploadedFile"
+          class="upload-placeholder"
+        >
+          <div class="upload-icon">
+            📄
+          </div>
           <p>Drop your CSV file here or click to browse</p>
-          <p class="upload-hint">Supports .csv files with headers</p>
+          <p class="upload-hint">
+            Supports .csv files with headers
+          </p>
         </div>
 
-        <div v-else class="upload-success">
+        <div
+          v-else
+          class="upload-success"
+        >
           <div class="file-info">
             <span class="file-icon">✅</span>
             <span class="file-name">{{ uploadedFile.name }}</span>
-            <span class="file-size"
-              >({{ formatFileSize(uploadedFile.size) }})</span
-            >
+            <span class="file-size">({{ formatFileSize(uploadedFile.size) }})</span>
           </div>
-          <button class="remove-btn" @click.stop="removeFile">Remove</button>
+          <button
+            class="remove-btn"
+            @click.stop="removeFile"
+          >
+            Remove
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Model Configuration Section -->
-    <div v-if="uploadedFile && csvHeaders.length > 0" class="config-section">
+    <div
+      v-if="uploadedFile && csvHeaders.length > 0"
+      class="config-section"
+    >
       <h2>⚙️ Step 2: Configure Your Model</h2>
 
       <div class="config-grid">
@@ -57,7 +73,7 @@
             type="text"
             placeholder="e.g., maintenance_predictor"
             class="form-input"
-          />
+          >
         </div>
 
         <!-- Target Column -->
@@ -68,8 +84,14 @@
             v-model="modelConfig.targetColumn"
             class="form-select"
           >
-            <option value="">Select target column...</option>
-            <option v-for="header in csvHeaders" :key="header" :value="header">
+            <option value="">
+              Select target column...
+            </option>
+            <option
+              v-for="header in csvHeaders"
+              :key="header"
+              :value="header"
+            >
               {{ header }}
             </option>
           </select>
@@ -90,7 +112,7 @@
                 type="checkbox"
                 :value="header"
                 :disabled="header === modelConfig.targetColumn"
-              />
+              >
               <label :for="`feature-${header}`">
                 {{ header }}
                 <span
@@ -107,7 +129,10 @@
     </div>
 
     <!-- Training Section -->
-    <div v-if="canTrain" class="training-section">
+    <div
+      v-if="canTrain"
+      class="training-section"
+    >
       <h2>🚀 Step 3: Train Your Model</h2>
 
       <div class="training-controls">
@@ -146,19 +171,20 @@
           <div class="settings-grid">
             <div class="setting-item">
               <label>
-                <input v-model="advancedConfig.autoSync" type="checkbox" />
+                <input
+                  v-model="advancedConfig.autoSync"
+                  type="checkbox"
+                >
                 Enable Auto-Sync
               </label>
-              <span class="setting-hint"
-                >Automatically retrain on new data</span
-              >
+              <span class="setting-hint">Automatically retrain on new data</span>
             </div>
             <div class="setting-item">
               <label>
                 <input
                   v-model="advancedConfig.includeDemoData"
                   type="checkbox"
-                />
+                >
                 Include Demo Data
               </label>
               <span class="setting-hint">Use demo_data/ for training</span>
@@ -168,7 +194,10 @@
       </div>
 
       <!-- Training Progress -->
-      <div v-if="isTraining" class="training-progress">
+      <div
+        v-if="isTraining"
+        class="training-progress"
+      >
         <div class="progress-bar">
           <div
             class="progress-fill"
@@ -181,10 +210,16 @@
       </div>
 
       <!-- Training Results -->
-      <div v-if="trainingResult" class="training-results">
+      <div
+        v-if="trainingResult"
+        class="training-results"
+      >
         <div class="result-header">
           <h3>✅ Training Complete!</h3>
-          <button class="download-btn" @click="downloadSummary">
+          <button
+            class="download-btn"
+            @click="downloadSummary"
+          >
             📥 Download Summary
           </button>
         </div>
@@ -220,10 +255,8 @@
               >
                 <span class="rank">#{{ index + 1 }}</span>
                 <span class="name">{{ contractor.contractor }}</span>
-                <span class="score"
-                  >Score:
-                  {{ contractor.quality_score?.toFixed(1) || 'N/A' }}</span
-                >
+                <span class="score">Score:
+                  {{ contractor.quality_score?.toFixed(1) || 'N/A' }}</span>
               </div>
             </div>
           </div>
@@ -231,10 +264,18 @@
       </div>
 
       <!-- Training Error -->
-      <div v-if="trainingError" class="training-error">
+      <div
+        v-if="trainingError"
+        class="training-error"
+      >
         <h3>❌ Training Failed</h3>
         <p>{{ trainingError }}</p>
-        <button class="retry-btn" @click="resetTraining">🔄 Try Again</button>
+        <button
+          class="retry-btn"
+          @click="resetTraining"
+        >
+          🔄 Try Again
+        </button>
       </div>
     </div>
 
@@ -242,17 +283,30 @@
     <div class="history-section">
       <h2>📋 Trained Models History</h2>
       <div class="history-controls">
-        <button class="refresh-btn" @click="loadModelHistory">
+        <button
+          class="refresh-btn"
+          @click="loadModelHistory"
+        >
           🔄 Refresh
         </button>
       </div>
 
-      <div v-if="modelHistory.length === 0" class="no-models">
+      <div
+        v-if="modelHistory.length === 0"
+        class="no-models"
+      >
         <p>No trained models found. Train your first model above!</p>
       </div>
 
-      <div v-else class="models-grid">
-        <div v-for="model in modelHistory" :key="model.name" class="model-card">
+      <div
+        v-else
+        class="models-grid"
+      >
+        <div
+          v-for="model in modelHistory"
+          :key="model.name"
+          class="model-card"
+        >
           <div class="model-header">
             <h4>{{ model.name }}</h4>
             <span class="model-date">{{ formatDate(model.date) }}</span>
@@ -286,7 +340,10 @@
                 {{ model.r2?.toFixed(3) || 'N/A' }}
               </span>
             </div>
-            <div v-if="model.accuracy" class="metric-item">
+            <div
+              v-if="model.accuracy"
+              class="metric-item"
+            >
               <span class="metric-label">✅ Accuracy:</span>
               <span
                 class="metric-value"
@@ -306,7 +363,10 @@
             >
               📥 Summary
             </button>
-            <button class="action-btn delete" @click="deleteModel(model.name)">
+            <button
+              class="action-btn delete"
+              @click="deleteModel(model.name)"
+            >
               🗑️ Delete
             </button>
           </div>

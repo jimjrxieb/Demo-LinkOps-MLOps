@@ -1,13 +1,21 @@
 <template>
   <div class="model-predictor">
-    <button class="predict-btn" @click="show = !show">
+    <button
+      class="predict-btn"
+      @click="show = !show"
+    >
       {{ show ? '🔽 Hide' : '🔮 Predict' }}
     </button>
 
-    <div v-if="show" class="predictor-panel">
+    <div
+      v-if="show"
+      class="predictor-panel"
+    >
       <div class="panel-header">
         <h4>🔮 Make Prediction</h4>
-        <p class="model-name">Model: {{ model }}</p>
+        <p class="model-name">
+          Model: {{ model }}
+        </p>
       </div>
 
       <div class="input-section">
@@ -16,11 +24,13 @@
           v-model="input"
           rows="6"
           class="feature-input"
-          placeholder='{"feature1": value1, "feature2": value2, ...}'
-        ></textarea>
+          placeholder="{&quot;feature1&quot;: value1, &quot;feature2&quot;: value2, ...}"
+        />
 
         <div class="input-help">
-          <p class="help-text">💡 Enter your features as JSON. Example:</p>
+          <p class="help-text">
+            💡 Enter your features as JSON. Example:
+          </p>
           <code class="example-code">
             {"bedrooms": 3, "bathrooms": 2, "sqft": 1500, "year_built": 2010}
           </code>
@@ -30,20 +40,27 @@
       <div class="action-section">
         <button
           class="predict-action-btn"
-          @click="predict"
           :disabled="loading || !isValidJson"
+          @click="predict"
         >
           <span v-if="!loading">🚀 Make Prediction</span>
           <span v-else>⏳ Predicting...</span>
         </button>
 
-        <button v-if="input !== '{}'" class="clear-btn" @click="clearInput">
+        <button
+          v-if="input !== '{}'"
+          class="clear-btn"
+          @click="clearInput"
+        >
           🧹 Clear
         </button>
       </div>
 
       <!-- Prediction Result -->
-      <div v-if="result !== null" class="result-section">
+      <div
+        v-if="result !== null"
+        class="result-section"
+      >
         <div class="result-header">
           <h5>📈 Prediction Result</h5>
           <span class="result-timestamp">{{
@@ -57,26 +74,35 @@
             <span class="value">{{ formatPrediction(result) }}</span>
           </div>
 
-          <div v-if="result.confidence" class="confidence">
+          <div
+            v-if="result.confidence"
+            class="confidence"
+          >
             <span class="confidence-label">Confidence:</span>
-            <span class="confidence-value"
-              >{{ (result.confidence * 100).toFixed(1) }}%</span
-            >
+            <span class="confidence-value">{{ (result.confidence * 100).toFixed(1) }}%</span>
           </div>
         </div>
       </div>
 
       <!-- Error Display -->
-      <div v-if="error" class="error-section">
+      <div
+        v-if="error"
+        class="error-section"
+      >
         <div class="error-header">
           <span class="error-icon">❌</span>
           <span class="error-title">Prediction Error</span>
         </div>
-        <p class="error-message">{{ error }}</p>
+        <p class="error-message">
+          {{ error }}
+        </p>
       </div>
 
       <!-- Validation Error -->
-      <div v-if="!isValidJson && input !== '{}'" class="validation-error">
+      <div
+        v-if="!isValidJson && input !== '{}'"
+        class="validation-error"
+      >
         <span class="validation-icon">⚠️</span>
         <span class="validation-text">Invalid JSON format</span>
       </div>

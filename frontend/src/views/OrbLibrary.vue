@@ -4,7 +4,9 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">📚 Kubernetes/CD Orb Library</h2>
+          <h2 class="card-title">
+            📚 Kubernetes/CD Orb Library
+          </h2>
           <p class="text-gray-600">
             Browse the collection of automated best practices and solutions
           </p>
@@ -15,17 +17,25 @@
               <div class="stat-number">
                 {{ orbs.length }}
               </div>
-              <div class="stat-label">Total Orbs</div>
+              <div class="stat-label">
+                Total Orbs
+              </div>
             </div>
             <div class="stat-card">
               <div class="stat-number">
                 {{ categories.length }}
               </div>
-              <div class="stat-label">Categories</div>
+              <div class="stat-label">
+                Categories
+              </div>
             </div>
             <div class="stat-card">
-              <div class="stat-number">{{ averageConfidence }}%</div>
-              <div class="stat-label">Avg Confidence</div>
+              <div class="stat-number">
+                {{ averageConfidence }}%
+              </div>
+              <div class="stat-label">
+                Avg Confidence
+              </div>
             </div>
           </div>
         </div>
@@ -44,7 +54,7 @@
                 type="text"
                 class="form-input"
                 placeholder="Search by title, keywords, or category..."
-              />
+              >
             </div>
 
             <!-- Category Buttons -->
@@ -86,7 +96,9 @@
     <div class="training-orbs-section">
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">🧠 Training Orbs (AI/ML)</h3>
+          <h3 class="card-title">
+            🧠 Training Orbs (AI/ML)
+          </h3>
           <p class="card-subtitle">
             Machine learning models that learn from your tasks
           </p>
@@ -95,10 +107,16 @@
           <div class="training-orbs-grid">
             <div class="training-orb-card">
               <div class="orb-header">
-                <div class="orb-icon">🤖</div>
+                <div class="orb-icon">
+                  🤖
+                </div>
                 <div class="orb-meta">
-                  <h4 class="orb-title">ML Task Classifier</h4>
-                  <p class="orb-category">AI/ML Engineer</p>
+                  <h4 class="orb-title">
+                    ML Task Classifier
+                  </h4>
+                  <p class="orb-category">
+                    AI/ML Engineer
+                  </p>
                 </div>
               </div>
               <div class="orb-content">
@@ -113,9 +131,7 @@
                   </div>
                   <div class="stat-item">
                     <span class="stat-label">Tools:</span>
-                    <span class="stat-value"
-                      >TensorFlow, Keras, scikit-learn</span
-                    >
+                    <span class="stat-value">TensorFlow, Keras, scikit-learn</span>
                   </div>
                   <div class="stat-item">
                     <span class="stat-label">Status:</span>
@@ -123,7 +139,9 @@
                   </div>
                 </div>
                 <div class="orb-actions">
-                  <button class="btn btn-primary btn-sm">View Details</button>
+                  <button class="btn btn-primary btn-sm">
+                    View Details
+                  </button>
                   <button class="btn btn-secondary btn-sm">
                     Retrain Model
                   </button>
@@ -159,9 +177,10 @@
             </h3>
             <p class="orb-category">
               {{ orb.category }}
-              <span v-if="orb.type === 'training'" class="training-badge"
-                >Training Orb</span
-              >
+              <span
+                v-if="orb.type === 'training'"
+                class="training-badge"
+              >Training Orb</span>
             </p>
           </div>
         </div>
@@ -176,26 +195,32 @@
                 v-for="keyword in orb.keywords"
                 :key="keyword"
                 class="keyword-tag"
-                >#{{ keyword }}</span
-              >
+              >#{{ keyword }}</span>
             </div>
           </div>
-          <div v-if="orb.type === 'training'" class="training-stats">
+          <div
+            v-if="orb.type === 'training'"
+            class="training-stats"
+          >
             <div class="stat-item">
               <span class="stat-label">Version:</span>
               <span class="stat-value">{{ orb.version }}</span>
             </div>
             <div class="stat-item">
               <span class="stat-label">Confidence:</span>
-              <span class="stat-value"
-                >{{ Math.round((orb.confidence || 0.85) * 100) }}%</span
-              >
+              <span class="stat-value">{{ Math.round((orb.confidence || 0.85) * 100) }}%</span>
             </div>
           </div>
           <div class="orb-footer">
             <span class="click-hint">Click to view details →</span>
-            <div v-if="orb.type === 'training'" class="retrain-section">
-              <button class="retrain-btn" @click.stop="$emit('retrain')">
+            <div
+              v-if="orb.type === 'training'"
+              class="retrain-section"
+            >
+              <button
+                class="retrain-btn"
+                @click.stop="$emit('retrain')"
+              >
                 🔁 Retrain Model
               </button>
               <div class="last-trained-info">
@@ -211,10 +236,15 @@
     </div>
 
     <!-- No Results -->
-    <div v-if="filteredOrbs.length === 0" class="no-results">
+    <div
+      v-if="filteredOrbs.length === 0"
+      class="no-results"
+    >
       <div class="card">
         <div class="card-body text-center">
-          <div class="no-results-icon">🔍</div>
+          <div class="no-results-icon">
+            🔍
+          </div>
           <h3>No Orbs Found</h3>
           <p>Try adjusting your search criteria or category filter.</p>
         </div>
@@ -222,30 +252,50 @@
     </div>
 
     <!-- Orb Detail Modal -->
-    <div v-if="showModal" class="modal-overlay" @click="closeModal">
-      <div class="modal-content" @click.stop>
+    <div
+      v-if="showModal"
+      class="modal-overlay"
+      @click="closeModal"
+    >
+      <div
+        class="modal-content"
+        @click.stop
+      >
         <div class="modal-header">
-          <h2 class="modal-title">📚 {{ selectedOrb?.title }}</h2>
-          <button class="modal-close" @click="closeModal">×</button>
+          <h2 class="modal-title">
+            📚 {{ selectedOrb?.title }}
+          </h2>
+          <button
+            class="modal-close"
+            @click="closeModal"
+          >
+            ×
+          </button>
         </div>
         <div class="modal-body">
           <div class="orb-detail-grid">
             <div class="detail-section">
-              <h3 class="detail-label">Category</h3>
+              <h3 class="detail-label">
+                Category
+              </h3>
               <p class="detail-value">
                 {{ selectedOrb?.category }}
               </p>
             </div>
 
             <div class="detail-section">
-              <h3 class="detail-label">Description</h3>
+              <h3 class="detail-label">
+                Description
+              </h3>
               <p class="detail-value">
                 {{ selectedOrb?.orb }}
               </p>
             </div>
 
             <div class="detail-section">
-              <h3 class="detail-label">Keywords</h3>
+              <h3 class="detail-label">
+                Keywords
+              </h3>
               <div class="keyword-tags">
                 <span
                   v-for="keyword in selectedOrb?.keywords"
@@ -258,20 +308,22 @@
             </div>
 
             <div class="detail-section">
-              <h3 class="detail-label">Rune ID</h3>
+              <h3 class="detail-label">
+                Rune ID
+              </h3>
               <code class="rune-code">{{
                 selectedOrb?.rune || 'R-' + Math.floor(Math.random() * 1000)
               }}</code>
             </div>
 
             <div class="detail-section">
-              <h3 class="detail-label">Confidence Score</h3>
+              <h3 class="detail-label">
+                Confidence Score
+              </h3>
               <div class="confidence-score">
-                <span class="score-value"
-                  >{{
-                    Math.round((selectedOrb?.confidence || 0.85) * 100)
-                  }}%</span
-                >
+                <span class="score-value">{{
+                  Math.round((selectedOrb?.confidence || 0.85) * 100)
+                }}%</span>
                 <div class="confidence-bar">
                   <div
                     class="confidence-fill"
@@ -287,8 +339,15 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-secondary" @click="closeModal">Close</button>
-          <button class="btn btn-primary">Use This Orb</button>
+          <button
+            class="btn btn-secondary"
+            @click="closeModal"
+          >
+            Close
+          </button>
+          <button class="btn btn-primary">
+            Use This Orb
+          </button>
         </div>
       </div>
     </div>

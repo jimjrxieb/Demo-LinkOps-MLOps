@@ -100,10 +100,8 @@ class DockerImageBuilder:
             )
             return False
 
-        # Build image with latest tag
-        tag = f"{service_name}:latest"
-        if self.registry_user:
-            tag = f"{self.registry_user}/{tag}"
+        # Build image with latest tag for local registry
+        tag = f"localhost:5000/{service_name}:latest"
 
         success, stdout, stderr = self.run_command(
             ["docker", "build", "-t", tag, build_context],
@@ -120,12 +118,8 @@ class DockerImageBuilder:
         return success
 
     def push_image(self, service_name: str) -> bool:
-        """Push a Docker image to registry."""
-        if not self.registry_user:
-            logger.warning(f"⚠️  Skipping push for {service_name} - no registry user")
-            return True
-
-        tag = f"{self.registry_user}/{service_name}:latest"
+        """Push a Docker image to local registry."""
+        tag = f"localhost:5000/{service_name}:latest"
 
         success, stdout, stderr = self.run_command(
             ["docker", "push", tag],

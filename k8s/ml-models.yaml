@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: ml-models
-        image: linksrobot/demo-linkops-ml-models:latest
+        image: localhost:5000/demo-linkops-ml-models:latest
         ports:
         - containerPort: 8002
         envFrom:

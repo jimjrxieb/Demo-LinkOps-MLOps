@@ -54,13 +54,19 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <!-- Feedback Form -->
-      <div v-if="showFeedbackForm" class="mb-8">
+      <div
+        v-if="showFeedbackForm"
+        class="mb-8"
+      >
         <div class="bg-white rounded-lg shadow-sm border p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">
             📝 Add Feedback
           </h2>
 
-          <form class="space-y-6" @submit.prevent="submitFeedback">
+          <form
+            class="space-y-6"
+            @submit.prevent="submitFeedback"
+          >
             <!-- Original Question -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -72,7 +78,7 @@
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                 placeholder="e.g., When is rent due?"
                 required
-              />
+              >
             </div>
 
             <!-- AI's Answer -->
@@ -125,12 +131,24 @@
                 v-model="feedbackForm.category"
                 class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
               >
-                <option value="incorrect_answer">Incorrect Answer</option>
-                <option value="incomplete_answer">Incomplete Answer</option>
-                <option value="wrong_context">Wrong Context Used</option>
-                <option value="missing_information">Missing Information</option>
-                <option value="unclear_response">Unclear Response</option>
-                <option value="other">Other</option>
+                <option value="incorrect_answer">
+                  Incorrect Answer
+                </option>
+                <option value="incomplete_answer">
+                  Incomplete Answer
+                </option>
+                <option value="wrong_context">
+                  Wrong Context Used
+                </option>
+                <option value="missing_information">
+                  Missing Information
+                </option>
+                <option value="unclear_response">
+                  Unclear Response
+                </option>
+                <option value="other">
+                  Other
+                </option>
               </select>
             </div>
 
@@ -200,25 +218,33 @@
               <div class="text-2xl font-bold text-blue-600">
                 {{ feedbackStats.total_feedback }}
               </div>
-              <div class="text-sm text-gray-600">Total Feedback</div>
+              <div class="text-sm text-gray-600">
+                Total Feedback
+              </div>
             </div>
             <div class="text-center p-4 bg-yellow-50 rounded-lg">
               <div class="text-2xl font-bold text-yellow-600">
                 {{ feedbackStats.pending_training }}
               </div>
-              <div class="text-sm text-gray-600">Pending Training</div>
+              <div class="text-sm text-gray-600">
+                Pending Training
+              </div>
             </div>
             <div class="text-center p-4 bg-green-50 rounded-lg">
               <div class="text-2xl font-bold text-green-600">
                 {{ feedbackStats.trained }}
               </div>
-              <div class="text-sm text-gray-600">Trained</div>
+              <div class="text-sm text-gray-600">
+                Trained
+              </div>
             </div>
             <div class="text-center p-4 bg-purple-50 rounded-lg">
               <div class="text-2xl font-bold text-purple-600">
                 {{ feedbackStats.recent_feedback }}
               </div>
-              <div class="text-sm text-gray-600">Recent (7 days)</div>
+              <div class="text-sm text-gray-600">
+                Recent (7 days)
+              </div>
             </div>
           </div>
         </div>
@@ -235,13 +261,27 @@
               v-model="filterCategory"
               class="px-3 py-1 text-sm border border-gray-300 rounded-md"
             >
-              <option value="">All Categories</option>
-              <option value="incorrect_answer">Incorrect Answer</option>
-              <option value="incomplete_answer">Incomplete Answer</option>
-              <option value="wrong_context">Wrong Context</option>
-              <option value="missing_information">Missing Information</option>
-              <option value="unclear_response">Unclear Response</option>
-              <option value="other">Other</option>
+              <option value="">
+                All Categories
+              </option>
+              <option value="incorrect_answer">
+                Incorrect Answer
+              </option>
+              <option value="incomplete_answer">
+                Incomplete Answer
+              </option>
+              <option value="wrong_context">
+                Wrong Context
+              </option>
+              <option value="missing_information">
+                Missing Information
+              </option>
+              <option value="unclear_response">
+                Unclear Response
+              </option>
+              <option value="other">
+                Other
+              </option>
             </select>
           </div>
         </div>
@@ -263,11 +303,18 @@
               d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
             />
           </svg>
-          <p class="mt-2 text-sm">No feedback entries found</p>
-          <p class="text-xs">Add feedback to help improve the AI</p>
+          <p class="mt-2 text-sm">
+            No feedback entries found
+          </p>
+          <p class="text-xs">
+            Add feedback to help improve the AI
+          </p>
         </div>
 
-        <div v-else class="space-y-4">
+        <div
+          v-else
+          class="space-y-4"
+        >
           <div
             v-for="entry in filteredFeedback"
             :key="entry.feedback_id"
@@ -352,7 +399,9 @@
                 </p>
               </div>
               <div v-if="entry.user_notes">
-                <h4 class="text-sm font-medium text-gray-700 mb-1">💭 Notes</h4>
+                <h4 class="text-sm font-medium text-gray-700 mb-1">
+                  💭 Notes
+                </h4>
                 <p class="text-sm text-gray-600">
                   {{ entry.user_notes }}
                 </p>

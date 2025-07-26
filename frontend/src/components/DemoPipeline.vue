@@ -12,7 +12,11 @@
       <!-- Pipeline Overview -->
       <div class="bg-gray-800 rounded-lg p-6 mb-8 border border-gray-700">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div v-for="(stage, index) in stages" :key="index" class="relative">
+          <div
+            v-for="(stage, index) in stages"
+            :key="index"
+            class="relative"
+          >
             <div
               class="p-4 rounded-lg border-2 transition-all duration-500"
               :class="{
@@ -59,7 +63,11 @@
               v-if="index < stages.length - 1"
               class="hidden md:block absolute top-1/2 -right-2 transform -translate-y-1/2"
             >
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <svg
+                class="w-4 h-4"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
                 <path
                   fill-rule="evenodd"
                   d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z"
@@ -79,9 +87,7 @@
           </h3>
           <div class="flex items-center space-x-2">
             <span class="text-sm text-gray-400">Progress:</span>
-            <span class="text-lg font-mono text-green-400"
-              >{{ getStageProgress(stage) }}%</span
-            >
+            <span class="text-lg font-mono text-green-400">{{ getStageProgress(stage) }}%</span>
           </div>
         </div>
 
@@ -96,8 +102,13 @@
         </div>
 
         <!-- Stage-specific details -->
-        <div v-if="stages[stage].details" class="bg-gray-700 rounded-lg p-4">
-          <h4 class="font-semibold text-green-400 mb-2">Stage Details:</h4>
+        <div
+          v-if="stages[stage].details"
+          class="bg-gray-700 rounded-lg p-4"
+        >
+          <h4 class="font-semibold text-green-400 mb-2">
+            Stage Details:
+          </h4>
           <ul class="text-sm text-gray-300 space-y-1">
             <li
               v-for="detail in stages[stage].details"
@@ -171,7 +182,10 @@
           @click="autoRun"
         >
           <span v-if="!autoRunning">Auto Run</span>
-          <span v-else class="flex items-center">
+          <span
+            v-else
+            class="flex items-center"
+          >
             <svg
               class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
               xmlns="http://www.w3.org/2000/svg"
@@ -200,21 +214,27 @@
       <!-- Pipeline Metrics -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-blue-400 mb-2">Total Progress</h4>
+          <h4 class="font-semibold text-blue-400 mb-2">
+            Total Progress
+          </h4>
           <div class="text-2xl font-bold text-green-400">
             {{ Math.round((stage / (stages.length - 1)) * 100) }}%
           </div>
         </div>
 
         <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-blue-400 mb-2">Stages Completed</h4>
+          <h4 class="font-semibold text-blue-400 mb-2">
+            Stages Completed
+          </h4>
           <div class="text-2xl font-bold text-green-400">
             {{ stage }}/{{ stages.length - 1 }}
           </div>
         </div>
 
         <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-          <h4 class="font-semibold text-blue-400 mb-2">Estimated Time</h4>
+          <h4 class="font-semibold text-blue-400 mb-2">
+            Estimated Time
+          </h4>
           <div class="text-2xl font-bold text-green-400">
             {{ getEstimatedTime() }}
           </div>

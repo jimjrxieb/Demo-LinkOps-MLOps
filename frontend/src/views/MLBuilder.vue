@@ -139,7 +139,7 @@
               accept=".csv"
               class="hidden"
               @change="handleFileUpload"
-            />
+            >
             <svg
               class="mx-auto h-12 w-12 text-gray-400 mb-4"
               fill="none"
@@ -174,7 +174,10 @@
         </div>
 
         <!-- Step 2: Data Preview -->
-        <div v-if="dataPreview.columns.length" class="mb-6">
+        <div
+          v-if="dataPreview.columns.length"
+          class="mb-6"
+        >
           <label class="block text-sm font-medium text-gray-700 mb-2">
             📊 Step 2: Data Preview
           </label>
@@ -238,7 +241,10 @@
         </div>
 
         <!-- Step 3: Model Configuration -->
-        <div v-if="dataPreview.columns.length" class="mb-6">
+        <div
+          v-if="dataPreview.columns.length"
+          class="mb-6"
+        >
           <label class="block text-sm font-medium text-gray-700 mb-2">
             🎯 Step 3: Model Configuration
           </label>
@@ -252,7 +258,9 @@
               v-model="modelConfig.targetColumn"
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             >
-              <option value="">Select a column to predict...</option>
+              <option value="">
+                Select a column to predict...
+              </option>
               <option
                 v-for="col in dataPreview.columns"
                 :key="col"
@@ -279,7 +287,9 @@
               <option value="classification">
                 Classification (Predict categories)
               </option>
-              <option value="regression">Regression (Predict numbers)</option>
+              <option value="regression">
+                Regression (Predict numbers)
+              </option>
             </select>
             <p class="mt-1 text-xs text-gray-500">
               Classification for categories (e.g., high/medium/low risk),
@@ -297,7 +307,7 @@
               type="text"
               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
               placeholder="e.g., Eviction Risk Predictor"
-            />
+            >
             <p class="mt-1 text-xs text-gray-500">
               Give your model a descriptive name for easy identification
             </p>
@@ -340,7 +350,7 @@
                     min="10"
                     max="50"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
+                  >
                   <p class="mt-1 text-xs text-gray-500">
                     Percentage of data to use for testing (10-50%)
                   </p>
@@ -353,7 +363,7 @@
                     v-model="modelConfig.randomState"
                     type="number"
                     class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  />
+                  >
                   <p class="mt-1 text-xs text-gray-500">
                     For reproducible results (optional)
                   </p>
@@ -417,56 +427,78 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 class="font-medium text-gray-900 mb-2">Model Details</h4>
+            <h4 class="font-medium text-gray-900 mb-2">
+              Model Details
+            </h4>
             <dl class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <dt class="text-gray-600">Model Name:</dt>
+                <dt class="text-gray-600">
+                  Model Name:
+                </dt>
                 <dd class="font-medium">
                   {{ trainingResult.model_name }}
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-600">Target Column:</dt>
+                <dt class="text-gray-600">
+                  Target Column:
+                </dt>
                 <dd class="font-medium">
                   {{ trainingResult.target_column }}
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-600">Model Type:</dt>
+                <dt class="text-gray-600">
+                  Model Type:
+                </dt>
                 <dd class="font-medium">
                   {{ trainingResult.model_type }}
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-600">Training Time:</dt>
-                <dd class="font-medium">{{ trainingResult.training_time }}s</dd>
+                <dt class="text-gray-600">
+                  Training Time:
+                </dt>
+                <dd class="font-medium">
+                  {{ trainingResult.training_time }}s
+                </dd>
               </div>
             </dl>
           </div>
 
           <div>
-            <h4 class="font-medium text-gray-900 mb-2">Performance Metrics</h4>
+            <h4 class="font-medium text-gray-900 mb-2">
+              Performance Metrics
+            </h4>
             <dl class="space-y-2 text-sm">
               <div class="flex justify-between">
-                <dt class="text-gray-600">Accuracy:</dt>
+                <dt class="text-gray-600">
+                  Accuracy:
+                </dt>
                 <dd class="font-medium text-green-600">
                   {{ trainingResult.accuracy }}%
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-600">Precision:</dt>
+                <dt class="text-gray-600">
+                  Precision:
+                </dt>
                 <dd class="font-medium">
                   {{ trainingResult.precision }}
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-600">Recall:</dt>
+                <dt class="text-gray-600">
+                  Recall:
+                </dt>
                 <dd class="font-medium">
                   {{ trainingResult.recall }}
                 </dd>
               </div>
               <div class="flex justify-between">
-                <dt class="text-gray-600">F1 Score:</dt>
+                <dt class="text-gray-600">
+                  F1 Score:
+                </dt>
                 <dd class="font-medium">
                   {{ trainingResult.f1_score }}
                 </dd>
@@ -527,8 +559,12 @@
                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               />
             </svg>
-            <p class="text-lg font-medium">No models trained yet</p>
-            <p class="text-sm">Create your first model to get started</p>
+            <p class="text-lg font-medium">
+              No models trained yet
+            </p>
+            <p class="text-sm">
+              Create your first model to get started
+            </p>
             <button
               class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
               @click="showNewModelForm = true"
@@ -538,7 +574,10 @@
           </div>
 
           <!-- Models List -->
-          <div v-else class="space-y-4">
+          <div
+            v-else
+            class="space-y-4"
+          >
             <div
               v-for="model in models"
               :key="model.model_id"
@@ -610,7 +649,7 @@
             </p>
             <div class="text-xs text-gray-500">
               <strong>Columns:</strong> rent_amount, late_payments,
-              tenant_tenure, complaints <br /><strong>Target:</strong>
+              tenant_tenure, complaints <br><strong>Target:</strong>
               eviction_risk (high/medium/low)
             </div>
           </div>
@@ -625,9 +664,7 @@
             </p>
             <div class="text-xs text-gray-500">
               <strong>Columns:</strong> tenant_tenure, rent_paid_on_time,
-              maintenance_requests, satisfaction_score <br /><strong
-                >Target:</strong
-              >
+              maintenance_requests, satisfaction_score <br><strong>Target:</strong>
               renewal_probability (0-100%)
             </div>
           </div>
@@ -642,7 +679,7 @@
             </p>
             <div class="text-xs text-gray-500">
               <strong>Columns:</strong> unit_age, tenant_count,
-              last_maintenance_date, unit_type <br /><strong>Target:</strong>
+              last_maintenance_date, unit_type <br><strong>Target:</strong>
               maintenance_risk (high/medium/low)
             </div>
           </div>

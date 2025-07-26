@@ -56,7 +56,9 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">ML Models</p>
+              <p class="text-sm font-medium text-gray-500">
+                ML Models
+              </p>
               <p class="text-2xl font-semibold text-gray-900">
                 {{ stats.models }}
               </p>
@@ -86,7 +88,9 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">AI Agents</p>
+              <p class="text-sm font-medium text-gray-500">
+                AI Agents
+              </p>
               <p class="text-2xl font-semibold text-gray-900">
                 {{ stats.agents }}
               </p>
@@ -116,7 +120,9 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Pipeline Outputs</p>
+              <p class="text-sm font-medium text-gray-500">
+                Pipeline Outputs
+              </p>
               <p class="text-2xl font-semibold text-gray-900">
                 {{ stats.outputs }}
               </p>
@@ -146,7 +152,9 @@
               </div>
             </div>
             <div class="ml-4">
-              <p class="text-sm font-medium text-gray-500">Documents</p>
+              <p class="text-sm font-medium text-gray-500">
+                Documents
+              </p>
               <p class="text-2xl font-semibold text-gray-900">
                 {{ stats.documents }}
               </p>
@@ -177,7 +185,10 @@
 
         <div class="p-6">
           <!-- ML Models Tab -->
-          <div v-if="activeTab === 'models'" class="space-y-6">
+          <div
+            v-if="activeTab === 'models'"
+            class="space-y-6"
+          >
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-medium text-gray-900">
                 Machine Learning Models
@@ -187,10 +198,18 @@
                   v-model="modelFilter"
                   class="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
-                  <option value="">All Types</option>
-                  <option value="classifier">Classification</option>
-                  <option value="regression">Regression</option>
-                  <option value="clustering">Clustering</option>
+                  <option value="">
+                    All Types
+                  </option>
+                  <option value="classifier">
+                    Classification
+                  </option>
+                  <option value="regression">
+                    Regression
+                  </option>
+                  <option value="clustering">
+                    Clustering
+                  </option>
                 </select>
               </div>
             </div>
@@ -227,7 +246,10 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="model in filteredModels" :key="model.name">
+                  <tr
+                    v-for="model in filteredModels"
+                    :key="model.name"
+                  >
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="text-sm font-medium text-gray-900">
                         {{ model.name }}
@@ -271,19 +293,34 @@
           </div>
 
           <!-- AI Agents Tab -->
-          <div v-if="activeTab === 'agents'" class="space-y-6">
+          <div
+            v-if="activeTab === 'agents'"
+            class="space-y-6"
+          >
             <div class="flex justify-between items-center">
-              <h3 class="text-lg font-medium text-gray-900">AI Agents</h3>
+              <h3 class="text-lg font-medium text-gray-900">
+                AI Agents
+              </h3>
               <div class="flex space-x-2">
                 <select
                   v-model="agentFilter"
                   class="border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
-                  <option value="">All Types</option>
-                  <option value="taskbot">TaskBot</option>
-                  <option value="commandbot">CommandBot</option>
-                  <option value="assistant">Assistant</option>
-                  <option value="workflow">Workflow</option>
+                  <option value="">
+                    All Types
+                  </option>
+                  <option value="taskbot">
+                    TaskBot
+                  </option>
+                  <option value="commandbot">
+                    CommandBot
+                  </option>
+                  <option value="assistant">
+                    Assistant
+                  </option>
+                  <option value="workflow">
+                    Workflow
+                  </option>
                 </select>
               </div>
             </div>
@@ -320,7 +357,10 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="agent in filteredAgents" :key="agent.name">
+                  <tr
+                    v-for="agent in filteredAgents"
+                    :key="agent.name"
+                  >
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="text-sm font-medium text-gray-900">
                         {{ agent.name }}
@@ -364,7 +404,10 @@
           </div>
 
           <!-- Pipeline Outputs Tab -->
-          <div v-if="activeTab === 'outputs'" class="space-y-6">
+          <div
+            v-if="activeTab === 'outputs'"
+            class="space-y-6"
+          >
             <div class="flex justify-between items-center">
               <h3 class="text-lg font-medium text-gray-900">
                 Pipeline Outputs
@@ -403,7 +446,10 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="output in outputs" :key="output.name">
+                  <tr
+                    v-for="output in outputs"
+                    :key="output.name"
+                  >
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="text-sm font-medium text-gray-900">
                         {{ output.name }}
@@ -447,9 +493,14 @@
           </div>
 
           <!-- Documents Tab -->
-          <div v-if="activeTab === 'documents'" class="space-y-6">
+          <div
+            v-if="activeTab === 'documents'"
+            class="space-y-6"
+          >
             <div class="flex justify-between items-center">
-              <h3 class="text-lg font-medium text-gray-900">RAG Documents</h3>
+              <h3 class="text-lg font-medium text-gray-900">
+                RAG Documents
+              </h3>
               <div class="text-sm text-gray-500">
                 {{ stats.documents }} documents, {{ stats.chunks }} chunks
               </div>
@@ -487,7 +538,10 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="doc in documents" :key="doc.document_id">
+                  <tr
+                    v-for="doc in documents"
+                    :key="doc.document_id"
+                  >
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="text-sm font-medium text-gray-900">
                         {{ doc.filename }}

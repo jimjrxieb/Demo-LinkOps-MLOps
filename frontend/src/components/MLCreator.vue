@@ -18,44 +18,58 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <!-- Model Type Selection -->
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2"
-              >Model Type:</label
-            >
+            <label class="block text-sm font-medium text-gray-300 mb-2">Model Type:</label>
             <select
               v-model="modelConfig.modelType"
               class="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="LogisticRegression">Logistic Regression</option>
-              <option value="RandomForestClassifier">Random Forest</option>
-              <option value="SVC">Support Vector Machine</option>
-              <option value="NeuralNetwork">Neural Network</option>
-              <option value="XGBoost">XGBoost</option>
+              <option value="LogisticRegression">
+                Logistic Regression
+              </option>
+              <option value="RandomForestClassifier">
+                Random Forest
+              </option>
+              <option value="SVC">
+                Support Vector Machine
+              </option>
+              <option value="NeuralNetwork">
+                Neural Network
+              </option>
+              <option value="XGBoost">
+                XGBoost
+              </option>
             </select>
           </div>
 
           <!-- Dataset Selection -->
           <div>
-            <label class="block text-sm font-medium text-gray-300 mb-2"
-              >Dataset:</label
-            >
+            <label class="block text-sm font-medium text-gray-300 mb-2">Dataset:</label>
             <select
               v-model="modelConfig.dataset"
               class="w-full p-3 bg-gray-700 rounded-lg text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="kubernetes_logs">Kubernetes Logs</option>
-              <option value="network_traffic">Network Traffic</option>
-              <option value="application_metrics">Application Metrics</option>
-              <option value="system_performance">System Performance</option>
-              <option value="security_events">Security Events</option>
+              <option value="kubernetes_logs">
+                Kubernetes Logs
+              </option>
+              <option value="network_traffic">
+                Network Traffic
+              </option>
+              <option value="application_metrics">
+                Application Metrics
+              </option>
+              <option value="system_performance">
+                System Performance
+              </option>
+              <option value="security_events">
+                Security Events
+              </option>
             </select>
           </div>
         </div>
 
         <!-- Features Selection -->
         <div class="mt-6">
-          <label class="block text-sm font-medium text-gray-300 mb-2"
-            >Features:</label
-          >
+          <label class="block text-sm font-medium text-gray-300 mb-2">Features:</label>
           <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
             <label
               v-for="feature in availableFeatures"
@@ -67,7 +81,7 @@
                 type="checkbox"
                 :value="feature.value"
                 class="mr-3 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
-              />
+              >
               <span class="text-sm">{{ feature.label }}</span>
             </label>
           </div>
@@ -75,14 +89,10 @@
 
         <!-- Model Parameters -->
         <div class="mt-6">
-          <label class="block text-sm font-medium text-gray-300 mb-2"
-            >Model Parameters:</label
-          >
+          <label class="block text-sm font-medium text-gray-300 mb-2">Model Parameters:</label>
           <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-xs text-gray-400 mb-1"
-                >Learning Rate</label
-              >
+              <label class="block text-xs text-gray-400 mb-1">Learning Rate</label>
               <input
                 v-model.number="modelConfig.learningRate"
                 type="range"
@@ -90,7 +100,7 @@
                 max="0.1"
                 step="0.001"
                 class="w-full"
-              />
+              >
               <span class="text-xs text-gray-400">{{
                 modelConfig.learningRate
               }}</span>
@@ -105,7 +115,7 @@
                 max="200"
                 step="10"
                 class="w-full"
-              />
+              >
               <span class="text-xs text-gray-400">{{
                 modelConfig.epochs
               }}</span>
@@ -120,10 +130,8 @@
                 max="0.5"
                 step="0.05"
                 class="w-full"
-              />
-              <span class="text-xs text-gray-400"
-                >{{ (modelConfig.testSplit * 100).toFixed(0) }}%</span
               >
+              <span class="text-xs text-gray-400">{{ (modelConfig.testSplit * 100).toFixed(0) }}%</span>
             </div>
           </div>
         </div>
@@ -131,7 +139,9 @@
 
       <!-- Model Preview -->
       <div class="bg-gray-800 rounded-lg p-6 mb-6 border border-gray-700">
-        <h3 class="text-xl font-semibold mb-4 text-blue-400">Model Preview</h3>
+        <h3 class="text-xl font-semibold mb-4 text-blue-400">
+          Model Preview
+        </h3>
         <div class="bg-gray-700 rounded-lg p-4 font-mono text-sm">
           <pre class="text-green-400">{{ generateModelCode() }}</pre>
         </div>
@@ -204,32 +214,42 @@
         class="bg-gray-800 rounded-lg p-6 border border-gray-700 animate-slide-in"
       >
         <div class="flex items-center justify-between mb-4">
-          <h3 class="text-xl font-semibold text-green-400">Model Status</h3>
+          <h3 class="text-xl font-semibold text-green-400">
+            Model Status
+          </h3>
           <span class="text-sm text-gray-400">{{ modelStatus.timestamp }}</span>
         </div>
 
         <div class="bg-gray-700 rounded-lg p-4 mb-4">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <p class="text-sm text-gray-400">Model Name:</p>
+              <p class="text-sm text-gray-400">
+                Model Name:
+              </p>
               <p class="font-semibold text-white">
                 {{ modelStatus.modelName }}
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-400">Status:</p>
+              <p class="text-sm text-gray-400">
+                Status:
+              </p>
               <p class="font-semibold text-green-400">
                 {{ modelStatus.status }}
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-400">Accuracy:</p>
+              <p class="text-sm text-gray-400">
+                Accuracy:
+              </p>
               <p class="font-semibold text-blue-400">
                 {{ modelStatus.accuracy }}%
               </p>
             </div>
             <div>
-              <p class="text-sm text-gray-400">Training Time:</p>
+              <p class="text-sm text-gray-400">
+                Training Time:
+              </p>
               <p class="font-semibold text-yellow-400">
                 {{ modelStatus.trainingTime }}
               </p>
@@ -254,8 +274,13 @@
       </div>
 
       <!-- Recent Models -->
-      <div v-if="recentModels.length > 0" class="mt-8">
-        <h3 class="text-xl font-semibold mb-4 text-blue-400">Recent Models</h3>
+      <div
+        v-if="recentModels.length > 0"
+        class="mt-8"
+      >
+        <h3 class="text-xl font-semibold mb-4 text-blue-400">
+          Recent Models
+        </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div
             v-for="model in recentModels"
@@ -272,9 +297,7 @@
               {{ model.type }} - {{ model.dataset }}
             </p>
             <div class="flex items-center justify-between">
-              <span class="text-sm text-green-400"
-                >Accuracy: {{ model.accuracy }}%</span
-              >
+              <span class="text-sm text-green-400">Accuracy: {{ model.accuracy }}%</span>
               <button
                 class="text-blue-400 hover:text-blue-300 text-sm"
                 @click="loadModel(model)"

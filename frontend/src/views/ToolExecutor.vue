@@ -2,34 +2,56 @@
   <div class="tool-executor">
     <!-- Header -->
     <div class="header">
-      <h1 class="title">🔧 MCP Tool Executor</h1>
-      <p class="subtitle">Execute saved MCP tools and view their output</p>
+      <h1 class="title">
+        🔧 MCP Tool Executor
+      </h1>
+      <p class="subtitle">
+        Execute saved MCP tools and view their output
+      </p>
     </div>
 
     <!-- Main Content -->
     <div class="content">
       <!-- Tool Selection -->
       <div class="tool-selection">
-        <h2 class="section-title">Select Tool</h2>
+        <h2 class="section-title">
+          Select Tool
+        </h2>
         <div class="tool-selector">
           <select
             v-model="selectedTool"
             class="tool-select"
             @change="onToolSelect"
           >
-            <option value="" disabled>Choose a saved tool...</option>
-            <option v-for="tool in tools" :key="tool.name" :value="tool">
+            <option
+              value=""
+              disabled
+            >
+              Choose a saved tool...
+            </option>
+            <option
+              v-for="tool in tools"
+              :key="tool.name"
+              :value="tool"
+            >
               {{ tool.name }} - {{ tool.description }}
             </option>
           </select>
 
-          <button class="refresh-btn" :disabled="loading" @click="refreshTools">
+          <button
+            class="refresh-btn"
+            :disabled="loading"
+            @click="refreshTools"
+          >
             🔄 Refresh
           </button>
         </div>
 
         <!-- Tool Info -->
-        <div v-if="selectedTool" class="tool-info">
+        <div
+          v-if="selectedTool"
+          class="tool-info"
+        >
           <h3>Tool Details</h3>
           <div class="info-grid">
             <div class="info-item">
@@ -40,7 +62,11 @@
             </div>
             <div class="info-item">
               <strong>Tags:</strong>
-              <span v-for="tag in selectedTool.tags" :key="tag" class="tag">
+              <span
+                v-for="tag in selectedTool.tags"
+                :key="tag"
+                class="tag"
+              >
                 {{ tag }}
               </span>
             </div>
@@ -57,7 +83,9 @@
 
       <!-- Execution Controls -->
       <div class="execution-controls">
-        <h2 class="section-title">Execution</h2>
+        <h2 class="section-title">
+          Execution
+        </h2>
         <div class="controls">
           <div class="timeout-control">
             <label for="timeout">Timeout (seconds):</label>
@@ -68,7 +96,7 @@
               min="5"
               max="300"
               class="timeout-input"
-            />
+            >
           </div>
 
           <button
@@ -82,8 +110,13 @@
       </div>
 
       <!-- Results -->
-      <div v-if="executionResult" class="results">
-        <h2 class="section-title">Execution Results</h2>
+      <div
+        v-if="executionResult"
+        class="results"
+      >
+        <h2 class="section-title">
+          Execution Results
+        </h2>
 
         <!-- Status -->
         <div
@@ -135,21 +168,30 @@
 
           <div class="output-content">
             <!-- Standard Output -->
-            <div v-if="activeTab === 'stdout'" class="output-panel">
+            <div
+              v-if="activeTab === 'stdout'"
+              class="output-panel"
+            >
               <pre class="output-text">{{
                 executionResult.stdout || '(No output)'
               }}</pre>
             </div>
 
             <!-- Error Output -->
-            <div v-if="activeTab === 'stderr'" class="output-panel">
+            <div
+              v-if="activeTab === 'stderr'"
+              class="output-panel"
+            >
               <pre class="output-text error">{{
                 executionResult.stderr || '(No errors)'
               }}</pre>
             </div>
 
             <!-- Details -->
-            <div v-if="activeTab === 'details'" class="output-panel">
+            <div
+              v-if="activeTab === 'details'"
+              class="output-panel"
+            >
               <div class="details-grid">
                 <div class="detail-item">
                   <strong>Command:</strong>
@@ -179,33 +221,52 @@
 
       <!-- Statistics -->
       <div class="statistics">
-        <h2 class="section-title">Execution Statistics</h2>
-        <div v-if="stats" class="stats-grid">
+        <h2 class="section-title">
+          Execution Statistics
+        </h2>
+        <div
+          v-if="stats"
+          class="stats-grid"
+        >
           <div class="stat-card">
             <div class="stat-number">
               {{ stats.total_executions }}
             </div>
-            <div class="stat-label">Total Executions</div>
+            <div class="stat-label">
+              Total Executions
+            </div>
           </div>
           <div class="stat-card">
             <div class="stat-number success">
               {{ stats.successful_executions }}
             </div>
-            <div class="stat-label">Successful</div>
+            <div class="stat-label">
+              Successful
+            </div>
           </div>
           <div class="stat-card">
             <div class="stat-number error">
               {{ stats.failed_executions }}
             </div>
-            <div class="stat-label">Failed</div>
+            <div class="stat-label">
+              Failed
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-number">{{ stats.success_rate }}%</div>
-            <div class="stat-label">Success Rate</div>
+            <div class="stat-number">
+              {{ stats.success_rate }}%
+            </div>
+            <div class="stat-label">
+              Success Rate
+            </div>
           </div>
           <div class="stat-card">
-            <div class="stat-number">{{ stats.average_execution_time }}s</div>
-            <div class="stat-label">Avg Time</div>
+            <div class="stat-number">
+              {{ stats.average_execution_time }}s
+            </div>
+            <div class="stat-label">
+              Avg Time
+            </div>
           </div>
         </div>
       </div>

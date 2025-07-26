@@ -5,7 +5,9 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-6">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">ML Model Creator</h1>
+            <h1 class="text-3xl font-bold text-gray-900">
+              ML Model Creator
+            </h1>
             <p class="mt-1 text-sm text-gray-500">
               Create machine learning models from your data
             </p>
@@ -74,16 +76,21 @@
                       class="sr-only"
                       accept=".csv,.json,.xlsx,.xls"
                       @change="handleFile"
-                    />
+                    >
                   </label>
-                  <p class="pl-1">or drag and drop</p>
+                  <p class="pl-1">
+                    or drag and drop
+                  </p>
                 </div>
                 <p class="text-xs text-gray-500">
                   CSV, JSON, Excel files up to 10MB
                 </p>
               </div>
             </div>
-            <div v-if="selectedFile" class="mt-2 text-sm text-gray-600">
+            <div
+              v-if="selectedFile"
+              class="mt-2 text-sm text-gray-600"
+            >
               Selected: {{ selectedFile.name }} ({{
                 formatFileSize(selectedFile.size)
               }})
@@ -99,15 +106,26 @@
               v-model="modelType"
               class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              <option value="classifier">Classification</option>
-              <option value="regression">Regression</option>
-              <option value="clustering">Clustering</option>
-              <option value="time_series">Time Series</option>
+              <option value="classifier">
+                Classification
+              </option>
+              <option value="regression">
+                Regression
+              </option>
+              <option value="clustering">
+                Clustering
+              </option>
+              <option value="time_series">
+                Time Series
+              </option>
             </select>
           </div>
 
           <!-- Target Column -->
-          <div v-if="modelType !== 'clustering'" class="mb-6">
+          <div
+            v-if="modelType !== 'clustering'"
+            class="mb-6"
+          >
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Target Column
             </label>
@@ -116,7 +134,7 @@
               type="text"
               placeholder="Enter target column name"
               class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-            />
+            >
           </div>
 
           <!-- Algorithm Selection -->
@@ -128,13 +146,22 @@
               v-model="algorithm"
               class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
             >
-              <option v-if="modelType === 'classifier'" value="random_forest">
+              <option
+                v-if="modelType === 'classifier'"
+                value="random_forest"
+              >
                 Random Forest
               </option>
-              <option v-if="modelType === 'classifier'" value="svm">
+              <option
+                v-if="modelType === 'classifier'"
+                value="svm"
+              >
                 Support Vector Machine
               </option>
-              <option v-if="modelType === 'classifier'" value="neural_network">
+              <option
+                v-if="modelType === 'classifier'"
+                value="neural_network"
+              >
                 Neural Network
               </option>
               <option
@@ -143,22 +170,40 @@
               >
                 Linear Regression
               </option>
-              <option v-if="modelType === 'regression'" value="random_forest">
+              <option
+                v-if="modelType === 'regression'"
+                value="random_forest"
+              >
                 Random Forest
               </option>
-              <option v-if="modelType === 'regression'" value="neural_network">
+              <option
+                v-if="modelType === 'regression'"
+                value="neural_network"
+              >
                 Neural Network
               </option>
-              <option v-if="modelType === 'clustering'" value="kmeans">
+              <option
+                v-if="modelType === 'clustering'"
+                value="kmeans"
+              >
                 K-Means
               </option>
-              <option v-if="modelType === 'clustering'" value="dbscan">
+              <option
+                v-if="modelType === 'clustering'"
+                value="dbscan"
+              >
                 DBSCAN
               </option>
-              <option v-if="modelType === 'time_series'" value="lstm">
+              <option
+                v-if="modelType === 'time_series'"
+                value="lstm"
+              >
                 LSTM
               </option>
-              <option v-if="modelType === 'time_series'" value="arima">
+              <option
+                v-if="modelType === 'time_series'"
+                value="arima"
+              >
                 ARIMA
               </option>
             </select>
@@ -173,7 +218,10 @@
               {{ showAdvanced ? 'Hide' : 'Show' }} Advanced Options
             </button>
 
-            <div v-if="showAdvanced" class="mt-4 space-y-4">
+            <div
+              v-if="showAdvanced"
+              class="mt-4 space-y-4"
+            >
               <!-- Test Size -->
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-2">
@@ -185,7 +233,7 @@
                   min="10"
                   max="50"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
+                >
               </div>
 
               <!-- Random State -->
@@ -197,7 +245,7 @@
                   v-model.number="randomState"
                   type="number"
                   class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
+                >
               </div>
 
               <!-- Feature Selection -->
@@ -209,9 +257,15 @@
                   v-model="featureSelection"
                   class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
                 >
-                  <option value="auto">Automatic</option>
-                  <option value="manual">Manual Selection</option>
-                  <option value="correlation">Correlation-based</option>
+                  <option value="auto">
+                    Automatic
+                  </option>
+                  <option value="manual">
+                    Manual Selection
+                  </option>
+                  <option value="correlation">
+                    Correlation-based
+                  </option>
                 </select>
               </div>
             </div>
@@ -222,8 +276,13 @@
         <div class="space-y-6">
           <!-- Data Preview -->
           <div class="bg-white rounded-lg shadow p-6">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Data Preview</h3>
-            <div v-if="dataPreview.length > 0" class="overflow-x-auto">
+            <h3 class="text-lg font-medium text-gray-900 mb-4">
+              Data Preview
+            </h3>
+            <div
+              v-if="dataPreview.length > 0"
+              class="overflow-x-auto"
+            >
               <table class="min-w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                   <tr>
@@ -237,7 +296,10 @@
                   </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                  <tr v-for="(row, index) in dataPreview" :key="index">
+                  <tr
+                    v-for="(row, index) in dataPreview"
+                    :key="index"
+                  >
                     <td
                       v-for="column in dataColumns"
                       :key="column"
@@ -249,13 +311,19 @@
                 </tbody>
               </table>
             </div>
-            <div v-else class="text-center py-8 text-gray-500">
+            <div
+              v-else
+              class="text-center py-8 text-gray-500"
+            >
               Upload a file to see data preview
             </div>
           </div>
 
           <!-- Generation Results -->
-          <div v-if="generationResult" class="bg-white rounded-lg shadow p-6">
+          <div
+            v-if="generationResult"
+            class="bg-white rounded-lg shadow p-6"
+          >
             <h3 class="text-lg font-medium text-gray-900 mb-4">
               Generation Result
             </h3>
@@ -269,17 +337,13 @@
                 </span>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700"
-                  >Model Path:</span
-                >
+                <span class="text-sm font-medium text-gray-700">Model Path:</span>
                 <span class="text-sm text-gray-900">{{
                   generationResult.path
                 }}</span>
               </div>
               <div class="flex items-center justify-between">
-                <span class="text-sm font-medium text-gray-700"
-                  >Generated At:</span
-                >
+                <span class="text-sm font-medium text-gray-700">Generated At:</span>
                 <span class="text-sm text-gray-900">{{
                   formatDate(generationResult.timestamp)
                 }}</span>
@@ -315,7 +379,9 @@
                 </svg>
               </div>
               <div class="ml-3">
-                <h3 class="text-sm font-medium text-red-800">Error</h3>
+                <h3 class="text-sm font-medium text-red-800">
+                  Error
+                </h3>
                 <div class="mt-2 text-sm text-red-700">
                   {{ error }}
                 </div>

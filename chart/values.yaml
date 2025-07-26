@@ -3,27 +3,27 @@ replicaCount: 1
 
 image:
   frontend:
-    repository: demo-linkops-frontend
+    repository: localhost:5000/demo-linkops-frontend
     tag: latest
     pullPolicy: IfNotPresent
   unifiedApi:
-    repository: demo-linkops-unified-api
+    repository: localhost:5000/demo-linkops-unified-api
     tag: latest
     pullPolicy: IfNotPresent
   rag:
-    repository: demo-linkops-rag
-    tag: latest
-    pullPolicy: IfNotPresent
-  pipeline:
-    repository: demo-linkops-pipeline
+    repository: localhost:5000/demo-linkops-rag
     tag: latest
     pullPolicy: IfNotPresent
   mlModels:
-    repository: demo-linkops-ml-models
+    repository: localhost:5000/demo-linkops-ml-models
+    tag: latest
+    pullPolicy: IfNotPresent
+  pipeline:
+    repository: localhost:5000/demo-linkops-pipeline
     tag: latest
     pullPolicy: IfNotPresent
   syncEngine:
-    repository: demo-linkops-sync-engine
+    repository: localhost:5000/demo-linkops-sync-engine
     tag: latest
     pullPolicy: IfNotPresent
 
@@ -32,13 +32,15 @@ service:
   frontend:
     port: 80
   unifiedApi:
-    port: 8000
+    port: 9000
   rag:
-    port: 8001
-  pipeline:
-    port: 8500
+    port: 8005
   mlModels:
-    port: 8600
+    port: 8002
+  pipeline:
+    port: 8003
+  syncEngine:
+    port: 8004
 
 ingress:
   enabled: true
@@ -52,8 +54,91 @@ ingress:
           port: 80
         - path: /api
           service: unified-api
-          port: 8000
+          port: 9000
         - path: /rag
           service: rag
-          port: 8001
-  tls: [] 
+          port: 8005
+        - path: /ml
+          service: ml-models
+          port: 8002
+        - path: /pipeline
+          service: pipeline
+          port: 8003
+        - path: /sync
+          service: sync-engine
+          port: 8004
+  tls: []
+
+resources:
+  frontend:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  unifiedApi:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  rag:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  mlModels:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  pipeline:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  syncEngine:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+persistence:
+  enabled: true
+  vectorstore:
+    size: 1Gi
+    storageClass: "standard"
+  database:
+    size: 1Gi
+    storageClass: "standard"
+
+config:
+  jwt:
+    secretKey: "demo-secret-key"
+    accessTokenExpireMinutes: 30
+    refreshTokenExpireDays: 7
+  api:
+    host: "0.0.0.0"
+    port: 8000
+    logLevel: "INFO"
+  frontend:
+    apiUrl: "/api"
+    ragUrl: "/rag"
+    nodeEnv: "production"
+  rag:
+    host: "0.0.0.0"
+    port: 8001
+    vectorDbPath: "/app/data/vectorstore"
+  monitoring:
+    enabled: true
+    metricsPort: 9090 

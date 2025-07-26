@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: demo-linkops-config
-  namespace: demo
+  namespace: demo-linkops
 data:
   # JWT Settings
   JWT_SECRET_KEY: "demo-secret-key"

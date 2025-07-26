@@ -1,6 +1,8 @@
 <template>
   <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">🚀 Auto Tool Runner Status</h1>
+    <h1 class="text-2xl font-bold mb-4">
+      🚀 Auto Tool Runner Status
+    </h1>
 
     <!-- Status Overview -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
@@ -10,7 +12,9 @@
             class="w-3 h-3 rounded-full mr-2"
             :class="runnerStatus === 'running' ? 'bg-green-500' : 'bg-red-500'"
           />
-          <h3 class="font-semibold">Runner Status</h3>
+          <h3 class="font-semibold">
+            Runner Status
+          </h3>
         </div>
         <p
           class="text-lg font-bold mt-2"
@@ -23,15 +27,21 @@
       </div>
 
       <div class="bg-white p-4 rounded-lg shadow-sm border">
-        <h3 class="font-semibold">Auto-Enabled Tools</h3>
+        <h3 class="font-semibold">
+          Auto-Enabled Tools
+        </h3>
         <p class="text-2xl font-bold text-blue-600 mt-2">
           {{ autoToolsCount }}
         </p>
-        <p class="text-sm text-gray-600">tools configured</p>
+        <p class="text-sm text-gray-600">
+          tools configured
+        </p>
       </div>
 
       <div class="bg-white p-4 rounded-lg shadow-sm border">
-        <h3 class="font-semibold">Last Execution</h3>
+        <h3 class="font-semibold">
+          Last Execution
+        </h3>
         <p class="text-lg font-bold mt-2 text-gray-800">
           {{ lastExecutionTime || 'Never' }}
         </p>
@@ -68,12 +78,20 @@
 
     <!-- Auto-Enabled Tools List -->
     <div class="bg-white p-4 rounded-lg shadow-sm border mb-6">
-      <h2 class="text-lg font-semibold mb-4">🔧 Auto-Enabled Tools</h2>
-      <div v-if="autoTools.length === 0" class="text-gray-500 text-center py-4">
+      <h2 class="text-lg font-semibold mb-4">
+        🔧 Auto-Enabled Tools
+      </h2>
+      <div
+        v-if="autoTools.length === 0"
+        class="text-gray-500 text-center py-4"
+      >
         No auto-enabled tools found. Create tools with "Auto Execute" enabled in
         the MCP Tool Creator.
       </div>
-      <div v-else class="grid gap-3">
+      <div
+        v-else
+        class="grid gap-3"
+      >
         <div
           v-for="tool in autoTools"
           :key="tool.name"
@@ -92,22 +110,26 @@
           </div>
           <span
             class="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium"
-            >🚀 Auto</span
-          >
+          >🚀 Auto</span>
         </div>
       </div>
     </div>
 
     <!-- Recent Executions -->
     <div class="bg-white p-4 rounded-lg shadow-sm border">
-      <h2 class="text-lg font-semibold mb-4">📋 Recent Executions</h2>
+      <h2 class="text-lg font-semibold mb-4">
+        📋 Recent Executions
+      </h2>
       <div
         v-if="recentExecutions.length === 0"
         class="text-gray-500 text-center py-4"
       >
         No recent executions found.
       </div>
-      <div v-else class="space-y-3">
+      <div
+        v-else
+        class="space-y-3"
+      >
         <div
           v-for="execution in recentExecutions"
           :key="execution.id"
@@ -154,7 +176,9 @@
         <div
           class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"
         />
-        <p class="mt-2 text-center">Loading...</p>
+        <p class="mt-2 text-center">
+          Loading...
+        </p>
       </div>
     </div>
   </div>

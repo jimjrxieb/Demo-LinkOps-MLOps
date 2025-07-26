@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-rag
-  namespace: demo
+  namespace: demo-linkops
   labels:
     app: demo-rag
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: rag
-        image: demo-linkops-rag:latest
+        image: localhost:5000/demo-linkops-rag:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8001

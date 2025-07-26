@@ -23,7 +23,7 @@
               accept=".txt,.pdf,.doc,.docx,.md"
               class="hidden"
               @change="handleFileSelect"
-            />
+            >
             <button
               class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center"
               @click="$refs.fileInput.click()"
@@ -49,7 +49,10 @@
               @click="uploadFiles"
             >
               <span v-if="!uploading">Upload to RAG</span>
-              <span v-else class="flex items-center">
+              <span
+                v-else
+                class="flex items-center"
+              >
                 <svg
                   class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                   xmlns="http://www.w3.org/2000/svg"
@@ -76,8 +79,13 @@
           </div>
 
           <!-- Selected Files -->
-          <div v-if="selectedFiles.length > 0" class="space-y-2">
-            <h4 class="text-sm font-medium text-gray-300">Selected Files:</h4>
+          <div
+            v-if="selectedFiles.length > 0"
+            class="space-y-2"
+          >
+            <h4 class="text-sm font-medium text-gray-300">
+              Selected Files:
+            </h4>
             <div class="flex flex-wrap gap-2">
               <div
                 v-for="(file, index) in selectedFiles"
@@ -85,9 +93,7 @@
                 class="bg-gray-700 rounded-lg px-3 py-2 text-sm flex items-center space-x-2"
               >
                 <span class="text-blue-400">{{ file.name }}</span>
-                <span class="text-gray-400"
-                  >({{ formatFileSize(file.size) }})</span
-                >
+                <span class="text-gray-400">({{ formatFileSize(file.size) }})</span>
                 <button
                   class="text-red-400 hover:text-red-300"
                   @click="removeFile(index)"
@@ -112,14 +118,17 @@
             placeholder="Ask a question about your uploaded documents..."
             class="flex-1 p-3 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-600"
             @keyup.enter="handleQuery"
-          />
+          >
           <button
             :disabled="!query.trim() || loading"
             class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 px-6 py-3 rounded-lg font-semibold transition-all duration-200"
             @click="handleQuery"
           >
             <span v-if="!loading">Search</span>
-            <span v-else class="flex items-center">
+            <span
+              v-else
+              class="flex items-center"
+            >
               <svg
                 class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                 xmlns="http://www.w3.org/2000/svg"
@@ -149,7 +158,10 @@
             @click="handleLLMQuery"
           >
             <span v-if="!loading">🧠 Ask AI</span>
-            <span v-else class="flex items-center">
+            <span
+              v-else
+              class="flex items-center"
+            >
               <svg
                 class="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
                 xmlns="http://www.w3.org/2000/svg"
@@ -212,14 +224,15 @@
         </div>
 
         <!-- LLM Answer Section -->
-        <div v-if="llmAnswer" class="mb-6">
+        <div
+          v-if="llmAnswer"
+          class="mb-6"
+        >
           <div
             class="bg-purple-900 rounded-lg p-4 border-l-4 border-purple-500 mb-4"
           >
             <div class="flex items-center space-x-2 mb-2">
-              <span class="text-sm font-medium text-purple-400"
-                >🧠 AI Answer</span
-              >
+              <span class="text-sm font-medium text-purple-400">🧠 AI Answer</span>
               <span class="text-xs text-gray-400">Model: {{ llmModel }}</span>
             </div>
             <p class="text-gray-200 leading-relaxed whitespace-pre-wrap">
@@ -228,7 +241,10 @@
           </div>
 
           <!-- Citations Section -->
-          <div v-if="citations && citations.length > 0" class="mt-6">
+          <div
+            v-if="citations && citations.length > 0"
+            class="mt-6"
+          >
             <h4 class="text-lg font-medium text-green-400 mb-3">
               📚 Citations & Source Chunks
             </h4>
@@ -240,9 +256,7 @@
               >
                 <div class="flex items-start justify-between mb-2">
                   <div class="flex items-center space-x-2">
-                    <span class="text-sm font-medium text-green-400"
-                      >Citation {{ index + 1 }}</span
-                    >
+                    <span class="text-sm font-medium text-green-400">Citation {{ index + 1 }}</span>
                     <span class="text-xs text-gray-400">Source Chunk</span>
                   </div>
                   <span class="text-xs text-gray-500">Used in AI Answer</span>
@@ -258,7 +272,10 @@
           </div>
 
           <!-- Source Documents (Detailed) -->
-          <div v-if="searchResults.length > 0" class="mt-4">
+          <div
+            v-if="searchResults.length > 0"
+            class="mt-4"
+          >
             <h4 class="text-lg font-medium text-blue-400 mb-3">
               📖 Detailed Source Documents
             </h4>
@@ -270,12 +287,8 @@
               >
                 <div class="flex items-start justify-between mb-2">
                   <div class="flex items-center space-x-2">
-                    <span class="text-sm font-medium text-blue-400"
-                      >Source {{ index + 1 }}</span
-                    >
-                    <span class="text-xs text-gray-400"
-                      >Score: {{ (result.score * 100).toFixed(1) }}%</span
-                    >
+                    <span class="text-sm font-medium text-blue-400">Source {{ index + 1 }}</span>
+                    <span class="text-xs text-gray-400">Score: {{ (result.score * 100).toFixed(1) }}%</span>
                   </div>
                   <span class="text-xs text-gray-500">{{
                     result.metadata?.source || 'Unknown source'
@@ -293,7 +306,10 @@
         </div>
 
         <!-- Regular Search Results -->
-        <div v-else class="space-y-4">
+        <div
+          v-else
+          class="space-y-4"
+        >
           <div
             v-for="(result, index) in searchResults"
             :key="index"
@@ -301,12 +317,8 @@
           >
             <div class="flex items-start justify-between mb-2">
               <div class="flex items-center space-x-2">
-                <span class="text-sm font-medium text-blue-400"
-                  >Result {{ index + 1 }}</span
-                >
-                <span class="text-xs text-gray-400"
-                  >Score: {{ (result.score * 100).toFixed(1) }}%</span
-                >
+                <span class="text-sm font-medium text-blue-400">Result {{ index + 1 }}</span>
+                <span class="text-xs text-gray-400">Score: {{ (result.score * 100).toFixed(1) }}%</span>
               </div>
               <span class="text-xs text-gray-500">{{
                 result.metadata?.source || 'Unknown source'
@@ -319,11 +331,20 @@
               </p>
             </div>
 
-            <div v-if="result.metadata" class="text-xs text-gray-400">
-              <div v-if="result.metadata.page" class="mb-1">
+            <div
+              v-if="result.metadata"
+              class="text-xs text-gray-400"
+            >
+              <div
+                v-if="result.metadata.page"
+                class="mb-1"
+              >
                 Page: {{ result.metadata.page }}
               </div>
-              <div v-if="result.metadata.chunk_id" class="mb-1">
+              <div
+                v-if="result.metadata.chunk_id"
+                class="mb-1"
+              >
                 Chunk ID: {{ result.metadata.chunk_id }}
               </div>
             </div>
@@ -332,8 +353,13 @@
       </div>
 
       <!-- Query History -->
-      <div v-if="queryHistory.length > 0" class="mt-8">
-        <h3 class="text-xl font-semibold mb-4 text-blue-400">Recent Queries</h3>
+      <div
+        v-if="queryHistory.length > 0"
+        class="mt-8"
+      >
+        <h3 class="text-xl font-semibold mb-4 text-blue-400">
+          Recent Queries
+        </h3>
         <div class="space-y-3">
           <div
             v-for="(item, index) in queryHistory.slice(-5)"
@@ -353,8 +379,7 @@
                   <span
                     v-if="item.type === 'llm'"
                     class="text-xs bg-purple-600 text-white px-2 py-1 rounded"
-                    >AI</span
-                  >
+                  >AI</span>
                 </div>
                 <p class="text-sm text-gray-400 mt-1">
                   <span v-if="item.type === 'llm'">
@@ -374,7 +399,9 @@
 
       <!-- System Status -->
       <div class="mt-8 bg-gray-800 rounded-lg p-4 border border-gray-700">
-        <h3 class="text-lg font-semibold mb-2 text-blue-400">System Status</h3>
+        <h3 class="text-lg font-semibold mb-2 text-blue-400">
+          System Status
+        </h3>
         <div
           class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm"
         >
@@ -383,9 +410,7 @@
               :class="systemStatus.rag ? 'bg-green-500' : 'bg-red-500'"
               class="w-2 h-2 rounded-full"
             />
-            <span
-              >RAG Service: {{ systemStatus.rag ? 'Online' : 'Offline' }}</span
-            >
+            <span>RAG Service: {{ systemStatus.rag ? 'Online' : 'Offline' }}</span>
           </div>
           <div class="flex items-center space-x-2">
             <div class="w-2 h-2 rounded-full bg-blue-500" />
@@ -393,16 +418,12 @@
           </div>
           <div class="flex items-center space-x-2">
             <div class="w-2 h-2 rounded-full bg-purple-500" />
-            <span
-              >Vector Index:
-              {{ systemStatus.vectorstore ? 'Ready' : 'Not Ready' }}</span
-            >
+            <span>Vector Index:
+              {{ systemStatus.vectorstore ? 'Ready' : 'Not Ready' }}</span>
           </div>
           <div class="flex items-center space-x-2">
             <div class="w-2 h-2 rounded-full bg-yellow-500" />
-            <span
-              >LLM: {{ systemStatus.llm ? 'Available' : 'Not Available' }}</span
-            >
+            <span>LLM: {{ systemStatus.llm ? 'Available' : 'Not Available' }}</span>
           </div>
         </div>
       </div>

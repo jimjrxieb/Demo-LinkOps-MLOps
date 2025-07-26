@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: demo-frontend
-  namespace: demo
+  namespace: demo-linkops
   labels:
     app: demo-frontend
 spec:
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: demo-linkops-frontend:latest
+        image: localhost:5000/demo-linkops-frontend:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80

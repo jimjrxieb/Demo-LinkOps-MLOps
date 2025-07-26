@@ -1,8 +1,12 @@
 <template>
   <div class="whis-pipeline">
     <div class="pipeline-header">
-      <h2 class="pipeline-title">Whis Pipeline Flow</h2>
-      <p class="pipeline-subtitle">Data Processing & Enhancement Workflow</p>
+      <h2 class="pipeline-title">
+        Whis Pipeline Flow
+      </h2>
+      <p class="pipeline-subtitle">
+        Data Processing & Enhancement Workflow
+      </p>
     </div>
 
     <!-- Flowchart Container -->
@@ -12,11 +16,19 @@
         class="flowchart-step input-step"
         :class="{ active: currentStep === 0 }"
       >
-        <div class="step-icon">📥</div>
+        <div class="step-icon">
+          📥
+        </div>
         <div class="step-content">
-          <h3 class="step-title">1. Input Processing</h3>
-          <p class="step-description">Task input received and validated</p>
-          <div class="step-status active">Active</div>
+          <h3 class="step-title">
+            1. Input Processing
+          </h3>
+          <p class="step-description">
+            Task input received and validated
+          </p>
+          <div class="step-status active">
+            Active
+          </div>
         </div>
       </div>
 
@@ -28,10 +40,16 @@
         class="flowchart-step search-step"
         :class="{ active: currentStep === 1 }"
       >
-        <div class="step-icon">🔍</div>
+        <div class="step-icon">
+          🔍
+        </div>
         <div class="step-content">
-          <h3 class="step-title">2. Orb Library Search</h3>
-          <p class="step-description">Search existing solution patterns</p>
+          <h3 class="step-title">
+            2. Orb Library Search
+          </h3>
+          <p class="step-description">
+            Search existing solution patterns
+          </p>
           <div
             class="step-status"
             :class="currentStep >= 1 ? 'active' : 'pending'"
@@ -43,7 +61,10 @@
 
       <!-- Decision Diamond -->
       <div class="flow-arrow vertical" />
-      <div class="decision-diamond" :class="{ active: currentStep === 2 }">
+      <div
+        class="decision-diamond"
+        :class="{ active: currentStep === 2 }"
+      >
         <div class="diamond-content">
           <div class="diamond-text">
             <strong>Confidence ≥ 70%?</strong>
@@ -57,11 +78,19 @@
         <div class="flow-path left-path">
           <div class="flow-arrow horizontal-right" />
           <div class="flowchart-step solution-step high-confidence">
-            <div class="step-icon">✅</div>
+            <div class="step-icon">
+              ✅
+            </div>
             <div class="step-content">
-              <h3 class="step-title">Use Existing Orb</h3>
-              <p class="step-description">Execute matched solution</p>
-              <div class="confidence-badge high">High Confidence</div>
+              <h3 class="step-title">
+                Use Existing Orb
+              </h3>
+              <p class="step-description">
+                Execute matched solution
+              </p>
+              <div class="confidence-badge high">
+                High Confidence
+              </div>
             </div>
           </div>
         </div>
@@ -75,14 +104,20 @@
               class="flowchart-step sanitize-step"
               :class="{ active: currentStep === 3 }"
             >
-              <div class="step-icon">🧹</div>
+              <div class="step-icon">
+                🧹
+              </div>
               <div class="step-content">
-                <h3 class="step-title">3. Sanitization</h3>
+                <h3 class="step-title">
+                  3. Sanitization
+                </h3>
                 <p class="step-description">
                   TensorFlow USE embeddings generation
                 </p>
                 <div class="tensorflow-info">
-                  <div class="tf-badge">TensorFlow v2.15+</div>
+                  <div class="tf-badge">
+                    TensorFlow v2.15+
+                  </div>
                   <div class="embedding-details">
                     <span>• Universal Sentence Encoder</span>
                     <span>• 512-dimensional embeddings</span>
@@ -105,9 +140,13 @@
               class="flowchart-step smithing-step"
               :class="{ active: currentStep === 4 }"
             >
-              <div class="step-icon">⚒️</div>
+              <div class="step-icon">
+                ⚒️
+              </div>
               <div class="step-content">
-                <h3 class="step-title">4. Smithing</h3>
+                <h3 class="step-title">
+                  4. Smithing
+                </h3>
                 <p class="step-description">
                   AI processing and solution crafting
                 </p>
@@ -126,7 +165,10 @@
                     currentStep >= 4 ? 'Smithing Process Includes:' : 'Pending'
                   }}
                 </div>
-                <div v-if="currentStep >= 4" class="smithing-process">
+                <div
+                  v-if="currentStep >= 4"
+                  class="smithing-process"
+                >
                   <ul>
                     <li>Analyze the task requirements</li>
                     <li>Identify key components and dependencies</li>
@@ -145,10 +187,16 @@
               class="flowchart-step evaluation-step"
               :class="{ active: currentStep === 5 }"
             >
-              <div class="step-icon">📊</div>
+              <div class="step-icon">
+                📊
+              </div>
               <div class="step-content">
-                <h3 class="step-title">5. Evaluation</h3>
-                <p class="step-description">Quality assessment and scoring</p>
+                <h3 class="step-title">
+                  5. Evaluation
+                </h3>
+                <p class="step-description">
+                  Quality assessment and scoring
+                </p>
                 <div
                   class="step-status"
                   :class="currentStep >= 5 ? 'processing' : 'pending'"
@@ -159,7 +207,10 @@
             </div>
 
             <!-- Approval Decision -->
-            <div v-if="currentStep >= 5" class="approval-section">
+            <div
+              v-if="currentStep >= 5"
+              class="approval-section"
+            >
               <div class="flow-arrow vertical small" />
               <div class="approval-diamond">
                 <div class="diamond-content">
@@ -170,10 +221,16 @@
               </div>
 
               <div class="approval-buttons">
-                <button class="approve-btn" @click="approveSolution">
+                <button
+                  class="approve-btn"
+                  @click="approveSolution"
+                >
                   ✅ Approve & Save to Orb Library
                 </button>
-                <button class="reject-btn" @click="rejectSolution">
+                <button
+                  class="reject-btn"
+                  @click="rejectSolution"
+                >
                   ❌ Reject - Request API Key Input
                 </button>
               </div>

@@ -14,52 +14,64 @@
 
     <!-- Chat Settings Panel -->
     <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-      <h2 class="text-xl font-semibold mb-4 text-gray-700">🎛️ Chat Settings</h2>
+      <h2 class="text-xl font-semibold mb-4 text-gray-700">
+        🎛️ Chat Settings
+      </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <!-- Results Count -->
         <div>
-          <label class="block font-semibold mb-2 text-gray-700"
-            >📊 Results:</label
-          >
+          <label class="block font-semibold mb-2 text-gray-700">📊 Results:</label>
           <select
             v-model="chatSettings.top_k"
             class="border border-gray-300 px-4 py-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500"
           >
-            <option value="3">3 sources</option>
-            <option value="5">5 sources</option>
-            <option value="10">10 sources</option>
-            <option value="15">15 sources</option>
+            <option value="3">
+              3 sources
+            </option>
+            <option value="5">
+              5 sources
+            </option>
+            <option value="10">
+              10 sources
+            </option>
+            <option value="15">
+              15 sources
+            </option>
           </select>
         </div>
 
         <!-- Similarity Threshold -->
         <div>
-          <label class="block font-semibold mb-2 text-gray-700"
-            >🎯 Accuracy:</label
-          >
+          <label class="block font-semibold mb-2 text-gray-700">🎯 Accuracy:</label>
           <select
             v-model="chatSettings.similarity_threshold"
             class="border border-gray-300 px-4 py-2 rounded-lg w-full focus:ring-2 focus:ring-blue-500"
           >
-            <option value="0.3">Low (0.3)</option>
-            <option value="0.5">Medium (0.5)</option>
-            <option value="0.7">High (0.7)</option>
-            <option value="0.8">Very High (0.8)</option>
+            <option value="0.3">
+              Low (0.3)
+            </option>
+            <option value="0.5">
+              Medium (0.5)
+            </option>
+            <option value="0.7">
+              High (0.7)
+            </option>
+            <option value="0.8">
+              Very High (0.8)
+            </option>
           </select>
         </div>
 
         <!-- Include Metadata -->
         <div>
-          <label class="block font-semibold mb-2 text-gray-700"
-            >📋 Metadata:</label
-          >
+          <label class="block font-semibold mb-2 text-gray-700">📋 Metadata:</label>
           <div class="flex items-center mt-3">
             <input
               v-model="chatSettings.include_metadata"
               type="checkbox"
               class="mr-2 rounded"
-            />
+            >
             <span class="text-gray-700">Include document details</span>
           </div>
         </div>
@@ -81,8 +93,12 @@
               <div class="flex items-center gap-3">
                 <span class="text-2xl">🤖</span>
                 <div>
-                  <h3 class="font-semibold">AI Assistant</h3>
-                  <p class="text-sm opacity-90">Powered by RAG + LLM</p>
+                  <h3 class="font-semibold">
+                    AI Assistant
+                  </h3>
+                  <p class="text-sm opacity-90">
+                    Powered by RAG + LLM
+                  </p>
                 </div>
               </div>
               <div class="flex gap-2">
@@ -109,8 +125,13 @@
             class="flex-1 overflow-y-auto p-4 space-y-4"
           >
             <!-- Welcome Message -->
-            <div v-if="messages.length === 0" class="text-center py-8">
-              <div class="text-6xl mb-4">🤖</div>
+            <div
+              v-if="messages.length === 0"
+              class="text-center py-8"
+            >
+              <div class="text-6xl mb-4">
+                🤖
+              </div>
               <h3 class="text-xl font-semibold text-gray-700 mb-2">
                 Welcome to AI Box Chat!
               </h3>
@@ -139,7 +160,10 @@
               :class="message.type === 'user' ? 'justify-end' : 'justify-start'"
             >
               <!-- User Message -->
-              <div v-if="message.type === 'user'" class="max-w-[80%]">
+              <div
+                v-if="message.type === 'user'"
+                class="max-w-[80%]"
+              >
                 <div
                   class="bg-blue-600 text-white px-4 py-2 rounded-lg rounded-br-sm"
                 >
@@ -153,7 +177,10 @@
               </div>
 
               <!-- AI Message -->
-              <div v-else class="max-w-[85%]">
+              <div
+                v-else
+                class="max-w-[85%]"
+              >
                 <div class="flex items-start gap-3">
                   <div
                     class="bg-gradient-to-br from-purple-500 to-blue-500 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold"
@@ -167,7 +194,9 @@
                         v-if="message.loading"
                         class="flex items-center gap-2"
                       >
-                        <div class="animate-spin text-blue-600">⏳</div>
+                        <div class="animate-spin text-blue-600">
+                          ⏳
+                        </div>
                         <span class="text-gray-600">AI is thinking...</span>
                       </div>
                       <div v-else>
@@ -198,8 +227,7 @@
                                 <div class="flex items-center gap-2">
                                   <span
                                     class="text-sm font-medium text-blue-600"
-                                    >Source {{ index + 1 }}</span
-                                  >
+                                  >Source {{ index + 1 }}</span>
                                   <span
                                     class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
                                   >
@@ -227,7 +255,7 @@
                                 📄
                                 {{
                                   source.metadata.source_file ||
-                                  source.document_id
+                                    source.document_id
                                 }}
                               </div>
                             </div>
@@ -242,22 +270,16 @@
                           <div
                             class="flex items-center gap-4 text-xs text-gray-500"
                           >
-                            <span
-                              >⏱️
+                            <span>⏱️
                               {{
                                 message.queryInfo.execution_time?.toFixed(3)
-                              }}s</span
-                            >
-                            <span
-                              >🧠
+                              }}s</span>
+                            <span>🧠
                               {{
                                 message.queryInfo.llm_used || 'AI Model'
-                              }}</span
-                            >
-                            <span
-                              >📊 {{ message.queryInfo.total_sources }} sources
-                              found</span
-                            >
+                              }}</span>
+                            <span>📊 {{ message.queryInfo.total_sources }} sources
+                              found</span>
                           </div>
                         </div>
 
@@ -279,9 +301,9 @@
                           class="mt-4 space-y-2"
                         >
                           <button
-                            @click="confirmAndSendEmails"
                             :disabled="emailLoading"
                             class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
+                            @click="confirmAndSendEmails"
                           >
                             {{
                               emailLoading
@@ -289,7 +311,10 @@
                                 : '📧 Send Reminder Emails'
                             }}
                           </button>
-                          <div v-if="emailResult" class="text-green-600">
+                          <div
+                            v-if="emailResult"
+                            class="text-green-600"
+                          >
                             {{ emailResult }}
                           </div>
                         </div>
@@ -323,7 +348,10 @@
                   class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2"
                   @click="sendMessage()"
                 >
-                  <span v-if="isLoading" class="animate-spin">⏳</span>
+                  <span
+                    v-if="isLoading"
+                    class="animate-spin"
+                  >⏳</span>
                   <span v-else>🚀</span>
                   {{ isLoading ? 'Asking...' : 'Send' }}
                 </button>
@@ -356,7 +384,10 @@
           >
             No recent questions yet
           </div>
-          <div v-else class="space-y-2">
+          <div
+            v-else
+            class="space-y-2"
+          >
             <button
               v-for="question in recentQuestions.slice(0, 5)"
               :key="question.id"
@@ -390,9 +421,7 @@
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">Avg Response Time:</span>
-              <span class="font-semibold text-green-600"
-                >{{ chatStats.avgResponseTime }}s</span
-              >
+              <span class="font-semibold text-green-600">{{ chatStats.avgResponseTime }}s</span>
             </div>
             <div class="flex justify-between">
               <span class="text-gray-600">Sources Found:</span>
@@ -475,7 +504,9 @@
           <!-- Source Info -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
             <div class="bg-gray-50 p-4 rounded-lg">
-              <h4 class="font-semibold mb-2">📊 Source Info</h4>
+              <h4 class="font-semibold mb-2">
+                📊 Source Info
+              </h4>
               <div class="space-y-2 text-sm">
                 <div>
                   <strong>Document ID:</strong> {{ selectedSource.document_id }}
@@ -498,9 +529,14 @@
               v-if="selectedSource.metadata"
               class="bg-gray-50 p-4 rounded-lg"
             >
-              <h4 class="font-semibold mb-2">📋 Metadata</h4>
+              <h4 class="font-semibold mb-2">
+                📋 Metadata
+              </h4>
               <div class="space-y-2 text-sm">
-                <div v-for="(value, key) in selectedSource.metadata" :key="key">
+                <div
+                  v-for="(value, key) in selectedSource.metadata"
+                  :key="key"
+                >
                   <strong>{{ key }}:</strong> {{ value }}
                 </div>
               </div>
@@ -509,7 +545,9 @@
 
           <!-- Full Content -->
           <div class="mb-6">
-            <h4 class="font-semibold mb-2">📄 Full Content</h4>
+            <h4 class="font-semibold mb-2">
+              📄 Full Content
+            </h4>
             <div class="bg-gray-50 p-4 rounded-lg max-h-96 overflow-y-auto">
               <pre class="whitespace-pre-wrap text-sm text-gray-800">{{
                 selectedSource.content

@@ -4,7 +4,9 @@
     <div class="header-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🧠 Whis Learning Pipeline</h2>
+          <h2 class="card-title">
+            🧠 Whis Learning Pipeline
+          </h2>
           <p class="card-subtitle">
             Train and improve AI models using tasks that need additional
             learning
@@ -16,19 +18,25 @@
               <div class="stat-value">
                 {{ pendingTasks.length }}
               </div>
-              <div class="stat-label">Pending Training</div>
+              <div class="stat-label">
+                Pending Training
+              </div>
             </div>
             <div class="stat-item">
               <div class="stat-value">
                 {{ completedTraining.length }}
               </div>
-              <div class="stat-label">Completed</div>
+              <div class="stat-label">
+                Completed
+              </div>
             </div>
             <div class="stat-item">
               <div class="stat-value">
                 {{ isTraining ? 'Active' : 'Idle' }}
               </div>
-              <div class="stat-label">Status</div>
+              <div class="stat-label">
+                Status
+              </div>
             </div>
           </div>
         </div>
@@ -36,10 +44,15 @@
     </div>
 
     <!-- Pending Training Tasks -->
-    <div v-if="pendingTasks.length > 0" class="training-queue-section">
+    <div
+      v-if="pendingTasks.length > 0"
+      class="training-queue-section"
+    >
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">📋 Training Queue</h3>
+          <h3 class="card-title">
+            📋 Training Queue
+          </h3>
           <p class="card-subtitle">
             Tasks with confidence ≤ 70% requiring additional training
           </p>
@@ -59,9 +72,7 @@
                     {{ task.originalInput }}
                   </h4>
                   <div class="task-meta">
-                    <span class="confidence-score"
-                      >{{ task.confidence }}% confidence</span
-                    >
+                    <span class="confidence-score">{{ task.confidence }}% confidence</span>
                     <span class="task-time">{{
                       formatTime(task.timestamp)
                     }}</span>
@@ -149,11 +160,20 @@
                 </p>
 
                 <!-- Step Details -->
-                <div v-if="index === currentTrainingStep" class="step-details">
-                  <div v-if="step.tools" class="tools-section">
+                <div
+                  v-if="index === currentTrainingStep"
+                  class="step-details"
+                >
+                  <div
+                    v-if="step.tools"
+                    class="tools-section"
+                  >
                     <h5>🔧 Tools & Models Used:</h5>
                     <ul class="tools-list">
-                      <li v-for="tool in step.tools" :key="tool">
+                      <li
+                        v-for="tool in step.tools"
+                        :key="tool"
+                      >
                         {{ tool }}
                       </li>
                     </ul>
@@ -180,7 +200,10 @@
           </div>
 
           <!-- Generated Orb Preview -->
-          <div v-if="generatedOrb" class="generated-orb-section">
+          <div
+            v-if="generatedOrb"
+            class="generated-orb-section"
+          >
             <h4>🔮 Generated Orb Preview</h4>
             <div class="orb-preview">
               <div class="orb-header">
@@ -200,7 +223,10 @@
                 </div>
 
                 <!-- Rune: Executable Script -->
-                <div v-if="generatedOrb.rune" class="rune-script">
+                <div
+                  v-if="generatedOrb.rune"
+                  class="rune-script"
+                >
                   <h6>🔮 Rune: Executable Automation Script</h6>
                   <div class="script-content">
                     <pre><code>{{ generatedOrb.rune }}</code></pre>
@@ -238,10 +264,16 @@
             <div class="approval-section">
               <h4>🎯 Training Complete - Review & Approve</h4>
               <div class="approval-buttons">
-                <button class="btn btn-success approve-btn" @click="approveOrb">
+                <button
+                  class="btn btn-success approve-btn"
+                  @click="approveOrb"
+                >
                   ✅ Approve & Create Rune
                 </button>
-                <button class="btn btn-danger reject-btn" @click="rejectOrb">
+                <button
+                  class="btn btn-danger reject-btn"
+                  @click="rejectOrb"
+                >
                   ❌ Reject - Use OpenAI Fallback
                 </button>
               </div>
@@ -259,13 +291,18 @@
       <div class="card">
         <div class="card-body">
           <div class="no-tasks-content">
-            <div class="no-tasks-icon">🎯</div>
+            <div class="no-tasks-icon">
+              🎯
+            </div>
             <h3>No Training Tasks</h3>
             <p>
               Submit tasks with low confidence from the main Demo page to start
               training new orbs.
             </p>
-            <button class="btn btn-secondary" @click="goToDemo">
+            <button
+              class="btn btn-secondary"
+              @click="goToDemo"
+            >
               🚀 Go to Demo Page
             </button>
           </div>
@@ -274,10 +311,15 @@
     </div>
 
     <!-- Completed Training History -->
-    <div v-if="completedTraining.length > 0" class="history-section">
+    <div
+      v-if="completedTraining.length > 0"
+      class="history-section"
+    >
       <div class="card">
         <div class="card-header">
-          <h3 class="card-title">📚 Training History</h3>
+          <h3 class="card-title">
+            📚 Training History
+          </h3>
         </div>
         <div class="card-body">
           <div class="history-list">

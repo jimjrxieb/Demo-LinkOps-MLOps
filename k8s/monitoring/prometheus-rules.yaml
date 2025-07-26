@@ -1,0 +1,78 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: demo-linkops-alerts
+  namespace: demo-linkops
+  labels:
+    release: prometheus
+spec:
+  groups:
+  - name: demo-linkops.rules
+    rules:
+    - alert: HighErrorRate
+      expr: |
+        sum(rate(http_requests_total{status=~"5..",namespace="demo-linkops"}[5m])) 
+        / 
+        sum(rate(http_requests_total{namespace="demo-linkops"}[5m])) > 0.1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: High HTTP error rate
+        description: Error rate is above 10% for the last 5 minutes
+
+    - alert: SlowResponseTime
+      expr: |
+        histogram_quantile(0.95, 
+          sum(rate(http_request_duration_seconds_bucket{namespace="demo-linkops"}[5m])) by (le)
+        ) > 2
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: Slow response times
+        description: 95th percentile of response times is above 2 seconds
+
+    - alert: HighMemoryUsage
+      expr: |
+        container_memory_usage_bytes{namespace="demo-linkops"} 
+        / 
+        container_spec_memory_limit_bytes{namespace="demo-linkops"} > 0.85
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: High memory usage
+        description: Container memory usage is above 85% of limit
+
+    - alert: HighCPUUsage
+      expr: |
+        rate(container_cpu_usage_seconds_total{namespace="demo-linkops"}[5m])
+        /
+        container_spec_cpu_quota{namespace="demo-linkops"} > 0.85
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: High CPU usage
+        description: Container CPU usage is above 85% of limit
+
+    - alert: PodRestartingFrequently
+      expr: |
+        increase(kube_pod_container_status_restarts_total{namespace="demo-linkops"}[1h]) > 3
+      for: 10m
+      labels:
+        severity: warning
+      annotations:
+        summary: Pod restarting frequently
+        description: Pod has restarted more than 3 times in the last hour
+
+    - alert: ServiceEndpointDown
+      expr: |
+        up{namespace="demo-linkops"} == 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: Service endpoint down
+        description: Service endpoint has been down for more than 5 minutes 

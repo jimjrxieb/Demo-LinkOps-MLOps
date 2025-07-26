@@ -28,7 +28,9 @@
     <!-- 1. Task Input -->
     <div class="card">
       <div class="card-header">
-        <h2 class="card-title">🎯 Submit a Kubernetes/CD Task or Error</h2>
+        <h2 class="card-title">
+          🎯 Submit a Kubernetes/CD Task or Error
+        </h2>
         <p class="card-subtitle">
           Enter a Kubernetes task, goal, or error you've encountered — and see
           how LinkOps processes it through the AI/ML pipeline.
@@ -51,12 +53,21 @@
             class="btn btn-primary"
             @click="submitTask"
           >
-            <span v-if="loading" class="btn-icon">⏳</span>
-            <span v-else class="btn-icon">🚀</span>
+            <span
+              v-if="loading"
+              class="btn-icon"
+            >⏳</span>
+            <span
+              v-else
+              class="btn-icon"
+            >🚀</span>
             {{ loading ? 'Processing...' : 'Submit Task' }}
           </button>
 
-          <button class="btn btn-secondary" @click="clearResults">
+          <button
+            class="btn btn-secondary"
+            @click="clearResults"
+          >
             <span class="btn-icon">🗑️</span>
             Clear
           </button>
@@ -65,12 +76,21 @@
     </div>
 
     <!-- 2. Orb Match Section -->
-    <div v-if="taskInput && !loading && matchingOrb" class="results-section">
-      <OrbResultCard :orb="matchingOrb" :confidence="confidenceScore" />
+    <div
+      v-if="taskInput && !loading && matchingOrb"
+      class="results-section"
+    >
+      <OrbResultCard
+        :orb="matchingOrb"
+        :confidence="confidenceScore"
+      />
     </div>
 
     <!-- 3. Whis Pipeline Side Panel -->
-    <div v-if="taskInput && !loading" class="pipeline-section">
+    <div
+      v-if="taskInput && !loading"
+      class="pipeline-section"
+    >
       <WhisPipeline
         :pipeline-data="pipelineData"
         :current-step="currentStep"
@@ -81,13 +101,18 @@
 
     <!-- 4. Full Orb Library Always Visible -->
     <div class="library-section">
-      <OrbLibrary :orbs="orbLibrary" @retrain="retrainModel" />
+      <OrbLibrary
+        :orbs="orbLibrary"
+        @retrain="retrainModel"
+      />
     </div>
 
     <!-- 5. Demo Information -->
     <div class="card demo-info-card">
       <div class="card-header">
-        <h2 class="card-title">ℹ️ About This Demo</h2>
+        <h2 class="card-title">
+          ℹ️ About This Demo
+        </h2>
       </div>
       <div class="card-body">
         <div class="info-grid">

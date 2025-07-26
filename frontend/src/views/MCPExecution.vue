@@ -19,23 +19,38 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label for="tool" class="block font-semibold mb-2 text-gray-700"
-            >Select Tool:</label
-          >
+          <label
+            for="tool"
+            class="block font-semibold mb-2 text-gray-700"
+          >Select Tool:</label>
           <select
             v-model="selectedTool"
             class="border border-gray-300 px-4 py-3 rounded-lg w-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             :disabled="loading"
           >
-            <option disabled value="">-- Select a Tool --</option>
-            <option v-for="tool in tools" :key="tool.name" :value="tool.name">
+            <option
+              disabled
+              value=""
+            >
+              -- Select a Tool --
+            </option>
+            <option
+              v-for="tool in tools"
+              :key="tool.name"
+              :value="tool.name"
+            >
               {{ tool.name }} - {{ tool.description || 'No description' }}
             </option>
           </select>
         </div>
 
-        <div v-if="selectedToolInfo" class="bg-blue-50 p-4 rounded-lg">
-          <h3 class="font-semibold text-blue-800 mb-2">Tool Details:</h3>
+        <div
+          v-if="selectedToolInfo"
+          class="bg-blue-50 p-4 rounded-lg"
+        >
+          <h3 class="font-semibold text-blue-800 mb-2">
+            Tool Details:
+          </h3>
           <div class="text-sm text-blue-700">
             <p><strong>Type:</strong> {{ selectedToolInfo.task_type }}</p>
             <p>
@@ -56,7 +71,10 @@
           class="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-8 py-3 rounded-lg font-semibold transition-colors duration-200 flex items-center gap-2"
           @click="runTool"
         >
-          <span v-if="loading" class="animate-spin">⏳</span>
+          <span
+            v-if="loading"
+            class="animate-spin"
+          >⏳</span>
           <span v-else>🚀</span>
           {{ loading ? 'Running...' : 'Run Tool' }}
         </button>
@@ -64,7 +82,10 @@
     </div>
 
     <!-- Execution Results -->
-    <div v-if="result" class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <div
+      v-if="result"
+      class="bg-white rounded-lg shadow-md p-6 mb-6"
+    >
       <h2 class="text-xl font-semibold mb-4 text-gray-700">
         📊 Execution Results
       </h2>
@@ -104,13 +125,17 @@
       <!-- Execution Details -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
         <div class="bg-gray-50 p-3 rounded">
-          <div class="text-sm text-gray-600">Command</div>
+          <div class="text-sm text-gray-600">
+            Command
+          </div>
           <div class="font-mono text-sm break-all">
             {{ result.command }}
           </div>
         </div>
         <div class="bg-gray-50 p-3 rounded">
-          <div class="text-sm text-gray-600">Return Code</div>
+          <div class="text-sm text-gray-600">
+            Return Code
+          </div>
           <div
             class="font-semibold"
             :class="result.returncode === 0 ? 'text-green-600' : 'text-red-600'"
@@ -119,7 +144,9 @@
           </div>
         </div>
         <div class="bg-gray-50 p-3 rounded">
-          <div class="text-sm text-gray-600">Execution Time</div>
+          <div class="text-sm text-gray-600">
+            Execution Time
+          </div>
           <div class="font-semibold">
             {{ result.execution_time?.toFixed(2) || 'N/A' }}s
           </div>
@@ -127,8 +154,13 @@
       </div>
 
       <!-- Output Section -->
-      <div v-if="result.stdout" class="mb-4">
-        <h4 class="font-semibold mb-2 text-gray-700">📤 Standard Output:</h4>
+      <div
+        v-if="result.stdout"
+        class="mb-4"
+      >
+        <h4 class="font-semibold mb-2 text-gray-700">
+          📤 Standard Output:
+        </h4>
         <div
           class="bg-gray-900 text-green-300 p-4 rounded-lg font-mono text-sm whitespace-pre-wrap max-h-96 overflow-y-auto"
         >
@@ -137,8 +169,13 @@
       </div>
 
       <!-- Error Section -->
-      <div v-if="result.stderr || result.error_message" class="mb-4">
-        <h4 class="font-semibold mb-2 text-gray-700">⚠️ Error Output:</h4>
+      <div
+        v-if="result.stderr || result.error_message"
+        class="mb-4"
+      >
+        <h4 class="font-semibold mb-2 text-gray-700">
+          ⚠️ Error Output:
+        </h4>
         <div
           class="bg-red-900 text-red-200 p-4 rounded-lg font-mono text-sm whitespace-pre-wrap max-h-96 overflow-y-auto"
         >
@@ -217,9 +254,13 @@
       class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
       <div class="bg-white rounded-lg p-6 flex items-center gap-4">
-        <div class="animate-spin text-2xl">⏳</div>
+        <div class="animate-spin text-2xl">
+          ⏳
+        </div>
         <div>
-          <div class="font-semibold">Executing Tool...</div>
+          <div class="font-semibold">
+            Executing Tool...
+          </div>
           <div class="text-sm text-gray-600">
             {{ selectedTool }}
           </div>

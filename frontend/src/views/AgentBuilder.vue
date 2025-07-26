@@ -2,7 +2,9 @@
   <div class="p-6 max-w-6xl mx-auto">
     <!-- Header -->
     <div class="mb-8">
-      <h1 class="text-3xl font-bold text-primary mb-2">🤖 Agent Builder</h1>
+      <h1 class="text-3xl font-bold text-primary mb-2">
+        🤖 Agent Builder
+      </h1>
       <p class="text-gray-600">
         Create AI agents and tools from natural language - fully offline,
         powered by local LLM
@@ -16,7 +18,9 @@
         <!-- Task Input -->
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body">
-            <h2 class="card-title text-xl mb-4">📝 Describe Your Task</h2>
+            <h2 class="card-title text-xl mb-4">
+              📝 Describe Your Task
+            </h2>
 
             <div class="form-control">
               <label class="label">
@@ -34,14 +38,31 @@
               <label class="label">
                 <span class="label-text">Category (Optional)</span>
               </label>
-              <select v-model="selectedCategory" class="select select-bordered">
-                <option value="">Auto-detect</option>
-                <option value="kubernetes">Kubernetes</option>
-                <option value="docker">Docker</option>
-                <option value="bash">Bash Script</option>
-                <option value="python">Python Script</option>
-                <option value="terraform">Terraform</option>
-                <option value="general">General</option>
+              <select
+                v-model="selectedCategory"
+                class="select select-bordered"
+              >
+                <option value="">
+                  Auto-detect
+                </option>
+                <option value="kubernetes">
+                  Kubernetes
+                </option>
+                <option value="docker">
+                  Docker
+                </option>
+                <option value="bash">
+                  Bash Script
+                </option>
+                <option value="python">
+                  Python Script
+                </option>
+                <option value="terraform">
+                  Terraform
+                </option>
+                <option value="general">
+                  General
+                </option>
               </select>
             </div>
 
@@ -62,19 +83,28 @@
         </div>
 
         <!-- Generated Tool Preview -->
-        <div v-if="generatedTool" class="card bg-base-100 shadow-xl">
+        <div
+          v-if="generatedTool"
+          class="card bg-base-100 shadow-xl"
+        >
           <div class="card-body">
-            <h2 class="card-title text-xl mb-4">🛠️ Generated Tool</h2>
+            <h2 class="card-title text-xl mb-4">
+              🛠️ Generated Tool
+            </h2>
 
             <div class="stats stats-vertical lg:stats-horizontal shadow mb-4">
               <div class="stat">
-                <div class="stat-title">Category</div>
+                <div class="stat-title">
+                  Category
+                </div>
                 <div class="stat-value text-primary text-lg">
                   {{ generatedTool.category }}
                 </div>
               </div>
               <div class="stat">
-                <div class="stat-title">Complexity</div>
+                <div class="stat-title">
+                  Complexity
+                </div>
                 <div class="stat-value text-secondary">
                   {{ generatedTool.estimated_complexity }}
                 </div>
@@ -95,7 +125,9 @@
 
             <!-- Usage Suggestions -->
             <div class="mt-4">
-              <h3 class="font-semibold mb-2">💡 Usage Suggestions</h3>
+              <h3 class="font-semibold mb-2">
+                💡 Usage Suggestions
+              </h3>
               <div class="space-y-2">
                 <div
                   v-for="suggestion in generatedTool.suggested_usage"
@@ -108,10 +140,16 @@
             </div>
 
             <div class="card-actions justify-end mt-4">
-              <button class="btn btn-success" @click="saveTool">
+              <button
+                class="btn btn-success"
+                @click="saveTool"
+              >
                 💾 Save Tool
               </button>
-              <button class="btn btn-outline" @click="copyToClipboard">
+              <button
+                class="btn btn-outline"
+                @click="copyToClipboard"
+              >
                 📋 Copy Code
               </button>
             </div>
@@ -124,7 +162,9 @@
         <!-- Tool Categories -->
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body">
-            <h2 class="card-title text-xl mb-4">📂 Tool Categories</h2>
+            <h2 class="card-title text-xl mb-4">
+              📂 Tool Categories
+            </h2>
 
             <div class="grid grid-cols-2 gap-4">
               <div
@@ -152,19 +192,22 @@
         <!-- Tool Library -->
         <div class="card bg-base-100 shadow-xl">
           <div class="card-body">
-            <h2 class="card-title text-xl mb-4">🗂️ Tool Library</h2>
+            <h2 class="card-title text-xl mb-4">
+              🗂️ Tool Library
+            </h2>
 
             <div class="flex justify-between items-center mb-4">
-              <button class="btn btn-outline" @click="loadTools">
+              <button
+                class="btn btn-outline"
+                @click="loadTools"
+              >
                 <span
                   v-if="loadingTools"
                   class="loading loading-spinner loading-sm"
                 />
                 {{ loadingTools ? 'Loading...' : 'Refresh Tools' }}
               </button>
-              <span class="text-sm text-gray-500"
-                >{{ tools.length }} generated tools</span
-              >
+              <span class="text-sm text-gray-500">{{ tools.length }} generated tools</span>
             </div>
 
             <div
@@ -206,8 +249,13 @@
               </div>
             </div>
 
-            <div v-else class="text-center py-8 text-gray-500">
-              <div class="text-4xl mb-4">🛠️</div>
+            <div
+              v-else
+              class="text-center py-8 text-gray-500"
+            >
+              <div class="text-4xl mb-4">
+                🛠️
+              </div>
               <p>
                 No tools generated yet. Describe a task to create your first
                 tool!
@@ -219,26 +267,40 @@
     </div>
 
     <!-- Tool Viewer Modal -->
-    <div v-if="showToolModal" class="modal modal-open">
+    <div
+      v-if="showToolModal"
+      class="modal modal-open"
+    >
       <div class="modal-box max-w-4xl">
-        <h3 class="font-bold text-lg mb-4">🔍 Tool Details</h3>
+        <h3 class="font-bold text-lg mb-4">
+          🔍 Tool Details
+        </h3>
 
-        <div v-if="selectedTool" class="mb-4">
+        <div
+          v-if="selectedTool"
+          class="mb-4"
+        >
           <div class="stats stats-horizontal shadow">
             <div class="stat">
-              <div class="stat-title">Tool ID</div>
+              <div class="stat-title">
+                Tool ID
+              </div>
               <div class="stat-value text-primary text-lg">
                 {{ selectedTool.tool_id }}
               </div>
             </div>
             <div class="stat">
-              <div class="stat-title">Category</div>
+              <div class="stat-title">
+                Category
+              </div>
               <div class="stat-value text-secondary">
                 {{ selectedTool.category }}
               </div>
             </div>
             <div class="stat">
-              <div class="stat-title">Complexity</div>
+              <div class="stat-title">
+                Complexity
+              </div>
               <div class="stat-value">
                 {{ selectedTool.complexity }}
               </div>
@@ -246,24 +308,40 @@
           </div>
         </div>
 
-        <div v-if="selectedTool" class="mb-4">
-          <h4 class="font-semibold mb-2">Code Content</h4>
+        <div
+          v-if="selectedTool"
+          class="mb-4"
+        >
+          <h4 class="font-semibold mb-2">
+            Code Content
+          </h4>
           <div class="mockup-code bg-base-300 max-h-96 overflow-y-auto">
             <pre data-prefix="$"><code>{{ selectedTool.content }}</code></pre>
           </div>
         </div>
 
         <div class="modal-action">
-          <button class="btn btn-outline" @click="copySelectedTool">
+          <button
+            class="btn btn-outline"
+            @click="copySelectedTool"
+          >
             Copy Code
           </button>
-          <button class="btn" @click="closeToolModal">Close</button>
+          <button
+            class="btn"
+            @click="closeToolModal"
+          >
+            Close
+          </button>
         </div>
       </div>
     </div>
 
     <!-- Success Toast -->
-    <div v-if="showToast" class="toast toast-top toast-end">
+    <div
+      v-if="showToast"
+      class="toast toast-top toast-end"
+    >
       <div class="alert alert-success">
         <span>{{ toastMessage }}</span>
       </div>

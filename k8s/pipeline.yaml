@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pipeline
-        image: linksrobot/demo-linkops-pipeline:latest
+        image: localhost:5000/demo-linkops-pipeline:latest
         ports:
         - containerPort: 8003
         envFrom:

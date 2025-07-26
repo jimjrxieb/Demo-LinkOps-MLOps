@@ -27,12 +27,14 @@ from routers import (
     demo_sync,
     executor,
     htc,
+    jade_assistant,
     mcp_tool,
     ml_builder,
     ml_models,
     model_creator,
     pipeline,
     rag,
+    sync_engine,
     train_model,
 )
 
@@ -97,6 +99,9 @@ app.include_router(demo_sync.router, tags=["Demo Sync"])
 app.include_router(ml_models.router, tags=["Enhanced ML Models"])
 
 app.include_router(auth.router, prefix="/auth", tags=["auth"])
+
+app.include_router(sync_engine.router, tags=["Sync Engine"])
+app.include_router(jade_assistant.router, tags=["Jade Assistant"])
 
 
 # Example of protecting a full-access endpoint

@@ -2,9 +2,14 @@
   <div class="sync-toggle">
     <div class="toggle-container">
       <div class="toggle-header">
-        <h3 class="toggle-title">🔄 Auto-Sync</h3>
-        <div class="status-indicator" :class="statusClass">
-          <span class="status-dot"></span>
+        <h3 class="toggle-title">
+          🔄 Auto-Sync
+        </h3>
+        <div
+          class="status-indicator"
+          :class="statusClass"
+        >
+          <span class="status-dot" />
           <span class="status-text">{{ statusText }}</span>
         </div>
       </div>
@@ -12,13 +17,13 @@
       <div class="toggle-controls">
         <label class="toggle-switch">
           <input
-            type="checkbox"
             v-model="enabled"
-            @change="toggleSync"
+            type="checkbox"
             :disabled="loading"
             class="toggle-input"
-          />
-          <span class="toggle-slider"></span>
+            @change="toggleSync"
+          >
+          <span class="toggle-slider" />
         </label>
 
         <div class="toggle-labels">
@@ -35,7 +40,10 @@
         </div>
       </div>
 
-      <div v-if="enabled" class="sync-info">
+      <div
+        v-if="enabled"
+        class="sync-info"
+      >
         <div class="info-grid">
           <div class="info-item">
             <span class="info-label">📁 Watch Directory:</span>
@@ -58,7 +66,10 @@
         </div>
       </div>
 
-      <div v-if="error" class="error-message">
+      <div
+        v-if="error"
+        class="error-message"
+      >
         <span class="error-icon">⚠️</span>
         <span class="error-text">{{ error }}</span>
       </div>

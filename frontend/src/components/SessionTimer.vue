@@ -1,22 +1,39 @@
 <template>
   <div>
     <!-- Header Timer -->
-    <div v-if="store.isAuthenticated" class="session-timer">
+    <div
+      v-if="store.isAuthenticated"
+      class="session-timer"
+    >
       Session: {{ formatTime(store.sessionTimeLeft) }}
     </div>
 
     <!-- Warning Banner -->
-    <div v-if="store.showSessionWarning" class="session-warning">
+    <div
+      v-if="store.showSessionWarning"
+      class="session-warning"
+    >
       <div class="warning-content">
-        <div class="warning-icon">⚠️</div>
+        <div class="warning-icon">
+          ⚠️
+        </div>
         <div class="warning-text">
           <h3>Session Expiring Soon</h3>
-          <p>Your session will expire in {{ formatTime(store.sessionTimeLeft) }}</p>
+          <p>
+            Your session will expire in {{ formatTime(store.sessionTimeLeft) }}
+          </p>
         </div>
-        <button @click="refreshSession" class="refresh-button" :disabled="refreshing">
+        <button
+          class="refresh-button"
+          :disabled="refreshing"
+          @click="refreshSession"
+        >
           {{ refreshing ? 'Extending...' : 'Extend Session' }}
         </button>
-        <button @click="dismissWarning" class="dismiss-button">
+        <button
+          class="dismiss-button"
+          @click="dismissWarning"
+        >
           Dismiss
         </button>
       </div>
@@ -25,31 +42,33 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useMainStore } from '@/store/useMainStore'
+import { ref } from 'vue';
+import { useMainStore } from '@/store/useMainStore';
 
-const store = useMainStore()
-const refreshing = ref(false)
+const store = useMainStore();
+const refreshing = ref(false);
 
 const formatTime = (seconds) => {
-  if (!seconds || seconds <= 0) return '00:00'
-  const mins = Math.floor(seconds / 60)
-  const secs = seconds % 60
-  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`
-}
+  if (!seconds || seconds <= 0) return '00:00';
+  const mins = Math.floor(seconds / 60);
+  const secs = seconds % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs
+    .toString()
+    .padStart(2, '0')}`;
+};
 
 const refreshSession = async () => {
-  refreshing.value = true
+  refreshing.value = true;
   try {
-    await store.refreshSession()
+    await store.refreshSession();
   } finally {
-    refreshing.value = false
+    refreshing.value = false;
   }
-}
+};
 
 const dismissWarning = () => {
-  store.showSessionWarning = false
-}
+  store.showSessionWarning = false;
+};
 </script>
 
 <style scoped>
@@ -153,4 +172,4 @@ const dismissWarning = () => {
   background: #f8f9fa;
   border-color: #c8c8c8;
 }
-</style> 
+</style>

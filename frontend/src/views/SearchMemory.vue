@@ -5,7 +5,9 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center py-6">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">Document Q&A</h1>
+            <h1 class="text-3xl font-bold text-gray-900">
+              Document Q&A
+            </h1>
             <p class="mt-1 text-sm text-gray-500">
               Ask questions about your uploaded documents using local AI
             </p>
@@ -69,7 +71,7 @@
                   class="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                   :disabled="loading"
                   @keyup.enter="submitQuery"
-                />
+                >
                 <button
                   :disabled="!query.trim() || loading"
                   class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -108,7 +110,10 @@
             class="bg-white rounded-lg shadow-sm border"
           >
             <div class="p-6">
-              <div v-if="loading" class="space-y-4">
+              <div
+                v-if="loading"
+                class="space-y-4"
+              >
                 <div class="flex items-center space-x-2">
                   <div class="w-2 h-2 bg-blue-600 rounded-full animate-pulse" />
                   <div
@@ -119,9 +124,7 @@
                     class="w-2 h-2 bg-blue-600 rounded-full animate-pulse"
                     style="animation-delay: 0.4s"
                   />
-                  <span class="text-sm text-gray-500 ml-2"
-                    >Searching documents...</span
-                  >
+                  <span class="text-sm text-gray-500 ml-2">Searching documents...</span>
                 </div>
                 <div class="space-y-2">
                   <div class="h-4 bg-gray-200 rounded animate-pulse" />
@@ -130,9 +133,14 @@
                 </div>
               </div>
 
-              <div v-else-if="answer" class="space-y-4">
+              <div
+                v-else-if="answer"
+                class="space-y-4"
+              >
                 <div class="flex items-center justify-between">
-                  <h3 class="text-lg font-semibold text-gray-900">Answer</h3>
+                  <h3 class="text-lg font-semibold text-gray-900">
+                    Answer
+                  </h3>
                   <div
                     class="flex items-center space-x-2 text-sm text-gray-500"
                   >
@@ -175,13 +183,9 @@
                           <div
                             class="flex items-center space-x-4 mt-2 text-xs text-gray-500"
                           >
-                            <span
-                              >Similarity:
-                              {{ (source.similarity * 100).toFixed(1) }}%</span
-                            >
-                            <span v-if="source.page"
-                              >Page: {{ source.page }}</span
-                            >
+                            <span>Similarity:
+                              {{ (source.similarity * 100).toFixed(1) }}%</span>
+                            <span v-if="source.page">Page: {{ source.page }}</span>
                           </div>
                         </div>
                       </div>
@@ -212,8 +216,7 @@
                       }}</span>
                       <span
                         class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded"
-                        >Unit {{ source.unit }}</span
-                      >
+                      >Unit {{ source.unit }}</span>
                       <span
                         class="text-xs"
                         :class="{
@@ -224,12 +227,9 @@
                           'bg-yellow-100 text-yellow-800':
                             source.status === 'expired',
                         }"
-                        >{{ source.status }}</span
-                      >
+                      >{{ source.status }}</span>
                     </div>
-                    <span class="text-xs text-gray-500"
-                      >Score: {{ (source.score * 100).toFixed(1) }}%</span
-                    >
+                    <span class="text-xs text-gray-500">Score: {{ (source.score * 100).toFixed(1) }}%</span>
                   </div>
                   <div
                     class="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-600"

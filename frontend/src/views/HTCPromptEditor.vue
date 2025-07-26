@@ -116,8 +116,12 @@
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <p class="text-lg font-medium">No terms defined yet</p>
-            <p class="text-sm">Add your first domain term to get started</p>
+            <p class="text-lg font-medium">
+              No terms defined yet
+            </p>
+            <p class="text-sm">
+              Add your first domain term to get started
+            </p>
             <button
               class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
               @click="addTerm"
@@ -127,7 +131,10 @@
           </div>
 
           <!-- Terms List -->
-          <div v-else class="space-y-6">
+          <div
+            v-else
+            class="space-y-6"
+          >
             <div
               v-for="(term, index) in terms"
               :key="index"
@@ -169,8 +176,11 @@
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                   placeholder="e.g., delinquency, eviction, lease renewal"
                   @input="validateTerm(index)"
-                />
-                <p v-if="term.errors.term" class="mt-1 text-sm text-red-600">
+                >
+                <p
+                  v-if="term.errors.term"
+                  class="mt-1 text-sm text-red-600"
+                >
                   {{ term.errors.term }}
                 </p>
               </div>
@@ -208,18 +218,30 @@
                   v-model="term.category"
                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 >
-                  <option value="rent_payment">Rent Payment</option>
-                  <option value="lease_management">Lease Management</option>
-                  <option value="maintenance">Maintenance</option>
+                  <option value="rent_payment">
+                    Rent Payment
+                  </option>
+                  <option value="lease_management">
+                    Lease Management
+                  </option>
+                  <option value="maintenance">
+                    Maintenance
+                  </option>
                   <option value="tenant_communication">
                     Tenant Communication
                   </option>
-                  <option value="legal">Legal & Compliance</option>
-                  <option value="financial">Financial</option>
+                  <option value="legal">
+                    Legal & Compliance
+                  </option>
+                  <option value="financial">
+                    Financial
+                  </option>
                   <option value="property_operations">
                     Property Operations
                   </option>
-                  <option value="other">Other</option>
+                  <option value="other">
+                    Other
+                  </option>
                 </select>
               </div>
 
@@ -241,7 +263,9 @@
                 v-if="term.term && term.variations"
                 class="mt-4 p-3 bg-gray-50 rounded-md"
               >
-                <h4 class="text-sm font-medium text-gray-700 mb-2">Preview:</h4>
+                <h4 class="text-sm font-medium text-gray-700 mb-2">
+                  Preview:
+                </h4>
                 <p class="text-sm text-gray-600">
                   <strong>{{ term.term }}</strong> →
                   <span class="text-indigo-600">{{
@@ -289,7 +313,10 @@
             </p>
           </div>
           <div class="flex items-center space-x-4">
-            <span v-if="saving" class="text-sm text-gray-500">
+            <span
+              v-if="saving"
+              class="text-sm text-gray-500"
+            >
               <svg
                 class="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500 inline"
                 xmlns="http://www.w3.org/2000/svg"
@@ -312,7 +339,10 @@
               </svg>
               Saving...
             </span>
-            <span v-if="saved" class="text-sm text-green-600 flex items-center">
+            <span
+              v-if="saved"
+              class="text-sm text-green-600 flex items-center"
+            >
               <svg
                 class="h-4 w-4 mr-1"
                 fill="none"
@@ -379,7 +409,9 @@
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h4 class="font-medium text-gray-900 mb-2">Before Custom Terms:</h4>
+            <h4 class="font-medium text-gray-900 mb-2">
+              Before Custom Terms:
+            </h4>
             <div class="text-sm text-gray-600 space-y-2">
               <p><strong>User asks:</strong> "Who has late rent?"</p>
               <p><strong>AI searches for:</strong> "late rent" only</p>
@@ -390,7 +422,9 @@
             </div>
           </div>
           <div>
-            <h4 class="font-medium text-gray-900 mb-2">After Custom Terms:</h4>
+            <h4 class="font-medium text-gray-900 mb-2">
+              After Custom Terms:
+            </h4>
             <div class="text-sm text-gray-600 space-y-2">
               <p><strong>User asks:</strong> "Who has late rent?"</p>
               <p>

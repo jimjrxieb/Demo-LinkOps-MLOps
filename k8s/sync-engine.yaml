@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: sync-engine
-        image: linksrobot/demo-linkops-sync-engine:latest
+        image: localhost:5000/demo-linkops-sync-engine:latest
         ports:
         - containerPort: 8004
         envFrom:

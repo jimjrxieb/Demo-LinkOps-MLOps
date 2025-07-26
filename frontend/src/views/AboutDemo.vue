@@ -4,8 +4,12 @@
     <div class="hero-section">
       <div class="card">
         <div class="card-body text-center">
-          <div class="hero-icon">🚀</div>
-          <h1 class="hero-title">Kubernetes/CD Platform Engineering Demo</h1>
+          <div class="hero-icon">
+            🚀
+          </div>
+          <h1 class="hero-title">
+            Kubernetes/CD Platform Engineering Demo
+          </h1>
           <p class="hero-subtitle">
             A full-stack platform engineering showcase demonstrating DevOps,
             Kubernetes, AI/ML, and MLOps skills
@@ -24,7 +28,9 @@
     <div class="story-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">👨‍💻 My Platform Engineering Journey</h2>
+          <h2 class="card-title">
+            👨‍💻 My Platform Engineering Journey
+          </h2>
         </div>
         <div class="card-body">
           <div class="story-content">
@@ -45,21 +51,15 @@
             <div class="story-highlights">
               <div class="highlight-item">
                 <span class="highlight-icon">🔧</span>
-                <span class="highlight-text"
-                  >Custom Python and Bash scripts to auto-fix issues</span
-                >
+                <span class="highlight-text">Custom Python and Bash scripts to auto-fix issues</span>
               </div>
               <div class="highlight-item">
                 <span class="highlight-icon">🎯</span>
-                <span class="highlight-text"
-                  >Industry-standard linters and formatters</span
-                >
+                <span class="highlight-text">Industry-standard linters and formatters</span>
               </div>
               <div class="highlight-item">
                 <span class="highlight-icon">🚀</span>
-                <span class="highlight-text"
-                  >Streamlined development workflow</span
-                >
+                <span class="highlight-text">Streamlined development workflow</span>
               </div>
             </div>
           </div>
@@ -71,13 +71,17 @@
     <div class="skills-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🎯 Skills Demonstrated</h2>
+          <h2 class="card-title">
+            🎯 Skills Demonstrated
+          </h2>
         </div>
         <div class="card-body">
           <div class="skills-grid">
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">🔧</div>
+                <div class="skill-icon">
+                  🔧
+                </div>
                 <h3>DevOps Engineering</h3>
               </div>
               <ul class="skill-list">
@@ -93,7 +97,9 @@
 
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">☸️</div>
+                <div class="skill-icon">
+                  ☸️
+                </div>
                 <h3>Kubernetes Expertise</h3>
               </div>
               <ul class="skill-list">
@@ -107,7 +113,9 @@
 
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">☁️</div>
+                <div class="skill-icon">
+                  ☁️
+                </div>
                 <h3>Cloud/Platform Engineering</h3>
               </div>
               <ul class="skill-list">
@@ -121,7 +129,9 @@
 
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">🧠</div>
+                <div class="skill-icon">
+                  🧠
+                </div>
                 <h3>AI/ML Engineering</h3>
               </div>
               <ul class="skill-list">
@@ -135,7 +145,9 @@
 
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">💻</div>
+                <div class="skill-icon">
+                  💻
+                </div>
                 <h3>Full-Stack Development</h3>
               </div>
               <ul class="skill-list">
@@ -149,7 +161,9 @@
 
             <div class="skill-category">
               <div class="skill-header">
-                <div class="skill-icon">🛡️</div>
+                <div class="skill-icon">
+                  🛡️
+                </div>
                 <h3>Security & Quality</h3>
               </div>
               <ul class="skill-list">
@@ -169,7 +183,9 @@
     <div class="pipeline-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🧠 The Whis Learning Pipeline</h2>
+          <h2 class="card-title">
+            🧠 The Whis Learning Pipeline
+          </h2>
         </div>
         <div class="card-body">
           <div class="pipeline-content">
@@ -182,7 +198,9 @@
 
             <div class="pipeline-stages">
               <div class="stage-item">
-                <div class="stage-number">1</div>
+                <div class="stage-number">
+                  1
+                </div>
                 <div class="stage-content">
                   <h4>Data Input</h4>
                   <p>
@@ -196,7 +214,9 @@
               </div>
 
               <div class="stage-item">
-                <div class="stage-number">2</div>
+                <div class="stage-number">
+                  2
+                </div>
                 <div class="stage-content">
                   <h4>Sanitization</h4>
                   <p>
@@ -210,7 +230,9 @@
               </div>
 
               <div class="stage-item">
-                <div class="stage-number">3a</div>
+                <div class="stage-number">
+                  3a
+                </div>
                 <div class="stage-content">
                   <h4>ML Classification</h4>
                   <p>
@@ -224,7 +246,9 @@
               </div>
 
               <div class="stage-item">
-                <div class="stage-number">3b</div>
+                <div class="stage-number">
+                  3b
+                </div>
                 <div class="stage-content">
                   <h4>LLM Processing</h4>
                   <p>
@@ -238,7 +262,9 @@
               </div>
 
               <div class="stage-item">
-                <div class="stage-number">4</div>
+                <div class="stage-number">
+                  4
+                </div>
                 <div class="stage-content">
                   <h4>Human Approval</h4>
                   <p>
@@ -252,7 +278,9 @@
               </div>
 
               <div class="stage-item">
-                <div class="stage-number">5</div>
+                <div class="stage-number">
+                  5
+                </div>
                 <div class="stage-content">
                   <h4>Execution & Scoring</h4>
                   <p>
@@ -274,7 +302,9 @@
     <div class="tech-stack-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🛠️ Technology Stack</h2>
+          <h2 class="card-title">
+            🛠️ Technology Stack
+          </h2>
         </div>
         <div class="card-body">
           <div class="tech-grid">
@@ -352,7 +382,9 @@
     <div class="interview-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🎯 Interview-Ready Talking Points</h2>
+          <h2 class="card-title">
+            🎯 Interview-Ready Talking Points
+          </h2>
         </div>
         <div class="card-body">
           <div class="interview-grid">
@@ -435,12 +467,16 @@
     <div class="features-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">✨ Demo Features</h2>
+          <h2 class="card-title">
+            ✨ Demo Features
+          </h2>
         </div>
         <div class="card-body">
           <div class="features-grid">
             <div class="feature-item">
-              <div class="feature-icon">🎯</div>
+              <div class="feature-icon">
+                🎯
+              </div>
               <h3>Task Processing</h3>
               <p>
                 Submit Kubernetes/CD tasks and watch real-time processing
@@ -449,7 +485,9 @@
             </div>
 
             <div class="feature-item">
-              <div class="feature-icon">📚</div>
+              <div class="feature-icon">
+                📚
+              </div>
               <h3>Orb Library</h3>
               <p>
                 Browse categorized best practices and solutions, including
@@ -458,7 +496,9 @@
             </div>
 
             <div class="feature-item">
-              <div class="feature-icon">🧠</div>
+              <div class="feature-icon">
+                🧠
+              </div>
               <h3>Learning System</h3>
               <p>
                 Human-in-loop approval workflow with continuous learning from
@@ -467,7 +507,9 @@
             </div>
 
             <div class="feature-item">
-              <div class="feature-icon">🔍</div>
+              <div class="feature-icon">
+                🔍
+              </div>
               <h3>Intelligent Matching</h3>
               <p>
                 Advanced algorithms using TensorFlow and semantic search to
@@ -476,7 +518,9 @@
             </div>
 
             <div class="feature-item">
-              <div class="feature-icon">⚡</div>
+              <div class="feature-icon">
+                ⚡
+              </div>
               <h3>Real-time Pipeline</h3>
               <p>
                 Visual representation of the Whis pipeline with step-by-step
@@ -485,7 +529,9 @@
             </div>
 
             <div class="feature-item">
-              <div class="feature-icon">🛡️</div>
+              <div class="feature-icon">
+                🛡️
+              </div>
               <h3>Professional UI</h3>
               <p>
                 Modern, responsive design with real-time updates and interactive
@@ -501,7 +547,9 @@
     <div class="getting-started-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">🚀 Getting Started</h2>
+          <h2 class="card-title">
+            🚀 Getting Started
+          </h2>
         </div>
         <div class="card-body">
           <div class="started-grid">
@@ -545,7 +593,9 @@
     <div class="contact-section">
       <div class="card">
         <div class="card-header">
-          <h2 class="card-title">📞 About This Demo</h2>
+          <h2 class="card-title">
+            📞 About This Demo
+          </h2>
         </div>
         <div class="card-body">
           <div class="contact-content">
