@@ -1,16 +1,17 @@
 # DEMO-LinkOps Version (Registry Push)
-# Generated: 2025-07-26 01:56:56 UTC
-# Commit: 37fa65533050268a33d9f629cc1208d1910519c2
-# Run: 105
+# Generated: 2025-07-26 07:42:11 UTC
+# Commit: a582eba7b48f667f1742e84f571ed9bb0812e9c2
+# Run: 108
 
-IMAGE_TAG=20250726-37fa655
+IMAGE_TAG=20250726-a582eba
 
 # Service Images (Registry)
-FRONTEND_IMAGE=linksrobot/demo-frontend:20250726-37fa655
-UNIFIED_API_IMAGE=linksrobot/demo-unified-api:20250726-37fa655
-ML_MODELS_IMAGE=linksrobot/demo-ml-models:20250726-37fa655
-PIPELINE_IMAGE=linksrobot/demo-pipeline:20250726-37fa655
-RAG_IMAGE=linksrobot/demo-rag:20250726-37fa655
+FRONTEND_IMAGE=linksrobot/demo-frontend:20250726-a582eba
+UNIFIED_API_IMAGE=linksrobot/demo-unified-api:20250726-a582eba
+ML_MODELS_IMAGE=linksrobot/demo-ml-models:20250726-a582eba
+PIPELINE_IMAGE=linksrobot/demo-pipeline:20250726-a582eba
+RAG_IMAGE=linksrobot/demo-rag:20250726-a582eba
+SYNC_ENGINE_IMAGE=linksrobot/demo-sync-engine:20250726-a582eba
 
 # Docker Compose Command
 # docker-compose pull && docker-compose up -d
