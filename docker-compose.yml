@@ -48,7 +48,7 @@ services:
       - DEMO_MODE=${DEMO_MODE}
     volumes:
       - ./rag/vectorstore:/app/vectorstore
-      - ./db/fake_data:/app/data
+      - ./db/demo_data:/app/data
     ports:
       - "8005:8005"
     networks:
@@ -74,7 +74,7 @@ services:
       - DEMO_MODE=${DEMO_MODE}
     volumes:
       - ./ml-models/models:/app/models
-      - ./db/fake_data:/app/data
+      - ./db/demo_data:/app/data
     ports:
       - "8002:8002"
     networks:
@@ -99,7 +99,7 @@ services:
       - DEMO_MODE=${DEMO_MODE}
     volumes:
       - ./pipeline/data:/app/data
-      - ./db/fake_data:/app/input_data
+      - ./db/demo_data:/app/input_data
     ports:
       - "8003:8003"
     networks:

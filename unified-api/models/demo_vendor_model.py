@@ -6,7 +6,7 @@ import pandas as pd
 
 class VendorSuggestionModel:
     def __init__(self):
-        self.df = pd.read_csv("db/fake_data/workorders.csv")
+        self.df = pd.read_csv("db/demo_data/workorders.csv")
         self._calculate_vendor_stats()
 
     def _calculate_vendor_stats(self):

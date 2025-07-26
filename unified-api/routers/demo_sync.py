@@ -40,7 +40,7 @@ csv_embedder = CSVTEmbedder() if CSVTEmbedder else None
 delinquency_embedder = DelinquencyEmbedder() if DelinquencyEmbedder else None
 
 # Demo data path
-DEMO_CSV = Path("db/fake_data/delinquency.csv")
+DEMO_CSV = Path("db/demo_data/delinquency.csv")
 
 
 @router.post("/sync")
@@ -54,7 +54,7 @@ async def demo_sync() -> dict[str, Any]:
         if not DEMO_CSV.exists():
             raise HTTPException(
                 status_code=500,
-                detail="Demo data not found. Please ensure db/fake_data/delinquency.csv exists.",
+                detail="Demo data not found. Please ensure db/demo_data/delinquency.csv exists.",
             )
 
         if not delinquency_embedder:

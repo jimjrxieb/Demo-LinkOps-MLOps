@@ -1,17 +1,19 @@
 import re
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Any
 
 import httpx
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Request, HTTPException
 from pydantic import BaseModel
 
 from rag.search import semantic_search
+from rag.logic.search import semantic_search as rag_semantic_search
+from ..logic.executor import execute_tool_by_name
 
-router = APIRouter(prefix="/jade", tags=["Jade Assistant"])
+router = APIRouter()
 
 
-class ChatQuery(BaseModel):
-    message: str
+class JadeQuery(BaseModel):
+    query: str
 
 
 class Source(BaseModel):
@@ -34,69 +36,56 @@ def detect_tool_command(message: str) -> Optional[str]:
     return match.group(1) if match else None
 
 
-@router.post("/chat", response_model=ChatResponse)
-async def chat(query: ChatQuery):
+@router.post("/jade/query")
+async def jade_query(data: JadeQuery) -> Dict[str, Any]:
+    """
+    Process a query from Jade AI Assistant and execute matching tools.
+    
+    Args:
+        data: JadeQuery containing the user's query
+        
+    Returns:
+        Dict containing response, optional result, and optional error
+    """
+    query = data.query
+
+    # Search memory for matching tools
+    search_results = semantic_search(query, top_k=1)
+    if not search_results:
+        return {"response": "I couldn't find any matching tools for your request."}
+
+    # Pick the best matching tool (top result)
+    top_result = search_results[0]
+    tool_name = top_result.get("metadata", {}).get("tool_name")
+
+    if not tool_name:
+        return {
+            "response": "I found something, but it's missing a valid tool reference.",
+            "highlight": top_result.get("matched_text", ""),
+            "source": top_result.get("source")
+        }
+
+    # Execute the matched tool
     try:
-        # Check for tool invocation command
-        tool_name = detect_tool_command(query.message)
-        if tool_name:
-            try:
-                async with httpx.AsyncClient() as client:
-                    res = await client.post(
-                        f"http://localhost:8000/mcp-tool/execute/{tool_name}",
-                        timeout=30.0,
-                    )
-                    if res.status_code == 200:
-                        return ChatResponse(
-                            answer=f"✅ Successfully ran tool `{tool_name}`",
-                            tool_run={
-                                "tool": tool_name,
-                                "status": "success",
-                                "result": res.json(),
-                            },
-                        )
-                    else:
-                        return ChatResponse(
-                            answer=f"❌ Failed to run tool `{tool_name}`: {res.text}",
-                            tool_run={
-                                "tool": tool_name,
-                                "status": "error",
-                                "error": res.text,
-                            },
-                        )
-            except Exception as e:
-                return ChatResponse(
-                    answer=f"❌ Error executing tool `{tool_name}`: {str(e)}",
-                    tool_run={"tool": tool_name, "status": "error", "error": str(e)},
-                )
-
-        # Perform semantic search if not a tool command
-        results = semantic_search(query.message)
-
-        if not results:
-            return ChatResponse(
-                answer="I couldn't find any relevant information in the documents.",
-                sources=[],
-            )
-
-        # Format the response using the best match
-        top_result = results[0]
-        answer = top_result["content"]
-
-        # Format sources with highlights
-        sources = [
-            Source(
-                content=r["content"],
-                file=r["source"],
-                score=round(r["score"], 3),
-                highlight=r["highlight"],
-            )
-            for r in results
-        ]
-
-        return ChatResponse(answer=answer, sources=sources)
-
+        execution_result = execute_tool_by_name(tool_name)
+        return {
+            "response": f"✅ I ran the tool `{tool_name}` for you.",
+            "result": execution_result,
+            "highlight": top_result.get("matched_text", ""),
+            "source": top_result.get("source"),
+            "score": top_result.get("score")
+        }
+    except FileNotFoundError:
+        return {
+            "response": f"⚠️ I couldn't find the tool `{tool_name}` in our system.",
+            "error": "Tool not found",
+            "highlight": top_result.get("matched_text", ""),
+            "source": top_result.get("source")
+        }
     except Exception as e:
-        raise HTTPException(
-            status_code=500, detail=f"Error processing request: {str(e)}"
-        )
+        return {
+            "response": f"⚠️ I found `{tool_name}` but it failed to execute.",
+            "error": str(e),
+            "highlight": top_result.get("matched_text", ""),
+            "source": top_result.get("source")
+        }
